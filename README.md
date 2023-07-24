@@ -1,6 +1,20 @@
 # MoneyMoa_FE
 
-This template should help get you started developing with Vue 3 in Vite.
+머니모아 Vue 프로젝트입니다.
+
+## Branches
+
+- feature-member
+- feature-challenge
+- feature-feed
+- feature-products
+- feature-dictionary
+- feature-chat
+- feature-admin
+
+- develop
+
+- master
 
 ## Recommended IDE Setup
 

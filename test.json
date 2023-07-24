@@ -1,0 +1,34 @@
+{
+  message(string): “success” or” fail”,
+    MemberChallengeList(List < challenge > ): {
+      {
+        id: 1
+        title: “운동 안 갈 때 마다 돈 넣기”,
+        content: “제곧내”,
+        img,
+        “exercise.jpg”,
+        hashtag: “운동 좀 해라”,
+        period: “nn일 남음”,
+        total_amount: “80 % 달성!”
+      }, {
+        id: 2
+        title: “결혼 자금모으기”
+        content: “열심히 모아봅시다”
+        img,
+        “wedding.jpg”
+        hashtag: “내년 결혼”
+        period: “nn일 남음”,
+        total_amount: “80 % 달성!”
+      }. {
+        id: 3
+        title: “딤배끊기”
+        content: “담배 좀 끊어”
+        img,
+        “smoking.jpg”
+        hashtag: 담배”
+        period: “nn일 남음”,
+        total_amount: “80 % 달성!”
+      }.
+    }
+}
+}
