@@ -5,7 +5,7 @@
       <v-tab value="saving">적금</v-tab>
       <v-tab value="cma">CMA</v-tab>
     </v-tabs>
-    <v-window v-model="productType"> {{ productType }}선택됨</v-window>
+    <!-- <v-window v-model="productType"> {{ productType }}선택됨</v-window> -->
     <ProductsList :productType="productType" />
   </div>
 </template>

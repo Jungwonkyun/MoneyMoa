@@ -1,6 +1,6 @@
 <template>
   <div>
-    <v-sheet class="mx-auto" max-width="600">
+    <v-sheet class="mx-auto">
       <v-slide-group multiple show-arrows>
         <v-slide-group-item v-for="bank in banks" :key="banks" v-slot="{ isSelected, toggle }">
           <v-btn class="ma-2" rounded :color="isSelected ? 'primary' : undefined" @click="toggle">
