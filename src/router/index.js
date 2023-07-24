@@ -20,6 +20,9 @@ const router = createRouter({
       path: '/challenge',
       name: 'challenge',
       component: ChallengeView
+    },
+    {
+      path: ''
     }
   ]
 })
