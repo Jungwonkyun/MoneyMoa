@@ -14,7 +14,30 @@ const router = createRouter({
     {
       path: '/products',
       name: 'products',
-      component: ProductsView
+      component: ProductsView,
+      redirect: '/products/deposit',
+      children: [
+        {
+          path: 'deposit',
+          name: 'depositList',
+          component: () => import('../components/Products/ProductsList.vue')
+        },
+        {
+          path: 'deposit/:productCode',
+          name: 'depositDetail',
+          component: () => import('../components/Products/DepositDetail.vue')
+        },
+        {
+          path: 'saving',
+          name: 'savingList',
+          component: () => import('../components/Products/ProductsList.vue')
+        },
+        {
+          path: 'cma',
+          name: 'cmaList',
+          component: () => import('../components/Products/ProductsList.vue')
+        }
+      ]
     },
     {
       path: '/challenge',

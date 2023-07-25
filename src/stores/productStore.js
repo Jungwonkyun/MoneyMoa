@@ -2,14 +2,17 @@ import { ref } from 'vue'
 import { defineStore } from 'pinia'
 
 export const useProductStore = defineStore('product', () => {
-  const bank = ref('')
-  const condition = ref({
-    amount: 0,
-    period: 6
-  })
-  function setCondition(amo, per) {
-    condition.amount = amo
-    condition.period = per
+  const productType = ref('deposit')
+  const selectedProduct = ref({})
+  const amount = ref(0)
+  function setProductType(type) {
+    productType.value = type
   }
-  return { bank, condition, setCondition }
+  function setAmount(amo) {
+    amount.value = amo
+  }
+  function setProduct(prod) {
+    selectedProduct.value = prod
+  }
+  return { productType, amount, selectedProduct, setProductType, setAmount, setProduct }
 })
