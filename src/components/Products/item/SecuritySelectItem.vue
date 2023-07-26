@@ -2,10 +2,14 @@
   <div>
     <v-sheet class="mx-auto">
       <v-slide-group multiple show-arrows>
-        <v-slide-group-item v-for="bank in banks" :key="banks" v-slot="{ isSelected, toggle }">
+        <v-slide-group-item
+          v-for="security in securities"
+          :key="securities"
+          v-slot="{ isSelected, toggle }"
+        >
           <v-btn class="ma-2" rounded :color="isSelected ? 'primary' : undefined" @click="toggle">
             <v-icon icon="mdi-heart"></v-icon>
-            {{ bank }}
+            {{ security }}
           </v-btn>
         </v-slide-group-item>
       </v-slide-group>
@@ -15,19 +19,15 @@
 <script setup>
 import { reactive } from 'vue'
 
-const banks = reactive([
-  'KB국민은행',
-  '광주은행',
-  'NH농협은행',
-  '대구은행',
-  '신한은행',
-  '신협은행',
-  '우리은행',
-  '하나은행'
+const securities = reactive([
+  'KB증권',
+  'SK증권',
+  'NH투자증권',
+  'IBK투자증권',
+  '삼성증권',
+  '대신증권',
+  '한화투자증권',
+  '하나증권'
 ])
 </script>
-<style scoped lang="scss">
-.v-btn.primary {
-  background-color: $primary-color;
-}
-</style>
+<style></style>

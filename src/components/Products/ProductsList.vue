@@ -1,9 +1,10 @@
 <template>
   <div>
-    here is {{ productType }} list
     <BankSelectItem v-if="productType != 'cma'" />
-    <!-- v-else 증권사선택아이템 -->
+    <SecuritySelectItem v-else />
     <ProductConditionItem v-if="productType != 'cma'" />
+    here is {{ productType }} list
+    <hr />
     <DepositPreviewItem
       v-for="(product, index) in products_dummy"
       :key="index"
@@ -17,6 +18,7 @@ import { reactive } from 'vue'
 import { useProductStore } from '../../stores/productStore'
 import { storeToRefs } from 'pinia'
 import BankSelectItem from './item/BankSelectItem.vue'
+import SecuritySelectItem from './item/SecuritySelectItem.vue'
 import ProductConditionItem from './item/ProductConditionItem.vue'
 import DepositPreviewItem from './item/DepositPreviewItem.vue'
 // const props = defineProps({

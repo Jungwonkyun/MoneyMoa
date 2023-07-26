@@ -6,8 +6,21 @@
         params: { productCode: product.product_code }
       }"
     >
-      <v-card :text="product.bank_name" variant="tonal">
-        {{ product.product_name }}
+      <v-card variant="tonal">
+        <v-row class="d-flex justify-space-between">
+          <v-col>
+            <v-card-item>
+              <v-card-subtitle>
+                <v-icon icon="mdi-face" />
+                {{ product.bank_name }}
+              </v-card-subtitle>
+              <v-card-title>
+                {{ product.product_name }}
+              </v-card-title>
+            </v-card-item>
+          </v-col>
+          <v-col cols="2"> {{ product.interest }}% </v-col>
+        </v-row>
       </v-card>
     </router-link>
   </div>
