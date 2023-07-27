@@ -26,8 +26,4 @@ const banks = reactive([
   '하나은행'
 ])
 </script>
-<style scoped lang="scss">
-.v-btn.primary {
-  background-color: $primary-color;
-}
-</style>
+<style scoped lang="scss"></style>
