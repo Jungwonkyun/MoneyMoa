@@ -9,6 +9,7 @@
       v-for="(product, index) in products_dummy"
       :key="index"
       :product="product"
+      :productType="productType"
     />
   </div>
 </template>

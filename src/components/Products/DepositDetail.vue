@@ -15,13 +15,19 @@
       <v-col cols="2">금리 {{ product.interest }}% </v-col>
     </v-row>
   </v-card>
+  <v-table>
+    <tbody>
+      <tr>
+        <td>기간</td>
+      </tr>
+    </tbody>
+  </v-table>
   <IntrCalcItem></IntrCalcItem>
 </template>
 <script setup>
 import { useProductStore } from '../../stores/productStore'
 import IntrCalcItem from './item/IntrCalcItem.vue'
 const store = useProductStore()
-// const product = storeToRefs(store)
 const product = store.selectedProduct
 </script>
 <style></style>

@@ -20,9 +20,5 @@
     </v-toolbar>
   </div>
 </template>
-<script>
-export default {
-  name: 'HeaderItem'
-}
-</script>
+<script setup></script>
 <style></style>
