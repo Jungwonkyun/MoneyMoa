@@ -1,0 +1,153 @@
+wonkyun 
+1234
+
+# location of the jenkins war file
+JENKINS_WAR=/usr/share/java/$NAME.war
+
+# jenkins home location
+JENKINS_HOME=/var/lib/$NAME
+
+
+-jar /usr/share/java/jenkins.war 
+
+
+-------------------------------------------
+젠킨스 계정 
+
+wjddnjsrbs97
+jwk7865
+
+Jungwonkyun
+wjddnjsrbs97@naver.com
+http://15.165.18.131:9000/
+
+깃허브 토큰
+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
+
+깃허브 웹훅 페이로드 url
+http://15.165.18.131:9000/github-webhook/
+
+Jenkins Token
+------------------------------------------
+
+//도커깔기
+sudo apt install docker.io
+
+//자바깔기
+sudo apt install openjdk-11-jdk
+
+//젠킨스이미지 도커에 깔기(9000번 포트)
+docker run -itd --name jenkins -p 9000:8080 jenkins/jenkins:lts-jdk11
+
+//깔린 jenkins 확인 
+docker images 
+
+//젠킨스 이미지 컨테이너에서 실행
+docker run -itd -p 9000:8080 -v /jenkins:/var/jenkins_home --name jenkins -u root jenkins/jenkins
+
+//도커 컨테이너에서 돌아가는지 확인 
+docker ps
+
+//웹 브라우저에서 젠킨스 접속 
+5.165.18.131:9000   5.165.18.131는 EC2 public 주소
+
+//젠킨스 비밀번호
+11d82f15f4524ad5af95e7764f19b714
+
+
+//이거 참고해서 깃허브 레포와 연결 
+https://yermi.tistory.com/entry/Jenkins-%EC%A0%A0%ED%82%A8%EC%8A%A4Jenkins%EC%99%80-%EA%B9%83%ED%97%88%EB%B8%8CGithub-%EC%97%B0%EB%8F%99%ED%95%98%EA%B8%B0-Github%EC%97%90-%EC%98%AC%EB%A6%B0-%ED%94%84%EB%A1%9C%EC%A0%9D%ED%8A%B8-Jenkins%EB%A1%9C-build%ED%95%98%EA%B8%B0
+
+//얘도
+https://velog.io/@dooboocookie/CICD-SpringBoot-%ED%94%84%EB%A1%9C%EC%A0%9D%ED%8A%B8-.jar-%ED%8C%8C%EC%9D%BC-%EB%B9%8C%EB%93%9C-%EB%B0%8F-%EB%B0%B0%ED%8F%AC-%EC%9E%90%EB%8F%99%ED%99%94
+
+https://velog.io/@hyojhand/%EC%84%9C%EB%B2%84-%EB%B0%B0%ED%8F%AC-Docker-Jenkins-CICD
+
+//젠킨스 bash 진입
+docker exec -it jenkins /bin/bash
+
+//빌드한 jar파일 생기는 경로 
+/var/jenkins_home/workspace/Jenkins Test/build/libs# 
+
+//jar파일 배포
+nohup java -jar moneymoa-0.0.1-SNAPSHOT.jar & 
+
+-> 테스트 할 거면 그냥 java -jar moneymoa-0.0.1-SNAPSHOT.jar 
+
+/////////////////////////////////////////////////////////////////////////////////////////
+
+DB 도커에 올리기
+
+//mysql 이미지 도커에 받기
+docker pull mysql 
+
+// 도커 컨테이너에서 mysql 실행 3306으로 하면 로컬 mysql이랑 겹치니까 3305로 만들면 로컬에서 3305로 접속이 가능하다
+docker run --name mysql-container -e MYSQL_ROOT_PASSWORD=<password> -d -p 3306:3306 mysql:latest
+
+//도커에서 mysql로 접속
+docker exec -it mysql-container bash
+
+//참고한 블로그 
+https://hipopatamus.tistory.com/109
+
+//////////////////////////////////////////////////////////////////
+
+//이 블로그 보고 참고 
+https://gksdudrb922.tistory.com/236
+
+//우분투 로컬에서 젠킨스로 옮기기 
+docker cp I9D210T.pem 9c0897320fef:/var/jenkins_home/I9D210T.pem
+
+
+//jenkins 컨테이너에 들어있는 pem.key를 통해 jar 파일을 전송하는 코드
+scp -v -o StrictHostKeyChecking=no -i /var/jenkins_home/I9D210T.pem /var/jenkins_home/workspace/MoneyMoa/build/libs/moneymoa-0.0.1-SNAPSHOT.jar ubuntu@i9d210.p.ssafy.io:/home/ubuntu
+
+
+
+
+//////////////////////////////////////////////////////////////////////////////////////////////////////
+wget -q -O - https://pkg.jenkins.io/debian/jenkins.io.key | sudo apt-key add -
+sudo apt update
+
+sudo apt-key adv --keyserver keyserver.ubuntu.com --recv-keys <아까 그 16개 대문자 알파벳>
+
+
+jenkins/secrets# vi initialAdminPassword
+//////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+
+
+
+//clone하려는 폴더 열고 bash 실행
+
+//깃 시작 
+git init 
+
+//깃 원격 레포지토리랑 내 로컬 폴더 연결
+git remote add origin https://github.com/Jungwonkyun/MoneyMoa
+
+//깃 브랜치 전부 가져오기 
+git remote update
+
+//접속하려는 git branch로 이동 (여기선 wonkyun)
+git checkout wonkyun
+
+//해당 브랜치에 있는 파일들 (원격레포지토리) -> 내 레포지토리로 이동 
+git pull 
+
+//파일들 수정한 다음 로컬 -> 원격으로 이동 
+git add .
+git commit -m "수정한 내용" 
+git push origin wonkyun 
+
+
+
+//////////////////////////////////////////////////////////////////
+
+
+
+
+
+docker -cp I9D210T.pem b1ede367bad1:/var/jenkins_home/I9D210T.pem
+
