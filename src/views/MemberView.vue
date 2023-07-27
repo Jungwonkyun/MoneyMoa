@@ -1,12 +1,14 @@
 <template>
-  <div class="container">
-    <div class="left">
-      <UserInfo />
-    </div>
-    <div class="right">
-      <router-view />
-    </div>
-  </div>
+  <v-container>
+    <v-row>
+      <v-col cols="6">
+        <UserInfo />
+      </v-col>
+      <v-col cols="6">
+        <router-view />
+      </v-col>
+    </v-row>
+  </v-container>
 </template>
 
 <script>
@@ -19,18 +21,4 @@ export default {
 }
 </script>
 
-<style>
-.container {
-  display: flex;
-}
-
-.left {
-  flex: 2;
-  padding: 20px;
-}
-
-.right {
-  flex: 3;
-  padding: 20px;
-}
-</style>
+<style></style>

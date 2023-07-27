@@ -14,7 +14,7 @@
         <v-btn
           ><router-link to="/"><v-icon icon="mdi-send" /></router-link
         ></v-btn>
-        <v-btn><router-link to="/">프로필</router-link></v-btn>
+        <v-btn><router-link to="/member">프로필</router-link></v-btn>
       </v-toolbar-items>
     </v-toolbar>
   </div>
