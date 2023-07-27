@@ -53,25 +53,17 @@
   </v-container>
 </template>
 
-<script>
+<script setup>
 import { ref } from 'vue'
 import functions from '@/api/member.js'
+import { useRoute } from 'vue-router'
 
-export default {
-  setup() {
-    const profileImage = ref('프로필 이미지')
-    const nickname = ref('뚝시미')
-    const aboutMe = ref('안녕하세요 뚝심이에용')
-    const following = functions.callFollowingApi
+// memberId를 props로 받음
+const { props } = defineProps(['memberId'])
 
-    return {
-      nickname,
-      aboutMe,
-      profileImage,
-      following
-    }
-  }
-}
+onMounted(() => {
+  functions.callUserInfoApi(props.memberId)
+})
 </script>
 <style>
 .profileImage {

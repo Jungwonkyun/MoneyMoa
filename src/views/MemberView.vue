@@ -2,7 +2,7 @@
   <v-container>
     <v-row>
       <v-col cols="6">
-        <UserInfo />
+        <UserInfo :memberId="$route.params.id" />
       </v-col>
       <v-col cols="6">
         <router-view />

@@ -14,15 +14,20 @@
         <v-btn
           ><router-link to="/"><v-icon icon="mdi-send" /></router-link
         ></v-btn>
-        <v-btn><router-link to="/member">프로필</router-link></v-btn>
+        <v-btn>
+          <router-link :to="`/member/${memberId.value}`">프로필</router-link>
+        </v-btn>
         <v-btn><router-link to="/account">로그인</router-link></v-btn>
       </v-toolbar-items>
     </v-toolbar>
   </div>
 </template>
-<script>
-export default {
-  name: 'HeaderItem'
-}
+<script setup>
+import { ref } from 'vue'
+import { useAccountStore } from '@/stores/accountStore.js'
+import { storeToRefs } from 'pinia'
+
+const store = useAccountStore()
+const { memberId } = storeToRefs(store)
 </script>
 <style></style>
