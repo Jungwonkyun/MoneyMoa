@@ -10,6 +10,11 @@ import FollowerList from '@/components/Member/FollowerList.vue'
 import FollowingList from '@/components/Member/FollowingList.vue'
 import MyFeed from '@/components/Member/MyFeed.vue'
 import MyProducts from '@/components/Member/MyProducts.vue'
+import DictionaryView from '../views/DictionaryView.vue'
+import AccountView from '../views/AccountView.vue'
+import LoginForm from '../components/Accounts/LoginForm.vue'
+import SignupForm from '../components/Accounts/SignupForm.vue'
+import FindPassword from '../components/Accounts/FindPassword.vue'
 
 const router = createRouter({
   history: createWebHistory(),
@@ -84,6 +89,39 @@ const router = createRouter({
           component: ChallengeList
         }
       ]
+    },
+    {
+      path: '/dictionary',
+      name: 'dictionary',
+      component: DictionaryView
+    },
+    {
+      path: '/account',
+      name: 'account',
+      redirect: '/account/login',
+      component: AccountView,
+      children: [
+        {
+          path: 'login',
+          name: 'loginform',
+          component: LoginForm
+        },
+        {
+          path: 'signup',
+          name: 'signupform',
+          component: SignupForm
+        },
+        {
+          path: 'findpassword',
+          name: 'findpassword',
+          component: FindPassword
+        }
+      ]
+    },
+    {
+      path: '/feed',
+      name: 'feed',
+      component: () => import('../views/FeedView.vue')
     }
   ]
 })
