@@ -1,5 +1,6 @@
 <template>
   <div @click="setProduct(product)">
+    <!-- to에 함수바인딩해서 detail페이지 각각 연결되도록 하자 -->
     <router-link
       :to="{
         name: 'depositDetail',

@@ -9,6 +9,7 @@
       v-for="(product, index) in products_dummy"
       :key="index"
       :product="product"
+      :productType="productType"
     />
   </div>
 </template>
@@ -19,11 +20,9 @@ import { useProductStore } from '../../stores/productStore'
 import { storeToRefs } from 'pinia'
 import BankSelectItem from './item/BankSelectItem.vue'
 import SecuritySelectItem from './item/SecuritySelectItem.vue'
-import ProductConditionItem from './item/ProductConditionItem.vue'
 import DepositPreviewItem from './item/DepositPreviewItem.vue'
-// const props = defineProps({
-//   productType: String
-// })
+import ProductConditionItem from './item/ProductConditionItem.vue'
+
 const store = useProductStore()
 const { productType } = storeToRefs(store)
 const products_dummy = reactive([
