@@ -9,133 +9,135 @@
     </v-row>
   </v-container>
 </template>
-<script>
-import { ref } from 'vue'
+<script setup>
+import { ref, onMounted } from 'vue'
+import { useRoute } from 'vue-router'
+import functions from '@/api/member.js'
 
-export default {
-  setup() {
-    const dummy = ref([
+const dummy = ref([
+  {
+    message: 'success',
+    Feed: [
       {
-        message: 'success',
-        Feed: [
+        id: 1,
+        img_url: 'https://cdn.vuetifyjs.com/images/parallax/material.jpg',
+        content: '첫 입금!',
+        likes: '33',
+        current: '333',
+        created_at: '2023-07-28',
+        hashtag: [
           {
-            id: 1,
-            img_url: 'https://cdn.vuetifyjs.com/images/parallax/material.jpg',
-            content: '첫 입금!',
-            likes: '33',
-            current: '333',
-            created_at: '2023-07-28',
-            hashtag: [
-              {
-                feed_no: 1,
-                content: '#첫_입금'
-              }
-            ],
-            feedcomment: [
-              {
-                feed_no: 1,
-                member_id: 1,
-                content: '축하해요!',
-                created_at: '2023-07-28'
-              }
-            ]
-          },
+            feed_no: 1,
+            content: '#첫_입금'
+          }
+        ],
+        feedcomment: [
           {
-            id: 2,
-            img_url: 'https://cdn.vuetifyjs.com/images/parallax/material.jpg',
-            content: '두 번째 입금!',
-            likes: '33',
-            current: '333',
-            created_at: '2023-07-29',
-            hashtag: [
-              {
-                feed_no: 2,
-                content: '#2_입금'
-              }
-            ],
-            feedcomment: [
-              {
-                feed_no: 2,
-                member_id: 2,
-                content: '2222축하해요!',
-                created_at: '2023-07-29'
-              }
-            ]
-          },
+            feed_no: 1,
+            member_id: 1,
+            content: '축하해요!',
+            created_at: '2023-07-28'
+          }
+        ]
+      },
+      {
+        id: 2,
+        img_url: 'https://cdn.vuetifyjs.com/images/parallax/material.jpg',
+        content: '두 번째 입금!',
+        likes: '33',
+        current: '333',
+        created_at: '2023-07-29',
+        hashtag: [
           {
-            id: 3,
-            img_url: 'https://cdn.vuetifyjs.com/images/parallax/material.jpg',
-            content: '두 번째 입금!',
-            likes: '33',
-            current: '333',
-            created_at: '2023-07-29',
-            hashtag: [
-              {
-                feed_no: 2,
-                content: '#2_입금'
-              }
-            ],
-            feedcomment: [
-              {
-                feed_no: 2,
-                member_id: 2,
-                content: '2222축하해요!',
-                created_at: '2023-07-29'
-              }
-            ]
-          },
+            feed_no: 2,
+            content: '#2_입금'
+          }
+        ],
+        feedcomment: [
           {
-            id: 4,
-            img_url: 'https://cdn.vuetifyjs.com/images/parallax/material.jpg',
-            content: '두 번째 입금!',
-            likes: '33',
-            current: '333',
-            created_at: '2023-07-29',
-            hashtag: [
-              {
-                feed_no: 2,
-                content: '#2_입금'
-              }
-            ],
-            feedcomment: [
-              {
-                feed_no: 2,
-                member_id: 2,
-                content: '2222축하해요!',
-                created_at: '2023-07-29'
-              }
-            ]
-          },
+            feed_no: 2,
+            member_id: 2,
+            content: '2222축하해요!',
+            created_at: '2023-07-29'
+          }
+        ]
+      },
+      {
+        id: 3,
+        img_url: 'https://cdn.vuetifyjs.com/images/parallax/material.jpg',
+        content: '두 번째 입금!',
+        likes: '33',
+        current: '333',
+        created_at: '2023-07-29',
+        hashtag: [
           {
-            id: 5,
-            img_url: 'https://cdn.vuetifyjs.com/images/parallax/material.jpg',
-            content: '두 번째 입금!',
-            likes: '33',
-            current: '333',
-            created_at: '2023-07-29',
-            hashtag: [
-              {
-                feed_no: 2,
-                content: '#2_입금'
-              }
-            ],
-            feedcomment: [
-              {
-                feed_no: 2,
-                member_id: 2,
-                content: '2222축하해요!',
-                created_at: '2023-07-29'
-              }
-            ]
+            feed_no: 2,
+            content: '#2_입금'
+          }
+        ],
+        feedcomment: [
+          {
+            feed_no: 2,
+            member_id: 2,
+            content: '2222축하해요!',
+            created_at: '2023-07-29'
+          }
+        ]
+      },
+      {
+        id: 4,
+        img_url: 'https://cdn.vuetifyjs.com/images/parallax/material.jpg',
+        content: '두 번째 입금!',
+        likes: '33',
+        current: '333',
+        created_at: '2023-07-29',
+        hashtag: [
+          {
+            feed_no: 2,
+            content: '#2_입금'
+          }
+        ],
+        feedcomment: [
+          {
+            feed_no: 2,
+            member_id: 2,
+            content: '2222축하해요!',
+            created_at: '2023-07-29'
+          }
+        ]
+      },
+      {
+        id: 5,
+        img_url: 'https://cdn.vuetifyjs.com/images/parallax/material.jpg',
+        content: '두 번째 입금!',
+        likes: '33',
+        current: '333',
+        created_at: '2023-07-29',
+        hashtag: [
+          {
+            feed_no: 2,
+            content: '#2_입금'
+          }
+        ],
+        feedcomment: [
+          {
+            feed_no: 2,
+            member_id: 2,
+            content: '2222축하해요!',
+            created_at: '2023-07-29'
           }
         ]
       }
-    ])
-    const myFeed = ref(dummy)
-    return {
-      myFeed
-    }
+    ]
   }
-}
+])
+const myFeed = ref(dummy)
+
+const route = useRoute()
+const memberId = ref(route.params.id)
+
+onMounted(() => {
+  const res = functions.fetchFeedList(memberId.value)
+})
 </script>
 <style></style>

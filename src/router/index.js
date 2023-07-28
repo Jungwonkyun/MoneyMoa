@@ -58,10 +58,14 @@ const router = createRouter({
       component: ChallengeView
     },
     {
-      path: '/member',
+      path: '/member/:id',
       name: 'member',
       component: MemberView,
-      redirect: '/member/challengelist',
+      // to는 현재 접근한 경로의 라우팅 정보를 가지고 있음
+      redirect: (to) => {
+        return `/member/${to.params.id}/challengelist`
+      },
+      props: true,
       children: [
         {
           path: 'followerlist',

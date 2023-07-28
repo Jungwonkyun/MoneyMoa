@@ -12,7 +12,7 @@
               <v-card-title class="text-center">{{ challenge.title }}</v-card-title>
             </v-col>
             <v-col cols="12">
-              <v-card-text class="text-center">{{ challenge.content }}</v-card-text>
+              <v-card-text class="text-center">{{ challenge.content }}{{ memberId }}</v-card-text>
             </v-col>
             <v-col cols="12">
               <v-card-text class="text-center">{{ challenge.hashtag }}</v-card-text>
@@ -36,48 +36,48 @@
   </v-container>
 </template>
 
-<script>
-import { ref } from 'vue'
-// 아래 주석 풀고 사용
-// import functions from '@/api/member.js'
+<script setup>
+import { ref, onMounted } from 'vue'
+import { useRoute } from 'vue-router'
+import functions from '@/api/member.js'
 
-export default {
-  setup() {
-    const dummy = [
-      {
-        id: 1,
-        title: '운동 안 갈 때 마다 돈 넣기',
-        content: '제곧내',
-        img: 'https://cdn.vuetifyjs.com/images/cards/cooking.png',
-        hashtag: '운동 좀 해라',
-        period: 'nn일 남음',
-        total_amount: '80 % 달성!'
-      },
-      {
-        id: 1,
-        title: '운동 안 갈 때 마다 돈 넣기',
-        content: '제곧내',
-        img: 'https://cdn.vuetifyjs.com/images/cards/cooking.png',
-        hashtag: '운동 좀 해라',
-        period: 'nn일 남음',
-        total_amount: '80 % 달성!'
-      },
-      {
-        id: 1,
-        title: '운동 안 갈 때 마다 돈 넣기',
-        content: '제곧내',
-        img: 'https://cdn.vuetifyjs.com/images/cards/cooking.png',
-        hashtag: '운동 좀 해라',
-        period: 'nn일 남음',
-        total_amount: '80 % 달성!'
-      }
-    ]
-    const challenges = ref(dummy)
-
-    return {
-      challenges
-    }
+const dummy = [
+  {
+    id: 1,
+    title: '운동 안 갈 때 마다 돈 넣기',
+    content: '제곧내',
+    img: 'https://cdn.vuetifyjs.com/images/cards/cooking.png',
+    hashtag: '운동 좀 해라',
+    period: 'nn일 남음',
+    total_amount: '80 % 달성!'
+  },
+  {
+    id: 1,
+    title: '운동 안 갈 때 마다 돈 넣기',
+    content: '제곧내',
+    img: 'https://cdn.vuetifyjs.com/images/cards/cooking.png',
+    hashtag: '운동 좀 해라',
+    period: 'nn일 남음',
+    total_amount: '80 % 달성!'
+  },
+  {
+    id: 1,
+    title: '운동 안 갈 때 마다 돈 넣기',
+    content: '제곧내',
+    img: 'https://cdn.vuetifyjs.com/images/cards/cooking.png',
+    hashtag: '운동 좀 해라',
+    period: 'nn일 남음',
+    total_amount: '80 % 달성!'
   }
-}
+]
+const challenges = ref(dummy)
+
+const route = useRoute()
+const memberId = ref(route.params.id)
+
+//// 마운트 시에 챌린지 리스트 API 호출, memberId가 변경되면 다시 호출
+onMounted(() => {
+  const res = functions.fetchChallengeList(memberId.value)
+})
 </script>
 <style lang=""></style>

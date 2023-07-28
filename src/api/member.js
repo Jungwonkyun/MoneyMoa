@@ -1,71 +1,89 @@
-import { ref } from 'vue'
-import axios from 'axios'
 import { apiInstance } from './index'
 import { useAccountStore } from '@/stores/accountStore.js'
-import { storeToRefs } from 'pinia'
-
-const store = useAccountStore()
-const { accessToken } = storeToRefs(store)
 
 const api = apiInstance()
 
-const usertoken = ref('유저 토큰')
-const userId = ref('상대유저 아이디')
+// 피니아 스토어에서 유저 토큰을 가져오기
+function getAccessToken() {
+  const accountStore = useAccountStore()
+  const accessToken = accountStore.accessToken
+  return accessToken
+}
 
 // 유저 정보 API
-async function callUserInfoApi(member_id) {
+async function callUserInfoApi(memberId) {
   try {
-    const res = await api.get(`/member/info/${member_id}`, {
+    const accessToken = getAccessToken()
+    const res = await api.get(`/member/info/${memberId}`, {
       usertoken: accessToken
     })
+    return res
   } catch (err) {
     console.log(err)
   }
 }
 
 // 팔로잉 API
-async function callFollowingApi() {
+// 유저 토큰이랑 팔로우 할 사람의 id를 보내면 됨
+async function addFollow(memberId) {
   try {
-    const res = await api.post('/member/follow', {
-      usertoken: usertoken.value,
-      userId: userId.value
+    const accessToken = getAccessToken()
+    const res = await api.post(`/member/follow/${memberId}`, {
+      usertoken: accessToken
     })
+    return res
   } catch (err) {
     console.log(err)
   }
 }
 
 // 챌린지 리스트 API
-const challengeAPI = ref('챌린지 리스트 API')
-const fetchChallengeList = async () => {
+async function fetchChallengeList(memberId) {
   try {
-    const res = await axios.get(`${challengeAPI}`, {
-      usertoken: usertoken.value
+    const accessToken = getAccessToken()
+    const res = await api.get(`/member/challengelist/${memberId}`, {
+      usertoken: accessToken
     })
+    return res
   } catch (err) {
     console.log(err)
   }
 }
 
 // 팔로워 유저 목록 API
-const followerListAPI = ref('팔로워 리스트 API')
-const fetchFollowerList = async () => {
+async function fetchFollowerList(memberId) {
   try {
-    const res = await axios.get(`${followerListAPI}`, {
-      usertoken: usertoken.value
+    const accessToken = getAccessToken()
+    const res = await api.get(`/member/followerlist/${memberId}`, {
+      usertoken: accessToken
     })
+    return res
   } catch (err) {
     console.log(err)
   }
 }
 
 // 팔로잉 유저 목록 API
-const followingListAPI = ref('팔로워 리스트 API')
-const fetchFollowingList = async () => {
+async function fetchFollowingList(memberId) {
   try {
-    const res = await axios.get(`${followingListAPI}`, {
-      usertoken: usertoken.value
+    const accessToken = getAccessToken()
+    const res = await api.get(`/member/followinglist/${memberId}`, {
+      usertoken: accessToken
     })
+    return res
+  } catch (err) {
+    console.log(err)
+  }
+}
+
+// 마이 피드 목록 API
+async function fetchFeedList(memberId) {
+  try {
+    const accessToken = getAccessToken()
+    const res = await api.get(`/member/feed/${memberId}`, {
+      usertoken: accessToken
+    })
+    return res
   } catch (err) {
     console.log(err)
   }
@@ -73,8 +91,9 @@ const fetchFollowingList = async () => {
 
 export default {
   callUserInfoApi,
-  callFollowingApi,
+  addFollow,
   fetchChallengeList,
   fetchFollowerList,
-  fetchFollowingList
+  fetchFollowingList,
+  fetchFeedList
 }

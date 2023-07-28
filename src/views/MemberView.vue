@@ -2,7 +2,7 @@
   <v-container>
     <v-row>
       <v-col cols="6">
-        <UserInfo :memberId="$route.params.id" />
+        <UserInfo />
       </v-col>
       <v-col cols="6">
         <router-view />
@@ -11,14 +11,17 @@
   </v-container>
 </template>
 
-<script>
+<script setup>
 import UserInfo from '@/components/Member/UserInfo.vue'
+// import { computed } from 'vue'
+// import { useRoute } from 'vue-router'
 
-export default {
-  components: {
-    UserInfo
-  }
-}
+// const route = useRoute()
+// const memberId = computed(() => route.params.id)
+
+// ref(route.params.id)
+
+// console.log('멤버뷰' + memberId.value)
 </script>
 
 <style></style>
