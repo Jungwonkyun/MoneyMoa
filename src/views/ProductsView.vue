@@ -7,11 +7,13 @@
     </v-tabs>
     <!-- <ProductsList :productType="productType" /> -->
     <router-view />
+    <DictionarySide fixed right top />
   </div>
 </template>
 <script setup>
 import { useProductStore } from '../stores/productStore'
 import { storeToRefs } from 'pinia'
+import DictionarySide from '../components/Dictionary/DictionarySide.vue'
 const store = useProductStore()
 const { productType } = storeToRefs(store)
 </script>

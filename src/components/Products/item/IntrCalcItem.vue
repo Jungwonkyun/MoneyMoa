@@ -33,7 +33,7 @@
           {{ result - amount * (calcType === 'saving' ? period : 1) }}원)</v-col
         >
       </v-row>
-      <v-row v-else>result = {{ result }}(금액과 기간을 입력하고 결과를 확인해보세요)</v-row>
+      <v-row v-else>(금액과 기간을 입력하고 결과를 확인해보세요)</v-row>
     </v-container>
     <!-- 계산기록찜버튼 -->
   </v-form>
