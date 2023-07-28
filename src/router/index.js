@@ -15,6 +15,9 @@ import AccountView from '../views/AccountView.vue'
 import LoginForm from '../components/Accounts/LoginForm.vue'
 import SignupForm from '../components/Accounts/SignupForm.vue'
 import FindPassword from '../components/Accounts/FindPassword.vue'
+import CheckPassword from '../components/Accounts/CheckPassword.vue'
+import ProfileChange from '../components/Accounts/ProfileChange.vue'
+import { useAccountStore } from '../stores/accountStore.js'
 
 const router = createRouter({
   history: createWebHistory(),
@@ -115,6 +118,26 @@ const router = createRouter({
           path: 'findpassword',
           name: 'findpassword',
           component: FindPassword
+        },
+        {
+          path: 'checkpassword/',
+          name: 'checkpassword',
+          component: CheckPassword
+        },
+        {
+          path: 'profilechange',
+          name: 'profilechange',
+          component: ProfileChange,
+          // 라우터 가드 함수
+          beforeEnter: function (to, from, next) {
+            const account = useAccountStore()
+            // console.log(to, '라우터 가드 테스트')
+            if (account.pwdChecked === false) {
+              return next({ name: 'checkpassword' })
+            } else {
+              return next()
+            }
+          }
         }
       ]
     },
