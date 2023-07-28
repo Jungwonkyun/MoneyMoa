@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <v-container>
     <p>금융사전</p>
     <v-text-field
       clearable
@@ -13,7 +13,7 @@
       <DictionaryItem v-for="(item, index) in list" :key="index" :item="item.value" />
     </v-expansion-panels>
     <br />
-  </div>
+  </v-container>
   <DictionarySide />
 </template>
 
