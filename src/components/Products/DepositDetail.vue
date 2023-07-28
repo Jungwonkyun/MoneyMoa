@@ -18,7 +18,16 @@
   <v-table>
     <tbody>
       <tr>
-        <td>기간</td>
+        <td>가입대상</td>
+        <td>{{ product.join_member }}</td>
+      </tr>
+      <tr>
+        <td>최고한도</td>
+        <td>{{ product.max_limit }}</td>
+      </tr>
+      <tr>
+        <td>유의사항</td>
+        <td>{{ product.etc_note }}</td>
       </tr>
     </tbody>
   </v-table>
