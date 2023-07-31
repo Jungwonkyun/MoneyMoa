@@ -6,22 +6,21 @@
     here is {{ productType }} list
     <hr />
     결과 {{ filteredProducts.length }} 건
-    <DepositPreviewItem
+    <ProductPreviewItem
       v-for="(product, index) in filteredProducts"
       :key="index"
       :product="product"
       :productType="productType"
     />
-    <!-- v-show="bankList.find((bank) => bank.name === product.bank_name)?.selected" -->
   </div>
 </template>
 <script setup>
 import { reactive, computed } from 'vue'
-import { useProductStore } from '../../stores/productStore'
+import { useProductStore } from '@/stores/productStore'
 import { storeToRefs } from 'pinia'
 import BankSelectItem from './item/BankSelectItem.vue'
 import SecuritySelectItem from './item/SecuritySelectItem.vue'
-import DepositPreviewItem from './item/DepositPreviewItem.vue'
+import ProductPreviewItem from './item/ProductPreviewItem.vue'
 import ProductConditionItem from './item/ProductConditionItem.vue'
 
 const store = useProductStore()
