@@ -8,15 +8,6 @@
   </v-app>
 </template>
 
-<script>
-import HeaderItem from './components/common/Header.vue'
-export default {
-  name: 'App',
-  components: {
-    HeaderItem
-  },
-  data: () => ({
-    //
-  })
-}
+<script setup>
+import HeaderItem from './components/common/HeaderItem.vue'
 </script>
