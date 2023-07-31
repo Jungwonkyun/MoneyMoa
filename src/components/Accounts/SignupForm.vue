@@ -27,6 +27,31 @@
             variant="flat"
             class="text-none text-white"
             color="blue-darken-4"
+            >인증번호 전송</v-btn
+          >
+        </v-col>
+      </v-row>
+      <v-row v-if="sent">
+        <h3>인증번호를 입력해 주세요</h3>
+        <v-col>
+          <v-text-field
+            clearable
+            placeholder="인증번호"
+            variant="underlined"
+            dense
+            v-model="userAccess"
+            :rules="isBlank"
+            @keyup.enter="checkAccess"
+          >
+          </v-text-field>
+        </v-col>
+        <!-- 버튼 차지cols 변경해야함 -->
+        <v-col cols="2" class="text-center">
+          <v-btn
+            @click.prevent="checkAccess"
+            variant="flat"
+            class="text-none text-white"
+            color="blue-darken-4"
             >인증하기</v-btn
           >
         </v-col>
@@ -143,15 +168,22 @@
 <script setup>
 import { ref } from 'vue'
 import functions from '@/api/member.js'
+import { useRouter } from 'vue-router';
+const router = useRouter()
 const Email = ref(null)
 const password1 = ref(null)
 const password2 = ref(null)
 const Name = ref(null)
 const NickName = ref(null)
+// 유저가 입력한 인증번호
+const userAccess = ref(null)
+// 서버에서 받은 인증키
+const Access = ref(null)
 // 이메일 인증여부 변수
 const isAuthentic = ref(false)
+// v-if용 (인증번호 보냈는지 안보냈는지)
 const sent = ref(false)
-const authResult = functions.postEmailauth(Email.value)
+
 
 // 이메일 인증함수
 async function onAthentic() {
@@ -159,22 +191,37 @@ async function onAthentic() {
   if (isValid) {
     try {
       const authResult = await functions.postEmailauth(Email.value)
-      console.log(authResult)
+      console.log(typeof Email)
+      console.log(authResult.messege)
       // 이메일 유효성 검사 통과시 로직 쓰기
-      // if (authResult.messege === 'success') {
-      //   console.log(authResult.emailAuth)
-      // } else {
-      //   alert('인증번호 전송에 실패했습니다.')
-      // }
+      if (authResult.messege === 'success') {
+        sent.value = true
+        alert('인증번호를 발송했습니다.')
+        Access.value = authResult.emailAuth
+      } else {
+        alert('인증번호 전송에 실패했습니다.')
+      }
     } catch (error) {
       console.error('에러 발생:', error)
-      // 에러 처리를 위한 로직을 추가할 수 있습니다.
     }
   } else {
     alert('이메일 형식이 올바르지 않습니다.')
   }
 }
+// 이메일 인증번호 맞는지 검사
+function checkAccess(){
+  if(userAccess.value === Access.value){
+    alert('인증되었습니다.')
+    isAuthentic.value = true
+  }
+  else{
+    alert('인증번호가 일치하지 않습니다. 다시 시도해 주세요.')
+  }
+}
 
+const isBlank = [
+  (value) => !!value || '필수 입력 값입니다.',
+]
 // 이메일 유효성 검사
 const Emailrules = [
   (value) => !!value || '필수 입력 값입니다.',
@@ -224,8 +271,41 @@ const CheckNickName = [
 ]
 
 // 가입하기 버튼
-function onSignUp(e) {
-  console.log(e)
+async function onSignUp() {
+  if(!Email.value){
+    return alert('이메일을 입력해 주세요.')
+  }else if(!isAuthentic.value){
+    return alert('이메일 인증을 완료해 주세요.')
+  }else if(!password1.value){
+    alert('비밀번호를 입력해 주세요.')
+  }else if(password1.value != password2.value){
+    return alert('비밀번호가 일치하지 않습니다.')
+  }else if(!Name.value){
+    return alert('이름을 입력해 주세요.')
+  }else if(!NickName.value){
+    return alert('닉네임을 입력해 주세요.')
+  }
+  // 생일, 성별은 내일추가하기
+  const member = {
+    email :  Email.value,
+    name : Name.value,
+    nickname : NickName.value,
+    password : password1.value,
+    role : 'Member',
+    valid: 0,
+    oauthProvider: 'GENERAL',
+    id:0
+  }
+  try{
+    const Signup = await functions.postSignup(member)
+    if(Signup.message === 'success'){
+      console.log(Signup)
+      alert('가입이 완료되었습니다. 로그인해 주세요')
+      router.push({name:'home'})
+    }
+  }catch(err){
+    console.log(err)
+  }
 }
 </script>
 <style>

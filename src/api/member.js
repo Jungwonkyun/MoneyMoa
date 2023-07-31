@@ -24,12 +24,23 @@ async function callUserInfoApi(memberId) {
 }
 
 // 회원가입시 유저 이메일 인증
-async function postEmailauth(emailvalue) {
+async function postEmailauth(email) {
   try {
-    const res = await api.post(`http://i9d210.p.ssafy.io:9999/emailauth`, {
-      email: emailvalue
-    })
-    console.log(emailvalue)
+    const res = await api.post(`http://i9d210.p.ssafy.io:9999/emailauth`, 
+      email
+    )
+    return res.data
+  } catch (err) {
+    console.log(err)
+  }
+}
+
+// 회원가입
+async function postSignup(member) {
+  try {
+    const res = await api.post(`http://i9d210.p.ssafy.io:9999/signup`, 
+    member
+    )
     return res.data
   } catch (err) {
     console.log(err)
@@ -109,5 +120,6 @@ export default {
   fetchFollowerList,
   fetchFollowingList,
   fetchFeedList,
-  postEmailauth
+  postEmailauth,
+  postSignup,
 }
