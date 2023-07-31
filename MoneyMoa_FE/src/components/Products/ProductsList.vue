@@ -5,18 +5,18 @@
     <ProductConditionItem v-if="productType != 'cma'" />
     here is {{ productType }} list
     <hr />
+    결과 {{ filteredProducts.length }} 건
     <DepositPreviewItem
-      v-for="(product, index) in products_dummy"
+      v-for="(product, index) in filteredProducts"
       :key="index"
       :product="product"
       :productType="productType"
-      v-show="bankList.find((bank) => bank.name === product.bank_name)?.selected"
     />
+    <!-- v-show="bankList.find((bank) => bank.name === product.bank_name)?.selected" -->
   </div>
 </template>
 <script setup>
-// import { computed } from 'vue'
-import { reactive } from 'vue'
+import { reactive, computed } from 'vue'
 import { useProductStore } from '../../stores/productStore'
 import { storeToRefs } from 'pinia'
 import BankSelectItem from './item/BankSelectItem.vue'
@@ -42,7 +42,7 @@ const products_dummy = reactive([
   {
     product_code: 'sdsds23',
     bank_code: 'D17',
-    bank_name: '신한은행',
+    bank_name: '우리은행',
     product_name: 'XX예금',
     interest: '3.51',
     sqcl: '첫 가입',
@@ -52,6 +52,11 @@ const products_dummy = reactive([
     img_path: 'ds222ds3.jpg'
   }
 ])
+const filteredProducts = computed(() =>
+  products_dummy.filter(
+    (product) => bankList.value.find((bank) => bank.name === product.bank_name)?.selected
+  )
+)
 // const productComponent = computed(() => {
 //   if (productType === 'deposit') {
 //     return 'DepositPreviewItem'
