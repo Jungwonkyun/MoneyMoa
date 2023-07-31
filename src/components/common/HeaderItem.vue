@@ -1,26 +1,20 @@
 <template>
-  <div>
-    <v-toolbar>
-      <v-toolbar-title><router-link to="/">MoneyMoa</router-link></v-toolbar-title>
-      <v-btn><router-link to="/products">내 돈 굴리기</router-link></v-btn>
-      <v-btn><router-link to="/challenge">챌린지</router-link></v-btn>
-      <v-btn><router-link to="/feed">피드</router-link></v-btn>
-      <v-btn><router-link to="/dictionary">금융사전</router-link></v-btn>
-      <v-spacer></v-spacer>
-      <v-toolbar-items class="hidden-xs-only">
-        <v-btn
-          ><router-link to="/"><v-icon icon="mdi-bell-outline" /></router-link
-        ></v-btn>
-        <v-btn
-          ><router-link to="/"><v-icon icon="mdi-send" /></router-link
-        ></v-btn>
-        <v-btn>
-          <router-link :to="`/member/${memberId}`">프로필</router-link>
-        </v-btn>
-        <v-btn><router-link to="/account">로그인</router-link></v-btn>
-      </v-toolbar-items>
-    </v-toolbar>
-  </div>
+  <v-toolbar :elevation="3" id="header">
+    <v-toolbar-title><router-link to="/">MoneyMoa</router-link></v-toolbar-title>
+    <router-link to="/products"><v-btn>내 돈 굴리기</v-btn></router-link>
+    <router-link to="/challenge"><v-btn>챌린지</v-btn></router-link>
+    <router-link to="/feed"><v-btn>피드</v-btn></router-link>
+    <router-link to="/dictionary"><v-btn>금융사전</v-btn></router-link>
+    <v-spacer></v-spacer>
+    <router-link to="/"
+      ><v-btn><v-icon icon="mdi-bell-outline" /></v-btn
+    ></router-link>
+    <router-link to="/"
+      ><v-btn><v-icon icon="mdi-send" /></v-btn
+    ></router-link>
+    <router-link :to="`/member/${memberId}`"><v-btn>프로필</v-btn></router-link>
+    <router-link to="/account"><v-btn>로그인</v-btn></router-link>
+  </v-toolbar>
 </template>
 <script setup>
 import { useAccountStore } from '@/stores/accountStore.js'
@@ -28,4 +22,8 @@ import { useAccountStore } from '@/stores/accountStore.js'
 const accountStore = useAccountStore()
 const memberId = accountStore.memberId
 </script>
-<style></style>
+<style lang="scss">
+// #header {
+//   // background-color: $primary-color;
+// }
+</style>
