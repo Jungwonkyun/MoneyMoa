@@ -23,6 +23,19 @@ async function callUserInfoApi(memberId) {
   }
 }
 
+// 회원가입시 유저 이메일 인증
+async function postEmailauth(emailvalue) {
+  try {
+    const res = await api.post(`http://i9d210.p.ssafy.io:9999/emailauth`, {
+      email: emailvalue
+    })
+    console.log(emailvalue)
+    return res.data
+  } catch (err) {
+    console.log(err)
+  }
+}
+
 // 팔로잉 API
 // 유저 토큰이랑 팔로우 할 사람의 id를 보내면 됨
 async function addFollow(memberId) {
@@ -95,5 +108,6 @@ export default {
   fetchChallengeList,
   fetchFollowerList,
   fetchFollowingList,
-  fetchFeedList
+  fetchFeedList,
+  postEmailauth
 }

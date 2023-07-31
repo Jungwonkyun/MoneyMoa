@@ -16,6 +16,7 @@
             dense
             v-model="Email"
             :rules="Emailrules"
+            @keyup.enter="onAthentic"
           >
           </v-text-field>
         </v-col>
@@ -138,23 +139,39 @@
     </form>
   </v-container>
 </template>
+
 <script setup>
 import { ref } from 'vue'
-
+import functions from '@/api/member.js'
 const Email = ref(null)
 const password1 = ref(null)
 const password2 = ref(null)
 const Name = ref(null)
 const NickName = ref(null)
+// 이메일 인증여부 변수
+const isAuthentic = ref(false)
+const sent = ref(false)
+const authResult = functions.postEmailauth(Email.value)
 
 // 이메일 인증함수
-function onAthentic() {
+async function onAthentic() {
   const isValid = Emailrules.every((rule) => typeof rule(Email.value) !== 'string')
   if (isValid) {
-    // 이메일 유효성 검사 통과시 로직 쓰기
-    console.log('통과')
+    try {
+      const authResult = await functions.postEmailauth(Email.value)
+      console.log(authResult)
+      // 이메일 유효성 검사 통과시 로직 쓰기
+      // if (authResult.messege === 'success') {
+      //   console.log(authResult.emailAuth)
+      // } else {
+      //   alert('인증번호 전송에 실패했습니다.')
+      // }
+    } catch (error) {
+      console.error('에러 발생:', error)
+      // 에러 처리를 위한 로직을 추가할 수 있습니다.
+    }
   } else {
-    console.log('검증 오류가 발생했습니다.')
+    alert('이메일 형식이 올바르지 않습니다.')
   }
 }
 
