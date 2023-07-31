@@ -29,5 +29,13 @@ async function getCMAList() {
 //예적금detail리스트 가공을 여기서 해도 될까??
 
 //찜정보post하는 메서드
+async function likeProduct(likeInfo) {
+  try {
+    const response = await api.post('/myproduct', likeInfo)
+    return response
+  } catch (error) {
+    console.log(error)
+  }
+}
 
 export { getDepositList, getSavingList, getCMAList }
