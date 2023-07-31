@@ -3,8 +3,7 @@
     <BankSelectItem v-if="productType != 'cma'" />
     <SecuritySelectItem v-else />
     <ProductConditionItem v-if="productType != 'cma'" />
-    here is {{ productType }} list
-    <hr />
+    <v-divider/>
     결과 {{ filteredProducts.length }} 건
     <ProductPreviewItem
       v-for="(product, index) in filteredProducts"

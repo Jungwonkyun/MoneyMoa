@@ -2,7 +2,7 @@
   <v-form>
     <v-container>
       <v-row>
-        <v-col v-if="productType == 'saving'">매달</v-col>
+        <v-col v-if="productType == 'saving'" cols="1">매달</v-col>
         <v-col>
           <v-text-field
             v-model="amount"
@@ -14,8 +14,8 @@
             @keypress="onKeyPress"
           />
         </v-col>
-        <v-col v-if="productType == 'saving'">원씩</v-col>
-        <v-col v-else>원을</v-col>
+        <v-col v-if="productType == 'saving'" cols="1">원씩</v-col>
+        <v-col v-else cols="1">원을</v-col>
         <v-col><v-select label="기간" :items="periods" v-model="period"></v-select></v-col>
         <v-col v-if="productType == 'saving'">개월 동안 적금할거예요.</v-col>
         <v-col v-else>개월 동안 예금할거예요.</v-col>

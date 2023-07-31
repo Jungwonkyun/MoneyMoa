@@ -12,7 +12,7 @@
           </v-card-title>
         </v-card-item>
       </v-col>
-      <v-col cols="2">금리 {{ product.interest }}% </v-col>
+      <v-col cols="2" align-self="center">금리 {{ product.interest }}% </v-col>
     </v-row>
   </v-card>
   <v-table>
