@@ -10,6 +10,7 @@
       :key="index"
       :product="product"
       :productType="productType"
+      v-show="bankList.find((bank) => bank.name === product.bank_name)?.selected"
     />
   </div>
 </template>
@@ -24,7 +25,7 @@ import DepositPreviewItem from './item/DepositPreviewItem.vue'
 import ProductConditionItem from './item/ProductConditionItem.vue'
 
 const store = useProductStore()
-const { productType } = storeToRefs(store)
+const { productType, bankList } = storeToRefs(store)
 const products_dummy = reactive([
   {
     product_code: 'sdsds22',

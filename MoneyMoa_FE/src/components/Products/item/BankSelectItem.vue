@@ -1,11 +1,19 @@
 <template>
   <div>
     <v-sheet class="mx-auto">
+      <h5>은행 선택</h5>
+      <v-btn variant="plain" @click="selectAllBank"> 모두 선택 </v-btn
+      ><v-btn variant="plain" @click="cancelAllBank"> 모두 선택 해제 </v-btn>
       <v-slide-group multiple show-arrows>
-        <v-slide-group-item v-for="bank in banks" :key="banks" v-slot="{ isSelected, toggle }">
-          <v-btn class="ma-2" rounded :color="isSelected ? 'primary' : undefined" @click="toggle">
+        <v-slide-group-item v-for="bank in bankList" :key="bankList">
+          <v-btn
+            class="ma-2"
+            rounded
+            :color="bank.selected ? 'primary' : undefined"
+            @click="toggleSelected(bank)"
+          >
             <v-icon icon="mdi-heart"></v-icon>
-            {{ bank }}
+            {{ bank.name }}
           </v-btn>
         </v-slide-group-item>
       </v-slide-group>
@@ -13,17 +21,13 @@
   </div>
 </template>
 <script setup>
-import { reactive } from 'vue'
-
-const banks = reactive([
-  'KB국민은행',
-  '광주은행',
-  'NH농협은행',
-  '대구은행',
-  '신한은행',
-  '신협은행',
-  '우리은행',
-  '하나은행'
-])
+import { useProductStore } from '@/stores/productStore'
+import { storeToRefs } from 'pinia'
+const store = useProductStore()
+const { bankList } = storeToRefs(store)
+const { selectAllBank, cancelAllBank } = store
+const toggleSelected = (bank) => {
+  bank.selected = !bank.selected
+}
 </script>
 <style scoped lang="scss"></style>
