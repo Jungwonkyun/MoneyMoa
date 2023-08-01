@@ -3,7 +3,7 @@
     <BankSelectItem v-if="productType != 'cma'" />
     <SecuritySelectItem v-else />
     <ProductConditionItem v-if="productType != 'cma'" />
-    <v-divider/>
+    <v-divider />
     결과 {{ filteredProducts.length }} 건
     <ProductPreviewItem
       v-for="(product, index) in filteredProducts"
@@ -23,7 +23,7 @@ import ProductPreviewItem from './item/ProductPreviewItem.vue'
 import ProductConditionItem from './item/ProductConditionItem.vue'
 
 const store = useProductStore()
-const { productType, bankList } = storeToRefs(store)
+const { productType, bankList, securityList } = storeToRefs(store)
 const products_dummy = reactive([
   {
     product_code: 'sdsds22',
@@ -52,17 +52,11 @@ const products_dummy = reactive([
 ])
 const filteredProducts = computed(() =>
   products_dummy.filter(
-    (product) => bankList.value.find((bank) => bank.name === product.bank_name)?.selected
+    (product) =>
+      (productType == 'cma' ? securityList : bankList).value.find(
+        (bank) => bank.name === product.bank_name
+      )?.selected
   )
 )
-// const productComponent = computed(() => {
-//   if (productType === 'deposit') {
-//     return 'DepositPreviewItem'
-//   } else if (productType === 'saving') {
-//     return 'SavingPreviewItem'
-//   } else if (productType === 'cma') {
-//     return 'CmaPreviewItem'
-//   }
-// })
 </script>
 <style></style>
