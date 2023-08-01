@@ -26,9 +26,7 @@ async function callUserInfoApi(memberId) {
 // 회원가입시 유저 이메일 인증
 async function postEmailauth(email) {
   try {
-    const res = await api.post(`http://i9d210.p.ssafy.io:9999/emailauth`, 
-      email
-    )
+    const res = await api.post(`/emailauth`, email)
     return res.data
   } catch (err) {
     console.log(err)
@@ -38,9 +36,7 @@ async function postEmailauth(email) {
 // 회원가입
 async function postSignup(member) {
   try {
-    const res = await api.post(`http://i9d210.p.ssafy.io:9999/signup`, 
-    member
-    )
+    const res = await api.post(`/signup`, member)
     return res.data
   } catch (err) {
     console.log(err)
@@ -113,6 +109,24 @@ async function fetchFeedList(memberId) {
   }
 }
 
+// 로그인
+async function postLogin(loginInfo) {
+  try {
+    const res = await api.post('/loginmember', loginInfo)
+    return res
+  } catch (err) {
+    console.log(err)
+  }
+}
+// 네이버 로그인
+async function naverLogin() {
+  try {
+    const res = await api.get('/api/auth/naver')
+    return res
+  } catch (err) {
+    console.log(err)
+  }
+}
 export default {
   callUserInfoApi,
   addFollow,
@@ -122,4 +136,6 @@ export default {
   fetchFeedList,
   postEmailauth,
   postSignup,
+  naverLogin,
+  postLogin
 }

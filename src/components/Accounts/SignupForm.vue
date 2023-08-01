@@ -144,7 +144,7 @@
           <h3>성별</h3>
           <v-radio-group inline>
             <v-col class="d-flex justify-space-around">
-              <v-radio label="선택하지 않음" value="null" selected></v-radio>
+              <v-radio label="선택하지 않음" :value="null" selected></v-radio>
               <v-radio label="남" value="male"></v-radio>
               <v-radio label="여" value="female"></v-radio>
             </v-col>
@@ -168,7 +168,7 @@
 <script setup>
 import { ref } from 'vue'
 import functions from '@/api/member.js'
-import { useRouter } from 'vue-router';
+import { useRouter } from 'vue-router'
 const router = useRouter()
 const Email = ref(null)
 const password1 = ref(null)
@@ -183,7 +183,6 @@ const Access = ref(null)
 const isAuthentic = ref(false)
 // v-if용 (인증번호 보냈는지 안보냈는지)
 const sent = ref(false)
-
 
 // 이메일 인증함수
 async function onAthentic() {
@@ -209,19 +208,16 @@ async function onAthentic() {
   }
 }
 // 이메일 인증번호 맞는지 검사
-function checkAccess(){
-  if(userAccess.value === Access.value){
+function checkAccess() {
+  if (userAccess.value === Access.value) {
     alert('인증되었습니다.')
     isAuthentic.value = true
-  }
-  else{
+  } else {
     alert('인증번호가 일치하지 않습니다. 다시 시도해 주세요.')
   }
 }
 
-const isBlank = [
-  (value) => !!value || '필수 입력 값입니다.',
-]
+const isBlank = [(value) => !!value || '필수 입력 값입니다.']
 // 이메일 유효성 검사
 const Emailrules = [
   (value) => !!value || '필수 입력 값입니다.',
@@ -272,38 +268,38 @@ const CheckNickName = [
 
 // 가입하기 버튼
 async function onSignUp() {
-  if(!Email.value){
+  if (!Email.value) {
     return alert('이메일을 입력해 주세요.')
-  }else if(!isAuthentic.value){
+  } else if (!isAuthentic.value) {
     return alert('이메일 인증을 완료해 주세요.')
-  }else if(!password1.value){
+  } else if (!password1.value) {
     alert('비밀번호를 입력해 주세요.')
-  }else if(password1.value != password2.value){
+  } else if (password1.value != password2.value) {
     return alert('비밀번호가 일치하지 않습니다.')
-  }else if(!Name.value){
+  } else if (!Name.value) {
     return alert('이름을 입력해 주세요.')
-  }else if(!NickName.value){
+  } else if (!NickName.value) {
     return alert('닉네임을 입력해 주세요.')
   }
   // 생일, 성별은 내일추가하기
   const member = {
-    email :  Email.value,
-    name : Name.value,
-    nickname : NickName.value,
-    password : password1.value,
-    role : 'Member',
-    valid: 0,
+    email: Email.value,
+    id: 0,
+    name: Name.value,
+    nickname: NickName.value,
     oauthProvider: 'GENERAL',
-    id:0
+    password: password1.value,
+    role: 'Member',
+    valid: 0
   }
-  try{
+  try {
     const Signup = await functions.postSignup(member)
-    if(Signup.message === 'success'){
+    if (Signup.message === 'success') {
       console.log(Signup)
       alert('가입이 완료되었습니다. 로그인해 주세요')
-      router.push({name:'home'})
+      router.push({ name: 'loginform' })
     }
-  }catch(err){
+  } catch (err) {
     console.log(err)
   }
 }
