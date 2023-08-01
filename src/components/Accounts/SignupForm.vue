@@ -16,6 +16,7 @@
             dense
             v-model="Email"
             :rules="Emailrules"
+            @keyup.enter="onAthentic"
           >
           </v-text-field>
         </v-col>
@@ -23,6 +24,31 @@
         <v-col cols="2" class="text-center">
           <v-btn
             @click.prevent="onAthentic"
+            variant="flat"
+            class="text-none text-white"
+            color="blue-darken-4"
+            >인증번호 전송</v-btn
+          >
+        </v-col>
+      </v-row>
+      <v-row v-if="sent">
+        <h3>인증번호를 입력해 주세요</h3>
+        <v-col>
+          <v-text-field
+            clearable
+            placeholder="인증번호"
+            variant="underlined"
+            dense
+            v-model="userAccess"
+            :rules="isBlank"
+            @keyup.enter="checkAccess"
+          >
+          </v-text-field>
+        </v-col>
+        <!-- 버튼 차지cols 변경해야함 -->
+        <v-col cols="2" class="text-center">
+          <v-btn
+            @click.prevent="checkAccess"
             variant="flat"
             class="text-none text-white"
             color="blue-darken-4"
@@ -118,7 +144,7 @@
           <h3>성별</h3>
           <v-radio-group inline>
             <v-col class="d-flex justify-space-around">
-              <v-radio label="선택하지 않음" value="null" selected></v-radio>
+              <v-radio label="선택하지 않음" :value="null" selected></v-radio>
               <v-radio label="남" value="male"></v-radio>
               <v-radio label="여" value="female"></v-radio>
             </v-col>
@@ -138,26 +164,60 @@
     </form>
   </v-container>
 </template>
+
 <script setup>
 import { ref } from 'vue'
-
+import functions from '@/api/member.js'
+import { useRouter } from 'vue-router'
+const router = useRouter()
 const Email = ref(null)
 const password1 = ref(null)
 const password2 = ref(null)
 const Name = ref(null)
 const NickName = ref(null)
+// 유저가 입력한 인증번호
+const userAccess = ref(null)
+// 서버에서 받은 인증키
+const Access = ref(null)
+// 이메일 인증여부 변수
+const isAuthentic = ref(false)
+// v-if용 (인증번호 보냈는지 안보냈는지)
+const sent = ref(false)
 
 // 이메일 인증함수
-function onAthentic() {
+async function onAthentic() {
   const isValid = Emailrules.every((rule) => typeof rule(Email.value) !== 'string')
   if (isValid) {
-    // 이메일 유효성 검사 통과시 로직 쓰기
-    console.log('통과')
+    try {
+      const authResult = await functions.postEmailauth(Email.value)
+      console.log(typeof Email)
+      console.log(authResult.messege)
+      // 이메일 유효성 검사 통과시 로직 쓰기
+      if (authResult.messege === 'success') {
+        sent.value = true
+        alert('인증번호를 발송했습니다.')
+        Access.value = authResult.emailAuth
+      } else {
+        alert('인증번호 전송에 실패했습니다.')
+      }
+    } catch (error) {
+      console.error('에러 발생:', error)
+    }
   } else {
-    console.log('검증 오류가 발생했습니다.')
+    alert('이메일 형식이 올바르지 않습니다.')
+  }
+}
+// 이메일 인증번호 맞는지 검사
+function checkAccess() {
+  if (userAccess.value === Access.value) {
+    alert('인증되었습니다.')
+    isAuthentic.value = true
+  } else {
+    alert('인증번호가 일치하지 않습니다. 다시 시도해 주세요.')
   }
 }
 
+const isBlank = [(value) => !!value || '필수 입력 값입니다.']
 // 이메일 유효성 검사
 const Emailrules = [
   (value) => !!value || '필수 입력 값입니다.',
@@ -207,8 +267,41 @@ const CheckNickName = [
 ]
 
 // 가입하기 버튼
-function onSignUp(e) {
-  console.log(e)
+async function onSignUp() {
+  if (!Email.value) {
+    return alert('이메일을 입력해 주세요.')
+  } else if (!isAuthentic.value) {
+    return alert('이메일 인증을 완료해 주세요.')
+  } else if (!password1.value) {
+    alert('비밀번호를 입력해 주세요.')
+  } else if (password1.value != password2.value) {
+    return alert('비밀번호가 일치하지 않습니다.')
+  } else if (!Name.value) {
+    return alert('이름을 입력해 주세요.')
+  } else if (!NickName.value) {
+    return alert('닉네임을 입력해 주세요.')
+  }
+  // 생일, 성별은 내일추가하기
+  const member = {
+    email: Email.value,
+    id: 0,
+    name: Name.value,
+    nickname: NickName.value,
+    oauthProvider: 'GENERAL',
+    password: password1.value,
+    role: 'Member',
+    valid: 0
+  }
+  try {
+    const Signup = await functions.postSignup(member)
+    if (Signup.message === 'success') {
+      console.log(Signup)
+      alert('가입이 완료되었습니다. 로그인해 주세요')
+      router.push({ name: 'loginform' })
+    }
+  } catch (err) {
+    console.log(err)
+  }
 }
 </script>
 <style>

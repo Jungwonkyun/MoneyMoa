@@ -1,5 +1,5 @@
 <template>
-  <div @click="setProduct(product)">
+  <v-container @click="setProduct(product)">
     <!-- to에 함수바인딩해서 detail페이지 각각 연결되도록 하자 -->
     <router-link
       :to="{
@@ -20,11 +20,11 @@
               </v-card-title>
             </v-card-item>
           </v-col>
-          <v-col cols="2"> {{ product.interest }}% </v-col>
+          <v-col cols="2" align-self="center"> {{ product.interest }}% </v-col>
         </v-row>
       </v-card>
     </router-link>
-  </div>
+  </v-container>
 </template>
 <script setup>
 import { useProductStore } from '@/stores/productStore'

@@ -23,6 +23,28 @@ export const useProductStore = defineStore('product', () => {
     { name: '한국산업은행', selected: true },
     { name: 'SC제일은행', selected: true }
   ])
+  const securityList = ref([
+    { name: '다올투자증권', selected: true },
+    { name: '대신증권', selected: true },
+    { name: '메리츠증권', selected: true },
+    { name: '미래에셋증권', selected: true },
+    { name: '삼성증권', selected: true },
+    { name: '신영증권', selected: true },
+    { name: '신한투자증권', selected: true },
+    { name: '우리종합금융', selected: true },
+    { name: '유안타증권', selected: true },
+    { name: '유진투자증권', selected: true },
+    { name: '케이프투자증권', selected: true },
+    { name: '하나증권', selected: true },
+    { name: '한국투자증권', selected: true },
+    { name: '한화투자증권', selected: true },
+    { name: '현대차증권', selected: true },
+    { name: 'DB금융투자', selected: true },
+    { name: 'IBK투자증권', selected: true },
+    { name: 'KB증권', selected: true },
+    { name: 'NH투자증권', selected: true },
+    { name: 'SK증권', selected: true }
+  ])
   const amount = ref()
   const period = ref()
   function setProductType(type) {
@@ -37,15 +59,27 @@ export const useProductStore = defineStore('product', () => {
   function setProduct(prod) {
     selectedProduct.value = prod
   }
-  function selectAllBank() {
-    bankList.value.forEach((bank) => {
-      bank.selected = true
-    })
+  function selectAllBank(isSecurity) {
+    if (isSecurity) {
+      securityList.value.forEach((sec) => {
+        sec.selected = true
+      })
+    } else {
+      bankList.value.forEach((bank) => {
+        bank.selected = true
+      })
+    }
   }
-  function cancelAllBank() {
-    bankList.value.forEach((bank) => {
-      bank.selected = false
-    })
+  function cancelAllBank(isSecurity) {
+    if (isSecurity) {
+      securityList.value.forEach((sec) => {
+        sec.selected = false
+      })
+    } else {
+      bankList.value.forEach((bank) => {
+        bank.selected = false
+      })
+    }
   }
   return {
     productType,
@@ -53,6 +87,7 @@ export const useProductStore = defineStore('product', () => {
     period,
     selectedProduct,
     bankList,
+    securityList,
     setProductType,
     setAmount,
     setPeriod,

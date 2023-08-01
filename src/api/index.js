@@ -5,7 +5,7 @@ function apiInstance(path) {
     ? `${import.meta.env.VITE_APP_API_URL}/${path}`
     : import.meta.env.VITE_APP_API_URL
   const instance = axios.create({
-    baseURL: import.meta.env.VITE_APP_API_URL,
+    baseURL: baseURL,
     headers: {
       'Content-Type': 'application/json;charset=utf-8'
     }
