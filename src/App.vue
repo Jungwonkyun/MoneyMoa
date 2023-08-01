@@ -1,9 +1,10 @@
 <template>
   <v-app>
     <HeaderItem></HeaderItem>
-    <div></div>
     <v-main>
-      <router-view />
+      <v-container>
+        <router-view />
+      </v-container>
     </v-main>
   </v-app>
 </template>

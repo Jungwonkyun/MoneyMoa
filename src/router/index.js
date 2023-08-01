@@ -1,16 +1,28 @@
 import { createRouter, createWebHistory } from 'vue-router'
+
+// HomeView
 import HomeView from '../views/HomeView.vue'
+
+// ChatView
+
+// ProductsView
 import ProductsView from '../views/ProductsView.vue'
+
+// ChallengeView
 import ChallengeView from '../views/ChallengeView.vue'
+
 // MemberView
 import MemberView from '../views/MemberView.vue'
-// Member폴더의 컴포넌트 전체 불러오기
 import ChallengeList from '@/components/Member/ChallengeList.vue'
 import FollowerList from '@/components/Member/FollowerList.vue'
 import FollowingList from '@/components/Member/FollowingList.vue'
 import MyFeed from '@/components/Member/MyFeed.vue'
 import MyProducts from '@/components/Member/MyProducts.vue'
+
+// DictionaryView
 import DictionaryView from '../views/DictionaryView.vue'
+
+// AccountView
 import AccountView from '../views/AccountView.vue'
 import LoginForm from '../components/Accounts/LoginForm.vue'
 import SignupForm from '../components/Accounts/SignupForm.vue'
@@ -58,7 +70,31 @@ const router = createRouter({
     {
       path: '/challenge',
       name: 'challenge',
-      component: ChallengeView
+      component: ChallengeView,
+      redirect: '/challenge/feedList',
+      children: [
+        {
+          path: 'feedList',
+          name: 'challengeFeedList',
+          component: () => import('../components/Challenge/ChallengeFeedList.vue')
+        },
+        {
+          path: 'feed/:feedId',
+          name: 'challengeFeedDetail',
+          component: () => import('../components/Challenge/ChallengeFeedDetail.vue')
+        },
+        {
+          path: 'feed/:feedId/:commentId',
+          name: 'challengeFeedComment',
+          component: () => import('../components/Challenge/ChallengeFeedComment.vue')
+        },
+        {
+          // feed 생성 폼
+          path: 'feed/post',
+          name: 'challengeFeedPost',
+          component: () => import('../components/Challenge/ChallengeFeedPost.vue')
+        }
+      ]
     },
     {
       path: '/member/:id',
@@ -146,9 +182,9 @@ const router = createRouter({
       ]
     },
     {
-      path: '/feed',
-      name: 'feed',
-      component: () => import('../views/FeedView.vue')
+      path: '/chat',
+      name: 'chat',
+      component: () => import('../views/ChatView.vue')
     }
   ]
 })

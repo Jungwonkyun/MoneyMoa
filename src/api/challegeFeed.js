@@ -50,15 +50,17 @@ async function addFeedLike() {
 }
 
 // 피드 검색 API
-async function searchFeed() {
+async function searchFeed(searchWord) {
   try {
     const accessToken = getAccessToken()
     const res = await api.get(`/feed/search`, {
-      usertoken: accessToken
+      usertoken: accessToken,
+      searchWord: searchWord
     })
     return res
   } catch (err) {
     console.log(err)
+    console.log(searchWord)
   }
 }
 
@@ -153,7 +155,7 @@ async function fetchFeedList() {
   }
 }
 
-export {
+export default {
   fetchAllFeedList,
   fetchFeedDetail,
   addFeedLike,
