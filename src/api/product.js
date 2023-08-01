@@ -26,7 +26,8 @@ async function getCMAList() {
   }
 }
 
-//예적금detail리스트 가공을 여기서 해도 될까??
+//예적금detail리스트 가공
+function getMinMaxIntr(product) {}
 
 //찜정보post하는 메서드
 async function likeProduct(likeInfo) {
