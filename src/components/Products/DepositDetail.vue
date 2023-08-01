@@ -34,7 +34,7 @@
   <IntrCalcItem></IntrCalcItem>
 </template>
 <script setup>
-import { useProductStore } from '../../stores/productStore'
+import { useProductStore } from '@/stores/productStore'
 import IntrCalcItem from './item/IntrCalcItem.vue'
 const store = useProductStore()
 const product = store.selectedProduct

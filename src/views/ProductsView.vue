@@ -5,7 +5,6 @@
       <router-link :to="{ name: 'savingList' }"><v-tab value="saving">적금</v-tab></router-link>
       <router-link :to="{ name: 'cmaList' }"><v-tab value="cma">CMA</v-tab></router-link>
     </v-tabs>
-    <!-- <ProductsList :productType="productType" /> -->
     <router-view />
     <DictionarySide />
   </v-container>
