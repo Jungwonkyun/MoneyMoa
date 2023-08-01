@@ -23,6 +23,26 @@ async function callUserInfoApi(memberId) {
   }
 }
 
+// 회원가입시 유저 이메일 인증
+async function postEmailauth(email) {
+  try {
+    const res = await api.post(`/emailauth`, email)
+    return res.data
+  } catch (err) {
+    console.log(err)
+  }
+}
+
+// 회원가입
+async function postSignup(member) {
+  try {
+    const res = await api.post(`/signup`, member)
+    return res.data
+  } catch (err) {
+    console.log(err)
+  }
+}
+
 // 팔로잉 API
 // 유저 토큰이랑 팔로우 할 사람의 id를 보내면 됨
 async function addFollow(memberId) {
@@ -89,11 +109,33 @@ async function fetchFeedList(memberId) {
   }
 }
 
+// 로그인
+async function postLogin(loginInfo) {
+  try {
+    const res = await api.post('/loginmember', loginInfo)
+    return res
+  } catch (err) {
+    console.log(err)
+  }
+}
+// 네이버 로그인
+async function naverLogin() {
+  try {
+    const res = await api.get('/api/auth/naver')
+    return res
+  } catch (err) {
+    console.log(err)
+  }
+}
 export default {
   callUserInfoApi,
   addFollow,
   fetchChallengeList,
   fetchFollowerList,
   fetchFollowingList,
-  fetchFeedList
+  fetchFeedList,
+  postEmailauth,
+  postSignup,
+  naverLogin,
+  postLogin
 }
