@@ -1,6 +1,6 @@
 <template>
   <v-card variant="tonal">
-    <v-row class="d-flex justify-space-between">
+    <v-row>
       <v-col>
         <v-card-item>
           <v-card-subtitle>
