@@ -7,11 +7,11 @@
       <v-list-item :value="0" @click="onMypage">
         <v-list-item-title> 마이페이지 </v-list-item-title>
       </v-list-item>
-      <v-list-item :value="1" @click="onProfilechange">
-        <v-list-item-title> 회원정보 수정 </v-list-item-title>
-      </v-list-item>
-      <v-list-item :value="2" @click="onMyproducts">
+      <v-list-item :value="1" @click="onMyproducts">
         <v-list-item-title> 찜한 상품 목록 </v-list-item-title>
+      </v-list-item>
+      <v-list-item :value="2" @click="onProfilechange">
+        <v-list-item-title> 회원정보 수정 </v-list-item-title>
       </v-list-item>
       <v-list-item :value="3" @click="logout">
         <v-list-item-title class="logout">

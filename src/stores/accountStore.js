@@ -30,6 +30,7 @@ export const useAccountStore = defineStore('account', () => {
   }
   function onLogout() {
     cookies.remove('accessToken')
+    cookies.remove('member')
   }
 
   return {
