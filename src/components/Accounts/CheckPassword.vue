@@ -41,7 +41,7 @@
   </v-container>
 </template>
 <script setup>
-import { ref, onMounted } from 'vue'
+import { ref } from 'vue'
 import { useAccountStore } from '@/stores/accountStore'
 import { useRouter } from 'vue-router'
 import functions from '../../api/member'

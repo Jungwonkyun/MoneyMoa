@@ -1,4 +1,4 @@
-import { apiInstance } from './index'
+import { apiInstance } from './index.js'
 import { useAccountStore } from '@/stores/accountStore.js'
 
 const api = apiInstance()
@@ -25,10 +25,10 @@ async function callUserInfoApi(memberId) {
 // 내 정보 API
 async function getMyInfoApi(token) {
   try {
-    const header = {
-      Authorization: `Bearer ${token}`
+    const headers = {
+      Authorization: `Bearer ${token}`,
     }
-    const res = await api.get(`/myinfo`, { header })
+    const res = await api.get(`/myinfo`, { headers })
     console.log(res)
     return res
   } catch (err) {
