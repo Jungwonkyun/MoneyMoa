@@ -88,7 +88,7 @@
 <script setup>
 // 유저 이미지로 바꿔야함
 import { ref } from 'vue'
-import img from '@/assets/img/default_image.png'
+import img from '../../assets/img/default_image.png'
 import { useRouter } from 'vue-router'
 import { useAccountStore } from '@/stores/accountStore'
 const router = useRouter()

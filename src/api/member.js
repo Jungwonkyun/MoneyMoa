@@ -22,6 +22,19 @@ async function callUserInfoApi(memberId) {
     console.log(err)
   }
 }
+// 내 정보 API
+async function getMyInfoApi(token) {
+  try {
+    const header = {
+      Authorization: `Bearer ${token}`
+    }
+    const res = await api.get(`/myinfo`, { header })
+    console.log(res)
+    return res
+  } catch (err) {
+    console.log(err)
+  }
+}
 
 // 회원가입시 유저 이메일 인증
 async function postEmailauth(email) {
@@ -112,7 +125,8 @@ async function fetchFeedList(memberId) {
 // 로그인
 async function postLogin(loginInfo) {
   try {
-    const res = await api.post('/loginmember', loginInfo)
+    const res = await api.post('/login', loginInfo)
+    console.log(res)
     return res
   } catch (err) {
     console.log(err)
@@ -137,5 +151,6 @@ export default {
   postEmailauth,
   postSignup,
   naverLogin,
-  postLogin
+  postLogin,
+  getMyInfoApi
 }

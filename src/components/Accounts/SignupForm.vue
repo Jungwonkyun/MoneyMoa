@@ -134,7 +134,12 @@
       <v-row>
         <v-col>
           <h3>생년월일</h3>
-          <v-text-field type="date" variant="underlined"></v-text-field>
+          <v-text-field
+            type="date"
+            variant="underlined"
+            :max="today"
+            v-model="birthday"
+          ></v-text-field>
         </v-col>
       </v-row>
 
@@ -142,9 +147,9 @@
       <v-row>
         <v-col>
           <h3>성별</h3>
-          <v-radio-group inline>
+          <v-radio-group inline v-model="gender">
             <v-col class="d-flex justify-space-around">
-              <v-radio label="선택하지 않음" :value="null" selected></v-radio>
+              <v-radio label="선택하지 않음" :value="null"></v-radio>
               <v-radio label="남" value="male"></v-radio>
               <v-radio label="여" value="female"></v-radio>
             </v-col>
@@ -175,6 +180,7 @@ const password1 = ref(null)
 const password2 = ref(null)
 const Name = ref(null)
 const NickName = ref(null)
+const birthday = ref(null)
 // 유저가 입력한 인증번호
 const userAccess = ref(null)
 // 서버에서 받은 인증키
@@ -183,6 +189,8 @@ const Access = ref(null)
 const isAuthentic = ref(false)
 // v-if용 (인증번호 보냈는지 안보냈는지)
 const sent = ref(false)
+// 성별 변수
+const gender = ref(null)
 
 // 이메일 인증함수
 async function onAthentic() {
@@ -191,9 +199,9 @@ async function onAthentic() {
     try {
       const authResult = await functions.postEmailauth(Email.value)
       console.log(typeof Email)
-      console.log(authResult.messege)
+      console.log(authResult)
       // 이메일 유효성 검사 통과시 로직 쓰기
-      if (authResult.messege === 'success') {
+      if (authResult.message === 'success') {
         sent.value = true
         alert('인증번호를 발송했습니다.')
         Access.value = authResult.emailAuth
@@ -280,16 +288,17 @@ async function onSignUp() {
     return alert('이름을 입력해 주세요.')
   } else if (!NickName.value) {
     return alert('닉네임을 입력해 주세요.')
+  } else if (!birthday.value) {
+    return alert('생년월일을 입력해 주세요.')
   }
   // 생일, 성별은 내일추가하기
   const member = {
+    birthday: birthday.value,
     email: Email.value,
-    id: 0,
     name: Name.value,
     nickname: NickName.value,
-    oauthProvider: 'GENERAL',
     password: password1.value,
-    role: 'Member',
+    gender: gender.value,
     valid: 0
   }
   try {
@@ -303,6 +312,11 @@ async function onSignUp() {
     console.log(err)
   }
 }
+const formattedDate = new Date()
+const year = formattedDate.getFullYear()
+const month = String(formattedDate.getMonth() + 1).padStart(2, '0') // 0부터 시작하므로 1을 더하고, 2자리로 만들기 위해 padStart 사용
+const day = String(formattedDate.getDate()).padStart(2, '0') // 2자리로 만들기 위해 padStart 사용
+const today = `${year}-${month}-${day}`
 </script>
 <style>
 /* 임시스타일 */

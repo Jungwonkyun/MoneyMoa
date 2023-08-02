@@ -41,10 +41,13 @@
   </v-container>
 </template>
 <script setup>
-import { ref } from 'vue'
+import { ref, onMounted } from 'vue'
 import { useAccountStore } from '@/stores/accountStore'
 import { useRouter } from 'vue-router'
+import functions from '../../api/member'
+import { useCookies } from 'vue3-cookies'
 
+const { cookies } = useCookies()
 // 라우터 푸쉬를 위한 라우터 인풋
 const router = useRouter()
 // 패스워드 인증 전, 후 상태관리 스토어
@@ -55,14 +58,21 @@ const password = ref(null)
 const rules = [(value) => !!value || '비밀번호를 입력해 주세요.']
 const visible = ref(false)
 
-function onCheckPwd() {
+async function onCheckPwd() {
+  try {
+    console.log(cookies.get('accessToken'))
+    const myPWD = await functions.getMyInfoApi(cookies.get('accessToken'))
+    console.log(myPWD)
+  } catch (err) {
+    console.log(err)
+  }
   // 여기다 비밀번호 맞는지 아닌지 로직 짜기
   // if (account.비밀번호 === password) {
   //   account.setPwdChecked(true)
   //   router.push({ name: 'profilechange' })
   // }
-  account.setPwdChecked(true)
-  router.push({ name: 'profilechange' })
+  // account.setPwdChecked(true)
+  // router.push({ name: 'profilechange' })
 }
 </script>
 <style></style>

@@ -12,15 +12,16 @@
     <router-link to="/"
       ><v-btn><v-icon icon="mdi-send" /></v-btn
     ></router-link>
-    <router-link :to="`/member/${memberId}`"><v-btn>프로필</v-btn></router-link>
-    <router-link to="/account"><v-btn>로그인</v-btn></router-link>
+    <ProfileMenu v-if="isLogin" />
+    <router-link to="/account" v-if="!isLogin"><v-btn>로그인</v-btn></router-link>
   </v-toolbar>
 </template>
 <script setup>
 import { useAccountStore } from '@/stores/accountStore.js'
-
-const accountStore = useAccountStore()
-const memberId = accountStore.memberId
+import ProfileMenu from '../Accounts/ProfileMenu.vue'
+import { storeToRefs } from 'pinia'
+const account = useAccountStore()
+const { isLogin } = storeToRefs(account)
 </script>
 <style lang="scss">
 // #header {
