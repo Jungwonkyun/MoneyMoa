@@ -15,24 +15,40 @@
       <v-col cols="2" align-self="center">기본 {{ getIntrRange(product).min }}% </v-col>
       <v-col cols="2" align-self="center">최고 {{ getIntrRange(product).max }}% </v-col>
     </v-row>
+    <v-container>
+      <v-table>
+        <tbody>
+          <tr>
+            <td>가입대상</td>
+            <td>{{ product.join_member }}</td>
+          </tr>
+          <tr>
+            <td>최고한도</td>
+            <td>{{ product.max_limit }}</td>
+          </tr>
+          <tr>
+            <td>유의사항</td>
+            <td>{{ product.etc_note }}</td>
+          </tr>
+        </tbody>
+      </v-table>
+    </v-container>
   </v-card>
-  <v-table>
+  <IntrCalcItem />
+  <v-table outlined>
+    <thead>
+      <tr>
+        <th>가입기간</th>
+        <th>금리</th>
+      </tr>
+    </thead>
     <tbody>
-      <tr>
-        <td>가입대상</td>
-        <td>{{ product.join_member }}</td>
-      </tr>
-      <tr>
-        <td>최고한도</td>
-        <td>{{ product.max_limit }}</td>
-      </tr>
-      <tr>
-        <td>유의사항</td>
-        <td>{{ product.etc_note }}</td>
+      <tr v-for="(item, index) in product.interestDetails" :key="index">
+        <td>{{ item.period }}개월</td>
+        <td>{{ item.basicRate }}% ~ {{ item.maxRate }}%</td>
       </tr>
     </tbody>
   </v-table>
-  <IntrCalcItem></IntrCalcItem>
 </template>
 <script setup>
 import { ref } from 'vue'

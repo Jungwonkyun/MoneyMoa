@@ -52,7 +52,17 @@ async function getCMA(productCode) {
   }
 }
 
-//예적금detail리스트 가공
+//찜정보 post
+async function likeProduct(likeInfo) {
+  try {
+    const response = await api.post('/myproduct', likeInfo)
+    return response
+  } catch (error) {
+    console.log(error)
+  }
+}
+
+/* 상품정보가공(여기서부터 axios아님) */
 function getPeriodRange(product) {
   const range = {
     min: product.interestDetails.at(0).period,
@@ -69,15 +79,7 @@ function getIntrRange(product) {
   return range
 }
 
-//찜정보post하는 메서드
-async function likeProduct(likeInfo) {
-  try {
-    const response = await api.post('/myproduct', likeInfo)
-    return response
-  } catch (error) {
-    console.log(error)
-  }
-}
+
 
 export {
   getDepositList,
