@@ -12,7 +12,8 @@
           </v-card-title>
         </v-card-item>
       </v-col>
-      <v-col cols="2" align-self="center">금리 {{ product.interest }}% </v-col>
+      <v-col cols="2" align-self="center">기본 {{ getIntrRange(product).min }}% </v-col>
+      <v-col cols="2" align-self="center">최고 {{ getIntrRange(product).max }}% </v-col>
     </v-row>
   </v-card>
   <v-table>
@@ -34,9 +35,18 @@
   <IntrCalcItem></IntrCalcItem>
 </template>
 <script setup>
+import { ref } from 'vue'
 import { useProductStore } from '@/stores/productStore'
+import { storeToRefs } from 'pinia'
+import { getDeposit, getSaving, getIntrRange, getPeriodRange } from '@/api/product'
 import IntrCalcItem from './item/IntrCalcItem.vue'
 const store = useProductStore()
-const product = store.selectedProduct
+const { selectedProduct } = storeToRefs(store)
+const product = ref({})
+if (Object.keys(selectedProduct).length === 0) {
+  product.value = getDeposit().data
+} else {
+  product.value = selectedProduct.value
+}
 </script>
 <style></style>

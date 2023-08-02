@@ -24,7 +24,7 @@ import ProductPreviewItem from './item/ProductPreviewItem.vue'
 import ProductConditionItem from './item/ProductConditionItem.vue'
 
 const store = useProductStore()
-const { productType, amount, period, bankList, securityList } = storeToRefs(store)
+const { productType, amount, period, bankList } = storeToRefs(store)
 const products_dummy = reactive([
   {
     id: '1',
@@ -93,7 +93,7 @@ const products_dummy = reactive([
     ]
   }
 ])
-// const products = getDepositList()
+// const products = getDepositList().data
 // console.log(products)
 const filteredProducts = computed(() =>
   products_dummy.filter(
