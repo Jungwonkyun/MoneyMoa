@@ -59,42 +59,42 @@ const props = defineProps({
 //   }
 // }
 
-// let comments = ref([])
-// const load = async ($state) => {
-//   console.log('loading...')
+let comments = ref([])
+const load = async ($state) => {
+  console.log('loading...')
 
+  try {
+    const headers = {
+      Authorization: `Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIxMCIsImV4cCI6MTY5MTA1MTQwNn0.2AZpdIDyiW6h5PY3E2t8hAiC6875ngxSEiQQovHmO4HFqU3m2jDtLYhOJCGSYw7xcp3CSxb-ugn9iUGmdTLNNQ`
+    }
+    const res = await api.get(`/feed/all`, { headers })
+    const json = await res.json()
+    console.log(json)
+    if (json.length < 3) $state.complete()
+    else {
+      comments.value.push(...json)
+      $state.loaded()
+    }
+  } catch (error) {
+    $state.error()
+  }
+}
+
+// async function test() {
 //   try {
 //     const headers = {
 //       Authorization: `Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIxMCIsImV4cCI6MTY5MTA0NzExOX0.dG2x-6yl9PRgVzxiHU33l0Ayx1VwwsJqkSJKeKwABx78rv5ejtKqNno6HVDZ_aSPEw95SKzmJZMH7D2CspfC0Q`
 //     }
 //     const res = await api.get(`/feed/all`, { headers })
-//     const json = await res.json()
-//     console.log(json)
-//     if (json.length < 3) $state.complete()
-//     else {
-//       comments.value.push(...json)
-//       $state.loaded()
-//     }
-//   } catch (error) {
-//     $state.error()
+//     return res
+//   } catch (err) {
+//     console.log(err)
 //   }
 // }
 
-async function test() {
-  try {
-    const headers = {
-      Authorization: `Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIxMCIsImV4cCI6MTY5MTA0NzExOX0.dG2x-6yl9PRgVzxiHU33l0Ayx1VwwsJqkSJKeKwABx78rv5ejtKqNno6HVDZ_aSPEw95SKzmJZMH7D2CspfC0Q`
-    }
-    const res = await api.get(`/feed/all`, { headers })
-    return res
-  } catch (err) {
-    console.log(err)
-  }
-}
-
-test().then((res) => {
-  console.log(res)
-})
+// test().then((res) => {
+//   console.log(res)
+// })
 </script>
 
 <style>
