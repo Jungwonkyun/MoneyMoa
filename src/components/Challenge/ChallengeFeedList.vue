@@ -83,7 +83,7 @@ const props = defineProps({
 async function test() {
   try {
     const headers = {
-      Authorization: `Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIxMCIsImV4cCI6MTY5MTA0NzExOX0.dG2x-6yl9PRgVzxiHU33l0Ayx1VwwsJqkSJKeKwABx78rv5ejtKqNno6HVDZ_aSPEw95SKzmJZMH7D2CspfC0Q`
+      Authorization: `Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIxMCIsImV4cCI6MTY5MTA1MTkwOH0.E1SVkRcHcL7QvfejLeRjSPsoli4QEwnhtgWjqbQSZaQjJeXQT2sBdqmQSVSCCHgiVMxGaOgNbGDMmLNb-ru6bg`
     }
     const res = await api.get(`/feed/all`, { headers })
     return res
