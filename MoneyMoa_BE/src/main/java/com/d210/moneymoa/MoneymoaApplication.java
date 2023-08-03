@@ -8,8 +8,8 @@ import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import springfox.documentation.swagger2.annotations.EnableSwagger2;
 
-//(exclude = SecurityAutoConfiguration.class)
-@SpringBootApplication
+
+@SpringBootApplication(exclude = SecurityAutoConfiguration.class)
 @EnableSwagger2
 public class MoneymoaApplication {
 	public static void main(String[] args) {
