@@ -63,10 +63,10 @@
         <v-row>
           <!-- 소셜로그인 임시로 사진만 -->
           <v-col>
-            <v-img :src="naverLogo" :width="200" @click="naverLogin"></v-img>
+            <v-img :src="naverLogo" :width="200" @click="naverLogin" class="buttons"></v-img>
           </v-col>
           <v-col>
-            <v-img :src="kakaoLogo" :width="200" @click="kakaoLogin"></v-img>
+            <v-img :src="kakaoLogo" :width="200" @click="kakaoLogin" class="buttons"></v-img>
           </v-col>
         </v-row>
       </v-col>
@@ -75,14 +75,13 @@
 </template>
 
 <script setup>
-import naverLogo from '@/assets/img/네이버로그인.png'
+import naverLogo from '../../assets/img/네이버로그인.png'
+import kakaoLogo from '../../assets/img/카카오로그인.png'
 import functions from '@/api/member.js'
-import kakaoLogo from '@/assets/img/카카오로그인.png'
 import { ref } from 'vue'
 import { useAccountStore } from '@/stores/accountStore.js'
 import { useRouter } from 'vue-router'
-import { useCookies } from 'vue3-cookies'
-const { cookies } = useCookies()
+
 const account = useAccountStore()
 const router = useRouter()
 const Email = ref(null)
@@ -94,7 +93,6 @@ async function onLogin() {
   if (!Email.value) {
     return alert('이메일을 입력해 주세요.')
   } else if (!password.value) {
-    console.log(Email.value, password.value)
     return alert('비밀번호를 입력해 주세요.')
   }
   try {
@@ -103,7 +101,6 @@ async function onLogin() {
       password: password.value
     }
     const loginResult = await functions.postLogin(loginInfo)
-    console.log(loginResult.data['jwt token'].accessToken)
     if (loginResult.data.message === 'fail') {
       alert('존재하지 않는 아이디거나 비밀번호가 일치하지 않습니다.')
     } else if (loginResult.data.message === 'success') {
@@ -112,16 +109,20 @@ async function onLogin() {
         role: loginResult.data.member.role,
         nickname: loginResult.data.member.nickname
       }
-      cookies.set('accessToken', loginResult.data['jwt token'].accessToken, { expires: '30m' })
+      // cookies.set('accessToken', loginResult.data['jwt token'].accessToken, '30MIN')
+      const token = loginResult.data['jwt token'].accessToken
       const data = {
-        member: member
+        member: member,
+        token: token
       }
       account.onLogin(data)
       alert('로그인 되었습니다.')
-
-      return router.push({ name: 'home' })
+      router.push({ name: 'home' }).then(() => {
+        location.reload()
+      })
     }
   } catch (err) {
+    alert('로그인에 실패하였습니다. 다시 시도해 주세요.')
     console.log(err)
   }
 }
@@ -132,16 +133,14 @@ const rules = [(value) => !!value || '필수 입력 값입니다.']
 // 패스워드 인풋 로직
 const visible = ref(false)
 
-// 네이버로그인 1트
-async function naverLogin() {
-  try {
-    const naverKey = await functions.naverLogin()
-    console.log(naverKey)
-  } catch (err) {
-    console.log(err)
-  }
+// 네이버로그인
+function naverLogin() {
+  window.location.replace(
+    'https://nid.naver.com/oauth2.0/authorize?response_type=code&client_id=Cr4zB5lfM08ugwGyTXD4&state=zJ1F78TI5l&redirect_uri=http://i9d210.p.ssafy.io:9999/api/auth/naver'
+  )
 }
 
+// 카카오로그인
 function kakaoLogin() {
   window.location.replace(
     'https://kauth.kakao.com/oauth/authorize?client_id=6bca07d112514b4054347d4fd3bfaf53&redirect_uri=http://i9d210.p.ssafy.io:9999/api/auth/kakao&response_type=code'
@@ -152,5 +151,8 @@ function kakaoLogin() {
 <style>
 .LoginInput {
   width: 500px;
+}
+.buttons {
+  cursor: pointer;
 }
 </style>

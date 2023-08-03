@@ -19,6 +19,10 @@ import { ref, defineProps, computed, watch } from 'vue'
 import InfiniteLoading from 'v3-infinite-loading'
 import 'v3-infinite-loading/lib/style.css'
 import axios from 'axios'
+import funtions from '@/api/member.js'
+import { apiInstance } from '@/api/index.js'
+
+const api = apiInstance()
 
 const props = defineProps({
   searchWord: null
@@ -55,25 +59,42 @@ const props = defineProps({
 //   }
 // }
 
-let comments = ref([])
-const load = async ($state) => {
-  console.log('loading...')
+// let comments = ref([])
+// const load = async ($state) => {
+//   console.log('loading...')
 
+//   try {
+//     const headers = {
+//       Authorization: `Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIxMCIsImV4cCI6MTY5MTA0NzExOX0.dG2x-6yl9PRgVzxiHU33l0Ayx1VwwsJqkSJKeKwABx78rv5ejtKqNno6HVDZ_aSPEw95SKzmJZMH7D2CspfC0Q`
+//     }
+//     const res = await api.get(`/feed/all`, { headers })
+//     const json = await res.json()
+//     console.log(json)
+//     if (json.length < 3) $state.complete()
+//     else {
+//       comments.value.push(...json)
+//       $state.loaded()
+//     }
+//   } catch (error) {
+//     $state.error()
+//   }
+// }
+
+async function test() {
   try {
-    const response = await get('http://i9d210.p.ssafy.io:9999/feed/all', {
-      Authorization:
-        'Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiI5IiwiZXhwIjoxNjkxMDQ1NDg3fQ.hX1K7LEtx-ifsZfZ6S09q68FeczcHNnm0Zq-Q6I3SxIwf1hq_A1gdV5rsP5mBkUPl_wYyyK-15FtZ83X0vYYtQ'
-    })
-    const json = await response.json()
-    if (json.length < 3) $state.complete()
-    else {
-      comments.value.push(...json)
-      $state.loaded()
+    const headers = {
+      Authorization: `Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIxMCIsImV4cCI6MTY5MTA0NzExOX0.dG2x-6yl9PRgVzxiHU33l0Ayx1VwwsJqkSJKeKwABx78rv5ejtKqNno6HVDZ_aSPEw95SKzmJZMH7D2CspfC0Q`
     }
-  } catch (error) {
-    $state.error()
+    const res = await api.get(`/feed/all`, { headers })
+    return res
+  } catch (err) {
+    console.log(err)
   }
 }
+
+test().then((res) => {
+  console.log(res)
+})
 </script>
 
 <style>
