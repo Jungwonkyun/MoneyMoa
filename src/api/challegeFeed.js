@@ -14,7 +14,7 @@ function getAccessToken() {
 async function fetchAllFeedList() {
   try {
     const accessToken = getAccessToken()
-    const res = await api.get(`/feed/list`, {
+    const res = await api.get(`/feed/all`, {
       usertoken: accessToken
     })
     return res
@@ -37,11 +37,14 @@ async function fetchFeedDetail(feed_id) {
 }
 
 // 피드 좋아요 API
-async function addFeedLike() {
+async function addFeedLike(feedId) {
   try {
     const accessToken = getAccessToken()
     const res = await api.put(`/feed/like`, {
-      usertoken: accessToken
+      usertoken: accessToken,
+      feedlike: {
+        feed_id: feedId
+      }
     })
     return res
   } catch (err) {
@@ -60,7 +63,6 @@ async function searchFeed(searchWord) {
     return res
   } catch (err) {
     console.log(err)
-    console.log(searchWord)
   }
 }
 

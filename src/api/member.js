@@ -34,6 +34,18 @@ async function getMyInfoApi(token) {
     console.log(err)
   }
 }
+// test API
+async function test(token) {
+  try {
+    const headers = {
+      Authorization: `Bearer ${token}`
+    }
+    const res = await api.get(`/feed/all`, { headers })
+    return res
+  } catch (err) {
+    console.log(err)
+  }
+}
 
 // 회원가입시 유저 이메일 인증
 async function postEmailauth(email) {
@@ -164,5 +176,6 @@ export default {
   naverLogin,
   postLogin,
   getMyInfoApi,
-  deletequitService
+  deletequitService,
+  test
 }

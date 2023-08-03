@@ -66,7 +66,7 @@ const router = createRouter({
         {
           path: 'cma',
           name: 'cmaList',
-          component: () => import('../components/Products/ProductsList.vue')
+          component: () => import('../components/Products/CMAList.vue')
         }
       ]
     },
@@ -74,12 +74,14 @@ const router = createRouter({
       path: '/challenge',
       name: 'challenge',
       component: ChallengeView,
+      props: true,
       redirect: '/challenge/feedList',
       children: [
         {
           path: 'feedList',
           name: 'challengeFeedList',
-          component: () => import('../components/Challenge/ChallengeFeedList.vue')
+          component: () => import('../components/Challenge/ChallengeFeedList.vue'),
+          props: true
         },
         {
           path: 'feed/:feedId',
@@ -96,6 +98,12 @@ const router = createRouter({
           path: 'feed/post',
           name: 'challengeFeedPost',
           component: () => import('../components/Challenge/ChallengeFeedPost.vue')
+        },
+        {
+          // feed 검색 결과 리스트
+          path: 'feed/search',
+          name: 'challengeFeedSearchList',
+          component: () => import('../components/Challenge/ChallengeFeedSearchList.vue')
         }
       ]
     },
