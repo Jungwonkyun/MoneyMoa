@@ -54,15 +54,29 @@
 import { ref } from 'vue'
 import { useProductStore } from '@/stores/productStore'
 import { storeToRefs } from 'pinia'
-import { getDeposit, getSaving, getIntrRange, getPeriodRange } from '@/api/product'
+import {
+  getDeposit,
+  getSaving,
+  getIntrRange,
+  getPeriodRange,
+  spclConditionIntrList
+} from '@/api/product'
 import IntrCalcItem from './item/IntrCalcItem.vue'
 const store = useProductStore()
-const { selectedProduct } = storeToRefs(store)
+const { selectedProduct, period } = storeToRefs(store)
 const product = ref({})
 if (Object.keys(selectedProduct).length === 0) {
   product.value = getDeposit().data
 } else {
   product.value = selectedProduct.value
 }
+// console.log(product.value.interestDetails)
+// const calcDetail = product.interestDetails.reduce((prev, curr) => {
+//   if (curr.period <= period.value && (!prev || curr.period > prev.period)) {
+//     return curr
+//   } else {
+//     return prev
+//   }
+// }, null)
 </script>
 <style></style>

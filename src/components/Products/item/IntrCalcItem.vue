@@ -31,12 +31,12 @@
         >원을 받을 수 있어요. (이자
         {{ result - amount * (calcType === 'saving' ? period : 1) }}원)</v-col
       >
-      <!-- 계산기록찜버튼(로그인시에만 보여야함) -->
+      <!-- 계산기록찜버튼(todo: 로그인시에만 보여야함, 찜목록으로 바로가기 라우터) -->
       <v-btn @click="like">찜하기</v-btn>
-      <v-snackbar v-model="snackbar" timeout="2500" color="white">
+      <v-snackbar v-model="likeSnackbar" timeout="2500" color="white">
         상품을 찜 목록에 담았어요.
         <template v-slot:actions>
-          <v-btn color="blue" variant="text" @click="snackbar = false"> 바로가기 </v-btn>
+          <v-btn color="blue" variant="text" @click="likeSnackbar = false"> 바로가기 </v-btn>
         </template>
       </v-snackbar>
     </v-row>
@@ -81,10 +81,11 @@ const onKeyPress = (event) => {
     event.preventDefault()
   }
 }
-const snackbar = ref(false)
+const likeSnackbar = ref(false)
 function like() {
+  //todo: 찜하기axios호출
   console.log('찜할래용')
-  snackbar.value = true
+  likeSnackbar.value = true
 }
 </script>
 <style></style>

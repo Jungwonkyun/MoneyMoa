@@ -17,7 +17,7 @@
 import { reactive, computed } from 'vue'
 import { useProductStore } from '@/stores/productStore'
 import { storeToRefs } from 'pinia'
-import { getDepositList, getSavingList, getPeriodRange } from '@/api/product'
+import { getDepositList, getSavingList, getPeriodRange, getDeposit } from '@/api/product'
 import BankSelectItem from './item/BankSelectItem.vue'
 import SecuritySelectItem from './item/SecuritySelectItem.vue'
 import ProductPreviewItem from './item/ProductPreviewItem.vue'
@@ -93,8 +93,8 @@ const products_dummy = reactive([
     ]
   }
 ])
-// const products = getDepositList().data
-// console.log(products)
+const products = getDeposit('WR0001B')
+console.log(products)
 const filteredProducts = computed(() =>
   products_dummy.filter(
     (product) =>
