@@ -21,6 +21,9 @@ import 'v3-infinite-loading/lib/style.css'
 import axios from 'axios'
 import funtions from '@/api/member.js'
 import { apiInstance } from '@/api/index.js'
+import { useCookies } from 'vue3-cookies'
+const { cookise } = useCookies()
+const token = cookise.get('accessToken')
 
 const api = apiInstance()
 
@@ -59,43 +62,33 @@ const props = defineProps({
 //   }
 // }
 
-let comments = ref([])
-const load = async ($state) => {
-  console.log('loading...')
+// let comments = ref([])
+// const load = async ($state) => {
+//   console.log('loading...')
 
-  try {
-    const headers = {
-      Authorization: `Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIxMCIsImV4cCI6MTY5MTA1MTQwNn0.2AZpdIDyiW6h5PY3E2t8hAiC6875ngxSEiQQovHmO4HFqU3m2jDtLYhOJCGSYw7xcp3CSxb-ugn9iUGmdTLNNQ`
-    }
-    const res = await api.get(`/feed/all`, { headers })
-    const json = await res.json()
-    console.log(json)
-    if (json.length < 3) $state.complete()
-    else {
-      comments.value.push(...json)
-      $state.loaded()
-    }
-  } catch (error) {
-    $state.error()
-  }
-}
-
-// async function test() {
 //   try {
 //     const headers = {
 //       Authorization: `Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIxMCIsImV4cCI6MTY5MTA0NzExOX0.dG2x-6yl9PRgVzxiHU33l0Ayx1VwwsJqkSJKeKwABx78rv5ejtKqNno6HVDZ_aSPEw95SKzmJZMH7D2CspfC0Q`
 //     }
 //     const res = await api.get(`/feed/all`, { headers })
-//     return res
-//   } catch (err) {
-//     console.log(err)
+//     const json = await res.json()
+//     console.log(json)
+//     if (json.length < 3) $state.complete()
+//     else {
+//       comments.value.push(...json)
+//       $state.loaded()
+//     }
+//   } catch (error) {
+//     $state.error()
 //   }
 // }
 
 async function test() {
   try {
+    const token = cookise.get('accessToken')
+
     const headers = {
-      Authorization: `Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIxMCIsImV4cCI6MTY5MTA1MTkwOH0.E1SVkRcHcL7QvfejLeRjSPsoli4QEwnhtgWjqbQSZaQjJeXQT2sBdqmQSVSCCHgiVMxGaOgNbGDMmLNb-ru6bg`
+      Authorization: `Bearer ${token}`
     }
     const res = await api.get(`/feed/all`, { headers })
     return res
