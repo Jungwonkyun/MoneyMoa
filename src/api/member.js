@@ -47,30 +47,6 @@ async function test(token) {
   }
 }
 
-const load = async ($state) => {
-  console.log('loading...')
-
-  try {
-    const token = cookise.get('accessToken')
-    console.log(token)
-    const headers = {
-      Authorization: `Bearer ${token}`
-    }
-    const res = await get(`http://i9d210.p.ssafy.io:9999/feed/all`, { headers })
-    console.log(res)
-    const json = await res.json()
-    // const json = res.json()
-    // console.log(json)
-    if (json.length < 3) $state.complete()
-    else {
-      comments.value.push(...json)
-      $state.loaded()
-    }
-  } catch (error) {
-    $state.error()
-  }
-}
-
 // 회원가입시 유저 이메일 인증
 async function postEmailauth(email) {
   try {
