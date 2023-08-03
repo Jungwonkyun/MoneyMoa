@@ -40,6 +40,6 @@
 </template>
 
 <script setup>
-const landing = '/src/assets/img/micheile-henderson-f030K9IzpcM-unsplash.jpg'
-const moamoa = '/src/assets/img/money_moa_moa.gif'
+import landing from '../assets/img/micheile-henderson-f030K9IzpcM-unsplash.jpg'
+const moamoa = './src/assets/img/money_moa_moa.gif'
 </script>

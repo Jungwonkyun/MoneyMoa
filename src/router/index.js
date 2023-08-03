@@ -66,7 +66,7 @@ const router = createRouter({
         {
           path: 'cma',
           name: 'cmaList',
-          component: () => import('../components/Products/ProductsList.vue')
+          component: () => import('../components/Products/CMAList.vue')
         }
       ]
     },
