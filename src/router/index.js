@@ -193,12 +193,19 @@ const router = createRouter({
       path: '/admin',
       name: 'admin',
       component: AdminView,
-      redirect: '/admin/adminusersload',
-      children : {
-        path: 'adminusersload',
-        name: 'adminusersload',
-        component: () => import('../components/Admin/AdminUsersLoad.vue')
-      }
+      redirect: '/admin/adminmain',
+      children: [
+        {
+          path: 'adminmain',
+          name: 'adminmain',
+          component: () => import('../components/Admin/AdminMain.vue')
+        },
+        {
+          path: 'adminusersload',
+          name: 'adminusersload',
+          component: () => import('../components/Admin/AdminUsersLoad.vue')
+        }
+      ]
     }
   ]
 })
