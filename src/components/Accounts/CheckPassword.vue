@@ -35,8 +35,8 @@
     </v-row>
     <v-row>
       <v-col>
-        <!-- 로그인창 아니라 유저프로필로 가야함 임시임 -->
-        <router-link :to="{ name: 'loginform' }"><v-btn>돌아가기</v-btn></router-link>
+        <!-- 홈 아니라 유저프로필로 가야함 임시임 -->
+        <router-link :to="{ name: 'home' }"><v-btn>돌아가기</v-btn></router-link>
       </v-col>
     </v-row>
   </v-container>

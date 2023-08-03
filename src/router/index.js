@@ -175,8 +175,9 @@ const router = createRouter({
           name: 'checkpassword',
           component: CheckPassword
         },
+        // 개인정보 수정
         {
-          path: 'profilechange',
+          path: 'profilechange/:name',
           name: 'profilechange',
           component: ProfileChange,
           // 라우터 가드 함수
