@@ -36,7 +36,7 @@
     <v-row>
       <v-col>
         <!-- 홈 아니라 유저프로필로 가야함 임시임 -->
-        <router-link :to="{ name: 'home' }"><v-btn>돌아가기</v-btn></router-link>
+        <v-btn @click="goBack">돌아가기</v-btn>
       </v-col>
     </v-row>
   </v-container>
@@ -52,12 +52,17 @@ const account = useAccountStore()
 const { cookies } = useCookies()
 // 라우터 푸쉬를 위한 라우터 인풋
 const router = useRouter()
-// 패스워드 인증 전, 후 상태관리 스토어
 
+// 패스워드 인증 전, 후 상태관리 스토어
 // 패스워드 로직
 const password = ref(null)
 const rules = [(value) => !!value || '비밀번호를 입력해 주세요.']
 const visible = ref(false)
+
+// 이전페이지 돌아가기위한 함수
+function goBack(){
+  router.go(-1)
+}
 
 async function onCheckPwd() {
   try {
