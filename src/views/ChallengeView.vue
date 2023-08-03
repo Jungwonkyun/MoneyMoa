@@ -1,6 +1,19 @@
 <template>
-  <h1>챌린지 페이지입니다.</h1>
-  <router-view></router-view>
+  <v-container>
+    <SearchBar @custom-event="handleEvent" />
+    <router-view :search-word="searchWord"></router-view>
+  </v-container>
 </template>
-<script setup></script>
+<script setup>
+import { ref, watch } from 'vue'
+import SearchBar from '@/components/Challenge/item/SearchBar.vue'
+
+const searchWord = ref(null)
+
+const handleEvent = (word) => {
+  console.log(typeof word)
+  // console.log(word)
+  searchWord.value = word
+}
+</script>
 <style></style>

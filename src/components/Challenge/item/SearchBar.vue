@@ -1,27 +1,65 @@
 <template>
   <v-text-field
     label="검색"
-    placeholder="Search..."
+    placeholder="검색어는 공백으로 구분해주세요."
     variant="solo-filled"
-    v-model="searchWord"
+    v-model="inputWord"
     type="text"
     @input="handleSearch"
-    @keyup.enter="searchFeed(searchWord)"
+    @keyup.enter="emitEvent(searchWord)"
     append-inner-icon="mdi-magnify"
     @click:append-inner="searchFeed(searchWord)"
+    class="v-text-field"
   >
   </v-text-field>
 </template>
 <script setup>
 import { ref } from 'vue'
 import functions from '@/api/challegeFeed.js'
+import { defineEmits } from 'vue'
 
+const inputWord = ref('')
 const searchWord = ref('')
 const handleSearch = (e) => {
-  searchWord.value = e.target.value
-  console.log(searchWord.value)
+  inputWord.value = e.target.value
+
+  //입력된 단어를 공백으로 분리하되 공백 자체는 제거
+  const words = inputWord.value.split(' ').filter((word) => word !== '')
+  const hashtags = []
+  const normalWords = []
+
+  // 단어들을 해시태그와 일반 검색어로 구분
+  words.forEach((word) => {
+    if (word.startsWith('#')) {
+      hashtags.push(word)
+    } else {
+      normalWords.push(word)
+    }
+  })
+
+  // console.log('해시태그', hashtags)
+  // console.log('일반 단어', normalWords)
+
+  // 해시태그의 길이가 0이 아니면 일반 검색어는 입력할 수 없다고 경고하고 새롭게 입력된 단어를 초기화 한다.
+  if (hashtags.length !== 0 && normalWords.length !== 0) {
+    alert('해시태그와 일반 검색어를 동시에 입력할 수 없습니다.')
+    inputWord.value = ''
+  }
+
+  // 해시태그와 일반단어 중 길이가 0이 아닌 것을 검색어로 사용한다.
+  searchWord.value = hashtags.length !== 0 ? hashtags : normalWords
 }
 
 const searchFeed = functions.searchFeed
+
+const emits = defineEmits()
+const emitEvent = (searchWord) => {
+  emits('custom-event', searchWord)
+}
 </script>
-<style></style>
+<style>
+.v-text-field {
+  width: 700px;
+  margin: 0 auto;
+}
+</style>

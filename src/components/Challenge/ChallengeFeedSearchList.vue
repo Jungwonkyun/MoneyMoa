@@ -1,5 +1,4 @@
 <template>
-  {{ searchWord }}
   <v-row class="card-container" justify="center">
     <v-card class="result ma-2" v-for="comment in comments" :key="comment.id" text-center>
       <v-col>
@@ -15,61 +14,26 @@
 </template>
 
 <script setup>
-import { ref, defineProps, computed, watch } from 'vue'
+import { ref } from 'vue'
 import InfiniteLoading from 'v3-infinite-loading'
 import 'v3-infinite-loading/lib/style.css'
-import axios from 'axios'
-
-const props = defineProps({
-  searchWord: null
-})
-
-// const test = () => {
-//   axios.get('https://feed/' + props.searchWord).then((res) => {
-//     console.log(res)
-//   })
-// }
-
-// watch(props.searchWord, () => {
-//   test()
-// })
-
-// let comments = ref([])
-// let page = 1
-// const load = async ($state) => {
-//   console.log('loading...')
-
-//   try {
-//     const response = await fetch(
-//       'https://jsonplaceholder.typicode.com/comments?_limit=10&_page=' + page
-//     )
-//     const json = await response.json()
-//     if (json.length < 3) $state.complete()
-//     else {
-//       comments.value.push(...json)
-//       $state.loaded()
-//     }
-//     page++
-//   } catch (error) {
-//     $state.error()
-//   }
-// }
 
 let comments = ref([])
+let page = 1
 const load = async ($state) => {
   console.log('loading...')
 
   try {
-    const response = await get('http://i9d210.p.ssafy.io:9999/feed/all', {
-      Authorization:
-        'Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiI5IiwiZXhwIjoxNjkxMDQ1NDg3fQ.hX1K7LEtx-ifsZfZ6S09q68FeczcHNnm0Zq-Q6I3SxIwf1hq_A1gdV5rsP5mBkUPl_wYyyK-15FtZ83X0vYYtQ'
-    })
+    const response = await fetch(
+      'https://jsonplaceholder.typicode.com/comments?_limit=10&_page=' + page
+    )
     const json = await response.json()
     if (json.length < 3) $state.complete()
     else {
       comments.value.push(...json)
       $state.loaded()
     }
+    page++
   } catch (error) {
     $state.error()
   }

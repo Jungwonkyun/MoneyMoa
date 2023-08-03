@@ -127,6 +127,7 @@ async function naverLogin() {
     console.log(err)
   }
 }
+
 export default {
   callUserInfoApi,
   addFollow,
