@@ -65,7 +65,7 @@ public class DepositController {
         } catch (Exception e) {
             e.printStackTrace();
             resultMap.put("message", "fail");
-            status = HttpStatus.BAD_REQUEST
+            status = HttpStatus.BAD_REQUEST;
         }
         return new ResponseEntity<>(resultMap, status);
     }
