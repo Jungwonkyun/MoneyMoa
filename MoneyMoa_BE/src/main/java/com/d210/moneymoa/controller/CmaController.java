@@ -25,27 +25,35 @@ public class CmaController {
     CmaService cmaService;
 
     // CMA 상품 리스트 저장
+    @ApiOperation("*절대 호출금지 크롤링 DB에 CMA상품 정보 저장")
     @GetMapping("/save")
     public ResponseEntity<Map<String,Object>> saveCmaProducts(String[] args) throws InterruptedException {
 
         Map<String,Object>resultMap = new HashMap<>();
 
+        HttpStatus status;
+
         try{
             cmaService.saveCmaProducts();
+            status = HttpStatus.OK;
             resultMap.put("messasge","success");
 
         }catch (Exception e){
             e.printStackTrace();
+            status = HttpStatus.BAD_REQUEST;
             resultMap.put("messasge","fail");
         }
-        return new ResponseEntity<Map<String,Object>>(resultMap, HttpStatus.OK);
+        return new ResponseEntity<Map<String,Object>>(resultMap, status);
     }
 
     // CMA 상품 리스트 전체 조회
+    @ApiOperation(value = "DB에 저장된 모든 CMA상품 정보 조회")
     @GetMapping("/list")
     public ResponseEntity<Map<String, Object>> getCmaProducts() throws InterruptedException {
 
         Map<String, Object> resultMap = new HashMap<>();
+
+        HttpStatus status;
 
         try {
             List<Map<String, Object>> productsList = cmaService.getCmaProductsAsMap();
@@ -72,20 +80,27 @@ public class CmaController {
                 }
             }
 
+            status = HttpStatus.OK;
             resultMap.put("data", productsList);
             resultMap.put("message", "success");
+
         } catch (Exception e) {
             e.printStackTrace();
+            status = HttpStatus.BAD_REQUEST;
             resultMap.put("message", "fail");
         }
 
-        return new ResponseEntity<Map<String, Object>>(resultMap, HttpStatus.OK);
+        return new ResponseEntity<Map<String, Object>>(resultMap, status);
     }
 
     // CMA 상품 상세 조회
+    @ApiOperation(value = "id일치하는 CMA상품 상세정보 조회")
     @GetMapping("/{id}")
     public ResponseEntity<Map<String, Object>> getCmaProductById(@PathVariable("id") Long productId) {
+
         Map<String, Object> resultMap = new HashMap<>();
+
+        HttpStatus status;
 
         try {
             Map<String, Object> product = cmaService.getCmaProductByIdAsMap(productId);
@@ -108,13 +123,15 @@ public class CmaController {
                 }
                 product.putAll(jsonObject.toMap());
             }
+            status = HttpStatus.OK;
             resultMap.put("data", product);
             resultMap.put("message", "success");
         } catch (Exception e) {
             e.printStackTrace();
+            status = HttpStatus.BAD_REQUEST;
             resultMap.put("message", "fail");
         }
-        return new ResponseEntity<Map<String, Object>>(resultMap, HttpStatus.OK);
+        return new ResponseEntity<Map<String, Object>>(resultMap, status);
     }
 
 

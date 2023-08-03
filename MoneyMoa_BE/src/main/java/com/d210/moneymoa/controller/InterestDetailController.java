@@ -12,40 +12,51 @@ import java.util.HashMap;
 import java.util.Map;
 
 @RestController
-@RequestMapping("/api")
+@RequestMapping("/products/interestdetail")
 public class InterestDetailController {
 
     @Autowired
     InterestDetailService interestDetailService;
-    @GetMapping("/products/interestdetail/deposit")
+
+    @ApiOperation(value = "예금상품 InterestDetail DB저장 *예금정보에서 조회가능할시 호출 금지")
+    @GetMapping("/deposit")
     public ResponseEntity<Map<String,Object>> saveDepositInterestDetailProducts(String[] args) throws InterruptedException {
 
         Map<String,Object>resultMap = new HashMap<>();
 
+        HttpStatus status;
+
         try{
             interestDetailService.saveDepositInterestDetailProducts();
+            status = HttpStatus.OK;
             resultMap.put("messasge","success");
 
         }catch (Exception e){
             e.printStackTrace();
+            status = HttpStatus.BAD_REQUEST;
             resultMap.put("messasge","fail");
         }
-        return new ResponseEntity<Map<String,Object>>(resultMap, HttpStatus.OK);
+        return new ResponseEntity<Map<String,Object>>(resultMap, status);
     }
 
-    @GetMapping("/products/interestdetail/saving")
+    @ApiOperation(value = "적금상품 InterestDetail DB저장 *예금정보에서 조회가능할시 호출 금지")
+    @GetMapping("/saving")
     public ResponseEntity<Map<String,Object>> saveSavingInterestDetailProducts(String[] args) throws InterruptedException {
 
         Map<String,Object>resultMap = new HashMap<>();
 
+        HttpStatus status;
+
         try{
             interestDetailService.saveSavingInterestDetailProducts();
+            status = HttpStatus.OK;
             resultMap.put("messasge","success");
 
         }catch (Exception e){
             e.printStackTrace();
+            status = HttpStatus.BAD_REQUEST;
             resultMap.put("messasge","fail");
         }
-        return new ResponseEntity<Map<String,Object>>(resultMap, HttpStatus.OK);
+        return new ResponseEntity<Map<String,Object>>(resultMap, status);
     }
 }

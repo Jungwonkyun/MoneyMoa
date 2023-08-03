@@ -27,26 +27,34 @@ public class DepositController {
 
 
     // 예금상품 API 정보 저장
+    @ApiOperation(value = "DB에 예금상품 API 정보 저장 *상품정보 조회가능할시 호출 금지")
     @GetMapping("/save")
     public ResponseEntity<Map<String,Object>> saveDepositProducts(String[] args) throws InterruptedException {
 
         Map<String,Object>resultMap = new HashMap<>();
 
+        HttpStatus status;
+
         try{
             depositService.saveDepositProducts();
+            status = HttpStatus.OK;
             resultMap.put("messasge","success");
 
         }catch (Exception e){
             e.printStackTrace();
+            status = HttpStatus.BAD_REQUEST;
             resultMap.put("messasge","fail");
         }
-        return new ResponseEntity<Map<String,Object>>(resultMap, HttpStatus.OK);
+        return new ResponseEntity<Map<String,Object>>(resultMap, status);
     }
 
     // 예금상품 API 정보 조회
+    @ApiOperation(value = "DB에 저장된 모든 예금상품 정보 조회")
     @GetMapping("/list")
     public ResponseEntity<Map<String, Object>> getDepositProductsWithInterestDetails() {
+        
         Map<String, Object> resultMap = new HashMap<>();
+        
         HttpStatus status;
 
         try {
@@ -59,21 +67,25 @@ public class DepositController {
 
             }
 
+            status = HttpStatus.OK;
             resultMap.put("depositProducts", depositProducts);
             resultMap.put("message", "success");
-            status = HttpStatus.OK;
+            
         } catch (Exception e) {
             e.printStackTrace();
-            resultMap.put("message", "fail");
             status = HttpStatus.BAD_REQUEST;
+            resultMap.put("message", "fail");
         }
         return new ResponseEntity<>(resultMap, status);
     }
 
     // 예금상품 API 상세정보 조회
+    @ApiOperation(value = "productCode에 해당하는 예금상품 상세정보 조회")
     @GetMapping("/{productCode}")
     public ResponseEntity<Map<String, Object>> getDepositProductsWithInterestDetails(@PathVariable String productCode) {
+        
         Map<String, Object> resultMap = new HashMap<>();
+        
         HttpStatus status;
 
         try {
@@ -83,13 +95,15 @@ public class DepositController {
             String spclStr = depositProduct.getSpcl();
             depositProduct.setSpclList(Arrays.asList(spclStr.split("\n")));
 
+            status = HttpStatus.OK;
             resultMap.put("depositProduct", depositProduct);
             resultMap.put("message", "success");
-            status = HttpStatus.OK;
+            
         } catch (Exception e) {
             e.printStackTrace();
-            resultMap.put("message", "fail");
             status = HttpStatus.BAD_REQUEST;
+            resultMap.put("message", "fail");
+            
         }
         return new ResponseEntity<>(resultMap, status);
     }
