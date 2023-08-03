@@ -42,14 +42,16 @@ public class FeedController {
     @ApiOperation(value = "게시글 전체 조회", notes = "게시글 전체목록을 조회합니다")
     @GetMapping("/all")
     @ResponseStatus(value = HttpStatus.OK)
-    public Response getAllFeeds() {
+    public Response getAllFeeds(@RequestHeader("Authorization") String jwt) {
+        jwt = jwt.replace("Bearer ", "");
         return Response.success(feedService.getAllFeeds());
     }
 
     @ApiOperation(value = "게시글 상세 조회", notes = "게시글을 상세 조회합니다")
     @GetMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
-    public Response findFeed(@ApiParam(value = "게시글 id", required = true) @PathVariable final Long id) {
+    public Response findFeed(@ApiParam(value = "게시글 id", required = true) @PathVariable final Long id, @RequestHeader("Authorization") String jwt) {
+        jwt = jwt.replace("Bearer ", "");
         return Response.success(feedService.findFeed(id));
     }
 
