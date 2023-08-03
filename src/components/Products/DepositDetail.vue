@@ -15,7 +15,7 @@
       <v-col cols="2" align-self="center">기본 {{ getIntrRange(product).min }}% </v-col>
       <v-col cols="2" align-self="center">최고 {{ getIntrRange(product).max }}% </v-col>
     </v-row>
-    <v-container>
+    <v-card-item>
       <v-table>
         <tbody>
           <tr>
@@ -32,10 +32,10 @@
           </tr>
         </tbody>
       </v-table>
-    </v-container>
+    </v-card-item>
   </v-card>
   <IntrCalcItem />
-  <v-table outlined>
+  <v-table>
     <thead>
       <tr>
         <th>가입기간</th>
