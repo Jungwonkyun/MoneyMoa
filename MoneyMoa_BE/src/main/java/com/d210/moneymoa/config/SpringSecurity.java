@@ -41,7 +41,6 @@ public class SpringSecurity extends WebSecurityConfigurerAdapter {
     protected void configure(HttpSecurity http) throws Exception {
         http
                 .cors().and()
-                .addFilterBefore(corsFilter(), ChannelProcessingFilter.class)
                 .csrf().disable()
                 .headers()
                 .contentTypeOptions().and()
