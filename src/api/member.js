@@ -140,6 +140,18 @@ async function naverLogin() {
     console.log(err)
   }
 }
+// 유저 탈퇴
+async function deletequitService(token) {
+  try {
+    const headers = {
+      Authorization: `Bearer ${token}`
+    }
+    const res = await api.delete(`/quitService`, { headers })
+    return res.data
+  } catch (err) {
+    console.log(err)
+  }
+}
 export default {
   callUserInfoApi,
   addFollow,
@@ -151,5 +163,6 @@ export default {
   postSignup,
   naverLogin,
   postLogin,
-  getMyInfoApi
+  getMyInfoApi,
+  deletequitService
 }

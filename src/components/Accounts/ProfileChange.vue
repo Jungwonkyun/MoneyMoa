@@ -75,7 +75,7 @@
     </v-row>
     <v-row>
       <v-col>
-        <v-btn>회원탈퇴</v-btn>
+        <v-btn @click="quitService">회원탈퇴</v-btn>
       </v-col>
       <v-col>
         <!-- 개발땐 홈으로 돌아가게 -->
@@ -91,8 +91,11 @@ import { ref } from 'vue'
 import img from '../../assets/img/default_image.png'
 import { useRouter, onBeforeRouteLeave } from 'vue-router'
 import { useAccountStore } from '@/stores/accountStore'
+import { useCookies } from 'vue3-cookies'
+import functions from '../../api/member.js'
+const { cookies } = useCookies()
 const router = useRouter()
-
+const isPass = ref(false)
 // 스토어의 닉네임, 자기소개로 바꿔주기@@@
 const NickName = ref('기존 닉네임')
 const introduce = ref('기존 자기소개')
@@ -119,20 +122,42 @@ function onUpdate() {
   return router.push({ name: 'home' })
 }
 
+// 회원탈퇴 함수
+async function quitService() {
+  const answer = window.confirm(
+    '회원 탈퇴 시 회원님의 모든 정보가 사라지며 재가입이 힘들 수 있습니다. 정말로 탈퇴하시겠습니까?'
+  )
+  if (answer) {
+    try {
+      const token = cookies.get('accessToken')
+      const result = await functions.deletequitService(token)
+      if (result.message === 'success') {
+        alert('탈퇴가 완료되었습니다.')
+        router.push({ name: 'home' }).then(() => {
+          location.reload()
+        })
+      }
+    } catch (err) {
+      console.log(err)
+    }
+  }
+}
+
 // 페이지 떠날시 아래문구, 회원탈퇴나 수정 클릭시에도 문구만 바꾸면됨
 // isPass같은 변수만들어서 회원탈퇴나 수정 클릭하면  true로 바꾸기, 새로고침 안해도 false로 바뀌면 냅두고 안바뀌면 next()전에 false로 다시 바꿔버리기
-onBeforeRouteLeave((to, from, next) => {
-  console.log(from, to)
-  const answer = window.confirm('사이트에서 나가시겠습니까? 변경사항이 저장되지 않을 수 있습니다.')
-  if (answer) {
-    const account = useAccountStore()
-    account.setPwdChecked(false)
-    console.log(account.pwdChecked)
-    next()
-  } else {
-    next(false)
-  }
-})
+if (!isPass.value) {
+  onBeforeRouteLeave((to, from, next) => {
+    console.log(from, to)
+    if (window.confirm('사이트에서 나가시겠습니까? 변경사항이 저장되지 않을 수 있습니다.')) {
+      const account = useAccountStore()
+      account.setPwdChecked(false)
+      console.log(account.pwdChecked)
+      next()
+    } else {
+      next(false)
+    }
+  })
+}
 </script>
 <style>
 textarea {
