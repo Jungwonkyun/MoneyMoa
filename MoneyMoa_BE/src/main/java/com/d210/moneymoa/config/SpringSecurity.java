@@ -31,11 +31,21 @@ public class SpringSecurity extends WebSecurityConfigurerAdapter {
     @Autowired
     private PasswordEncoder passwordEncoder;
 
+    @Autowired
+    private CorsConfigurationSource corsConfigurationSource;
+
+    @Bean
+    public CorsFilter corsFilter() {
+        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+        source.registerCorsConfiguration("/**", corsConfigurationSource.getCorsConfiguration(new HttpServletRequestWrapper(new MockHttpServletRequest())));
+        return new CorsFilter(source);
+    }
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http
-                .cors().and()
+                //.cors().and()
+                .addFilterBefore(corsFilter(), ChannelProcessingFilter.class)
                 .csrf().disable()
                 .headers()
                 .contentTypeOptions().and()
