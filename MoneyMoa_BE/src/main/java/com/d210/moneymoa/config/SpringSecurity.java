@@ -44,7 +44,7 @@ public class SpringSecurity extends WebSecurityConfigurerAdapter {
                 .antMatchers("/swagger-ui/**", "/v2/api-docs", "/webjars/**", "/swagger-resources/**").permitAll()
                 .antMatchers("/api/auth/kakao", "/api/auth/naver", "/", "/login", "/signup", "/findpassword", "/emailauth", "/file/**", "/api/products/**").permitAll()
                 .antMatchers("/admin/**").hasRole("ADMIN")
-                .anyRequest().hasRole("MEMBER")
+                .anyRequest().hasAnyRole("MEMBER", "ADMIN")
                 .and()
                 .addFilterBefore(new JwtTokenFilter(jwtTokenProvider), UsernamePasswordAuthenticationFilter.class).requestMatchers()
                 .and()
