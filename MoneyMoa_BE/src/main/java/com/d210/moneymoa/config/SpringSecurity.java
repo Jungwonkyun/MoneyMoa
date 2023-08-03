@@ -47,7 +47,7 @@ public class SpringSecurity extends WebSecurityConfigurerAdapter {
                 .frameOptions().deny().and()
                 .authorizeRequests()
                 .antMatchers("/swagger-ui/**", "/v2/api-docs", "/webjars/**", "/swagger-resources/**").permitAll()
-                .antMatchers("/api/auth/kakao", "/api/auth/naver", "/", "/login", "/signup", "/findpassword", "/emailauth", "/file/**", "/api/products/**").permitAll()
+                .antMatchers("/api/auth/kakao", "/api/auth/naver", "/", "/login", "/signup", "/findpassword", "/emailauth", "/file/**", "/products/**").permitAll()
                 .antMatchers("/admin/**").hasRole("ADMIN")
                 .anyRequest().hasAnyRole("MEMBER", "ADMIN")
                 .and()
