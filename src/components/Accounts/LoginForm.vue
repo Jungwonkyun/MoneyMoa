@@ -104,12 +104,14 @@ async function onLogin() {
     if (loginResult.data.message === 'fail') {
       alert('존재하지 않는 아이디거나 비밀번호가 일치하지 않습니다.')
     } else if (loginResult.data.message === 'success') {
+      if (loginResult.data.member.valid === 0) {
+        return alert('탈퇴한 회원입니다.')
+      }
       const member = {
         id: loginResult.data.member.id,
         role: loginResult.data.member.role,
         nickname: loginResult.data.member.nickname
       }
-      // cookies.set('accessToken', loginResult.data['jwt token'].accessToken, '30MIN')
       const token = loginResult.data['jwt token'].accessToken
       const data = {
         member: member,
