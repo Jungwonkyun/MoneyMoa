@@ -12,7 +12,7 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import javax.annotation.PostConstruct;
 import java.util.List;
 
-@EnableWebMvc
+//@EnableWebMvc
 @Configuration
 public class WebConfig implements WebMvcConfigurer {
 
