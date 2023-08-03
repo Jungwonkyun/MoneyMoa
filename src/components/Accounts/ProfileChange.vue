@@ -78,8 +78,8 @@
         <v-btn>회원탈퇴</v-btn>
       </v-col>
       <v-col>
-        <!-- 개발땐 프로필로 돌아가게 -->
-        <router-link :to="{ name: 'loginform' }"><v-btn>취소</v-btn></router-link>
+        <!-- 개발땐 홈으로 돌아가게 -->
+        <router-link :to="{ name: 'home' }"><v-btn>취소</v-btn></router-link>
         <v-btn @click="onUpdate">수정</v-btn>
       </v-col>
     </v-row>
@@ -89,7 +89,7 @@
 // 유저 이미지로 바꿔야함
 import { ref } from 'vue'
 import img from '../../assets/img/default_image.png'
-import { useRouter } from 'vue-router'
+import { useRouter, onBeforeRouteLeave } from 'vue-router'
 import { useAccountStore } from '@/stores/accountStore'
 const router = useRouter()
 
@@ -118,6 +118,21 @@ function onUpdate() {
   account.setPwdChecked(false)
   return router.push({ name: 'home' })
 }
+
+// 페이지 떠날시 아래문구, 회원탈퇴나 수정 클릭시에도 문구만 바꾸면됨
+// isPass같은 변수만들어서 회원탈퇴나 수정 클릭하면  true로 바꾸기, 새로고침 안해도 false로 바뀌면 냅두고 안바뀌면 next()전에 false로 다시 바꿔버리기
+onBeforeRouteLeave((to, from, next) => {
+  console.log(from, to)
+  const answer = window.confirm('사이트에서 나가시겠습니까? 변경사항이 저장되지 않을 수 있습니다.')
+  if (answer) {
+    const account = useAccountStore()
+    account.setPwdChecked(false)
+    console.log(account.pwdChecked)
+    next()
+  } else {
+    next(false)
+  }
+})
 </script>
 <style>
 textarea {

@@ -26,10 +26,9 @@ async function callUserInfoApi(memberId) {
 async function getMyInfoApi(token) {
   try {
     const headers = {
-      Authorization: `Bearer ${token}`,
+      Authorization: `Bearer ${token}`
     }
     const res = await api.get(`/myinfo`, { headers })
-    console.log(res)
     return res
   } catch (err) {
     console.log(err)
