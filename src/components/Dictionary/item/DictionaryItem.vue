@@ -1,4 +1,4 @@
-<template lang="">
+<template>
   <v-expansion-panel :title="item.word" :text="item.description"> </v-expansion-panel>
 </template>
 
@@ -10,4 +10,4 @@ const props = defineProps({
 })
 </script>
 
-<style lang=""></style>
+<style></style>

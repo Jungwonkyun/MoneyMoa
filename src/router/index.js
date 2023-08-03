@@ -31,6 +31,9 @@ import CheckPassword from '../components/Accounts/CheckPassword.vue'
 import ProfileChange from '../components/Accounts/ProfileChange.vue'
 import { useAccountStore } from '../stores/accountStore.js'
 
+// AdminView
+import AdminView from '../views/AdminView.vue'
+
 const router = createRouter({
   history: createWebHistory(),
   routes: [
@@ -160,7 +163,7 @@ const router = createRouter({
           component: FindPassword
         },
         {
-          path: 'checkpassword/',
+          path: 'checkpassword',
           name: 'checkpassword',
           component: CheckPassword
         },
@@ -185,6 +188,24 @@ const router = createRouter({
       path: '/chat',
       name: 'chat',
       component: () => import('../views/ChatView.vue')
+    },
+    {
+      path: '/admin',
+      name: 'admin',
+      component: AdminView,
+      redirect: '/admin/adminmain',
+      children: [
+        {
+          path: 'adminmain',
+          name: 'adminmain',
+          component: () => import('../components/Admin/AdminMain.vue')
+        },
+        {
+          path: 'adminusersload',
+          name: 'adminusersload',
+          component: () => import('../components/Admin/AdminUsersLoad.vue')
+        }
+      ]
     }
   ]
 })

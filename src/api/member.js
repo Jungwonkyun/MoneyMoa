@@ -1,4 +1,4 @@
-import { apiInstance } from './index'
+import { apiInstance } from './index.js'
 import { useAccountStore } from '@/stores/accountStore.js'
 
 const api = apiInstance()
@@ -17,6 +17,18 @@ async function callUserInfoApi(memberId) {
     const res = await api.get(`/member/info/${memberId}`, {
       usertoken: accessToken
     })
+    return res
+  } catch (err) {
+    console.log(err)
+  }
+}
+// 내 정보 API
+async function getMyInfoApi(token) {
+  try {
+    const headers = {
+      Authorization: `Bearer ${token}`
+    }
+    const res = await api.get(`/myinfo`, { headers })
     return res
   } catch (err) {
     console.log(err)
@@ -112,7 +124,8 @@ async function fetchFeedList(memberId) {
 // 로그인
 async function postLogin(loginInfo) {
   try {
-    const res = await api.post('/loginmember', loginInfo)
+    const res = await api.post('/login', loginInfo)
+    console.log(res)
     return res
   } catch (err) {
     console.log(err)
@@ -127,6 +140,18 @@ async function naverLogin() {
     console.log(err)
   }
 }
+// 유저 탈퇴
+async function deletequitService(token) {
+  try {
+    const headers = {
+      Authorization: `Bearer ${token}`
+    }
+    const res = await api.delete(`/quitService`, { headers })
+    return res.data
+  } catch (err) {
+    console.log(err)
+  }
+}
 export default {
   callUserInfoApi,
   addFollow,
@@ -137,5 +162,7 @@ export default {
   postEmailauth,
   postSignup,
   naverLogin,
-  postLogin
+  postLogin,
+  getMyInfoApi,
+  deletequitService
 }
