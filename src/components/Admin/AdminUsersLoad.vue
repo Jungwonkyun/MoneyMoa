@@ -54,10 +54,11 @@ async function userDelete(e) {
   console.log(e)
   if (confirm('정말로 삭제하시겠습니까?')) {
     try {
-      const message = functions.deleteUser(e.id, accessToken.value)
+      const message = await functions.deleteUser(e.id, accessToken.value)
       console.log(message)
       if (message.data.message === 'success') {
         alert('삭제되었습니다.')
+        loadAlluser()
       }
     } catch (err) {
       console.log(err)

@@ -132,6 +132,9 @@ async function quitService() {
       const token = cookies.get('accessToken')
       const result = await functions.deletequitService(token)
       if (result.message === 'success') {
+        const account = useAccountStore()
+        account.onLogout()
+        isPass.value = true
         alert('탈퇴가 완료되었습니다.')
         router.push({ name: 'home' }).then(() => {
           location.reload()
@@ -145,8 +148,9 @@ async function quitService() {
 
 // 페이지 떠날시 아래문구, 회원탈퇴나 수정 클릭시에도 문구만 바꾸면됨
 // isPass같은 변수만들어서 회원탈퇴나 수정 클릭하면  true로 바꾸기, 새로고침 안해도 false로 바뀌면 냅두고 안바뀌면 next()전에 false로 다시 바꿔버리기
-if (!isPass.value) {
-  onBeforeRouteLeave((to, from, next) => {
+onBeforeRouteLeave((to, from, next) => {
+  if (!isPass.value) {
+    console.log(isPass.value)
     console.log(from, to)
     if (window.confirm('사이트에서 나가시겠습니까? 변경사항이 저장되지 않을 수 있습니다.')) {
       const account = useAccountStore()
@@ -156,8 +160,10 @@ if (!isPass.value) {
     } else {
       next(false)
     }
-  })
-}
+  } else {
+    next()
+  }
+})
 </script>
 <style>
 textarea {
