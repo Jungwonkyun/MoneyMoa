@@ -47,6 +47,7 @@ public class DepositController {
     @GetMapping("/products/deposit/list")
     public ResponseEntity<Map<String, Object>> getDepositProductsWithInterestDetails() {
         Map<String, Object> resultMap = new HashMap<>();
+        HttpStatus status;
 
         try {
             List<Deposit> depositProducts = depositService.getAllDepositProducts();
@@ -60,11 +61,13 @@ public class DepositController {
 
             resultMap.put("depositProducts", depositProducts);
             resultMap.put("message", "success");
+            status = HttpStatus.OK;
         } catch (Exception e) {
             e.printStackTrace();
             resultMap.put("message", "fail");
+            status = HttpStatus.BAD_REQUEST
         }
-        return new ResponseEntity<>(resultMap, HttpStatus.OK);
+        return new ResponseEntity<>(resultMap, status);
     }
 
     // 예금상품 API 상세정보 조회
