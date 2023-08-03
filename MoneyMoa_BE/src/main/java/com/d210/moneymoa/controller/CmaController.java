@@ -18,14 +18,14 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 @RestController
-@RequestMapping("/api")
+@RequestMapping("/products/cma")
 public class CmaController {
 
     @Autowired
     CmaService cmaService;
 
     // CMA 상품 리스트 저장
-    @GetMapping("/products/cma/save")
+    @GetMapping("/save")
     public ResponseEntity<Map<String,Object>> saveCmaProducts(String[] args) throws InterruptedException {
 
         Map<String,Object>resultMap = new HashMap<>();
@@ -42,7 +42,7 @@ public class CmaController {
     }
 
     // CMA 상품 리스트 전체 조회
-    @GetMapping("/products/cma/list")
+    @GetMapping("/list")
     public ResponseEntity<Map<String, Object>> getCmaProducts() throws InterruptedException {
 
         Map<String, Object> resultMap = new HashMap<>();
@@ -83,7 +83,7 @@ public class CmaController {
     }
 
     // CMA 상품 상세 조회
-    @GetMapping("/products/cma/{id}")
+    @GetMapping("/{id}")
     public ResponseEntity<Map<String, Object>> getCmaProductById(@PathVariable("id") Long productId) {
         Map<String, Object> resultMap = new HashMap<>();
 

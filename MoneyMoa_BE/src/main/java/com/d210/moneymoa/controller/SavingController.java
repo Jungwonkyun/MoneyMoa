@@ -18,7 +18,7 @@ import java.util.List;
 import java.util.Map;
 
 @RestController
-@RequestMapping("/api")
+@RequestMapping("/products/saving")
 public class SavingController {
 
     @Autowired
@@ -26,7 +26,7 @@ public class SavingController {
 
 
     // 적금상품 API 정보 저장
-    @GetMapping("/products/saving/save")
+    @GetMapping("/save")
     public ResponseEntity<Map<String,Object>> saveSavingProducts(String[] args) throws InterruptedException {
 
         Map<String,Object>resultMap = new HashMap<>();
@@ -43,7 +43,7 @@ public class SavingController {
     }
 
     // 적금상품 API 정보 조회
-    @GetMapping("/products/saving/list")
+    @GetMapping("/list")
     public ResponseEntity<Map<String, Object>> getSavingProductsWithInterestDetails() {
         Map<String, Object> resultMap = new HashMap<>();
 
@@ -67,7 +67,7 @@ public class SavingController {
 
 
     // 적금상품 API 상세정보 조회
-    @GetMapping("/products/saving/{productCode}")
+    @GetMapping("/{productCode}")
     public ResponseEntity<Map<String, Object>> getSavingProductsWithInterestDetails(@PathVariable String productCode) {
         Map<String, Object> resultMap = new HashMap<>();
         HttpStatus status;
