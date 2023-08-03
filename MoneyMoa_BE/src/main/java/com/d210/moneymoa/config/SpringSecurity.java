@@ -16,8 +16,6 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
-import org.springframework.web.filter.CorsFilter;
-import org.springframework.mock.web.MockHttpServletRequest;
 import javax.servlet.http.HttpServletRequestWrapper;
 import org.springframework.security.web.access.channel.ChannelProcessingFilter;
 
@@ -37,20 +35,12 @@ public class SpringSecurity extends WebSecurityConfigurerAdapter {
     @Autowired
     private PasswordEncoder passwordEncoder;
 
-    @Autowired
-    private CorsConfigurationSource corsConfigurationSource;
 
-    @Bean
-    public CorsFilter corsFilter() {
-        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-        source.registerCorsConfiguration("/**", corsConfigurationSource.getCorsConfiguration(new HttpServletRequestWrapper(new MockHttpServletRequest())));
-        return new CorsFilter(source);
-    }
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http
-                //.cors().and()
+                .cors().and()
                 .addFilterBefore(corsFilter(), ChannelProcessingFilter.class)
                 .csrf().disable()
                 .headers()
