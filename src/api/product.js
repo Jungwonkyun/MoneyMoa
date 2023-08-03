@@ -5,7 +5,7 @@ async function getDepositList() {
   try {
     console.log('예금가져올까?')
     // const response = await api.get('/deposit/list')
-    const reponse = await api.get('/api/products/deposit/list')
+    const response = await api.get('/api/products/deposit/list')
     console.log('예금가져왔다')
     console.log(response)
     return response

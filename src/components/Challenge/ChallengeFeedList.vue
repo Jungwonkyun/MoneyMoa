@@ -92,9 +92,21 @@ const load = async ($state) => {
 //   }
 // }
 
-// test().then((res) => {
-//   console.log(res)
-// })
+async function test() {
+  try {
+    const headers = {
+      Authorization: `Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIxMCIsImV4cCI6MTY5MTA1MTkwOH0.E1SVkRcHcL7QvfejLeRjSPsoli4QEwnhtgWjqbQSZaQjJeXQT2sBdqmQSVSCCHgiVMxGaOgNbGDMmLNb-ru6bg`
+    }
+    const res = await api.get(`/feed/all`, { headers })
+    return res
+  } catch (err) {
+    console.log(err)
+  }
+}
+
+test().then((res) => {
+  console.log(res)
+})
 </script>
 
 <style>

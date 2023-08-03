@@ -93,7 +93,7 @@ const products_dummy = reactive([
     ]
   }
 ])
-const products = getDeposit('WR0001B')
+const products = getDepositList()
 console.log(products)
 const filteredProducts = computed(() =>
   products_dummy.filter(
