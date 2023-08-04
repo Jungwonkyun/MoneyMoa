@@ -2,6 +2,7 @@ package com.d210.moneymoa.controller;
 
 import com.d210.moneymoa.service.CmaService;
 
+import io.swagger.annotations.ApiOperation;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;

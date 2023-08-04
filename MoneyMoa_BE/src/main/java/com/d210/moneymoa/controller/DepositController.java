@@ -5,6 +5,7 @@ import com.d210.moneymoa.dto.Deposit;
 import com.d210.moneymoa.service.DepositService;
 
 
+import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
