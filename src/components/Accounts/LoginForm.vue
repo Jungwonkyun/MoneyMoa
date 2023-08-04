@@ -6,7 +6,7 @@
         <form class="LoginInput">
           <v-row class="d-flex align-center flex-column">
             <h1>이메일로 로그인</h1>
-            <v-col cols="12">
+            <v-col>
               <v-text-field
                 clearable
                 label="아이디(이메일)"
@@ -15,6 +15,7 @@
                 v-model="Email"
                 :rules="rules"
                 @keyup.enter="onLogin"
+                
               ></v-text-field>
               <v-text-field
                 clearable
@@ -157,4 +158,8 @@ function kakaoLogin() {
 .buttons {
   cursor: pointer;
 }
+.v-text-field {
+  max-width: none;
+}
+
 </style>

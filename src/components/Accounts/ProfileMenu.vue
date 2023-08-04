@@ -48,7 +48,7 @@ function logout() {
 
 // 회원정보 변경페이지로 이동
 function onProfilechange() {
-  return router.push({ name: 'profilechange' })
+  return router.push({ name: 'profilechange'})
 }
 // 찜목록 페이지로 이동
 function onMyproducts() {

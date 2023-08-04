@@ -56,6 +56,17 @@ async function postEmailauth(email) {
     console.log(err)
   }
 }
+// 비밀번호 찾기
+async function postfindpassword(email) {
+  try {
+    const res = await api.post(`/findpassword`, email)
+    console.log(res)
+
+    return res.data
+  } catch (err) {
+    console.log(err)
+  }
+}
 
 // 회원가입
 async function postSignup(member) {
@@ -177,5 +188,6 @@ export default {
   postLogin,
   getMyInfoApi,
   deletequitService,
-  test
+  test,
+  postfindpassword
 }
