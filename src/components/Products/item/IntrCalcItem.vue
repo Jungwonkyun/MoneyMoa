@@ -47,7 +47,15 @@
 import { ref, reactive, computed } from 'vue'
 import { useProductStore } from '@/stores/productStore'
 import { storeToRefs } from 'pinia'
-
+import {
+  getIntrRange,
+  getPeriodRange,
+  getMatchingDetail,
+  spclConditionIntrList
+} from '@/api/product'
+const props = defineProps({
+  product: Object
+})
 const cmaType = ref('deposit')
 const store = useProductStore()
 const { productType, amount, period, selectedProduct } = storeToRefs(store)
@@ -59,9 +67,23 @@ const calcType = computed(() => {
   }
   return productType.value
 })
+const calcDetail = computed(() => {
+  if (props.product.value?.interestDetails) {
+    return props.product.value.interestDetails.reduce((prev, curr) => {
+      if (curr.period <= period.value && (!prev || curr.period > prev.period)) {
+        return curr
+      } else {
+        return prev
+      }
+    }, null)
+  } else {
+    return null
+  }
+})
+console.log(calcDetail.value)
 
 const result = computed(() => {
-  let intr = Number(selectedProduct.value.interest) / 100
+  let intr = 10 / 100
   let month = Number(period.value)
   if (calcType.value === 'deposit') {
     //일단 단리계산

@@ -13,7 +13,6 @@
         v-for="(product, index) in filteredProducts"
         :key="index"
         :product="product"
-        :productType="productType"
       />
     </v-row>
   </v-container>

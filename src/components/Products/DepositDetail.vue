@@ -12,8 +12,8 @@
           </v-card-title>
         </v-card-item>
       </v-col>
-      <!-- <v-col cols="2" align-self="center">기본 {{ getIntrRange(product).min }}% </v-col> -->
-      <!-- <v-col cols="2" align-self="center">최고 {{ getIntrRange(product).max }}% </v-col> -->
+      <v-col cols="2" align-self="center">기본 {{ getIntrRange(product).min }}% </v-col>
+      <v-col cols="2" align-self="center">최고 {{ getIntrRange(product).max }}% </v-col>
     </v-row>
     <v-card-item>
       <v-table>
@@ -34,7 +34,18 @@
       </v-table>
     </v-card-item>
   </v-card>
-  <IntrCalcItem />
+  <v-card>
+    <v-card-title>우대조건</v-card-title>
+    <v-table>
+      <tbody>
+        <tr v-for="(item, index) in product.spclConditionIntrs" :key="index">
+          <td>{{ item.condition }}</td>
+          <td>{{ item.intr }}%</td>
+        </tr>
+      </tbody>
+    </v-table>
+  </v-card>
+  <IntrCalcItem v-if="product" :product="product" />
   <v-table>
     <thead>
       <tr>
@@ -51,15 +62,15 @@
   </v-table>
 </template>
 <script setup>
-import { ref } from 'vue'
+import { ref, computed } from 'vue'
 import { useProductStore } from '@/stores/productStore'
 import { storeToRefs } from 'pinia'
 import { useRoute } from 'vue-router'
 import {
   getDeposit,
-  getSaving,
   getIntrRange,
   getPeriodRange,
+  getMatchingDetail,
   spclConditionIntrList
 } from '@/api/product'
 import IntrCalcItem from './item/IntrCalcItem.vue'
@@ -67,9 +78,13 @@ const store = useProductStore()
 const { selectedProduct, period } = storeToRefs(store)
 const route = useRoute()
 const product = ref({})
+const spclConditionIntrs = ref([])
+// const calcDetail = computed(() => getMatchingDetail(product.value, period.value))
 getDeposit(route.params.productCode).then((response) => {
-  console.log(response.data.product)
+  // console.log(response.data.product)
   product.value = response.data.product
+  store.setProduct(product.value)
+  spclConditionIntrs.value = spclConditionIntrList(product.value)
 })
 // if (Object.keys(selectedProduct).length === 0) {
 //   product.value = getDeposit().data
@@ -77,7 +92,7 @@ getDeposit(route.params.productCode).then((response) => {
 //   product.value = selectedProduct.value
 // }
 // console.log(product.value.interestDetails)
-// const calcDetail = product.interestDetails.reduce((prev, curr) => {
+// const calcDetail = product.value.interestDetails.reduce((prev, curr) => {
 //   if (curr.period <= period.value && (!prev || curr.period > prev.period)) {
 //     return curr
 //   } else {

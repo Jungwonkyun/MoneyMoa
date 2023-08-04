@@ -67,7 +67,7 @@ const router = createRouter({
         {
           path: 'saving/:productCode',
           name: 'savingDetail',
-          component: () => import('../components/Products/DepositDetail.vue')
+          component: () => import('../components/Products/savingDetail.vue')
         },
         {
           path: 'cma',
