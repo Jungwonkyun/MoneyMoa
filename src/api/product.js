@@ -3,15 +3,14 @@ const api = apiInstance('products')
 
 async function getDepositList() {
   try {
-    console.log('예금가져올까?')
-    // const response = await api.get('/deposit/list')
     const response = await api.get('deposit/list')
-    console.log('예금가져왔다')
-    console.log(response.data)
     return response
   } catch (error) {
     console.log(error)
   }
+}
+function getTest() {
+  return api.get('deposit/list')
 }
 async function getSavingList() {
   try {
@@ -95,6 +94,7 @@ function spclConditionIntrList(product) {
 }
 
 export {
+  getTest,
   getDepositList,
   getSavingList,
   getCMAList,

@@ -3,7 +3,7 @@
     <router-link
       :to="{
         name: 'depositDetail',
-        params: { productCode: product.product_code }
+        params: { productCode: product.productCode }
       }"
     >
       <v-card variant="tonal">
@@ -12,10 +12,10 @@
             <v-card-item>
               <v-card-subtitle>
                 <v-icon icon="mdi-face" />
-                {{ product.bank_name }}
+                {{ product.bankName }}
               </v-card-subtitle>
               <v-card-title>
-                {{ product.product_name }}
+                {{ product.productName }}
               </v-card-title>
             </v-card-item>
           </v-col>
