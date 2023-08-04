@@ -1,7 +1,9 @@
-<template lang="">
-  <div></div>
+<template>
+  <v-container>
+    <FindPhoto />
+  </v-container>
 </template>
-<script>
-export default {}
+<script setup>
+import FindPhoto from '@/components/Challenge/item/FindPhoto.vue'
 </script>
-<style lang=""></style>
+<style></style>
