@@ -1,7 +1,8 @@
 package com.d210.moneymoa.dto;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -43,8 +44,8 @@ public class Saving implements Serializable {
     private List<String> spclList;
 
     @OneToMany(mappedBy = "saving", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-    //@JsonIgnore // 이 줄을 주석 처리하거나 제거합니다.
     @JsonManagedReference
+    @JsonProperty("interestDetails")
     private List<SavingInterestDetail> savingInterestDetails;
 
 
