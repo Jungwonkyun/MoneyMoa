@@ -144,11 +144,13 @@ const router = createRouter({
         }
       ]
     },
+    // 사전 라우터
     {
       path: '/dictionary',
       name: 'dictionary',
       component: DictionaryView
     },
+    // 계정 라우터
     {
       path: '/account',
       name: 'account',
@@ -175,6 +177,7 @@ const router = createRouter({
           name: 'checkpassword',
           component: CheckPassword
         },
+        // 개인정보 수정
         {
           path: 'profilechange',
           name: 'profilechange',

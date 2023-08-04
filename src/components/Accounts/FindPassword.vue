@@ -12,6 +12,7 @@
               dense
               v-model="Email"
               :rules="Emailrules"
+              @keyup.enter="onAthentic"
             >
             </v-text-field>
           </v-col>
@@ -40,15 +41,29 @@
 </template>
 <script setup>
 import { ref } from 'vue'
+import functions from '../../api/member.js'
 const Email = ref(null)
 // 이메일 인증함수
-function onAthentic() {
+async function onAthentic() {
   const isValid = Emailrules.every((rule) => typeof rule(Email.value) !== 'string')
   if (isValid) {
     // 이메일 유효성 검사 통과시 로직 쓰기
-    console.log('통과')
+    try{
+      const res = await functions.postfindpassword(Email.value)
+      console.log(res.message)
+
+      if (res.message === 'success'){
+        console.log(res.message)
+        alert('임시번호를 발송하였습니다. 메일을 확인해 주세요.')
+      }
+      else{
+        alert('존재하지 않는 메일입니다.')
+      }
+    }catch(err){
+      console.log(err)
+    }
   } else {
-    console.log('검증 오류가 발생했습니다.')
+    alert('이메일 형식이 아닙니다.')
   }
 }
 
