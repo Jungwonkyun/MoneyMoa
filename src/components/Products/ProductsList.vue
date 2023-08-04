@@ -93,8 +93,9 @@ const products_dummy = reactive([
     ]
   }
 ])
-const products = getDepositList()
-console.log(products)
+getDepositList().then((response) => {
+  products_dummy.value = response.data
+})
 const filteredProducts = computed(() =>
   products_dummy.filter(
     (product) =>
