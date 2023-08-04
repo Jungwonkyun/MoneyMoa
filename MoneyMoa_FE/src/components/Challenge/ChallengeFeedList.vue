@@ -1,42 +1,59 @@
 <template>
-  <v-container>
-    <h1>ChallengeFeedList</h1>
-    <SearchBar />
-    <v-row class="card-container" justify="center">
-      <v-card class="result ma-2" v-for="comment in comments" :key="comment.id" text-center>
-        <v-col>
+  {{ searchWord }}
+  <v-row class="card-container" justify="center">
+    <v-card class="result ma-2" v-for="feed in feeds" :key="feed.id" text-center>
+      <v-col>
+        <router-link :to="'/challenge/feed/' + feed.id">
           <v-img src="https://cdn.vuetifyjs.com/images/parallax/material.jpg"></v-img>
-        </v-col>
-        <v-col>{{ comment.email }}</v-col>
-        <v-col>{{ comment.id }}</v-col>
-      </v-card>
-      <InfiniteLoading @infinite="load" />
-    </v-row>
-  </v-container>
+        </router-link>
+      </v-col>
+      <v-col>{{ feed.id }}</v-col>
+      <v-col>{{ feed.content }}</v-col>
+      <v-col>{{ feed.createDateTime }}</v-col>
+      <v-col>{{ feed.hashtag }}</v-col>
+      <v-col>{{ feed.nickname }}</v-col>
+    </v-card>
+    <InfiniteLoading @infinite="load" />
+  </v-row>
 </template>
 
 <script setup>
-import { ref } from 'vue'
-import SearchBar from '@/components/Challenge/item/SearchBar.vue'
+import { ref, defineProps, computed, watch } from 'vue'
 import InfiniteLoading from 'v3-infinite-loading'
 import 'v3-infinite-loading/lib/style.css'
+import { apiInstance } from '@/api/index.js'
+import { useCookies } from 'vue3-cookies'
 
-let comments = ref([])
-let page = 1
+const { cookies } = useCookies()
+
+const api = apiInstance()
+
+const props = defineProps({
+  searchWord: null
+})
+
+let feeds = ref([])
 const load = async ($state) => {
   console.log('loading...')
 
   try {
-    const response = await fetch(
-      'https://jsonplaceholder.typicode.com/comments?_limit=10&_page=' + page
-    )
-    const json = await response.json()
-    if (json.length < 10) $state.complete()
+    const token = cookies.get('accessToken')
+    const headers = {
+      Authorization: `Bearer ${token}`
+    }
+    const res = await api.get(`/feed/all`, { headers })
+    // console.log(res.data)
+    console.log(res.data.result.data)
+    const data = res.data.result.data
+    // 만약 데이터가 2개 이하라면
+    // $state.complete()를 호출하여 더 이상 데이터를 로딩하지 않고 완료 상태로 변경
+    if (data.length < 2) $state.complete()
     else {
-      comments.value.push(...json)
+      // feeds.value에 모든 data 배열의 모든 요소를 병합
+      feeds.value.push(...data)
+      // $state.loaded()를 호출하여 더 많은 데이터를 요청할 수 있도록 로딩 상태를 유지
       $state.loaded()
     }
-    page++
   } catch (error) {
     $state.error()
   }
@@ -47,9 +64,10 @@ const load = async ($state) => {
 .result {
   gap: 5px;
   font-weight: 300;
-  width: 500px;
+  width: 100%;
+  height: 100%;
   text-align: center;
-  background: #eceef0;
+  background: #f4f4f4;
 }
 
 .card-container {

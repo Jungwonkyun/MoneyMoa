@@ -1,6 +1,5 @@
 <template>
   <v-container @click="setProduct(product)">
-    <!-- to에 함수바인딩해서 detail페이지 각각 연결되도록 하자 -->
     <router-link
       :to="{
         name: 'depositDetail',
@@ -8,7 +7,7 @@
       }"
     >
       <v-card variant="tonal">
-        <v-row class="d-flex justify-space-between">
+        <v-row>
           <v-col>
             <v-card-item>
               <v-card-subtitle>
@@ -20,7 +19,9 @@
               </v-card-title>
             </v-card-item>
           </v-col>
-          <v-col cols="2" align-self="center"> {{ product.interest }}% </v-col>
+          <v-col cols="2" align-self="center">기본 {{ getIntrRange(product).min }}% </v-col>
+          <!-- <v-divider inset vertical /> -->
+          <v-col cols="2" align-self="center">최고 {{ getIntrRange(product).max }}% </v-col>
         </v-row>
       </v-card>
     </router-link>
@@ -28,6 +29,7 @@
 </template>
 <script setup>
 import { useProductStore } from '@/stores/productStore'
+import { getIntrRange } from '@/api/product'
 defineProps({
   product: Object
 })

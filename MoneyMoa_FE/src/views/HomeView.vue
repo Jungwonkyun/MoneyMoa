@@ -6,7 +6,7 @@
           <v-row>
             <v-spacer></v-spacer>
             <v-col align="right">
-              <h1>돈 모으고 싶을 때</h1>
+              <h1>돈 모으고 싶을 때,</h1>
               <h1>머니모아</h1>
             </v-col>
           </v-row>
@@ -41,6 +41,5 @@
 
 <script setup>
 import landing from '../assets/img/micheile-henderson-f030K9IzpcM-unsplash.jpg'
-// const landing = './src/assets/img/micheile-henderson-f030K9IzpcM-unsplash.jpg'
 const moamoa = './src/assets/img/money_moa_moa.gif'
 </script>

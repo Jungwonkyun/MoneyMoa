@@ -31,6 +31,9 @@ import CheckPassword from '../components/Accounts/CheckPassword.vue'
 import ProfileChange from '../components/Accounts/ProfileChange.vue'
 import { useAccountStore } from '../stores/accountStore.js'
 
+// AdminView
+import AdminView from '../views/AdminView.vue'
+
 const router = createRouter({
   history: createWebHistory(),
   routes: [
@@ -63,7 +66,7 @@ const router = createRouter({
         {
           path: 'cma',
           name: 'cmaList',
-          component: () => import('../components/Products/ProductsList.vue')
+          component: () => import('../components/Products/CMAList.vue')
         }
       ]
     },
@@ -71,12 +74,14 @@ const router = createRouter({
       path: '/challenge',
       name: 'challenge',
       component: ChallengeView,
+      props: true,
       redirect: '/challenge/feedList',
       children: [
         {
           path: 'feedList',
           name: 'challengeFeedList',
-          component: () => import('../components/Challenge/ChallengeFeedList.vue')
+          component: () => import('../components/Challenge/ChallengeFeedList.vue'),
+          props: true
         },
         {
           path: 'feed/:feedId',
@@ -93,6 +98,12 @@ const router = createRouter({
           path: 'feed/post',
           name: 'challengeFeedPost',
           component: () => import('../components/Challenge/ChallengeFeedPost.vue')
+        },
+        {
+          // feed 검색 결과 리스트
+          path: 'feed/search',
+          name: 'challengeFeedSearchList',
+          component: () => import('../components/Challenge/ChallengeFeedSearchList.vue')
         }
       ]
     },
@@ -133,11 +144,13 @@ const router = createRouter({
         }
       ]
     },
+    // 사전 라우터
     {
       path: '/dictionary',
       name: 'dictionary',
       component: DictionaryView
     },
+    // 계정 라우터
     {
       path: '/account',
       name: 'account',
@@ -160,10 +173,11 @@ const router = createRouter({
           component: FindPassword
         },
         {
-          path: 'checkpassword/',
+          path: 'checkpassword',
           name: 'checkpassword',
           component: CheckPassword
         },
+        // 개인정보 수정
         {
           path: 'profilechange',
           name: 'profilechange',
@@ -185,6 +199,24 @@ const router = createRouter({
       path: '/chat',
       name: 'chat',
       component: () => import('../views/ChatView.vue')
+    },
+    {
+      path: '/admin',
+      name: 'admin',
+      component: AdminView,
+      redirect: '/admin/adminmain',
+      children: [
+        {
+          path: 'adminmain',
+          name: 'adminmain',
+          component: () => import('../components/Admin/AdminMain.vue')
+        },
+        {
+          path: 'adminusersload',
+          name: 'adminusersload',
+          component: () => import('../components/Admin/AdminUsersLoad.vue')
+        }
+      ]
     }
   ]
 })
