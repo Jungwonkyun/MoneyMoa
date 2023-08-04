@@ -21,7 +21,6 @@
 import { ref, defineProps, computed, watch } from 'vue'
 import InfiniteLoading from 'v3-infinite-loading'
 import 'v3-infinite-loading/lib/style.css'
-import axios from 'axios'
 import { apiInstance } from '@/api/index.js'
 import { useCookies } from 'vue3-cookies'
 
