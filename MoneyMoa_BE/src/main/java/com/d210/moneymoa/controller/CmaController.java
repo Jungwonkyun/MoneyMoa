@@ -82,7 +82,7 @@ public class CmaController {
             }
 
             status = HttpStatus.OK;
-            resultMap.put("data", productsList);
+            resultMap.put("products", productsList);
             resultMap.put("message", "success");
 
         } catch (Exception e) {
@@ -125,7 +125,7 @@ public class CmaController {
                 product.putAll(jsonObject.toMap());
             }
             status = HttpStatus.OK;
-            resultMap.put("data", product);
+            resultMap.put("product", product);
             resultMap.put("message", "success");
         } catch (Exception e) {
             e.printStackTrace();

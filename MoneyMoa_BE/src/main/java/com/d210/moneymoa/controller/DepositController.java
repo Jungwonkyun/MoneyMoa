@@ -69,7 +69,7 @@ public class DepositController {
             }
 
             status = HttpStatus.OK;
-            resultMap.put("depositProducts", depositProducts);
+            resultMap.put("products", depositProducts);
             resultMap.put("message", "success");
             
         } catch (Exception e) {
@@ -97,7 +97,7 @@ public class DepositController {
             depositProduct.setSpclList(Arrays.asList(spclStr.split("\n")));
 
             status = HttpStatus.OK;
-            resultMap.put("depositProduct", depositProduct);
+            resultMap.put("product", depositProduct);
             resultMap.put("message", "success");
             
         } catch (Exception e) {

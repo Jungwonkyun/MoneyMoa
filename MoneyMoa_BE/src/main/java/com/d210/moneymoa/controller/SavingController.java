@@ -67,7 +67,7 @@ public class SavingController {
             }
 
             status = HttpStatus.OK;
-            resultMap.put("savingProducts", savingProducts);
+            resultMap.put("products", savingProducts);
             resultMap.put("message", "success");
         } catch (Exception e) {
             e.printStackTrace();
@@ -95,7 +95,7 @@ public class SavingController {
             savingProduct.setSpclList(Arrays.asList(spclStr.split("\n")));
 
             status = HttpStatus.OK;
-            resultMap.put("savingProduct", savingProduct);
+            resultMap.put("product", savingProduct);
             resultMap.put("message", "success");
         } catch (Exception e) {
             e.printStackTrace();
