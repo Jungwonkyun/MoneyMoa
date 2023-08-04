@@ -40,7 +40,6 @@
 import { ref, onMounted } from 'vue'
 import { useRoute } from 'vue-router'
 import functions from '@/api/challegeFeed.js'
-import { mdiAccount } from '@mdi/js'
 
 const route = useRoute()
 const feedId = ref(route.params.feedId)
