@@ -163,6 +163,11 @@ const router = createRouter({
           component: LoginForm
         },
         {
+          path: 'login/api/kakao',
+          name: 'kakaologin',
+          component: LoginForm
+        },
+        {
           path: 'signup',
           name: 'signupform',
           component: SignupForm

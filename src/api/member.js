@@ -163,6 +163,20 @@ async function naverLogin() {
     console.log(err)
   }
 }
+// 카카오 로그인
+function openkakaoLogin() {
+  console.log(import.meta.env.VITE_KAKAO_APP_API_URL)
+
+  window.location.replace(import.meta.env.VITE_KAKAO_APP_API_URL)
+}
+// async function kakaoLogin() {
+//   try {
+//     const res = await api.get('/api/auth/kakao')
+//     return res
+//   } catch (err) {
+//     console.log(err)
+//   }
+// }
 // 유저 탈퇴
 async function deletequitService(token) {
   try {
@@ -189,5 +203,7 @@ export default {
   getMyInfoApi,
   deletequitService,
   test,
-  postfindpassword
+  postfindpassword,
+  openkakaoLogin
+  // jskakaoLogin
 }

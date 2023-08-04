@@ -19,7 +19,12 @@
             placeholder="키워드 검색"
             variant="underlined"
             append-inner-icon="mdi-magnify"
+            @keyup.enter="onSearch"
+            v-model="searchWord"
           >
+            <template #append-inner-icon>
+              <v-icon @click="onSearch">mdi-magnify</v-icon>
+            </template>
           </v-text-field>
         </v-list-item>
       </v-list>
@@ -27,7 +32,12 @@
 
       <v-list>
         <v-expansion-panels variant="accordion">
-          <DictionaryItem v-for="index in 100" :key="index" :item="list[0].value" />
+          <DictionaryItem
+            v-for="(item, index) in list"
+            :key="index"
+            :item="item"
+            :searchWord="searchWord"
+          />
         </v-expansion-panels>
       </v-list>
 
@@ -46,23 +56,34 @@
 import { ref } from 'vue'
 import DictionaryItem from './item/DictionaryItem.vue'
 
+const searchWord = ref('')
+function onSearch() {
+  if (searchWord.value) {
+    list.value = listall.filter(
+      (item) => item.word.includes(searchWord.value) || item.description.includes(searchWord.value)
+    )
+  } else {
+    list.value = listall
+  }
+}
 const menu = ref(false)
 
-const Item1 = ref({
+const Item1 = {
   word: 'item1',
   description:
     'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.'
-})
-const Item2 = ref({
+}
+const Item2 = {
   word: 'item2',
   description:
-    'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.'
-})
-const Item3 = ref({
+    'Loremipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.'
+}
+const Item3 = {
   word: 'item3',
   description:
     'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.'
-})
+}
 
-const list = ref([Item1, Item2, Item3])
+const listall = [Item1, Item2, Item3]
+const list = ref(listall)
 </script>
