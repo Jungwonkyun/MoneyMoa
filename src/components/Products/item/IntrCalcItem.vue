@@ -68,22 +68,29 @@ const calcType = computed(() => {
   return productType.value
 })
 const calcDetail = computed(() => {
-  if (props.product.value?.interestDetails) {
-    return props.product.value.interestDetails.reduce((prev, curr) => {
+  if (props.product?.interestDetails) {
+    // console.log('intrs:')
+    // console.log(props.product.interestDetails)
+    return props.product.interestDetails.reduce((prev, curr) => {
       if (curr.period <= period.value && (!prev || curr.period > prev.period)) {
+        console.log(curr)
         return curr
       } else {
+        console.log(prev)
         return prev
       }
-    }, null)
+    })
   } else {
+    console.log('product미전달')
     return null
   }
 })
-console.log(calcDetail.value)
 
 const result = computed(() => {
-  let intr = 10 / 100
+  let intr = Number(calcDetail.value.basicRate)
+  console.log('금리:')
+  console.log(intr)
+  // let intr = 10 / 100
   let month = Number(period.value)
   if (calcType.value === 'deposit') {
     //일단 단리계산

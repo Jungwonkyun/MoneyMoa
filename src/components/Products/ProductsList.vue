@@ -3,11 +3,7 @@
     <BankSelectItem />
     <ProductConditionItem />
     <v-divider />
-
-    <v-row v-if="filteredProducts.length == 0">
-      <v-progress-circular indeterminate color="primary"></v-progress-circular>
-    </v-row>
-    <v-row v-else>
+    <v-row>
       결과 {{ filteredProducts.length }} 건
       <ProductPreviewItem
         v-for="(product, index) in filteredProducts"
@@ -81,7 +77,7 @@ function checkPeriod(product) {
 function checkAmount(product) {
   //유저가 입력한 금액이 상품의 예금한도를 초과하면 출력하지 않음
   if (!amount.value) return true
-  return amount.value <= Number(product.max_limit)
+  return amount.value <= Number(product.maxLimit)
 }
 </script>
 <style></style>
