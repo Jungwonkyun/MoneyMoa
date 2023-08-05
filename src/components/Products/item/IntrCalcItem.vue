@@ -93,10 +93,9 @@ const spSum = computed(() =>
 )
 
 const result = computed(() => {
-  let intr = Math.min(
-    Number(calcDetail.value.basicRate) + spSum.value,
-    Number(calcDetail.value.maxRate)
-  )
+  let intr =
+    Math.min(Number(calcDetail.value.basicRate) + spSum.value, Number(calcDetail.value.maxRate)) /
+    100
   console.log('적용 금리: ' + intr)
   let month = Number(period.value)
   if (calcType.value === 'deposit') {
