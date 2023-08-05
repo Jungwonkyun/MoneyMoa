@@ -54,7 +54,8 @@ import {
   spclConditionIntrList
 } from '@/api/product'
 const props = defineProps({
-  product: Object
+  product: Object,
+  spcls: Array
 })
 const cmaType = ref('deposit')
 const store = useProductStore()
@@ -86,19 +87,23 @@ const calcDetail = computed(() => {
   }
 })
 
+//우대이율 총합(maxRate 고려 전)
+const spSum = computed(() =>
+  props.spcls.reduce((sum, item) => (item.checked ? sum + item.intr : sum), 0)
+)
+
 const result = computed(() => {
-  let intr = Number(calcDetail.value.basicRate)
-  console.log('금리:')
-  console.log(intr)
-  // let intr = 10 / 100
+  let intr = Math.min(
+    Number(calcDetail.value.basicRate) + spSum.value,
+    Number(calcDetail.value.maxRate)
+  )
+  console.log('적용 금리: ' + intr)
   let month = Number(period.value)
   if (calcType.value === 'deposit') {
     //일단 단리계산
-    console.log('예금식계산')
     return Math.floor(Number(amount.value) * (1 + (intr * month) / 12))
   } else if (calcType.value === 'saving') {
     //일단 단리계산
-    console.log('적금식계산')
     return (
       Math.floor(((Number(amount.value) * intr) / 24) * month * (month + 1)) +
       Number(amount.value) * month

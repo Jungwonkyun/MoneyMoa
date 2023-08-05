@@ -116,7 +116,8 @@ function spclConditionIntrList(product) {
     const intr = match ? parseFloat(match[0]) : null
     return {
       condition: str,
-      intr: intr
+      intr: intr,
+      checked: false
     }
   })
 }

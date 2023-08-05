@@ -35,6 +35,7 @@
                 <tr v-for="(item, index) in spclConditionIntrs" :key="index">
                   <td>{{ item.condition }}</td>
                   <td>{{ item.intr }}%</td>
+                  <td><v-checkbox v-model="item.checked" /></td>
                 </tr>
               </tbody>
             </v-table>
@@ -43,7 +44,7 @@
       </v-table>
     </v-card-item>
   </v-card>
-  <IntrCalcItem v-if="loaded" :product="product" />
+  <IntrCalcItem v-if="loaded" :product="product" :spcls="spclConditionIntrs" />
   <v-table>
     <thead>
       <tr>
