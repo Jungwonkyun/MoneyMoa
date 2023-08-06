@@ -1,7 +1,10 @@
 import { apiInstance } from './index.js'
 import { useAccountStore } from '@/stores/accountStore.js'
+import { useCookies } from 'vue3-cookies'
 
 const api = apiInstance()
+const { cookies } = useCookies()
+const token = cookies.get('accessToken')
 
 // 피니아 스토어에서 유저 토큰을 가져오기
 function getAccessToken() {
