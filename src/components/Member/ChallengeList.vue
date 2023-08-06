@@ -37,7 +37,7 @@
       <v-row justify="center">
         <v-dialog v-model="dialog" persistent width="auto">
           <template v-slot:activator="{ props }">
-            <v-btn color="primary" v-bind="props"> Open Dialog </v-btn>
+            <v-btn color="primary" v-bind="props"> 챌린지 생성하기 </v-btn>
           </template>
           <v-card>
             <v-card-title class="text-center mt-4">
@@ -46,61 +46,53 @@
             <v-card-text>
               <v-container>
                 <v-row>
-                  <v-col cols="12" sm="6" md="4">
-                    <v-text-field label="Legal first name*" required></v-text-field>
-                  </v-col>
-                  <v-col cols="12" sm="6" md="4">
+                  <v-col cols="12">
                     <v-text-field
-                      label="Legal middle name"
-                      hint="example of helper text only on focus"
-                    ></v-text-field>
-                  </v-col>
-                  <v-col cols="12" sm="6" md="4">
-                    <v-text-field
-                      label="Legal last name*"
-                      hint="example of persistent helper text"
-                      persistent-hint
+                      label="챌린지 이름을 설정하세요"
                       required
+                      variant="solo-filled"
                     ></v-text-field>
                   </v-col>
                   <v-col cols="12">
-                    <v-text-field label="Email*" required></v-text-field>
+                    <v-text-field
+                      label="금액을 입력하세요"
+                      required
+                      variant="solo-filled"
+                    ></v-text-field>
                   </v-col>
                   <v-col cols="12">
-                    <v-text-field label="Password*" type="password" required></v-text-field>
+                    <v-textarea
+                      clearable
+                      label="내용을 입력하세요"
+                      variant="solo-filled"
+                    ></v-textarea>
                   </v-col>
-                  <v-col cols="12" sm="6">
+                  <v-col cols="12">
+                    <v-text-field label="기간을 입력하세요" variant="solo-filled"></v-text-field>
+                  </v-col>
+                  <v-col cols="12">
                     <v-select
-                      :items="['0-17', '18-29', '30-54', '54+']"
-                      label="Age*"
+                      :items="['챌린지1', '챌린지2', '챌린지3']"
+                      label="챌린지를 선택하세요"
                       required
+                      variant="solo-filled"
                     ></v-select>
                   </v-col>
-                  <v-col cols="12" sm="6">
+                  <v-col cols="12">
                     <v-autocomplete
-                      :items="[
-                        'Skiing',
-                        'Ice hockey',
-                        'Soccer',
-                        'Basketball',
-                        'Hockey',
-                        'Reading',
-                        'Writing',
-                        'Coding',
-                        'Basejump'
-                      ]"
-                      label="Interests"
+                      :items="['챌린지1', '챌린지2', '챌린지3']"
+                      label="챌린지를 선택하세요"
                       multiple
+                      variant="solo-filled"
                     ></v-autocomplete>
                   </v-col>
                 </v-row>
               </v-container>
-              <small>*indicates required field</small>
             </v-card-text>
             <v-card-actions>
               <v-spacer></v-spacer>
-              <v-btn color="blue-darken-1" variant="text" @click="dialog = false"> Close </v-btn>
-              <v-btn color="blue-darken-1" variant="text" @click="dialog = false"> Save </v-btn>
+              <v-btn color="blue-darken-1" variant="text" @click="dialog = false"> 닫기 </v-btn>
+              <v-btn color="blue-darken-1" variant="text" @click="dialog = false"> 만들기 </v-btn>
             </v-card-actions>
           </v-card>
         </v-dialog>
