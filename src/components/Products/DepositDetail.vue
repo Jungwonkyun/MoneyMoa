@@ -51,24 +51,29 @@
     </v-card-item>
   </v-card>
   <IntrCalcItem v-if="loaded" :product="product" :spcls="spclConditionIntrs" />
-  <v-table>
-    <thead>
-      <tr>
-        <th>가입기간</th>
-        <th>금리</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr v-for="(item, index) in product.interestDetails" :key="index">
-        <td>{{ item.period }}개월</td>
-        <td>{{ item.basicRate }}% ~ {{ item.maxRate }}%</td>
-      </tr>
-      <tr>
-        <td>만기 후 금리</td>
-        <td>{{ product.interest }}</td>
-      </tr>
-    </tbody>
-  </v-table>
+  <v-container>
+    <v-table>
+      <thead>
+        <tr>
+          <th>가입기간</th>
+          <th>금리</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr v-for="(item, index) in product.interestDetails" :key="index">
+          <td>{{ item.period }}개월</td>
+          <td>{{ item.basicRate }}% ~ {{ item.maxRate }}%</td>
+        </tr>
+        <tr>
+          <td>만기 후 금리</td>
+          <td>{{ product.interest }}</td>
+        </tr>
+      </tbody>
+    </v-table>
+  </v-container>
+  <v-container>
+    <ProductCommentItem />
+  </v-container>
 </template>
 <script setup>
 import { ref, computed } from 'vue'
@@ -77,6 +82,7 @@ import { storeToRefs } from 'pinia'
 import { useRoute } from 'vue-router'
 import { getDeposit, getPeriodRange, spclConditionIntrList } from '@/api/product'
 import IntrCalcItem from './item/IntrCalcItem.vue'
+import ProductCommentItem from './item/ProductCommentItem.vue'
 const store = useProductStore()
 const { selectedProduct, period } = storeToRefs(store)
 const route = useRoute()

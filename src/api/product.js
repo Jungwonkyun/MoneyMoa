@@ -64,6 +64,14 @@ async function likeProduct(likeInfo) {
   }
 }
 
+async function getComments(productType, productCode) {
+  //productType에 따라 다른 get url, cma는 id가 productCode 대체
+}
+
+async function postComment(productType, comment) {
+  //productType에 따라 다른 post url
+}
+
 /* 상품정보가공(여기서부터 axios아님) */
 function getPeriodRange(product) {
   //product호출이 비동기라서 undefined상태에서 값을 가져오려고 하면 에러가 나서 이렇게 처리했는데 이게 맞는지 모르겠어요
