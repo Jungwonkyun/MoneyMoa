@@ -76,7 +76,7 @@ function checkPeriod(product) {
 }
 function checkAmount(product) {
   //유저가 입력한 금액이 상품의 예금한도를 초과하면 출력하지 않음
-  if (!amount.value) return true
+  if (!amount.value || !product.maxLimit) return true
   return amount.value <= Number(product.maxLimit)
 }
 </script>

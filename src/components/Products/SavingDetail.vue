@@ -22,7 +22,8 @@
           </tr>
           <tr>
             <td>최고한도</td>
-            <td>{{ product.maxLimit }}</td>
+            <td v-if="product.maxLimit">{{ product.maxLimit }}원</td>
+            <td v-else>없음</td>
           </tr>
           <tr>
             <td>유의사항</td>
@@ -65,13 +66,7 @@ import { ref } from 'vue'
 import { useProductStore } from '@/stores/productStore'
 import { storeToRefs } from 'pinia'
 import { useRoute } from 'vue-router'
-import {
-  getSaving,
-  getIntrRange,
-  getPeriodRange,
-  getMatchingDetail,
-  spclConditionIntrList
-} from '@/api/product'
+import { getSaving, getPeriodRange, spclConditionIntrList } from '@/api/product'
 import IntrCalcItem from './item/IntrCalcItem.vue'
 const store = useProductStore()
 const { selectedProduct, period } = storeToRefs(store)

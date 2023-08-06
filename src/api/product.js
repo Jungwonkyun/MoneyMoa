@@ -111,15 +111,17 @@ function getMatchingDetail(product, period) {
 
 //우대금리 조건배열에서 이율 분리해서 합치기
 function spclConditionIntrList(product) {
-  return product.spclList.map((str) => {
-    const match = str.match(/\d+(\.\d+)?%/)
-    const intr = match ? parseFloat(match[0]) : null
-    return {
-      condition: str,
-      intr: intr,
-      checked: false
-    }
-  })
+  return product.spclList
+    .filter((str) => str.trim().length > 0)
+    .map((str) => {
+      const match = str.match(/\d+(\.\d+)?%/)
+      const intr = match ? parseFloat(match[0]) : 0
+      return {
+        condition: str,
+        intr: intr,
+        checked: false
+      }
+    })
 }
 
 export {

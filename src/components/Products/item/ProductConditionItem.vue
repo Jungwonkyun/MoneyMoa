@@ -35,4 +35,8 @@ const onKeyPress = (event) => {
   }
 }
 </script>
-<style></style>
+<style>
+.v-text-field {
+  width: 150px;
+}
+</style>

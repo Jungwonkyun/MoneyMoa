@@ -22,7 +22,8 @@
           </tr>
           <tr>
             <td>최고한도</td>
-            <td>{{ product.maxLimit }}</td>
+            <td v-if="product.maxLimit">{{ product.maxLimit }}원</td>
+            <td v-else>없음</td>
           </tr>
           <tr>
             <td>유의사항</td>
@@ -30,12 +31,17 @@
           </tr>
           <tr>
             <td>우대조건</td>
-            <v-table>
+            <td v-if="spclConditionIntrs.length == 1 && spclConditionIntrs.at(0).intr === 0">
+              없음
+            </td>
+            <v-table v-else>
               <tbody>
                 <tr v-for="(item, index) in spclConditionIntrs" :key="index">
                   <td>{{ item.condition }}</td>
-                  <td>{{ item.intr }}%</td>
-                  <td><v-checkbox v-model="item.checked" /></td>
+                  <td v-if="item.intr !== 0">{{ item.intr }}%</td>
+                  <td v-else></td>
+                  <td v-if="item.intr !== 0"><v-checkbox v-model="item.checked" /></td>
+                  <td v-else></td>
                 </tr>
               </tbody>
             </v-table>
@@ -57,6 +63,9 @@
         <td>{{ item.period }}개월</td>
         <td>{{ item.basicRate }}% ~ {{ item.maxRate }}%</td>
       </tr>
+      <tr>
+        만기 후 금리
+      </tr>
     </tbody>
   </v-table>
 </template>
@@ -65,13 +74,7 @@ import { ref, computed } from 'vue'
 import { useProductStore } from '@/stores/productStore'
 import { storeToRefs } from 'pinia'
 import { useRoute } from 'vue-router'
-import {
-  getDeposit,
-  getIntrRange,
-  getPeriodRange,
-  getMatchingDetail,
-  spclConditionIntrList
-} from '@/api/product'
+import { getDeposit, getPeriodRange, spclConditionIntrList } from '@/api/product'
 import IntrCalcItem from './item/IntrCalcItem.vue'
 const store = useProductStore()
 const { selectedProduct, period } = storeToRefs(store)
@@ -85,8 +88,6 @@ getDeposit(route.params.productCode).then((response) => {
   product.value = response.data.product
   store.setProduct(product.value)
   spclConditionIntrs.value = spclConditionIntrList(product.value)
-  console.log('우대: ')
-  console.log(spclConditionIntrs.value)
   loaded.value = true
 })
 </script>
