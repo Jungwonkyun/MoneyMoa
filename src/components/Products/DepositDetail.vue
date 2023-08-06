@@ -40,7 +40,7 @@
                   <td>{{ item.condition }}</td>
                   <td v-if="item.intr !== 0">{{ item.intr }}%</td>
                   <td v-else></td>
-                  <td v-if="item.intr !== 0"><v-checkbox v-model="item.checked" /></td>
+                  <td v-if="item.intr !== 0"><v-checkbox v-model="item.checked" hide-details /></td>
                   <td v-else></td>
                 </tr>
               </tbody>
@@ -64,7 +64,8 @@
         <td>{{ item.basicRate }}% ~ {{ item.maxRate }}%</td>
       </tr>
       <tr>
-        만기 후 금리
+        <td>만기 후 금리</td>
+        <td>{{ product.interest }}</td>
       </tr>
     </tbody>
   </v-table>
