@@ -29,7 +29,7 @@ public class JwtTokenFilter extends OncePerRequestFilter {
 
         logger.info("path info: "+ path);
 
-        if (path.startsWith("/login") ||path.startsWith("/signup")||path.startsWith("/findpassword")||path.startsWith("/emailauth")
+        if (path.startsWith("api/member/login") ||path.startsWith("api/member/signup")||path.startsWith("api/member/findpassword")||path.startsWith("api/member/emailauth")
                 ||path.startsWith("/swagger-ui")||path.startsWith("/v2")||path.startsWith("/webjars")|| path.startsWith("/swagger-resources")
                 ||path.startsWith("/file")){
             logger.info("얘는 필터에 들어가지 않음");
