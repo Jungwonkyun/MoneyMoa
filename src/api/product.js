@@ -75,18 +75,46 @@ async function likeProduct(productType, likeInfo) {
   }
 }
 
-async function getComments(productType, productCode) {
-  //productType에 따라 다른 get url, cma는 id가 productCode 대체
+// 상품상세에서 댓글 같이 반환받음. 따라서 필요없다
+// async function getComments(productType, productCode) {
+//   //productType에 따라 다른 get url, cma는 id가 productCode 대체
+//   try {
+//     const response = await api.get(`/${productType}/comment`, productCode)
+//     return response
+//   } catch (error) {
+//     console.log(error)
+//   }
+// }
+
+async function writeComment(productType, productCode, comment) {
+  //productType에 따라 다른 post url
   try {
-    const response = await api.get(`/${productType}/comment`, productCode)
+    const token = cookies.get('accessToken')
+    const headers = {
+      Authorization: `Bearer ${token}`
+    }
+    const response = await api.post(
+      `/${productType}/${productCode}/comment`,
+      JSON.stringify(comment),
+      { headers }
+    )
     return response
   } catch (error) {
     console.log(error)
   }
 }
 
-async function writeComment(productType, comment) {
-  //productType에 따라 다른 post url
+async function deleteComment(productType, commentId) {
+  try {
+    const token = cookies.get('accessToken')
+    const headers = {
+      Authorization: `Bearer ${token}`
+    }
+    const response = await api.delete(`/${productType}/comment/${commentId}`, { headers })
+    return response
+  } catch (error) {
+    console.log(error)
+  }
 }
 
 /* 상품정보가공(여기서부터 axios아님) */
@@ -158,8 +186,8 @@ export {
   getSaving,
   getCMA,
   likeProduct,
-  getComments,
   writeComment,
+  deleteComment,
   getPeriodRange,
   getIntrRange,
   getMatchingDetail,

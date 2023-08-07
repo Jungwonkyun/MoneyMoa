@@ -1,24 +1,75 @@
 <template>
-  <v-containter>
+  <v-container>
     <v-row>
       <v-textarea
+        v-model="commentContent"
         variant="outlined"
         prepend-icon="mdi-comment-processing-outline"
         rows="2"
         no-resize
       ></v-textarea>
-      <v-btn>댓글 작성</v-btn>
+      <v-btn @click="write">댓글 작성</v-btn>
     </v-row>
     <!-- 댓글목록 -->
-  </v-containter>
+    <v-sheet v-if="commentList.length">
+      <v-card variant="flat" v-for="(item, index) in commentList">
+        <v-row>
+          <v-col cols="2">
+            <v-card-title>{{ item.memberId }}</v-card-title>
+            <v-card-subtitle>{{ formatDate(item.createdAt) }}</v-card-subtitle>
+          </v-col>
+          <v-col>
+            <v-card-text>{{ item.content }}</v-card-text>
+          </v-col>
+          <v-col cols="3">
+            <v-btn variant="text">수정</v-btn>
+            <v-btn variant="text" @click="deleteCmt(item.id)">삭제</v-btn>
+          </v-col>
+        </v-row>
+        <v-divider />
+      </v-card>
+    </v-sheet>
+    <v-sheet v-else> 댓글이 없습니다. </v-sheet>
+  </v-container>
 </template>
 <script setup>
+import { ref } from 'vue'
 import { useProductStore } from '@/stores/productStore'
+import { useRoute } from 'vue-router'
 import { storeToRefs } from 'pinia'
+import { writeComment, deleteComment } from '@/api/product'
 const props = defineProps({
-  productCode: String //cma의 경우 id값
+  commentList: Object
 })
+const emit = defineEmits(['comment-updated'])
+const route = useRoute()
 const store = useProductStore()
 const { productType } = storeToRefs(store)
+const commentContent = ref('')
+
+console.log('댓글:')
+console.log(props.commentList)
+
+function write() {
+  let comment = {
+    content: commentContent.value
+  }
+  writeComment(productType.value, route.params.productCode, comment).then((response) => {
+    commentContent.value = ''
+    emit('comment-updated')
+  })
+}
+function deleteCmt(cmtId) {
+  deleteComment(productType.value, cmtId).then((response) => {
+    emit('comment-updated')
+  })
+}
+function formatDate(input) {
+  const date = new Date(input)
+  const year = date.getFullYear().toString().slice(-2)
+  const month = (date.getMonth() + 1).toString().padStart(2, '0')
+  const day = date.getDate().toString().padStart(2, '0')
+  return `${year}/${month}/${day}`
+}
 </script>
 <style></style>
