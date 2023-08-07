@@ -1,13 +1,13 @@
 <template>
   <v-container>
     <v-row>
-      <v-col>
+      <v-col class="text-center">
         <h1>비밀번호 확인</h1>
       </v-col>
     </v-row>
 
     <v-row>
-      <v-col>
+      <v-col class="text-center">
         <h3>사용중인 비밀번호를 입력해 주세요.</h3>
       </v-col>
     </v-row>
@@ -29,12 +29,12 @@
       </v-col>
     </v-row>
     <v-row>
-      <v-col>
+      <v-col class="text-end">
         <v-btn @click="onCheckPwd">확인</v-btn>
       </v-col>
     </v-row>
     <v-row>
-      <v-col>
+      <v-col class="text-end">
         <!-- 홈 아니라 유저프로필로 가야함 임시임 -->
         <v-btn @click="goBack">돌아가기</v-btn>
       </v-col>
@@ -60,7 +60,7 @@ const rules = [(value) => !!value || '비밀번호를 입력해 주세요.']
 const visible = ref(false)
 
 // 이전페이지 돌아가기위한 함수
-function goBack(){
+function goBack() {
   router.go(-1)
 }
 

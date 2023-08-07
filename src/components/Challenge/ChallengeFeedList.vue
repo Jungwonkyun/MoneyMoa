@@ -1,5 +1,4 @@
 <template>
-  {{ searchWord }}
   <v-row class="card-container" justify="center">
     <v-card class="result ma-2" v-for="feed in feeds" :key="feed.id" text-center>
       <v-col>

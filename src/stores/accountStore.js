@@ -20,7 +20,7 @@ export const useAccountStore = defineStore('account', () => {
     return !!cookies.get('accessToken')
   })
   const member = ref(null)
-
+  cookies.get('member')
   // 로그인 함수
   function onLogin(data) {
     console.log(data)

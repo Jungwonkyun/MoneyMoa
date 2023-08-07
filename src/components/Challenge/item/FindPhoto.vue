@@ -1,14 +1,15 @@
 <template>
   <v-card class="mx-auto" width="700" height="700" :elevation="10">
-    <v-card-title align="center" class="py-5">새 게시글 작성</v-card-title>
+    <v-card-title align="center" class="py-5">새 게시글 만들기</v-card-title>
     <v-divider class="border-opacity-20"></v-divider>
 
     <!-- 파일 업로드를 위한 input 요소 추가 -->
     <v-file-input
       prepend-icon="mdi-camera"
-      label="File input"
+      label="컴퓨터에서 선택"
       variant="solo-filled"
       @change="handleFileUpload"
+      class="input-btn"
     ></v-file-input>
 
     <!-- 사진 미리보기를 위한 img 요소 추가 -->
@@ -50,4 +51,10 @@ const handleFileUpload = (event) => {
 }
 </script>
 
-<style></style>
+<style>
+.input-btn {
+  align-items: center;
+  width: 30%;
+  margin: 20px auto;
+}
+</style>
