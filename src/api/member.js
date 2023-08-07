@@ -28,7 +28,7 @@ async function getMyInfoApi(token) {
     const headers = {
       Authorization: `Bearer ${token}`
     }
-    const res = await api.get(`/api/member/myinfo`, { headers })
+    const res = await api.get(`/member/myinfo`, { headers })
     return res
   } catch (err) {
     console.log(err)
@@ -50,7 +50,7 @@ async function test(token) {
 // 회원가입시 유저 이메일 인증
 async function postEmailauth(email) {
   try {
-    const res = await api.post(`/api/member/emailauth`, email)
+    const res = await api.post(`/member/emailauth`, email)
     return res.data
   } catch (err) {
     console.log(err)
@@ -59,7 +59,7 @@ async function postEmailauth(email) {
 // 비밀번호 찾기
 async function postfindpassword(email) {
   try {
-    const res = await api.post(`/api/member/findpassword`, email)
+    const res = await api.post(`/member/findpassword`, email)
     console.log(res)
 
     return res.data
@@ -71,7 +71,7 @@ async function postfindpassword(email) {
 // 회원가입
 async function postSignup(member) {
   try {
-    const res = await api.post(`/api/member/signup`, member)
+    const res = await api.post(`/member/signup`, member)
     return res.data
   } catch (err) {
     console.log(err)
@@ -147,7 +147,7 @@ async function fetchFeedList(memberId) {
 // 로그인
 async function postLogin(loginInfo) {
   try {
-    const res = await api.post('/api/member/login', loginInfo)
+    const res = await api.post('/member/login', loginInfo)
     console.log(res)
     return res
   } catch (err) {
@@ -157,33 +157,62 @@ async function postLogin(loginInfo) {
 // 네이버 로그인
 async function naverLogin() {
   try {
-    const res = await api.get('/api/auth/naver')
+    const res = await api.get('/auth/naver')
     return res
   } catch (err) {
     console.log(err)
   }
 }
 // 카카오 로그인
-function openkakaoLogin() {
-  console.log(import.meta.env.VITE_KAKAO_APP_API_URL)
-
-  window.location.replace(import.meta.env.VITE_KAKAO_APP_API_URL)
+// 카카오 로그인 창열고
+async function openkakaoLogin() {
+  const redirectUrl = import.meta.env.VITE_KAKAO_APP_API_URL
+  window.location.replace(redirectUrl)
 }
-// async function kakaoLogin() {
-//   try {
-//     const res = await api.get('/api/auth/kakao')
-//     return res
-//   } catch (err) {
-//     console.log(err)
-//   }
-// }
+
+// 로그인 하기
+async function postKakaoLogin(code) {
+  try {
+    const params = { authorizationCode: code }
+    const res = await api.post('/auth/kakao', params)
+    return res
+  } catch (err) {
+    throw err // 예외를 다시 던짐
+  }
+}
+// 카카오 로그아웃
+async function openkakaoLogout() {
+  const redirectUrl = import.meta.env.VITE_KAKAO_LOGOUT_APP_API_URL
+  window.location.replace(redirectUrl)
+}
+
+// 네이버 로그인 창
+async function openNaverLogin() {
+  const redirectUrl = import.meta.env.VITE_NAVER_APP_API_URL
+  window.location.replace(redirectUrl)
+}
+// 네이버 로그인 하기
+async function postNaverLogin(code, state) {
+  try {
+    const body = {
+      authorizationCode: code,
+      state: state
+    }
+    const res = await api.post('/auth/naver', body)
+    console.log(res)
+    return res
+  } catch (err) {
+    throw err // 예외를 다시 던짐
+  }
+}
+
 // 유저 탈퇴
 async function deletequitService(token) {
   try {
     const headers = {
       Authorization: `Bearer ${token}`
     }
-    const res = await api.delete(`/api/member/quitService`, { headers })
+    const res = await api.delete(`/member/quitService`, { headers })
     return res.data
   } catch (err) {
     console.log(err)
@@ -204,6 +233,9 @@ export default {
   deletequitService,
   test,
   postfindpassword,
-  openkakaoLogin
-  // jskakaoLogin
+  openkakaoLogin,
+  postKakaoLogin,
+  openkakaoLogout,
+  openNaverLogin,
+  postNaverLogin
 }

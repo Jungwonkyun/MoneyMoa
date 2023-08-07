@@ -1,5 +1,5 @@
 import { createRouter, createWebHistory } from 'vue-router'
-
+import { useCookies } from 'vue3-cookies'
 // HomeView
 import HomeView from '../views/HomeView.vue'
 
@@ -30,7 +30,7 @@ import FindPassword from '../components/Accounts/FindPassword.vue'
 import CheckPassword from '../components/Accounts/CheckPassword.vue'
 import ProfileChange from '../components/Accounts/ProfileChange.vue'
 import { useAccountStore } from '../stores/accountStore.js'
-
+import OAuth from '../components/Accounts/OAuth.vue'
 // AdminView
 import AdminView from '../views/AdminView.vue'
 
@@ -157,15 +157,38 @@ const router = createRouter({
       redirect: '/account/login',
       component: AccountView,
       children: [
+        // 일반로그인
         {
           path: 'login',
           name: 'loginform',
-          component: LoginForm
+          component: LoginForm,
+
+          // 로그인 한사람은 로그인폼 못가게
+          beforeEnter: function (to, from, next) {
+            const account = useAccountStore()
+            // 소셜로그인은 비밀번호 검사 X
+            if (account.isLogin) {
+              return next({ name: 'home' })
+            } else {
+              return next()
+            }
+          }
+        },
+        // 소셜로그인
+        {
+          path: 'oauth/kakao/login',
+          name: 'oauthkakaologin',
+          component: OAuth
         },
         {
-          path: 'login/api/kakao',
-          name: 'kakaologin',
-          component: LoginForm
+          path: 'oauth/kakao/logout',
+          name: 'oauthkakaologout',
+          component: OAuth
+        },
+        {
+          path: 'oauth/naver/login',
+          name: 'oauthnaverlogin',
+          component: OAuth
         },
         {
           path: 'signup',
@@ -190,10 +213,15 @@ const router = createRouter({
           // 라우터 가드 함수
           beforeEnter: function (to, from, next) {
             const account = useAccountStore()
-            // console.log(to, '라우터 가드 테스트')
-            if (account.pwdChecked === false) {
-              return next({ name: 'checkpassword' })
-            } else {
+            const { cookies } = useCookies()
+            // 소셜로그인은 비밀번호 검사 X
+            if (cookies.get('member') && cookies.get('member').authtokens === 'GENERAL')
+              if (account.pwdChecked === false) {
+                return next({ name: 'checkpassword' })
+              } else {
+                return next()
+              }
+            else {
               return next()
             }
           }

@@ -26,33 +26,43 @@
 import { useRouter } from 'vue-router'
 import { useAccountStore } from '@/stores/accountStore.js'
 import { useCookies } from 'vue3-cookies'
-
-const {cookies} = useCookies()
+import functions from '../../api/member.js'
+const { cookies } = useCookies()
 const account = useAccountStore()
 const router = useRouter()
 const member = cookies.get('member')
 console.log(member)
-function onMypage(){
+function onMypage() {
   console.log(member.id)
-  router.push({name:'member', params : {id:member.id}})
+  router.push({ name: 'member', params: { id: member.id } })
 }
 
 // 로그아웃 로직 (페이지 이동후 새로고침)
 function logout() {
-  account.onLogout()
-  alert('로그아웃 되었습니다.')
-  router.push({ name: 'home' }).then(() => {
-    location.reload()
-  })
+  if (member.oauthProvider === 'GENERAL') {
+    account.onLogout()
+    alert('로그아웃 되었습니다.')
+    router.push({ name: 'home' }).then(() => {
+      location.reload()
+    })
+  } else if (member.oauthProvider === 'KAKAO') {
+    functions.openkakaoLogout()
+  } else if (member.oauthProvider === 'NAVER') {
+    account.onLogout()
+    alert('로그아웃 되었습니다.')
+    router.push({ name: 'home' }).then(() => {
+      location.reload()
+    })
+  }
 }
 
 // 회원정보 변경페이지로 이동
 function onProfilechange() {
-  return router.push({ name: 'profilechange'})
+  return router.push({ name: 'profilechange' })
 }
 // 찜목록 페이지로 이동
 function onMyproducts() {
-  return router.push({ name: 'myproducts', params : {id:member.id}})
+  return router.push({ name: 'myproducts', params: { id: member.id } })
 }
 </script>
 <style>
