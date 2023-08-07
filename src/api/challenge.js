@@ -63,11 +63,13 @@ async function getChallengeDetail(challengeId) {
 }
 
 //챌린지 수정 API
-async function updateChallenge(memberId, challengeData) {
+async function updateChallenge(challengeId, challengeData) {
   try {
-    const res = await api.put(`/member/challenge/${memberId}`, {
-      Authorization: `Bearer ${token}`,
-      challenge: challengeData
+    const headers = {
+      Authorization: `Bearer ${token}`
+    }
+    const res = await api.put(`/challenge/update/${challengeId}`, JSON.stringify(challengeData), {
+      headers
     })
     return res
   } catch (err) {

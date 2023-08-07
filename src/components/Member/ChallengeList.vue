@@ -82,7 +82,7 @@
               <v-btn
                 color="blue-darken-1"
                 variant="text"
-                @click=";(dialog = false), createChallenge(), console.log(data)"
+                @click=";(dialog = false), createChallenge()"
               >
                 만들기
               </v-btn>
@@ -111,7 +111,6 @@ const memberId = ref(memberInfo.value.id)
 
 // 챌린지 생성 위한 변수
 const title = ref('')
-console.log(title.value)
 const content = ref('')
 const period = ref('')
 const goalAmount = ref('')
@@ -125,6 +124,7 @@ const data = ref({
   period: period.value
 })
 
+// 챌린지 생성 메서드
 const createChallenge = () => {
   // data 객체 업데이트
   data.value.title = title.value
@@ -134,6 +134,7 @@ const createChallenge = () => {
   data.value.period = period.value
 
   // 챌린지 생성 API 호출
+  const postChallenge = functions.postChallenge
   postChallenge(data.value).then((response) => {
     console.log(response) // 응답 확인
   })
@@ -141,9 +142,6 @@ const createChallenge = () => {
   // 챌린지 생성 후 필요한 초기화 작업 등 수행 가능
   // 예: 입력 필드 초기화, 이미지 미리보기 초기화 등
 }
-
-// 챌린지 생성 API 호출
-const postChallenge = functions.postChallenge
 
 // 챌린지 생성 다이얼로그(모달)를 위한 변수 초기값은 false
 const dialog = ref(false)
