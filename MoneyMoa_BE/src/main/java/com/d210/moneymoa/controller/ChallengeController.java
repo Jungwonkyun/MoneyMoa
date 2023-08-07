@@ -48,7 +48,7 @@ public class ChallengeController {
     }
 
     @ApiOperation(value = "{id}의 첼린지 목록 조회", notes = "{id}의 첼린지 전체 목록을 조회합니다")
-    @GetMapping("/list/{id}")
+    @GetMapping("/list/{memberId}")
     @ResponseStatus(value = HttpStatus.OK)
     public Response getAllMemberChallenges(@PathVariable(name = "memberId") Long memberId) {
 //        jwt = jwt.replace("Bearer ", "");
