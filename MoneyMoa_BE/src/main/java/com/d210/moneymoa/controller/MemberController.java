@@ -22,7 +22,7 @@ import java.util.Map;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/")
+@RequestMapping("/api/member")
 @Api(value = "일반유저가 할 수 있는 역할에 대한 Controller")
 public class MemberController {
 
