@@ -63,7 +63,7 @@ public class SpringSecurity extends WebSecurityConfigurerAdapter {
         final CorsConfiguration configuration = new CorsConfiguration();
 
         // Set the allowed origins
-        configuration.setAllowedOrigins(Arrays.asList("http://localhost:5173", "http://127.0.0.1:5173", "i9d210.p.ssafy.io","http://i9d210.p.ssafy.io"));
+        configuration.setAllowedOrigins(Arrays.asList("http://localhost:5173", "http://127.0.0.1:5173", "i9d210.p.ssafy.io","https://i9d210.p.ssafy.io"));
 
         // Set the allowed methods
         configuration.setAllowedMethods(Arrays.asList("HEAD", "GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"));
