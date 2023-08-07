@@ -17,7 +17,7 @@ import org.springframework.web.bind.annotation.*;
 @Api(value = "Feed Controller", tags = "Feed")
 @RestController
 @Slf4j
-@RequestMapping("/feed")
+@RequestMapping("api/feed")
 public class FeedController {
 
     @Autowired
