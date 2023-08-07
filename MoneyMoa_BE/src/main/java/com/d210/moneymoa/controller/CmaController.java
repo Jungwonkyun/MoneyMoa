@@ -4,6 +4,8 @@ import com.d210.moneymoa.domain.oauth.AuthTokensGenerator;
 import com.d210.moneymoa.dto.CmaComment;
 
 import com.d210.moneymoa.dto.LikedCma;
+import com.d210.moneymoa.dto.Member;
+import com.d210.moneymoa.repository.MemberRepository;
 import com.d210.moneymoa.service.CmaCommentService;
 import com.d210.moneymoa.service.CmaService;
 
@@ -18,6 +20,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -33,6 +36,9 @@ public class CmaController {
 
     @Autowired
     private CmaCommentService cmaCommentService;
+
+    @Autowired
+    private MemberRepository memberRepository;
 
     // CMA 상품 리스트 저장
     @ApiOperation("*절대 호출금지 크롤링 DB에 CMA상품 정보 저장")
@@ -191,8 +197,18 @@ public class CmaController {
             jwt = jwt.replace("Bearer ", "");
             Long memberId = authTokensGenerator.extractMemberId(jwt);
 
-            cmaComment.setCmaId(cmaId); // 수정된 부분
+            // 멤버 조회
+            Optional<Member> optionalMember = memberRepository.findById(memberId);
+            if (!optionalMember.isPresent()) {
+                throw new IllegalStateException("존재하지 않는 회원입니다.");
+            }
+            Member member = optionalMember.get();
+
             cmaComment.setMemberId(memberId);
+            cmaComment.setNickname(member.getNickname());  // 추가된 부분
+
+
+            cmaComment.setCmaId(cmaId); // 수정된 부분
 
             cmaCommentService.createCmaComment(cmaComment);
             status = HttpStatus.CREATED;

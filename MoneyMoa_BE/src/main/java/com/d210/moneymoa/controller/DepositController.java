@@ -5,6 +5,8 @@ import com.d210.moneymoa.domain.oauth.AuthTokensGenerator;
 import com.d210.moneymoa.dto.Deposit;
 import com.d210.moneymoa.dto.DepositComment;
 import com.d210.moneymoa.dto.LikedDeposit;
+import com.d210.moneymoa.dto.Member;
+import com.d210.moneymoa.repository.MemberRepository;
 import com.d210.moneymoa.service.DepositCommentService;
 import com.d210.moneymoa.service.DepositService;
 
@@ -16,10 +18,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @RestController
 @RequestMapping("/api/deposit")
@@ -33,6 +32,9 @@ public class DepositController {
 
     @Autowired
     private DepositCommentService depositCommentService;
+
+    @Autowired
+    private MemberRepository memberRepository;
 
     // 예금상품 API 정보 저장
     @ApiOperation(value = "DB에 예금상품 API 정보 저장 *상품정보 조회가능할시 호출 금지")
@@ -157,7 +159,16 @@ public class DepositController {
             jwt = jwt.replace("Bearer ", "");
             Long memberId = authTokensGenerator.extractMemberId(jwt);
 
+            // 멤버 조회
+            Optional<Member> optionalMember = memberRepository.findById(memberId);
+            if (!optionalMember.isPresent()) {
+                throw new IllegalStateException("존재하지 않는 회원입니다.");
+            }
+            Member member = optionalMember.get();
+
             depositComment.setMemberId(memberId);
+            depositComment.setNickname(member.getNickname());  // 추가된 부분
+
 
             depositCommentService.createDepositComment(productCode, depositComment);
             status = HttpStatus.CREATED;

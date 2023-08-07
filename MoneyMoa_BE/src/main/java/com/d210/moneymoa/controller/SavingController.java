@@ -2,8 +2,10 @@ package com.d210.moneymoa.controller;
 
 import com.d210.moneymoa.domain.oauth.AuthTokensGenerator;
 import com.d210.moneymoa.dto.LikedSaving;
+import com.d210.moneymoa.dto.Member;
 import com.d210.moneymoa.dto.Saving;
 import com.d210.moneymoa.dto.SavingComment;
+import com.d210.moneymoa.repository.MemberRepository;
 import com.d210.moneymoa.service.SavingCommentService;
 import com.d210.moneymoa.service.SavingService;
 
@@ -15,10 +17,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @RestController
 @RequestMapping("/api/saving")
@@ -32,6 +31,9 @@ public class SavingController {
 
     @Autowired
     private SavingCommentService savingCommentService;
+
+    @Autowired
+    private MemberRepository memberRepository;
 
     // 적금상품 API 정보 저장
     @ApiOperation(value = "DB에 적금상품 API 정보 저장 *상품정보 조회가능할시 호출 금지")
@@ -155,7 +157,16 @@ public class SavingController {
             jwt = jwt.replace("Bearer ", "");
             Long memberId = authTokensGenerator.extractMemberId(jwt);
 
+            // 멤버 조회
+            Optional<Member> optionalMember = memberRepository.findById(memberId);
+            if (!optionalMember.isPresent()) {
+                throw new IllegalStateException("존재하지 않는 회원입니다.");
+            }
+            Member member = optionalMember.get();
+
             savingComment.setMemberId(memberId);
+            savingComment.setNickname(member.getNickname());  // 추가된 부분
+
 
             savingCommentService.createSavingComment(productCode, savingComment);
             status = HttpStatus.CREATED;
