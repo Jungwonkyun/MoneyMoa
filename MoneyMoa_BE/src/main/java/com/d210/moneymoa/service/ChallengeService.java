@@ -12,7 +12,7 @@ import java.util.List;
 public interface ChallengeService {
     ChallengeCreateResponse createChallenge(ChallengeCreateRequest req, Long memberId);
 
-    List<ChallengeCreateResponse> getMyChallenges();
+    List<ChallengeCreateResponse> getMemberChallenges(Long memberId);
 
     ChallengeResponse findChallenge (Long id);
 

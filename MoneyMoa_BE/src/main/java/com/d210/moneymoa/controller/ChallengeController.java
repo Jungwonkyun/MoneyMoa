@@ -39,25 +39,27 @@ public class ChallengeController {
     @ResponseStatus(value = HttpStatus.CREATED)
     @ApiOperation(value = "챌린지 생성", notes = "챌린지 작성합니다.")
     @PostMapping("/create")
-    public Response createChallenge(@ModelAttribute final ChallengeCreateRequest req, @ApiParam(value = "Bearer ${jwt token} 형식으로 전송") @RequestHeader("Authorization") String jwt){
+    public Response createChallenge(@RequestBody ChallengeCreateRequest req,
+                                    @ApiParam(value = "Bearer ${jwt token} 형식으로 전송") @RequestHeader("Authorization") String jwt){
         jwt = jwt.replace("Bearer ", "");
         Long Id = authTokensGenerator.extractMemberId(jwt);
         ChallengeCreateResponse challengeCreateResponse = challengeService.createChallenge(req, Id);
         return Response.success(challengeCreateResponse);
     }
 
-    @ApiOperation(value = "첼린지 전체 조회", notes = "내 첼린지 전체 목록을 조회합니다")
+    @ApiOperation(value = "{id}의 첼린지 목록 조회", notes = "{id}의 첼린지 전체 목록을 조회합니다")
     @GetMapping("/list/{id}")
     @ResponseStatus(value = HttpStatus.OK)
-    public Response getAllMyChallenges(@RequestHeader("Authorization") String jwt) {
-        jwt = jwt.replace("Bearer ", "");
-        return Response.success(challengeService.getMyChallenges());
+    public Response getAllMemberChallenges(@PathVariable(name = "memberId") Long memberId) {
+//        jwt = jwt.replace("Bearer ", "");
+        return Response.success(challengeService.getMemberChallenges(memberId));
     }
 
     @ApiOperation(value = "챌린지 상세 조회", notes = "챌린지을 상세 조회합니다")
     @GetMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
-    public Response findFeed(@ApiParam(value = "챌린지 id", required = true) @PathVariable final Long id, @RequestHeader("Authorization") String jwt) {
+    public Response findFeed(@ApiParam(value = "챌린지 id", required = true) @PathVariable final Long id,
+                             @RequestHeader("Authorization") String jwt) {
         jwt = jwt.replace("Bearer ", "");
         return Response.success(challengeService.findChallenge(id));
     }
@@ -66,7 +68,8 @@ public class ChallengeController {
     @ApiOperation(value = "챌린지 수정", notes = "챌린지을 수정합니다.")
     @GetMapping("/update/{id}")
     @ResponseStatus(HttpStatus.OK)
-    public Response updateChallenge(@PathVariable Long id, @ModelAttribute ChallengeUpdateRequest req, @ApiParam(value = "Bearer ${jwt token} 형식으로 전송") @RequestHeader("Authorization") String jwt) throws ChallengeAuthorizationException {
+    public Response updateChallenge(@PathVariable Long id, @RequestBody ChallengeUpdateRequest req,
+                                    @ApiParam(value = "Bearer ${jwt token} 형식으로 전송") @RequestHeader("Authorization") String jwt) throws ChallengeAuthorizationException {
         jwt = jwt.replace("Bearer ", "");
 
         return Response.success(challengeService.updateChallenge(id, req, jwt));

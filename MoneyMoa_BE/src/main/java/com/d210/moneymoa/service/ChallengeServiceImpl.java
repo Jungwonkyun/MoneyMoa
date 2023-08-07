@@ -57,8 +57,8 @@ public class ChallengeServiceImpl implements ChallengeService {
     }
 
     @Transactional(readOnly = true)
-    public List<ChallengeCreateResponse> getMyChallenges() {
-        List<Challenge> challenges = challengeRepository.findAll();
+    public List<ChallengeCreateResponse> getMemberChallenges(Long memberId) {
+        List<Challenge> challenges = challengeRepository.findByMemberId(memberId);
         List<ChallengeCreateResponse> challengeResponses = new ArrayList<>();
         challenges.forEach(challenge -> challengeResponses.add(ChallengeCreateResponse.toDto(challenge)));
         return challengeResponses;
