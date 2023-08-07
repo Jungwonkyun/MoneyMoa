@@ -19,7 +19,7 @@ import java.util.Map;
 // TODO: 2023-07-07 Spring Security써서 관리자 role, 일반 유저 role 분리해서 접근하도록 하기 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/admin")
+@RequestMapping("/api/admin")
 @Api(value = "관리자 Role에 해당하는 Controller")
 public class AdminController {
 
