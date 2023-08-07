@@ -46,4 +46,7 @@ public class SavingComment implements Serializable {
     @ApiModelProperty(hidden = true)
     private LocalDateTime createdAt;
 
+    @Column(nullable = false)
+    @ApiModelProperty(hidden = true)
+    private String nickname;
 }
