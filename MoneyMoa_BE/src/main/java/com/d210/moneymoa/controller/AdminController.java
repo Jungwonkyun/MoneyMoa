@@ -31,18 +31,21 @@ public class AdminController {
     @GetMapping("/loadallusers")
     public ResponseEntity<Map<String,Object>> findAll(@ApiParam(value = "Bearer ${jwt token} 형식으로 전송")  @RequestHeader("Authorization") String jwt) {
 
-        //jwt =  jwt.replace("Bearer ", "");
+        jwt =  jwt.replace("Bearer ", "");
         Map<String,Object> resultMap = new HashMap<>();
+        HttpStatus status;
         try{
             List<Member>memberList = memberRepository.findAll();
             resultMap.put("message","success");
             resultMap.put("memberList", memberList);
+            status = HttpStatus.OK;
         }catch (Exception e){
             e.printStackTrace();
             resultMap.put("message","fail");
             resultMap.put("memberList", null);
+            status = HttpStatus.BAD_REQUEST;
         }
-        return new ResponseEntity<Map<String,Object>>(resultMap,HttpStatus.OK);
+        return new ResponseEntity<Map<String,Object>>(resultMap,status);
     }
 
     //id를 통해서 맴버 삭제
@@ -51,15 +54,19 @@ public class AdminController {
     public ResponseEntity<Map<String,Object>> deleteUser (@ApiParam(value = "Bearer ${jwt token} 형식으로 전송")  @RequestHeader("Authorization") String jwt, @ApiParam(value = "해당 유저 ID") @PathVariable("id") Long id) throws Exception{
 
         Map<String,Object> resultMap = new HashMap<>();
+        HttpStatus status;
+
         try {
             memberRepository.deleteById(id);
             resultMap.put("message","success");
+            status = HttpStatus.OK;
         }catch (Exception e){
             e.printStackTrace();
             resultMap.put("message","fail");
+            status = HttpStatus.BAD_REQUEST;
         }
 
-        return new ResponseEntity<Map<String,Object>>(resultMap,HttpStatus.OK);
+        return new ResponseEntity<Map<String,Object>>(resultMap,status);
     }
 
     //id로 유저 정보 찾기
@@ -70,6 +77,5 @@ public class AdminController {
         //Long memberId = authTokensGenerator.extractMemberId(jwt);
         return ResponseEntity.ok(memberRepository.findById(id).orElse(null));
     }
-
 
 }

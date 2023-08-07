@@ -43,7 +43,7 @@
 <script>
     //alert(document.title);
     // websocket & stomp initialize
-    var sock = new SockJS("/ws-stomp");
+    var sock = new SockJS("/api/ws-stomp");
     var ws = Stomp.over(sock);
     var reconnect = 0;
     // vue.js
@@ -87,7 +87,7 @@
             if(reconnect++ <= 5) {
                 setTimeout(function() {
                     console.log("connection reconnect");
-                    sock = new SockJS("/ws-stomp");
+                    sock = new SockJS("/api/ws-stomp");
                     ws = Stomp.over(sock);
                     connect();
                 },10*1000);

@@ -43,6 +43,7 @@ public class MemberController {
 
         Map<String,Object> resultMap = new HashMap<>();
         Member member = null;
+        HttpStatus status;
 
         try{
             member = memberService.findLoginMember(loginInfo.getEmail(),loginInfo.getPassword());
@@ -63,15 +64,17 @@ public class MemberController {
             resultMap.put("message","success");
             resultMap.put("member",member);
             resultMap.put("jwt token", authTokens);
+            status = HttpStatus.OK;
         }catch (Exception e){
             //로그인 실패
             e.printStackTrace();
             resultMap.put("message","fail");
             resultMap.put("member",null);
             resultMap.put("jwt token", "fail");
+            status = HttpStatus.BAD_REQUEST;
         }
 
-        return new ResponseEntity<Map<String,Object>>(resultMap,HttpStatus.OK);
+        return new ResponseEntity<Map<String,Object>>(resultMap,status);
     }
 
 
@@ -82,18 +85,21 @@ public class MemberController {
 
         jwt =  jwt.replace("Bearer ", "");
         Map<String,Object> resultMap = new HashMap<>();
+        HttpStatus status;
 
         try{
             Long id = authTokensGenerator.extractMemberId(jwt);
             memberService.quitService(id);
             resultMap.put("message","success");
+            status = HttpStatus.OK;
 
         }catch (Exception e){
             e.printStackTrace();
             resultMap.put("message","fail");
+            status = HttpStatus.BAD_REQUEST;
         }
 
-        return new ResponseEntity<Map<String,Object>>(resultMap,HttpStatus.OK);
+        return new ResponseEntity<Map<String,Object>>(resultMap,status);
 
     }
 
@@ -103,19 +109,22 @@ public class MemberController {
     public ResponseEntity<Map<String,Object>> signUp (@RequestBody Member member){
 
         Map<String,Object> resultMap = new HashMap<>();
+        HttpStatus status;
 
         try{
             AuthTokens authTokens = memberService.login(member);
             resultMap.put("message","success");
             resultMap.put("member",member);
+            status = HttpStatus.OK;
 
         }catch (Exception e){
             e.printStackTrace();
             resultMap.put("message","fail");
             resultMap.put("member",null);
+            status = HttpStatus.BAD_REQUEST;
         }
 
-        return new ResponseEntity<Map<String,Object>>(resultMap,HttpStatus.OK);
+        return new ResponseEntity<Map<String,Object>>(resultMap,status);
     }
 
 
@@ -125,18 +134,21 @@ public class MemberController {
 
         jwt =  jwt.replace("Bearer ", "");
         Map<String,Object> resultMap = new HashMap<>();
+        HttpStatus status;
 
         try{
             Long expire = memberService.logout(jwt);
             resultMap.put("message","success");
             resultMap.put("expire",expire);
             resultMap.put("expired jwt", jwt);
+            status = HttpStatus.OK;
         }catch (Exception e){
             e.printStackTrace();
             resultMap.put("message","fail");
+            status = HttpStatus.BAD_REQUEST;
         }
 
-        return new ResponseEntity<Map<String,Object>>(resultMap,HttpStatus.OK);
+        return new ResponseEntity<Map<String,Object>>(resultMap,status);
     }
 
 
@@ -144,6 +156,7 @@ public class MemberController {
     @PostMapping("/findpassword")
     public ResponseEntity<?> findPassword(@ApiParam(value = "유저 이메일")@RequestBody String email)throws Exception{
         Map<String,Object> resultMap = new HashMap<>();
+        HttpStatus status;
 
         try {
             Member member = memberService.findMemberByEmail(email);
@@ -156,32 +169,37 @@ public class MemberController {
 
             resultMap.put("message", "success");
             resultMap.put("member", member);
+            status = HttpStatus.OK;
 
         }catch (Exception e){
             resultMap.put("message", "fail");
+            status = HttpStatus.BAD_REQUEST;
             e.printStackTrace();
         }
 
-        return new ResponseEntity<Map<String,Object>>(resultMap, HttpStatus.OK);
+        return new ResponseEntity<Map<String,Object>>(resultMap, status);
     }
 
     @ApiOperation(value = "유저 이메일 인증", notes = "일반 회원가입시 이메일을 인증하는 api 리턴값 : 이메일 인증 때 사용할 임의의 문자열")
     @PostMapping("/emailauth")
     public ResponseEntity<?> emailAuth(@ApiParam(value = "유저 이메일")@RequestBody String email)throws Exception{
         Map<String,Object> resultMap = new HashMap<>();
+        HttpStatus status;
 
         try {
             String authCode = memberService.sendEmail(email);
 
             resultMap.put("message", "success");
             resultMap.put("emailAuth", authCode);
+            status = HttpStatus.OK;
 
         }catch (Exception e){
             resultMap.put("message", "fail");
             e.printStackTrace();
+            status = HttpStatus.BAD_REQUEST;
         }
 
-        return new ResponseEntity<Map<String,Object>>(resultMap, HttpStatus.OK);
+        return new ResponseEntity<Map<String,Object>>(resultMap, status);
     }
 
      //id로 유저 정보 찾기
@@ -193,29 +211,5 @@ public class MemberController {
         Long memberId = authTokensGenerator.extractMemberId(jwt);
         return ResponseEntity.ok(memberRepository.findById(memberId).orElse(null));
     }
-
-
-
-//    @ApiOperation(value = "해당 유저의 닉네임을 설정하는 API",
-//            notes = "jwt token은 header로 바꿀 nickname은 body로")
-//    @PutMapping("/makenickname")
-//    public ResponseEntity<Map<String,Object>> makeUserMadeNickName(@ApiParam(value = "유저 jwt 토큰") @RequestHeader("Authorization") String jwt,
-//                                                       @ApiParam(value = "바꾸고 싶은 nickname")@RequestBody String nickname){
-//        Map<String,Object> resultMap = new HashMap<>();
-//
-//        try {
-//            Long memberId = memberService.setUserNickName(nickname, jwt);
-//            Member member = memberRepository.findById(memberId).orElse(null);
-//            resultMap.put("message","success");
-//            resultMap.put("member",member);
-//
-//        }catch(Exception e){
-//            e.printStackTrace();
-//            resultMap.put("message","fail");
-//            resultMap.put("member",null);
-//        }
-//
-//        return new ResponseEntity<Map<String,Object>>(resultMap,HttpStatus.OK);
-//    }
 
 }
