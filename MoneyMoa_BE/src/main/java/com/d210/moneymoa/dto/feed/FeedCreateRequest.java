@@ -12,14 +12,19 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class FeedCreateRequest {
 
+    Long memberId;
+
     @ApiModelProperty(value = "피드 내용", notes = "피드 내용을 입력해주세요.", required = true, example = "피드 내용")
-    private String content;
+    String content;
 
-    private String challenge;
+    @ApiModelProperty(value = "챌린지 선택", notes = "챌린지를 선택해주세요.", required = true, example = "챌린지")
+    String challenge;
 
-    private String hashtag;
+    String hashtag;
 
-    private Integer depositAmount;
+    @ApiModelProperty(value = "저축 금액", notes = "저축 금액을 입력해주세요.", required = true, example = "저축 금액")
+    Integer depositAmount;
+
 
 
 

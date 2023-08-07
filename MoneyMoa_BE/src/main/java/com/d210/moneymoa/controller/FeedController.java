@@ -1,5 +1,6 @@
 package com.d210.moneymoa.controller;
 
+import com.d210.moneymoa.Exception.AuthorizationException;
 import com.d210.moneymoa.domain.oauth.AuthTokensGenerator;
 import com.d210.moneymoa.dto.feed.FeedCreateRequest;
 import com.d210.moneymoa.dto.feed.FeedUpdateRequest;
@@ -14,10 +15,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
-@Api(value = "Feed Controller", tags = "Feed")
+@Api(value = "Feed Controller", tags = "Feed-Controller")
 @RestController
 @Slf4j
-@RequestMapping("api/feed")
+@RequestMapping("/feed")
 public class FeedController {
 
     @Autowired
@@ -32,20 +33,28 @@ public class FeedController {
     @ResponseStatus(value = HttpStatus.CREATED)
     @ApiOperation(value = "게시글 생성", notes = "게시글 작성합니다.")
     @PostMapping("/create")
-    public Response createFeed(@ModelAttribute final FeedCreateRequest req, @RequestHeader("Authorization") String jwt){
+    public Response createFeed(@ModelAttribute final FeedCreateRequest req,@ApiParam(value = "Bearer ${jwt token} 형식으로 전송") @RequestHeader("Authorization") String jwt){
         jwt = jwt.replace("Bearer ", "");
         Long Id = authTokensGenerator.extractMemberId(jwt);
         return Response.success(feedService.createFeed(req, Id));
     }
 
 
+//    @GetMapping("/all")
+//    @ResponseStatus(value = HttpStatus.OK)
+//    public Response getAllFeeds(@RequestHeader("Authorization") String jwt) {
+//        jwt = jwt.replace("Bearer ", "");
+//        return Response.success(feedService.getAllFeeds());
+//    }
     @ApiOperation(value = "게시글 전체 조회", notes = "게시글 전체목록을 조회합니다")
     @GetMapping("/all")
     @ResponseStatus(value = HttpStatus.OK)
     public Response getAllFeeds(@RequestHeader("Authorization") String jwt) {
         jwt = jwt.replace("Bearer ", "");
-        return Response.success(feedService.getAllFeeds());
+        Long memberId = authTokensGenerator.extractMemberId(jwt);
+        return Response.success(feedService.getAllFeeds(memberId));
     }
+
 
     @ApiOperation(value = "게시글 상세 조회", notes = "게시글을 상세 조회합니다")
     @GetMapping("/{id}")
@@ -59,9 +68,19 @@ public class FeedController {
     @ApiOperation(value = "게시글 수정", notes = "게시글을 수정합니다.")
     @GetMapping("/update/{id}")
     @ResponseStatus(HttpStatus.OK)
-    public Response editFeed(@PathVariable Long id, @ModelAttribute FeedUpdateRequest req, @RequestHeader("Authorization") String jwt) {
+    public Response updateFeed(@PathVariable Long id, @ModelAttribute FeedUpdateRequest req, @RequestHeader("Authorization") String jwt) throws AuthorizationException {
         jwt = jwt.replace("Bearer ", "");
-
-        return Response.success(feedService.editFeed(id, req, jwt));
+        Long memberId = authTokensGenerator.extractMemberId(jwt);
+        return Response.success(feedService.updateFeed(id, req, memberId, jwt));
     }
+
+    @ApiOperation(value = "게시글 삭제", notes = "게시글을 삭제합니다.")
+    @DeleteMapping("/delete/{id}")
+    @ResponseStatus(HttpStatus.OK)
+    public Response deleteFeed(@ApiParam(value = "게시글 id", required = true) @PathVariable final Long id, @ApiParam(value = "Bearer ${jwt token} 형식으로 전송") @RequestHeader("Authorization") String jwt) throws AuthorizationException {
+        jwt = jwt.replace("Bearer ", "");
+        feedService.deleteFeed(id, jwt);
+        return Response.success("게시물이 삭제되었습니다.");
+    }
+
 }

@@ -14,20 +14,18 @@ public class FeedCreateResponse {
     private String hashtag;
     private LocalDateTime createDateTime;
     private Integer depositAmount;
-    private String nickname;
 
 
 
     public FeedCreateResponse(Long id, String content, String challenge,
-                              String hashtag, LocalDateTime createDateTime, Integer depositAmount,
-                              String nickname) {
+                              String hashtag, LocalDateTime createDateTime,
+                              Integer depositAmount) {
         this.id = id;
         this.content = content;
         this.challenge = challenge;
         this.hashtag = hashtag;
         this.createDateTime = createDateTime;
         this.depositAmount = depositAmount;
-        this.nickname = nickname;
     }
 //    @ManyToOne(fetch = FetchType.LAZY)
 //    @JoinColumn(name = "member_id", nullable = false)
@@ -39,8 +37,7 @@ public class FeedCreateResponse {
                 feed.getChallenge(),
                 feed.getHashtag(),
                 feed.getCreateDateTime(),
-                feed.getDepositAmount(),
-                feed.getNickname()
+                feed.getDepositAmount()
         );
     }
 

@@ -1,16 +1,17 @@
 package com.d210.moneymoa.dto.feed;
 
-import com.d210.moneymoa.dto.Member;
 import com.fasterxml.jackson.annotation.JsonFormat;
-import lombok.*;
+import lombok.AccessLevel;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+import org.hibernate.annotations.ColumnDefault;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
-import java.util.HashSet;
-import java.util.Set;
 
-@Getter @Setter
 @Entity
+@Data
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Feed {
 
@@ -33,33 +34,27 @@ public class Feed {
         this.createDateTime = LocalDateTime.now();
     }
 
-    // Many-to-One 관계 설정
-    @ManyToOne(fetch = FetchType.LAZY) // Lazy 로딩 사용 (필요 시에만 로딩)
-    @JoinColumn(name = "member_id") // Member 엔티티의 PK와 연결되는 컬럼명
-    private Member member;
+    private Long memberId;
 
+    @ColumnDefault("0")
+    private Integer feedLikeCount;
 
-    @Column
-    private String nickname;
+    public void setLikeCount(int feedLikeCount) {
+        this.feedLikeCount = feedLikeCount;
+    }
+    public Integer getLikeCount() {
+        return feedLikeCount;
+    }
 
-
-//    // Cascade
-//    @OneToMany(mappedBy = "feed", cascade = CascadeType.PERSIST, orphanRemoval = true)
-//    private List<FeedImg> feedImg;
 
     @Builder
-    public Feed(String content, String challenge,
+    public Feed(Long memberId, String content, String challenge,
                 String hashtag, Integer depositAmount) {
+        this.memberId = memberId;
         this.content = content;
         this.challenge = challenge;
         this.hashtag = hashtag;
         this.depositAmount = depositAmount;
-        this.createDateTime = createDateTime;
-
-//        this.feedImg = feedImg;
     }
-
-//    public ImageUpdatedResult update()
-
 
 }
