@@ -27,6 +27,7 @@
                 variant="outlined"
                 rows="2"
                 no-resize
+                class="modiarea"
               ></v-textarea>
             </v-col>
             <v-col cols="3" v-if="checkId(item.memberId)">
@@ -101,4 +102,8 @@ function checkId(cmtWriterId) {
   return loginId === cmtWriterId
 }
 </script>
-<style></style>
+<style>
+.modiarea {
+  width: 100%;
+}
+</style>
