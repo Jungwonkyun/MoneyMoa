@@ -1,11 +1,6 @@
 <template>
   <v-container @click="setProduct(product)">
-    <router-link
-      :to="{
-        name: 'depositDetail',
-        params: { productCode: product.productCode }
-      }"
-    >
+    <router-link :to="getProductDetailRoute(product)">
       <v-card variant="tonal">
         <v-row>
           <v-col>
@@ -29,13 +24,28 @@
 </template>
 <script setup>
 import { useProductStore } from '@/stores/productStore'
+import { storeToRefs } from 'pinia'
 import { getIntrRange } from '@/api/product'
 defineProps({
   product: Object
 })
 const store = useProductStore()
+const { productType } = storeToRefs(store)
 function setProduct(product) {
   store.setProduct(product)
+}
+const getProductDetailRoute = (product) => {
+  if (productType.value === 'deposit') {
+    return {
+      name: 'depositDetail',
+      params: { productCode: product.productCode }
+    }
+  } else if (productType.value === 'saving') {
+    return {
+      name: 'savingDetail',
+      params: { productCode: product.productCode }
+    }
+  }
 }
 </script>
 <style></style>

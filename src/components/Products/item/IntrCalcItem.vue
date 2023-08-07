@@ -47,7 +47,16 @@
 import { ref, reactive, computed } from 'vue'
 import { useProductStore } from '@/stores/productStore'
 import { storeToRefs } from 'pinia'
-
+import {
+  getIntrRange,
+  getPeriodRange,
+  getMatchingDetail,
+  spclConditionIntrList
+} from '@/api/product'
+const props = defineProps({
+  product: Object,
+  spcls: Array
+})
 const cmaType = ref('deposit')
 const store = useProductStore()
 const { productType, amount, period, selectedProduct } = storeToRefs(store)
@@ -59,17 +68,43 @@ const calcType = computed(() => {
   }
   return productType.value
 })
+const calcDetail = computed(() => {
+  //props.product의 intrDetails중 선택한 기간에 맞는 것 반환
+  if (props.product?.interestDetails) {
+    // console.log('intrs:')
+    // console.log(props.product.interestDetails)
+    return props.product.interestDetails.reduce((prev, curr) => {
+      if (curr.period <= period.value && (!prev || curr.period > prev.period)) {
+        console.log(curr)
+        return curr
+      } else {
+        console.log(prev)
+        return prev
+      }
+    })
+  } else {
+    console.log('product미전달')
+    return null
+  }
+})
+
+//우대이율 총합(maxRate 고려 전)
+const spSum = computed(() =>
+  props.spcls.reduce((sum, item) => (item.checked ? sum + item.intr : sum), 0)
+)
+//최종 계산에 적용되는 이율
+const calcIntr = computed(() =>
+  Math.min(Number(calcDetail.value.basicRate) + spSum.value, Number(calcDetail.value.maxRate))
+)
 
 const result = computed(() => {
-  let intr = Number(selectedProduct.value.interest) / 100
+  let intr = calcIntr.value / 100
+  console.log('적용 금리: ' + intr)
   let month = Number(period.value)
+  //현재 단리계산만 구현
   if (calcType.value === 'deposit') {
-    //일단 단리계산
-    console.log('예금식계산')
     return Math.floor(Number(amount.value) * (1 + (intr * month) / 12))
   } else if (calcType.value === 'saving') {
-    //일단 단리계산
-    console.log('적금식계산')
     return (
       Math.floor(((Number(amount.value) * intr) / 24) * month * (month + 1)) +
       Number(amount.value) * month
@@ -85,7 +120,21 @@ const likeSnackbar = ref(false)
 function like() {
   //todo: 찜하기axios호출
   console.log('찜할래용')
+  let likeInfo = {
+    //memberId: ??
+    productCode: props.product.productCode,
+    amount: amount.value,
+    interest: calcIntr.value,
+    period: period.value,
+    result: result.value,
+    rsrvType: calcDetail.value.rsrvType
+  }
+  console.log(likeInfo)
   likeSnackbar.value = true
 }
 </script>
-<style></style>
+<style>
+.v-text-field {
+  width: 200px;
+}
+</style>
