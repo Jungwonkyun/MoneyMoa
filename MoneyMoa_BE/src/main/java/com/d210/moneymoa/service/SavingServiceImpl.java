@@ -1,6 +1,10 @@
 package com.d210.moneymoa.service;
 
+import com.d210.moneymoa.dto.LikedDeposit;
+import com.d210.moneymoa.dto.LikedSaving;
 import com.d210.moneymoa.dto.Saving;
+import com.d210.moneymoa.repository.LikedDepositRepository;
+import com.d210.moneymoa.repository.LikedSavingRepository;
 import com.d210.moneymoa.repository.SavingRepository;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
@@ -88,4 +92,13 @@ public class SavingServiceImpl implements SavingService {
     public Saving getSavingProductWithInterestDetails(String productCode) {
         return savingRepository.findByProductCode(productCode).orElse(null);
     }
+
+    @Autowired
+    private LikedSavingRepository likedSavingRepository;
+
+    @Override
+    public void saveLikedSaving(LikedSaving likedSaving) {
+        likedSavingRepository.save(likedSaving);
+    }
+
 }

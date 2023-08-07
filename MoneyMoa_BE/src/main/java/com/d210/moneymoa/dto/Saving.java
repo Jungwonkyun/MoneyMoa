@@ -1,6 +1,6 @@
 package com.d210.moneymoa.dto;
 
-
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Builder;
@@ -48,6 +48,9 @@ public class Saving implements Serializable {
     @JsonProperty("interestDetails")
     private List<SavingInterestDetail> savingInterestDetails;
 
+    @OneToMany(mappedBy = "saving", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JsonIgnore
+    private List<LikedSaving> likedSavings;
 
     @Builder
     public Saving(String productCode, String bankCode, String bankName, String productName, String interest, String spcl, String joinMember, String etcNote, Long maxLimit) {

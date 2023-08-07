@@ -1,5 +1,6 @@
 package com.d210.moneymoa.dto;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -7,6 +8,7 @@ import lombok.Setter;
 
 import javax.persistence.*;
 import java.io.Serializable;
+import java.util.List;
 
 
 @Setter
@@ -27,6 +29,10 @@ public class Cma  implements Serializable {
 
     @Column(length = 3000)
     private String memo;
+
+    @OneToMany(mappedBy = "cma", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JsonIgnore
+    private List<LikedCma> likedCmas;
 
     @Builder
     public Cma(Long id, String cmaName, String stockName, String maxRate, String memo) {

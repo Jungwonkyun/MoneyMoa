@@ -1,8 +1,12 @@
 package com.d210.moneymoa.service;
 
 import com.d210.moneymoa.dto.Cma;
+import com.d210.moneymoa.dto.LikedCma;
+import com.d210.moneymoa.dto.LikedSaving;
 import com.d210.moneymoa.repository.CmaRepository;
 
+import com.d210.moneymoa.repository.LikedCmaRepository;
+import com.d210.moneymoa.repository.LikedSavingRepository;
 import org.openqa.selenium.*;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import org.openqa.selenium.support.ui.ExpectedConditions;
@@ -23,26 +27,26 @@ import java.util.stream.Collectors;
 @Service
 public class CmaServiceImpl implements CmaService {
 
-        @Autowired
-        CmaRepository cmaRepository;
+    @Autowired
+    CmaRepository cmaRepository;
 
-        @Transactional
-        public void saveCmaProducts() throws InterruptedException {
+    @Transactional
+    public void saveCmaProducts() throws InterruptedException {
 
         System.setProperty("webdriver.chrome.driver", "C:\\Users\\SSAFY\\Desktop\\chromedriver_win32\\chromedriver.exe");
 
-            ChromeOptions options = new ChromeOptions();
-            options.addArguments("--remote-allow-origins=*");
+        ChromeOptions options = new ChromeOptions();
+        options.addArguments("--remote-allow-origins=*");
 
-            WebDriver driver = new ChromeDriver(options);
+        WebDriver driver = new ChromeDriver(options);
 
-            List<Cma> CmaProductList = new ArrayList<>();
-            driver.get("https://new-m.pay.naver.com/savings/list/cma");
+        List<Cma> CmaProductList = new ArrayList<>();
+        driver.get("https://new-m.pay.naver.com/savings/list/cma");
 
-            // 페이지 끝에 도달할 때까지 무한 루프
-            while (true) {
+        // 페이지 끝에 도달할 때까지 무한 루프
+        while (true) {
 
-                Thread.sleep(5);
+            Thread.sleep(5);
 
             try {
                 Thread.sleep(3000);
@@ -137,71 +141,78 @@ public class CmaServiceImpl implements CmaService {
                 e.printStackTrace();
             }
 
-                // 다음 페이지 버튼을 찾습니다.
-                WebElement nextPageButton;
-                try {
-                    nextPageButton = driver.findElement(By.cssSelector(".Pagination_button__9HM1m.Pagination_next__DJxZI"));
-                } catch (NoSuchElementException e) {
-                    break; // 다음 페이지 버튼이 없으면 무한 루프를 중단합니다.
-                }
-
-                // 다음 페이지 버튼이 비활성화되었으면 루프를 종료합니다.
-                if (nextPageButton.getAttribute("class").contains("Pagination_disabled__vXekh")) {
-                    break;
-                }
-
-                // 페이지가 존재하면 다음 페이지로 이동합니다.
-                // WebDriverWait를 사용하여 버튼이 클릭 가능할 때까지 기다립니다.
-                WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(30));
-                wait.until(ExpectedConditions.elementToBeClickable(nextPageButton));
-
-                // 버튼이 화면 중앙에 오도록 스크롤 조작
-                ((JavascriptExecutor) driver).executeScript(
-                        "arguments[0].scrollIntoView({block: 'center'});", nextPageButton);
-
-                nextPageButton.click();
-
-                // 다음 페이지의 내용이 로드될 시간을 기다립니다.
-                Thread.sleep(3000);
+            // 다음 페이지 버튼을 찾습니다.
+            WebElement nextPageButton;
+            try {
+                nextPageButton = driver.findElement(By.cssSelector(".Pagination_button__9HM1m.Pagination_next__DJxZI"));
+            } catch (NoSuchElementException e) {
+                break; // 다음 페이지 버튼이 없으면 무한 루프를 중단합니다.
             }
 
-
-            driver.quit();
-        }
-
-        @Override
-        public List<Cma> getCmaProducts() throws InterruptedException {
-            return cmaRepository.findAll();
-        }
-
-        @Override
-        public List<Map<String, Object>> getCmaProductsAsMap() throws InterruptedException {
-            List<Cma> cmaList = getCmaProducts();
-            List<Map<String, Object>> productsList = cmaList.stream().map(cma -> cmaToMap(cma)).collect(Collectors.toList());
-            return productsList;
-        }
-
-        @Override
-        public Map<String, Object> getCmaProductByIdAsMap(Long productId) throws InterruptedException {
-            Cma product = cmaRepository.findById(productId).orElse(null);
-            if (product != null) {
-                Map<String, Object> productAsMap = cmaToMap(product);
-                return productAsMap;
-            } else {
-                throw new RuntimeException("Product not found");
+            // 다음 페이지 버튼이 비활성화되었으면 루프를 종료합니다.
+            if (nextPageButton.getAttribute("class").contains("Pagination_disabled__vXekh")) {
+                break;
             }
+
+            // 페이지가 존재하면 다음 페이지로 이동합니다.
+            // WebDriverWait를 사용하여 버튼이 클릭 가능할 때까지 기다립니다.
+            WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(30));
+            wait.until(ExpectedConditions.elementToBeClickable(nextPageButton));
+
+            // 버튼이 화면 중앙에 오도록 스크롤 조작
+            ((JavascriptExecutor) driver).executeScript(
+                    "arguments[0].scrollIntoView({block: 'center'});", nextPageButton);
+
+            nextPageButton.click();
+
+            // 다음 페이지의 내용이 로드될 시간을 기다립니다.
+            Thread.sleep(3000);
         }
 
-        private Map<String, Object> cmaToMap(Cma cma) {
-            Map<String, Object> map = new HashMap<>();
-            map.put("id", cma.getId());
-            map.put("cmaName", cma.getCmaName());
-            map.put("stockName", cma.getStockName());
-            map.put("maxRate", cma.getMaxRate());
-            map.put("memo", cma.getMemo());
-            return map;
-        }
 
+        driver.quit();
+    }
+
+    @Override
+    public List<Cma> getCmaProducts() throws InterruptedException {
+        return cmaRepository.findAll();
+    }
+
+    @Override
+    public List<Map<String, Object>> getCmaProductsAsMap() throws InterruptedException {
+        List<Cma> cmaList = getCmaProducts();
+        List<Map<String, Object>> productsList = cmaList.stream().map(cma -> cmaToMap(cma)).collect(Collectors.toList());
+        return productsList;
+    }
+
+    @Override
+    public Map<String, Object> getCmaProductByIdAsMap(Long productId) throws InterruptedException {
+        Cma product = cmaRepository.findById(productId).orElse(null);
+        if (product != null) {
+            Map<String, Object> productAsMap = cmaToMap(product);
+            return productAsMap;
+        } else {
+            throw new RuntimeException("Product not found");
+        }
+    }
+
+    private Map<String, Object> cmaToMap(Cma cma) {
+        Map<String, Object> map = new HashMap<>();
+        map.put("id", cma.getId());
+        map.put("cmaName", cma.getCmaName());
+        map.put("stockName", cma.getStockName());
+        map.put("maxRate", cma.getMaxRate());
+        map.put("memo", cma.getMemo());
+        return map;
+    }
+
+    @Autowired
+    private LikedCmaRepository likedCmaRepository;
+
+    @Override
+    public void saveLikedCma(LikedCma likedCma) {
+        likedCmaRepository.save(likedCma);
+    }
 }
 
 

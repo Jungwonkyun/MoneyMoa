@@ -1,6 +1,7 @@
 package com.d210.moneymoa.dto;
 
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Builder;
@@ -48,6 +49,13 @@ public class Deposit implements Serializable {
     @JsonProperty("interestDetails")
     private List<DepositInterestDetail> depositInterestDetails;
 
+    @OneToMany(mappedBy = "deposit", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JsonIgnore
+    private List<LikedDeposit> likedDeposits;
+
+    @OneToMany(mappedBy = "deposit", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JsonIgnore
+    private List<DepositComment> depositComments;
 
     @Builder
     public Deposit(String productCode, String bankCode, String bankName, String productName, String interest, String spcl, String joinMember, String etcNote, Long maxLimit) {

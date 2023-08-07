@@ -13,7 +13,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 @RestController
-@RequestMapping("/products/interestdetail")
+@RequestMapping("/api/interestdetail")
 public class InterestDetailController {
 
     @Autowired

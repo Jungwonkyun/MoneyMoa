@@ -1,7 +1,9 @@
 package com.d210.moneymoa.service;
 
 import com.d210.moneymoa.dto.Deposit;
+import com.d210.moneymoa.dto.LikedDeposit;
 import com.d210.moneymoa.repository.DepositRepository;
+import com.d210.moneymoa.repository.LikedDepositRepository;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
@@ -87,5 +89,13 @@ public class DepositServiceImpl implements DepositService {
     @Override
     public Deposit getDepositProductWithInterestDetails(String productCode) {
         return depositRepository.findByProductCode(productCode).orElse(null);
+    }
+
+    @Autowired
+    private LikedDepositRepository likedDepositRepository;
+
+    @Override
+    public void saveLikedDeposit(LikedDeposit likedDeposit) {
+        likedDepositRepository.save(likedDeposit);
     }
 }
