@@ -105,7 +105,10 @@ function getContent() {
     product.value = response.data.product
     store.setProduct(product.value)
     spclConditionIntrs.value = spclConditionIntrList(product.value)
-    commentList.value = response.data.comments
+    commentList.value = response.data.comments.map((comment) => ({
+      ...comment,
+      modifyState: false
+    }))
     console.log('댓글?')
     console.log(commentList.value)
     loaded.value = true

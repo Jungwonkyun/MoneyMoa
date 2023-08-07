@@ -12,22 +12,31 @@
     </v-row>
     <!-- 댓글목록 -->
     <v-sheet v-if="commentList.length">
-      <v-card variant="flat" v-for="(item, index) in commentList">
-        <v-row>
-          <v-col cols="2">
-            <v-card-title>{{ item.memberId }}</v-card-title>
-            <v-card-subtitle>{{ formatDate(item.createdAt) }}</v-card-subtitle>
-          </v-col>
-          <v-col>
-            <v-card-text>{{ item.content }}</v-card-text>
-          </v-col>
-          <v-col cols="3">
-            <v-btn variant="text">수정</v-btn>
-            <v-btn variant="text" @click="deleteCmt(item.id)">삭제</v-btn>
-          </v-col>
-        </v-row>
-        <v-divider />
-      </v-card>
+      <template v-for="(item, index) in commentList" :key="index">
+        <v-card variant="flat">
+          <v-row>
+            <v-col cols="2">
+              <v-card-title>{{ item.memberId }}</v-card-title>
+              <v-card-subtitle>{{ formatDate(item.createdAt) }}</v-card-subtitle>
+            </v-col>
+            <v-col cols="7">
+              <v-card-text v-if="!item.modifyState">{{ item.content }}</v-card-text>
+              <v-textarea
+                v-else
+                v-model="item.content"
+                variant="outlined"
+                rows="2"
+                no-resize
+              ></v-textarea>
+            </v-col>
+            <v-col cols="3" v-if="checkId(item.memberId)">
+              <v-btn variant="text" @click="modifyCmt(item)">수정</v-btn>
+              <v-btn variant="text" @click="deleteCmt(item.id)">삭제</v-btn>
+            </v-col>
+          </v-row>
+          <v-divider />
+        </v-card>
+      </template>
     </v-sheet>
     <v-sheet v-else> 댓글이 없습니다. </v-sheet>
   </v-container>
@@ -37,7 +46,8 @@ import { ref } from 'vue'
 import { useProductStore } from '@/stores/productStore'
 import { useRoute } from 'vue-router'
 import { storeToRefs } from 'pinia'
-import { writeComment, deleteComment } from '@/api/product'
+import { useCookies } from 'vue3-cookies'
+import { writeComment, deleteComment, modifyComment } from '@/api/product'
 const props = defineProps({
   commentList: Object
 })
@@ -45,6 +55,7 @@ const emit = defineEmits(['comment-updated'])
 const route = useRoute()
 const store = useProductStore()
 const { productType } = storeToRefs(store)
+const { cookies } = useCookies()
 const commentContent = ref('')
 
 console.log('댓글:')
@@ -64,12 +75,30 @@ function deleteCmt(cmtId) {
     emit('comment-updated')
   })
 }
+function modifyCmt(cmt) {
+  if (!cmt.modifyState) {
+    cmt.modifyState = true
+  } else {
+    cmt.modifyState = false
+    let comment = {
+      content: cmt.content
+    }
+    modifyComment(productType.value, cmt.id, comment).then((response) => {
+      emit('comment-updated')
+    })
+  }
+}
 function formatDate(input) {
   const date = new Date(input)
   const year = date.getFullYear().toString().slice(-2)
   const month = (date.getMonth() + 1).toString().padStart(2, '0')
   const day = date.getDate().toString().padStart(2, '0')
   return `${year}/${month}/${day}`
+}
+function checkId(cmtWriterId) {
+  if (!cookies.get('member')) return false
+  let loginId = cookies.get('member').id
+  return loginId === cmtWriterId
 }
 </script>
 <style></style>

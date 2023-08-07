@@ -117,6 +117,23 @@ async function deleteComment(productType, commentId) {
   }
 }
 
+async function modifyComment(productType, commentId, newContent) {
+  try {
+    const token = cookies.get('accessToken')
+    const headers = {
+      Authorization: `Bearer ${token}`
+    }
+    const response = await api.put(
+      `/${productType}/comment/${commentId}`,
+      JSON.stringify(newContent),
+      { headers }
+    )
+    return response
+  } catch (error) {
+    console.log(error)
+  }
+}
+
 /* 상품정보가공(여기서부터 axios아님) */
 function getPeriodRange(product) {
   //product호출이 비동기라서 undefined상태에서 값을 가져오려고 하면 에러가 나서 이렇게 처리했는데 이게 맞는지 모르겠어요
@@ -188,6 +205,7 @@ export {
   likeProduct,
   writeComment,
   deleteComment,
+  modifyComment,
   getPeriodRange,
   getIntrRange,
   getMatchingDetail,
