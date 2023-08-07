@@ -34,14 +34,6 @@
                         ></v-select>
                       </v-col>
                       <v-col cols="12">
-                        <v-autocomplete
-                          :items="['챌린지1', '챌린지2', '챌린지3']"
-                          label="챌린지를 선택하세요"
-                          multiple
-                          variant="solo-filled"
-                        ></v-autocomplete>
-                      </v-col>
-                      <v-col cols="12">
                         <v-text-field
                           label="해시태그를 추가하세요"
                           required

@@ -85,18 +85,6 @@ async function addFollow(memberId) {
   }
 }
 
-// 챌린지 리스트 API
-async function fetchChallengeList(memberId) {
-  try {
-    const res = await api.get(`/member/challengelist/${memberId}`, {
-      usertoken: accessToken
-    })
-    return res
-  } catch (err) {
-    console.log(err)
-  }
-}
-
 // 팔로워 유저 목록 API
 async function fetchFollowerList(memberId) {
   try {
@@ -210,7 +198,6 @@ async function deletequitService(token) {
 export default {
   callUserInfoApi,
   addFollow,
-  fetchChallengeList,
   fetchFollowerList,
   fetchFollowingList,
   fetchFeedList,

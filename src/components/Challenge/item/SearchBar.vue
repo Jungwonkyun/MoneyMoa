@@ -15,7 +15,7 @@
 </template>
 <script setup>
 import { ref } from 'vue'
-import functions from '@/api/challegeFeed.js'
+import functions from '@/api/challengeFeed.js'
 import { defineEmits } from 'vue'
 
 const inputWord = ref('')
