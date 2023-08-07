@@ -24,13 +24,13 @@ import { storeToRefs } from 'pinia'
 import { useCookies } from 'vue3-cookies'
 import { computed } from 'vue'
 
-const {cookies} = useCookies()
+const { cookies } = useCookies()
 const account = useAccountStore()
 const { isLogin } = storeToRefs(account)
 
 // 관리자인지 확인하기
 const isAdmin = computed(() => {
-  if (!cookies.get('member')){
+  if (!cookies.get('member')) {
     return false
   }
   return 'ADMIN' === cookies.get('member').role
