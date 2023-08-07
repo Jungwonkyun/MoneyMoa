@@ -16,7 +16,7 @@
         <v-card variant="flat">
           <v-row>
             <v-col cols="2">
-              <v-card-title>{{ item.memberId }}</v-card-title>
+              <v-card-title>{{ item.nickname }}</v-card-title>
               <v-card-subtitle>{{ formatDate(item.createdAt) }}</v-card-subtitle>
             </v-col>
             <v-col cols="7">
