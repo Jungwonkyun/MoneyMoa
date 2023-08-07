@@ -7,6 +7,7 @@ import HomeView from '../views/HomeView.vue'
 
 // ProductsView
 import ProductsView from '../views/ProductsView.vue'
+import { useProductStore } from '../stores/productStore.js'
 
 // ChallengeView
 import ChallengeView from '../views/ChallengeView.vue'
@@ -64,9 +65,19 @@ const router = createRouter({
           component: () => import('../components/Products/ProductsList.vue')
         },
         {
+          path: 'saving/:productCode',
+          name: 'savingDetail',
+          component: () => import('../components/Products/savingDetail.vue')
+        },
+        {
           path: 'cma',
           name: 'cmaList',
           component: () => import('../components/Products/CMAList.vue')
+        },
+        {
+          path: 'cma/:id',
+          name: 'cmaDetail',
+          component: () => import('../components/Products/DepositDetail.vue')
         }
       ]
     },
@@ -252,6 +263,14 @@ const router = createRouter({
       ]
     }
   ]
+})
+
+router.beforeEach((to) => {
+  const store = useProductStore()
+  const productTypeValue = to.path.split('/')[2]
+  if (['deposit', 'saving', 'cma'].includes(productTypeValue)) {
+    store.productType = productTypeValue
+  }
 })
 
 export default router

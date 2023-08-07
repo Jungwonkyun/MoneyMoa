@@ -1,7 +1,10 @@
 import { apiInstance } from './index'
 import { useAccountStore } from '@/stores/accountStore.js'
+import { useCookies } from 'vue3-cookies'
 
 const api = apiInstance()
+const { cookies } = useCookies()
+const token = cookies.get('accessToken')
 
 // 피니아 스토어에서 유저 토큰을 가져오기
 function getAccessToken() {
@@ -13,10 +16,10 @@ function getAccessToken() {
 // 피드 전체 목록 조회 API
 async function fetchAllFeedList() {
   try {
-    const accessToken = getAccessToken()
-    const res = await api.get(`/feed/all`, {
-      usertoken: accessToken
-    })
+    const headers = {
+      Authorization: `Bearer ${token}`
+    }
+    const res = await api.get(`api/feed/all`, { headers })
     return res
   } catch (err) {
     console.log(err)
@@ -24,12 +27,12 @@ async function fetchAllFeedList() {
 }
 
 // 피드 상세 조회 API
-async function fetchFeedDetail(feed_id) {
+async function fetchFeedDetail(feedId) {
   try {
-    const accessToken = getAccessToken()
-    const res = await api.get(`/feed/${feed_id}`, {
-      usertoken: accessToken
-    })
+    const headers = {
+      Authorization: `Bearer ${token}`
+    }
+    const res = await api.get(`/feed/${feedId}`, { headers })
     return res
   } catch (err) {
     console.log(err)

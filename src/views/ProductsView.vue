@@ -10,10 +10,25 @@
   </v-container>
 </template>
 <script setup>
+// import { watch } from 'vue'
 import { useProductStore } from '../stores/productStore'
+import { useRouter } from 'vue-router'
 import { storeToRefs } from 'pinia'
 import DictionarySide from '@/components/Dictionary/DictionarySide.vue'
 const store = useProductStore()
+// const router = useRouter()
 const { productType } = storeToRefs(store)
+
+// watch(
+//   () => router.currentRoute.value,
+//   (to) => {
+//     const productTypeValue = to.path.split('/')[2]
+//     if (['deposit', 'saving', 'cma'].includes(productTypeValue)) {
+//       productType.value = productTypeValue
+//       console.log('예금?적금?cma?')
+//       console.log(productType.value)
+//     }
+//   }
+// )
 </script>
 <style></style>
