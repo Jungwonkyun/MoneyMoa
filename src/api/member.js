@@ -85,18 +85,6 @@ async function addFollow(memberId) {
   }
 }
 
-// 챌린지 리스트 API
-async function fetchChallengeList(memberId) {
-  try {
-    const res = await api.get(`/member/challengelist/${memberId}`, {
-      usertoken: accessToken
-    })
-    return res
-  } catch (err) {
-    console.log(err)
-  }
-}
-
 // 팔로워 유저 목록 API
 async function fetchFollowerList(memberId) {
   try {
@@ -136,7 +124,7 @@ async function fetchFeedList(memberId) {
 // 로그인
 async function postLogin(loginInfo) {
   try {
-    const res = await api.post('/api/member/login', loginInfo)
+    const res = await api.post('/member/login', loginInfo)
     console.log(res)
     return res
   } catch (err) {
@@ -146,7 +134,7 @@ async function postLogin(loginInfo) {
 // 네이버 로그인
 async function naverLogin() {
   try {
-    const res = await api.get('/api/auth/naver')
+    const res = await api.get('/auth/naver')
     return res
   } catch (err) {
     console.log(err)
@@ -181,7 +169,6 @@ async function deletequitService(token) {
 export default {
   callUserInfoApi,
   addFollow,
-  fetchChallengeList,
   fetchFollowerList,
   fetchFollowingList,
   fetchFeedList,

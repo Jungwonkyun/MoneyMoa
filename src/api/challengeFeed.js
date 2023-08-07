@@ -19,7 +19,7 @@ async function fetchAllFeedList() {
     const headers = {
       Authorization: `Bearer ${token}`
     }
-    const res = await api.get(`api/feed/all`, { headers })
+    const res = await api.get(`/feed/all`, { headers })
     return res
   } catch (err) {
     console.log(err)
