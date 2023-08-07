@@ -46,7 +46,9 @@
 <script setup>
 import { ref, reactive, computed } from 'vue'
 import { useProductStore } from '@/stores/productStore'
+import { likeProduct } from '@/api/product'
 import { storeToRefs } from 'pinia'
+import { useCookies } from 'vue3-cookies'
 import {
   getIntrRange,
   getPeriodRange,
@@ -60,6 +62,7 @@ const props = defineProps({
 const cmaType = ref('deposit')
 const store = useProductStore()
 const { productType, amount, period, selectedProduct } = storeToRefs(store)
+const { cookies } = useCookies()
 const periods = reactive([6, 12, 24, 36])
 
 const calcType = computed(() => {
@@ -118,19 +121,20 @@ const onKeyPress = (event) => {
 }
 const likeSnackbar = ref(false)
 function like() {
-  //todo: 찜하기axios호출
   console.log('찜할래용')
   let likeInfo = {
-    //memberId: ??
+    memberId: cookies.get('member').id,
     productCode: props.product.productCode,
-    amount: amount.value,
+    amount: Number(amount.value),
     interest: calcIntr.value,
     period: period.value,
     result: result.value,
     rsrvType: calcDetail.value.rsrvType
   }
   console.log(likeInfo)
-  likeSnackbar.value = true
+  likeProduct(productType.value, likeInfo).then((response) => {
+    likeSnackbar.value = true
+  })
 }
 </script>
 <style>

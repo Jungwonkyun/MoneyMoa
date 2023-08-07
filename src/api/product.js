@@ -1,5 +1,7 @@
 import { apiInstance } from './index.js'
-const api = apiInstance('products')
+import { useCookies } from 'vue3-cookies'
+const api = apiInstance()
+const { cookies } = useCookies()
 
 async function getDepositList() {
   try {
@@ -54,10 +56,19 @@ async function getCMA(productCode) {
   }
 }
 
-//찜정보 post (url수정해야됨)
-async function likeProduct(likeInfo) {
+//찜정보 post
+async function likeProduct(productType, likeInfo) {
+  console.log(productType + '상품 찜하기')
   try {
-    const response = await api.post('/myproduct', likeInfo)
+    // console.log('token?')
+    const token = cookies.get('accessToken')
+    const headers = {
+      Authorization: `Bearer ${token}`
+    }
+    console.log(token)
+    console.log(headers)
+    const response = await api.post(`/${productType}/like`, JSON.stringify(likeInfo), { headers })
+    console.log('찜했다')
     return response
   } catch (error) {
     console.log(error)
@@ -66,9 +77,15 @@ async function likeProduct(likeInfo) {
 
 async function getComments(productType, productCode) {
   //productType에 따라 다른 get url, cma는 id가 productCode 대체
+  try {
+    const response = await api.get(`/${productType}/comment`, productCode)
+    return response
+  } catch (error) {
+    console.log(error)
+  }
 }
 
-async function postComment(productType, comment) {
+async function writeComment(productType, comment) {
   //productType에 따라 다른 post url
 }
 
@@ -140,6 +157,9 @@ export {
   getDeposit,
   getSaving,
   getCMA,
+  likeProduct,
+  getComments,
+  writeComment,
   getPeriodRange,
   getIntrRange,
   getMatchingDetail,

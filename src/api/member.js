@@ -147,7 +147,7 @@ async function fetchFeedList(memberId) {
 // 로그인
 async function postLogin(loginInfo) {
   try {
-    const res = await api.post('/login', loginInfo)
+    const res = await api.post('/member/login', loginInfo)
     console.log(res)
     return res
   } catch (err) {
