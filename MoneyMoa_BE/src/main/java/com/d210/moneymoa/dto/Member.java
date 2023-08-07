@@ -2,6 +2,7 @@ package com.d210.moneymoa.dto;
 import javax.persistence.*;
 
 import com.d210.moneymoa.domain.oauth.OAuthProvider;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Builder;
 import lombok.Getter;
@@ -10,6 +11,7 @@ import lombok.Setter;
 
 import javax.persistence.Id;
 import java.io.Serializable;
+import java.util.List;
 
 
 @Setter
@@ -51,6 +53,30 @@ public class Member implements Serializable {
     @ApiModelProperty(value = "탈퇴한 회원인지 확인")
     private int valid;
 
+    @OneToMany(mappedBy = "member", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JsonIgnore
+    private List<LikedDeposit> likedDeposits;
+
+    @OneToMany(mappedBy = "member", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JsonIgnore
+    private List<DepositComment> depositComments;
+
+    @OneToMany(mappedBy = "member", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JsonIgnore
+    private List<LikedSaving> likedSavings;
+
+    @OneToMany(mappedBy = "member", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JsonIgnore
+    private List<SavingComment> savingComments;
+
+    @OneToMany(mappedBy = "member", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JsonIgnore
+    private List<LikedCma> likedCmas;
+
+    @OneToMany(mappedBy = "member", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JsonIgnore
+    private List<CmaComment> cmaComments;
+
     //OAuth로그인 버전
     @Builder
     public Member(String email, String name, Role role, OAuthProvider oAuthProvider, String password, String nickname) {
@@ -67,6 +93,5 @@ public class Member implements Serializable {
     public String toString(){
         return this.email+" "+this.name+" "+this.nickname+" "+this.oAuthProvider;
     }
-
 
 }
