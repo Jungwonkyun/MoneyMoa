@@ -1,5 +1,7 @@
 import { apiInstance } from './index.js'
-const api = apiInstance('products')
+import { useCookies } from 'vue3-cookies'
+const api = apiInstance()
+const { cookies } = useCookies()
 
 async function getDepositList() {
   try {
@@ -54,22 +56,82 @@ async function getCMA(productCode) {
   }
 }
 
-//찜정보 post (url수정해야됨)
-async function likeProduct(likeInfo) {
+//찜정보 post
+async function likeProduct(productType, likeInfo) {
+  console.log(productType + '상품 찜하기')
   try {
-    const response = await api.post('/myproduct', likeInfo)
+    // console.log('token?')
+    const token = cookies.get('accessToken')
+    const headers = {
+      Authorization: `Bearer ${token}`
+    }
+    console.log(token)
+    console.log(headers)
+    const response = await api.post(`/${productType}/like`, JSON.stringify(likeInfo), { headers })
+    console.log('찜했다')
     return response
   } catch (error) {
     console.log(error)
   }
 }
 
-async function getComments(productType, productCode) {
-  //productType에 따라 다른 get url, cma는 id가 productCode 대체
+// 상품상세에서 댓글 같이 반환받음. 따라서 필요없다
+// async function getComments(productType, productCode) {
+//   //productType에 따라 다른 get url, cma는 id가 productCode 대체
+//   try {
+//     const response = await api.get(`/${productType}/comment`, productCode)
+//     return response
+//   } catch (error) {
+//     console.log(error)
+//   }
+// }
+
+async function writeComment(productType, productCode, comment) {
+  //productType에 따라 다른 post url
+  try {
+    const token = cookies.get('accessToken')
+    const headers = {
+      Authorization: `Bearer ${token}`
+    }
+    const response = await api.post(
+      `/${productType}/${productCode}/comment`,
+      JSON.stringify(comment),
+      { headers }
+    )
+    return response
+  } catch (error) {
+    console.log(error)
+  }
 }
 
-async function postComment(productType, comment) {
-  //productType에 따라 다른 post url
+async function deleteComment(productType, commentId) {
+  try {
+    const token = cookies.get('accessToken')
+    const headers = {
+      Authorization: `Bearer ${token}`
+    }
+    const response = await api.delete(`/${productType}/comment/${commentId}`, { headers })
+    return response
+  } catch (error) {
+    console.log(error)
+  }
+}
+
+async function modifyComment(productType, commentId, newContent) {
+  try {
+    const token = cookies.get('accessToken')
+    const headers = {
+      Authorization: `Bearer ${token}`
+    }
+    const response = await api.put(
+      `/${productType}/comment/${commentId}`,
+      JSON.stringify(newContent),
+      { headers }
+    )
+    return response
+  } catch (error) {
+    console.log(error)
+  }
 }
 
 /* 상품정보가공(여기서부터 axios아님) */
@@ -140,6 +202,10 @@ export {
   getDeposit,
   getSaving,
   getCMA,
+  likeProduct,
+  writeComment,
+  deleteComment,
+  modifyComment,
   getPeriodRange,
   getIntrRange,
   getMatchingDetail,

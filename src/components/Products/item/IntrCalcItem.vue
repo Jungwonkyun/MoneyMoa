@@ -31,7 +31,7 @@
         >원을 받을 수 있어요. (이자
         {{ result - amount * (calcType === 'saving' ? period : 1) }}원)</v-col
       >
-      <!-- 계산기록찜버튼(todo: 로그인시에만 보여야함, 찜목록으로 바로가기 라우터) -->
+      <!-- 계산기록찜버튼(todo: 찜목록으로 바로가기 링크) -->
       <v-btn @click="like">찜하기</v-btn>
       <v-snackbar v-model="likeSnackbar" timeout="2500" color="white">
         상품을 찜 목록에 담았어요.
@@ -46,7 +46,9 @@
 <script setup>
 import { ref, reactive, computed } from 'vue'
 import { useProductStore } from '@/stores/productStore'
+import { likeProduct } from '@/api/product'
 import { storeToRefs } from 'pinia'
+import { useCookies } from 'vue3-cookies'
 import {
   getIntrRange,
   getPeriodRange,
@@ -60,6 +62,7 @@ const props = defineProps({
 const cmaType = ref('deposit')
 const store = useProductStore()
 const { productType, amount, period, selectedProduct } = storeToRefs(store)
+const { cookies } = useCookies()
 const periods = reactive([6, 12, 24, 36])
 
 const calcType = computed(() => {
@@ -118,19 +121,23 @@ const onKeyPress = (event) => {
 }
 const likeSnackbar = ref(false)
 function like() {
-  //todo: 찜하기axios호출
-  console.log('찜할래용')
+  if (!cookies.get('accessToken')) {
+    alert('찜하기는 회원만 이용할 수 있습니다.')
+    return
+  }
   let likeInfo = {
-    //memberId: ??
+    memberId: cookies.get('member').id,
     productCode: props.product.productCode,
-    amount: amount.value,
+    amount: Number(amount.value),
     interest: calcIntr.value,
     period: period.value,
     result: result.value,
     rsrvType: calcDetail.value.rsrvType
   }
   console.log(likeInfo)
-  likeSnackbar.value = true
+  likeProduct(productType.value, likeInfo).then((response) => {
+    likeSnackbar.value = true
+  })
 }
 </script>
 <style>
