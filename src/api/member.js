@@ -1,22 +1,13 @@
 import { apiInstance } from './index.js'
-import { useAccountStore } from '@/stores/accountStore.js'
 import { useCookies } from 'vue3-cookies'
 
 const api = apiInstance()
 const { cookies } = useCookies()
 const token = cookies.get('accessToken')
 
-// 피니아 스토어에서 유저 토큰을 가져오기
-function getAccessToken() {
-  const accountStore = useAccountStore()
-  const accessToken = accountStore.accessToken
-  return accessToken
-}
-
 // 유저 정보 API
 async function callUserInfoApi(memberId) {
   try {
-    const accessToken = getAccessToken()
     const res = await api.get(`/member/info/${memberId}`, {
       usertoken: accessToken
     })
@@ -85,7 +76,6 @@ async function postSignup(member) {
 // 유저 토큰이랑 팔로우 할 사람의 id를 보내면 됨
 async function addFollow(memberId) {
   try {
-    const accessToken = getAccessToken()
     const res = await api.post(`/member/follow/${memberId}`, {
       usertoken: accessToken
     })
@@ -98,7 +88,6 @@ async function addFollow(memberId) {
 // 챌린지 리스트 API
 async function fetchChallengeList(memberId) {
   try {
-    const accessToken = getAccessToken()
     const res = await api.get(`/member/challengelist/${memberId}`, {
       usertoken: accessToken
     })
@@ -111,7 +100,6 @@ async function fetchChallengeList(memberId) {
 // 팔로워 유저 목록 API
 async function fetchFollowerList(memberId) {
   try {
-    const accessToken = getAccessToken()
     const res = await api.get(`/member/followerlist/${memberId}`, {
       usertoken: accessToken
     })
@@ -124,7 +112,6 @@ async function fetchFollowerList(memberId) {
 // 팔로잉 유저 목록 API
 async function fetchFollowingList(memberId) {
   try {
-    const accessToken = getAccessToken()
     const res = await api.get(`/member/followinglist/${memberId}`, {
       usertoken: accessToken
     })
@@ -137,7 +124,6 @@ async function fetchFollowingList(memberId) {
 // 마이 피드 목록 API
 async function fetchFeedList(memberId) {
   try {
-    const accessToken = getAccessToken()
     const res = await api.get(`/member/feed/${memberId}`, {
       usertoken: accessToken
     })
@@ -150,7 +136,7 @@ async function fetchFeedList(memberId) {
 // 로그인
 async function postLogin(loginInfo) {
   try {
-    const res = await api.post('/login', loginInfo)
+    const res = await api.post('api/member/login', loginInfo)
     console.log(res)
     return res
   } catch (err) {
