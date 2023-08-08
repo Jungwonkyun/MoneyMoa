@@ -249,6 +249,11 @@ const router = createRouter({
           path: 'list',
           name: 'chatrooms',
           component: () => import('../components/Chat/ChatRooms.vue')
+        },
+        {
+          path: '/:roomId',
+          name: 'chatroomdetail',
+          component: () => import('../components/Chat/ChatRoomDetail.vue')
         }
       ]
     },

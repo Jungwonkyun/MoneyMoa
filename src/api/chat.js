@@ -5,11 +5,20 @@ const { cookies } = useCookies()
 
 async function getRooms() {
   try {
-    const response = await api.get('roomlist')
+    const response = await api.get('rooms')
     return response
   } catch (error) {
     console.log(error)
   }
 }
 
-export { getRooms }
+async function getRoomDetail(roomId) {
+  try {
+    const response = await api.get(`room/${roomId}`)
+    return response
+  } catch (error) {
+    console.log(error)
+  }
+}
+
+export { getRooms, getRoomDetail }
