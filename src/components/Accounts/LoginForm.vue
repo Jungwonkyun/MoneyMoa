@@ -115,7 +115,8 @@ async function onLogin() {
       const member = {
         id: loginResult.data.member.id,
         role: loginResult.data.member.role,
-        nickname: loginResult.data.member.nickname
+        nickname: loginResult.data.member.nickname,
+        oauthProvider: loginResult.data.member.oauthProvider
       }
       const token = loginResult.data['jwt token'].accessToken
       const data = {
@@ -141,21 +142,24 @@ const rules = [(value) => !!value || '필수 입력 값입니다.']
 const visible = ref(false)
 
 // 카카오로그인
-const kakaoCode = ref('')
 async function kakaoLogin() {
-  functions.openkakaoLogin().then((res) => {
-    console.log(route.query.code)
-    console.log(res)
-  })
+  try {
+    await functions.openkakaoLogin()
+  } catch (error) {
+    alert(error)
+    console.error(error)
+  }
 }
 
-// 'https://kauth.kakao.com/oauth/authorize?client_id=6bca07d112514b4054347d4fd3bfaf53&redirect_uri=http://localhost:5173/account/login/api/kakao&response_type=code'
-// 카카오로그인
-// function kakaoLogin() {
-//   window.location.replace(
-//     'https://kauth.kakao.com/oauth/authorize?client_id=39f363afdaa64aedd1356f7856d3cb0a&redirect_uri=http://localhost:5173/account/login/api/kakao&response_type=code'
-//   )
-// }
+// 네이버 로그인
+async function naverLogin() {
+  try {
+    await functions.openNaverLogin()
+  } catch (error) {
+    alert(error)
+    console.error(error)
+  }
+}
 </script>
 
 <style>

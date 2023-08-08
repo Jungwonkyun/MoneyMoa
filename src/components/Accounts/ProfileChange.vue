@@ -44,7 +44,7 @@
     <v-row>
       <v-col> </v-col>
     </v-row>
-    <v-row>
+    <v-row v-if="isGeneral">
       <v-col>
         <p>비밀번호</p>
         <v-text-field
@@ -87,7 +87,7 @@
 </template>
 <script setup>
 // 유저 이미지로 바꿔야함
-import { ref } from 'vue'
+import { ref, computed } from 'vue'
 import img from '../../assets/img/default_image.png'
 import { useRouter, onBeforeRouteLeave } from 'vue-router'
 import { useAccountStore } from '@/stores/accountStore'
@@ -105,6 +105,10 @@ const changedPassword1 = ref(null)
 const changedPassword2 = ref(null)
 const visible = ref(false)
 
+// 현재 유저 소셜로그인 유무 변수
+const isGeneral = computed(() => {
+  cookies.get('member') && cookies.get('member').authtokens === 'GENERAL'
+})
 // 유효성 검사후 수정 로직
 function onUpdate() {
   const account = useAccountStore()
