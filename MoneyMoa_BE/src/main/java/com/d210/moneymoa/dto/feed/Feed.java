@@ -1,6 +1,9 @@
 package com.d210.moneymoa.dto.feed;
 
+import com.d210.moneymoa.dto.Member;
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import io.swagger.annotations.ApiModelProperty;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Data;
@@ -34,7 +37,15 @@ public class Feed {
         this.createDateTime = LocalDateTime.now();
     }
 
+    @Column(nullable = false)
+    @ApiModelProperty(hidden = true)
     private Long memberId;
+
+    @JsonIgnore
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "memberId", referencedColumnName = "id", insertable = false, updatable = false)
+    private Member member; //id
+
 
     @ColumnDefault("0")
     private Integer feedLikeCount;

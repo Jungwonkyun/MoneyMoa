@@ -6,6 +6,7 @@ import com.d210.moneymoa.dto.feed.FeedCreateResponse;
 import com.d210.moneymoa.dto.feed.FeedResponse;
 import com.d210.moneymoa.dto.feed.FeedUpdateRequest;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.RequestBody;
 
 import java.util.List;
 
@@ -13,10 +14,10 @@ import java.util.List;
 public interface FeedService {
 
 
-    FeedCreateResponse createFeed(FeedCreateRequest req, Long memberId);
+    FeedCreateResponse createFeed(FeedCreateRequest req,  Long memberId, String jwt);
 
     List<FeedCreateResponse> getAllFeeds(Long memberId);
-
+    List<FeedCreateResponse> getAllFeedsForMember(Long memberId);
     FeedCreateResponse updateFeed(Long id, FeedUpdateRequest req, Long memberId, String jwt) throws AuthorizationException;
 
     FeedResponse findFeed(Long id);

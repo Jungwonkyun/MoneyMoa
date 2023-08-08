@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.RequestHeader;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 @Slf4j
@@ -35,7 +36,7 @@ public class FeedServiceImpl implements FeedService {
 
 
     @Transactional
-    public FeedCreateResponse createFeed(FeedCreateRequest req, Long memberId) {
+    public FeedCreateResponse createFeed(FeedCreateRequest req, Long memberId, String jwt) {
         // 멤버 저장소에서 memberId를 사용하여 멤버 찾기
         Optional<Member> oMember = memberRepository.findById(memberId);
         // 멤버가 없으면 MemberNotFoundException 발생시키기
@@ -45,7 +46,7 @@ public class FeedServiceImpl implements FeedService {
 
         // 요청 데이터를 사용하여 새로운 피드 객체 생성
         Feed feed = new Feed(
-                req.getMemberId(),
+                memberId,
                 req.getContent(),
                 req.getChallenge(),
                 req.getHashtag(),
@@ -70,6 +71,16 @@ public class FeedServiceImpl implements FeedService {
         return feedResponses;
     }
 
+    // 특정 회원의 피드 전체 조회
+    @Transactional(readOnly = true)
+    public List<FeedCreateResponse> getAllFeedsForMember(Long memberId) {
+        List<Feed> feeds = feedRepository.findAllByMemberId(memberId);
+        return feeds.stream()
+                .map(FeedCreateResponse::toDto)
+                .collect(Collectors.toList());
+    }
+
+
     // 피드 상세 조회
     @Transactional(readOnly = true)
     public FeedResponse findFeed(final Long id) {
@@ -78,10 +89,9 @@ public class FeedServiceImpl implements FeedService {
 
         return FeedResponse.toDto(feed);
     }
-//        return FeedResponse.toDto(feed, feed.getMember() != null ? feed.getMember().getNickname() : "");
 
 
-//throws AuthorizationException 삭제 했을 때.
+    //throws AuthorizationException 삭제 했을 때.
     @Transactional
     public FeedCreateResponse updateFeed(Long id, FeedUpdateRequest req, Long memberId, String jwt) throws AuthorizationException {
         Optional<Feed> oFeed = feedRepository.findById(id);
