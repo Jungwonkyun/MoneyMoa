@@ -183,7 +183,7 @@ public class ChatRoomController {
 
 
     @ApiOperation(value = "해당 방을 구독중인 사람들 목록 리스트")
-    @GetMapping("/members/{roomId}")
+    @GetMapping("/room/members/{roomId}")
     @ResponseBody
     public ResponseEntity<Map<String, Object>> chatRoomMembers(@ApiParam(value = "방 id") @PathVariable String roomId,
                                                                @ApiParam(value = "Bearer ${jwt token}") @RequestHeader("Authorization") String jwt) {
