@@ -27,6 +27,7 @@
             variant="flat"
             class="text-none text-white"
             color="blue-darken-4"
+            :disabled="showBtn"
             >인증번호 전송</v-btn
           >
         </v-col>
@@ -192,10 +193,17 @@ const sent = ref(false)
 // 성별 변수
 const gender = ref(null)
 
+// 인증메일 보내기 보여줄지말지 함수
+const showBtn = ref(false)
+
 // 이메일 인증함수
 async function onAthentic() {
   const isValid = Emailrules.every((rule) => typeof rule(Email.value) !== 'string')
+  if (showBtn.value) {
+    return
+  }
   if (isValid) {
+    showBtn.value = true
     try {
       const authResult = await functions.postEmailauth(Email.value)
       console.log(typeof Email)
@@ -208,6 +216,7 @@ async function onAthentic() {
       } else {
         alert('인증번호 전송에 실패했습니다.')
       }
+      showBtn.value = false
     } catch (error) {
       console.error('에러 발생:', error)
     }

@@ -3,10 +3,10 @@
     <h1>이메일로 로그인</h1>
     <!-- 로그인폼 -->
     <v-row>
-      <v-col>
+      <v-col cols="12" md="6" sm="2">
         <form class="LoginInput">
           <v-row>
-            <v-col cols="12" class="d-flex align-center flex-column">
+            <v-col class="d-flex align-center flex-column">
               <v-row>
                 <v-col>
                   <v-text-field
