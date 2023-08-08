@@ -69,7 +69,7 @@ public class FeedController {
 
 
     @ApiOperation(value = "게시글 수정", notes = "게시글을 수정합니다.")
-    @GetMapping("/update/{id}")
+    @PutMapping("/update/{id}")
     @ResponseStatus(HttpStatus.OK)
     public Response updateFeed(@PathVariable Long id, @RequestBody FeedUpdateRequest req,
                                @RequestHeader("Authorization") String jwt) throws AuthorizationException {
