@@ -9,6 +9,7 @@
     <v-row>
       <v-col>
         <v-img :src="img" width="100"></v-img>
+        <v-file-input label="File input"></v-file-input>
       </v-col>
     </v-row>
 

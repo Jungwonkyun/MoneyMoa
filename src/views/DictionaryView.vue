@@ -33,13 +33,9 @@ import { ref } from 'vue'
 
 const searchWord = ref('')
 function onSearch() {
-  if (searchWord.value) {
-    list.value = listall.filter(
-      (item) => item.word.includes(searchWord.value) || item.description.includes(searchWord.value)
-    )
-  } else {
-    list.value = listall
-  }
+  list.value = listall.filter(
+    (item) => item.word.includes(searchWord.value) || item.description.includes(searchWord.value)
+  )
 }
 const Item1 = {
   word: 'item1',
