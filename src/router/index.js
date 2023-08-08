@@ -91,30 +91,24 @@ const router = createRouter({
         {
           path: 'feedList',
           name: 'challengeFeedList',
-          component: () => import('../components/Challenge/ChallengeFeedList.vue'),
+          component: () => import('../components/ChallengeFeed/ChallengeFeedList.vue'),
           props: true
         },
         {
           path: 'feed/:feedId',
           name: 'challengeFeedDetail',
-          component: () => import('../components/Challenge/ChallengeFeedDetail.vue')
+          component: () => import('../components/ChallengeFeed/ChallengeFeedDetail.vue')
         },
         {
           path: 'feed/:feedId/:commentId',
           name: 'challengeFeedComment',
-          component: () => import('../components/Challenge/ChallengeFeedComment.vue')
-        },
-        {
-          // feed 생성 폼
-          path: 'feed/post',
-          name: 'challengeFeedPost',
-          component: () => import('../components/Challenge/ChallengeFeedPost.vue')
+          component: () => import('../components/ChallengeFeed/ChallengeFeedComment.vue')
         },
         {
           // feed 검색 결과 리스트
           path: 'feed/search',
           name: 'challengeFeedSearchList',
-          component: () => import('../components/Challenge/ChallengeFeedSearchList.vue')
+          component: () => import('../components/ChallengeFeed/ChallengeFeedSearchList.vue')
         }
       ]
     },
