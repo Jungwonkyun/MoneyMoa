@@ -212,4 +212,24 @@ public class MemberController {
         return ResponseEntity.ok(memberRepository.findById(memberId).orElse(null));
     }
 
+    @ApiOperation(value = "멤버 정보 업데이트", notes = "멤버의 정보를 수정하고 업데이트된 멤버 정보를 반환합니다.")
+    @PutMapping("/member/update")
+    public ResponseEntity<Map<String, Object>> updateMember(@ApiParam(value = "수정할 멤버 정보") @RequestBody Member updatedMember,
+                                                            @ApiParam(value = "Bearer 타입의 인증토큰") @RequestHeader("Authorization") String jwt) {
+        jwt = jwt.replace("Bearer ", "");
+        Long memberId = authTokensGenerator.extractMemberId(jwt);
+        updatedMember.setId(memberId);
+
+        Member savedMember = memberService.updateMember(updatedMember);
+
+        Map<String, Object> resultMap = new HashMap<>();
+        if (savedMember != null) {
+            resultMap.put("message", "success");
+            resultMap.put("member", savedMember);
+            return new ResponseEntity<>(resultMap, HttpStatus.OK);
+        } else {
+            resultMap.put("message", "fail");
+            return new ResponseEntity<>(resultMap, HttpStatus.NOT_FOUND);
+        }
+    }
 }

@@ -20,6 +20,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.mail.MessagingException;
 import javax.mail.internet.MimeMessage;
+import javax.persistence.EntityNotFoundException;
 import java.io.UnsupportedEncodingException;
 import java.util.Optional;
 import java.util.Random;
@@ -260,5 +261,21 @@ public class MemberServiceImpl implements MemberService {
     }
 
 
+    @Transactional
+    public Member updateMember(Member updatedMember) {
+        Optional<Member> optionalMember = memberRepository.findById(updatedMember.getId());
 
+        if (optionalMember.isPresent()) {
+            Member existingMember = optionalMember.get();
+
+            // 필요한 속성들을 수정합니다 (예: email, name, nickname 등)
+            existingMember.setEmail(updatedMember.getEmail());
+            existingMember.setName(updatedMember.getName());
+            existingMember.setNickname(updatedMember.getNickname());
+
+            return memberRepository.save(existingMember);
+        } else {
+            throw new EntityNotFoundException("Member not found");
+        }
+    }
 }

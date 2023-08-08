@@ -13,4 +13,6 @@ public interface MemberService {
     void quitService(Long id);
     Member findLoginMember(String email, String password);
     void mailSend(String email, String pwd);
+
+    Member updateMember(Member updatedMember);
 }
