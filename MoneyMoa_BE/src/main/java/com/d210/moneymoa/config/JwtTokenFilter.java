@@ -31,7 +31,7 @@ public class JwtTokenFilter extends OncePerRequestFilter {
 
         if (path.startsWith("api/member/login") ||path.startsWith("api/member/signup")||path.startsWith("api/member/findpassword")||path.startsWith("api/member/emailauth")
                 ||path.startsWith("/swagger-ui")||path.startsWith("/v2")||path.startsWith("/webjars")|| path.startsWith("/swagger-resources")
-                ||path.startsWith("/api/file")||path.startsWith("/api/ws-stomp/")){
+                ||path.startsWith("/api/file")||path.startsWith("/api/ws-stomp/")||path.startsWith("/pub")||path.startsWith("/sub")){
             logger.info("얘는 필터에 들어가지 않음");
             filterChain.doFilter(request, response);
             return;
