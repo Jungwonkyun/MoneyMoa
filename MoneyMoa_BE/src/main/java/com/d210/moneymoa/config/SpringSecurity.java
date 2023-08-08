@@ -44,7 +44,7 @@ public class SpringSecurity extends WebSecurityConfigurerAdapter {
                 .csrf().disable()
                 .headers().frameOptions().sameOrigin()
                 .contentTypeOptions().and()
-                .frameOptions().deny().and()
+                //.frameOptions().deny().and()
                 .authorizeRequests()
                 .antMatchers("/swagger-ui/**", "/v2/api-docs", "/webjars/**", "/swagger-resources/**").permitAll()
                 .antMatchers("/api/auth/kakao", "/api/auth/naver", "/api", "/api/member/login", "/api/member/signup", "/api/member/findpassword",
