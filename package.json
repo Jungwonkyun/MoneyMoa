@@ -20,6 +20,7 @@
     "vue": "^3.3.4",
     "vue-router": "^4.2.4",
     "vue3-cookies": "^1.0.6",
+    "vue3-websocket": "^1.0.11",
     "vuetify": "^3.0.0-beta.0",
     "webfontloader": "^1.0.0"
   },

@@ -242,7 +242,15 @@ const router = createRouter({
     {
       path: '/chat',
       name: 'chat',
-      component: () => import('../views/ChatView.vue')
+      component: () => import('../views/ChatView.vue'),
+      redirect: '/chat/list',
+      children: [
+        {
+          path: 'list',
+          name: 'chatrooms',
+          component: () => import('../components/Chat/ChatRooms.vue')
+        }
+      ]
     },
     {
       path: '/admin',
