@@ -59,13 +59,13 @@ async function searchFeed(searchWord) {
   }
 }
 
-// 피드 작성 API
-async function postFeed() {
+// 피드 생성 API
+async function createFeed(feedData) {
   try {
     const headers = {
       Authorization: `Bearer ${token}`
     }
-    const res = await api.post(`/feed/create`, { headers })
+    const res = await api.post(`/feed/create`, JSON.stringify(feedData), { headers })
     return res
   } catch (err) {
     console.log(err)
@@ -137,7 +137,7 @@ export default {
   fetchFeedDetail,
   addFeedLike,
   searchFeed,
-  postFeed,
+  createFeed,
   updateFeed,
   deleteFeed,
   postComment,
