@@ -98,7 +98,7 @@
 import { ref, onMounted } from 'vue'
 import functions from '@/api/challenge.js'
 import { useCookies } from 'vue3-cookies'
-import ChallengeCard from '@/components/Challenge/item/ChallengeCard.vue'
+import ChallengeCard from '@/components/Member/item/ChallengeCard.vue'
 
 const { cookies } = useCookies()
 
@@ -173,6 +173,7 @@ const handleFileUpload = (event) => {
 onMounted(() => {
   const res = functions.getChallengeList(memberId.value)
   res.then((response) => {
+    console.log(response.data.result.data)
     challenges.value = response.data.result.data
   })
 })

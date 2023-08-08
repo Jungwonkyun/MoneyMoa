@@ -2,6 +2,8 @@ import { apiInstance } from './index.js'
 import { useCookies } from 'vue3-cookies'
 
 const api = apiInstance()
+
+// 토큰 받아오기
 const { cookies } = useCookies()
 const token = cookies.get('accessToken')
 
