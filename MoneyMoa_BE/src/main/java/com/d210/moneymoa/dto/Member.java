@@ -45,6 +45,14 @@ public class Member implements Serializable {
     @ApiModelProperty(value = "생일")
     private String birthday;
 
+    @ApiModelProperty(value = "한줄 소개")
+    private String introduce;
+
+    @ApiModelProperty(value = "챌린지달성 등급")
+    private String progress;
+
+    @ApiModelProperty(value = "프로필 이미지 경로")
+    private String imageUrl;
 
     @ApiModelProperty(value = "로그인 경로")
     @Enumerated(EnumType.STRING)
