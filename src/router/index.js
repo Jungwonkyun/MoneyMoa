@@ -9,8 +9,8 @@ import HomeView from '../views/HomeView.vue'
 import ProductsView from '../views/ProductsView.vue'
 import { useProductStore } from '../stores/productStore.js'
 
-// ChallengeView
-import ChallengeView from '../views/ChallengeView.vue'
+// ChallengeFeedView
+import ChallengeFeedView from '../views/ChallengeFeedView.vue'
 
 // MemberView
 import MemberView from '../views/MemberView.vue'
@@ -84,7 +84,7 @@ const router = createRouter({
     {
       path: '/challenge',
       name: 'challenge',
-      component: ChallengeView,
+      component: ChallengeFeedView,
       props: true,
       redirect: '/challenge/feedList',
       children: [
