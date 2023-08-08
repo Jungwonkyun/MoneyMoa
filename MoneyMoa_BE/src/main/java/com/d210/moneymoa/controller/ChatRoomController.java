@@ -22,7 +22,7 @@ import java.util.Map;
 // TODO: 2023-08-04 REST Controller로 바꿔야함 
 @RequiredArgsConstructor
 @Controller
-@RequestMapping("api/chat")
+@RequestMapping("/api/chat")
 public class ChatRoomController {
 
     //private final ChatRoomRepository chatRoomRepository;
@@ -97,31 +97,31 @@ public class ChatRoomController {
     }
 
 
-    @GetMapping("/room/info/{roomId}")
-    @ResponseBody
-    public ResponseEntity<Map<String,Object>> roomInfoApi(@PathVariable String roomId) {
+    // @GetMapping("/room/info/{roomId}")
+    // @ResponseBody
+    // public ResponseEntity<Map<String,Object>> roomInfoApi(@PathVariable String roomId) {
 
-        Map<String,Object>resultMap = new HashMap<>();
-        HttpStatus status;
-        String message = "";
+    //     Map<String,Object>resultMap = new HashMap<>();
+    //     HttpStatus status;
+    //     String message = "";
 
-        try{
-            message = "success";
-            ChatRoom chatRoom = chatRoomService.findRoomById(roomId);
-            resultMap.put("message", message);
-            resultMap.put("chatRoom Info", chatRoom);
-            status = HttpStatus.OK;
+    //     try{
+    //         message = "success";
+    //         ChatRoom chatRoom = chatRoomService.findRoomById(roomId);
+    //         resultMap.put("message", message);
+    //         resultMap.put("chatRoom Info", chatRoom);
+    //         status = HttpStatus.OK;
 
-        }catch (Exception e){
-            e.printStackTrace();
+    //     }catch (Exception e){
+    //         e.printStackTrace();
 
-            message = "fail";
-            resultMap.put("message", message);
-            status = HttpStatus.BAD_REQUEST;
-        }
+    //         message = "fail";
+    //         resultMap.put("message", message);
+    //         status = HttpStatus.BAD_REQUEST;
+    //     }
 
-        return new ResponseEntity<Map<String,Object>>(resultMap,status);
-    }
+    //     return new ResponseEntity<Map<String,Object>>(resultMap,status);
+    // }
 
 
 }
