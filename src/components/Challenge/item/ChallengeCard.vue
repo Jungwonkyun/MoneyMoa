@@ -146,7 +146,8 @@ const updateChallenge = () => {
 
   // 챌린지 수정 API 호출
   const updateChallenge = functions.updateChallenge
-  updateChallenge(props.challenge.id, data.value).then((response) => {
+  challengeId.value = props.challenge.id
+  updateChallenge(challengeId.value, data).then((response) => {
     console.log(response) // 응답 확인
   })
 }

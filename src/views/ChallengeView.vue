@@ -66,8 +66,9 @@
   </v-container>
 </template>
 <script setup>
-import { ref, computed } from 'vue'
+import { ref, computed, onMounted } from 'vue'
 import SearchBar from '@/components/Challenge/item/SearchBar.vue'
+import functions from '@/api/challenge.js'
 
 const searchWord = ref(null)
 
@@ -83,6 +84,19 @@ const handleEvent = (word) => {
 const shouldShowSearchBar = computed(() => {
   // window.location.pathname가 '/challenge/feed/post'인 경우에는 false를 반환
   return window.location.pathname !== '/challenge/feed/post'
+})
+
+// 마운트되면 챌린지 목록 불러옴
+// 만약 챌린지 없다면 피드 생성 버튼 안보이게 처리
+onMounted(() => {
+  functions
+    .getChallengeList()
+    .then((res) => {
+      console.log(res)
+    })
+    .catch((err) => {
+      console.log(err)
+    })
 })
 </script>
 <style></style>
