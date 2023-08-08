@@ -75,9 +75,7 @@ async function createFeed(feedData) {
 // 피드 수정 API
 async function updateFeed() {
   try {
-    const res = await api.put(`/feed/modifyboard`, {
-      usertoken: accessToken
-    })
+    const res = await api.put(`/feed/modifyboard`, {})
     return res
   } catch (err) {
     console.log(err)
@@ -85,11 +83,25 @@ async function updateFeed() {
 }
 
 // 피드 삭제 API
-async function deleteFeed() {
+async function deleteFeed(feedId) {
   try {
-    const res = await api.delete(`/feed/deleteboard`, {
-      usertoken: accessToken
-    })
+    const headers = {
+      Authorization: `Bearer ${token}`
+    }
+    const res = await api.delete(`/feed/delete/${feedId}`, { headers })
+    return res
+  } catch (err) {
+    console.log(err)
+  }
+}
+
+// 해당 유저의 피드 목록 조회 API
+async function getUserFeedList(memberId) {
+  try {
+    const headers = {
+      Authorization: `Bearer ${token}`
+    }
+    const res = await api.get(`/feed/all/${memberId}`, { headers })
     return res
   } catch (err) {
     console.log(err)
@@ -142,5 +154,6 @@ export default {
   deleteFeed,
   postComment,
   deleteComment,
-  updateComment
+  updateComment,
+  getUserFeedList
 }

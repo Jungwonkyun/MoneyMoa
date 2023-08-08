@@ -1,10 +1,10 @@
 <template>
   <v-container>
     <v-row>
-      <v-col cols="12" class="ma-auto">
+      <v-col cols="11" class="ma-auto">
         <SearchBar v-if="shouldShowSearchBar" @custom-event="handleEvent" />
       </v-col>
-      <v-col cols="1" class="ma-auto">
+      <v-col cols="1" class="ma-auto no-margin-padding">
         <FeedPost />
       </v-col>
     </v-row>
@@ -30,4 +30,12 @@ const shouldShowSearchBar = computed(() => {
   return window.location.pathname !== '/challenge/feed/post'
 })
 </script>
-<style></style>
+<style>
+.align-center {
+  text-align: center;
+}
+.no-margin-padding {
+  margin: 0;
+  padding: 0;
+}
+</style>

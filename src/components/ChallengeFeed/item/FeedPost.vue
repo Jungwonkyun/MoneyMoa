@@ -3,7 +3,7 @@
     <v-row justify="center">
       <v-dialog v-model="dialog" persistent width="auto">
         <template v-slot:activator="{ props }">
-          <v-btn color="primary" v-bind="props"> 피드 생성하기 </v-btn>
+          <v-btn icon="mdi-pencil" variant="text" v-bind="props"> </v-btn>
         </template>
         <v-card>
           <v-card-title class="text-center mt-4">

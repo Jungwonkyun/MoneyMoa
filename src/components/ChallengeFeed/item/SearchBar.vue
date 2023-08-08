@@ -17,6 +17,7 @@
 import { ref } from 'vue'
 import functions from '@/api/challengeFeed.js'
 import { defineEmits } from 'vue'
+import FeedPost from '@/components/ChallengeFeed/item/FeedPost.vue'
 
 const inputWord = ref('')
 const searchWord = ref('')
