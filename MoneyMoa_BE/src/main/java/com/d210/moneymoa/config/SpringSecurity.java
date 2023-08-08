@@ -42,7 +42,7 @@ public class SpringSecurity extends WebSecurityConfigurerAdapter {
         http
                 .cors().and()
                 .csrf().disable()
-                .headers()
+                .headers().frameOptions().sameOrigin()
                 .contentTypeOptions().and()
                 .frameOptions().deny().and()
                 .authorizeRequests()
