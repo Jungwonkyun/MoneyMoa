@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 @Slf4j
 @RequiredArgsConstructor
 //@Controller
-@RestController
+Controller
 public class ChatController {
 
     private final RedisPublisher redisPublisher;
