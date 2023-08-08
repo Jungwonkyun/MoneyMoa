@@ -32,10 +32,10 @@ public class ChatRoomController {
     @Autowired
     AuthTokensGenerator authTokensGenerator;
 
-    @GetMapping("/room")
-    public String rooms(Model model) {
-        return "chat/room";
-    }
+    // @GetMapping("/room")
+    // public String rooms(Model model) {
+    //     return "chat/room";
+    // }
 
     //모든 채팅방 리턴
 //    @GetMapping("/roomlist")
@@ -74,11 +74,11 @@ public class ChatRoomController {
     }
 
 
-    @GetMapping("/room/enter/{roomId}")
-    public String roomDetail(Model model, @PathVariable String roomId) {
-        model.addAttribute("roomId", roomId);
-        return "/chat/roomdetail";
-    }
+    // @GetMapping("/room/enter/{roomId}")
+    // public String roomDetail(Model model, @PathVariable String roomId) {
+    //     model.addAttribute("roomId", roomId);
+    //     return "/chat/roomdetail";
+    // }
 
 //    @GetMapping("/room/enter/{roomId}")
 //    public void roomDetail(@PathVariable String roomId, @RequestHeader("Authorization") String jwt) {
