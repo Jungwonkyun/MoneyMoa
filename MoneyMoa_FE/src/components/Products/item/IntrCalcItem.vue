@@ -31,7 +31,7 @@
         >원을 받을 수 있어요. (이자
         {{ result - amount * (calcType === 'saving' ? period : 1) }}원)</v-col
       >
-      <!-- 계산기록찜버튼(todo: 로그인시에만 보여야함, 찜목록으로 바로가기 라우터) -->
+      <!-- 계산기록찜버튼(todo: 찜목록으로 바로가기 링크) -->
       <v-btn @click="like">찜하기</v-btn>
       <v-snackbar v-model="likeSnackbar" timeout="2500" color="white">
         상품을 찜 목록에 담았어요.
@@ -46,11 +46,23 @@
 <script setup>
 import { ref, reactive, computed } from 'vue'
 import { useProductStore } from '@/stores/productStore'
+import { likeProduct } from '@/api/product'
 import { storeToRefs } from 'pinia'
-
+import { useCookies } from 'vue3-cookies'
+import {
+  getIntrRange,
+  getPeriodRange,
+  getMatchingDetail,
+  spclConditionIntrList
+} from '@/api/product'
+const props = defineProps({
+  product: Object,
+  spcls: Array
+})
 const cmaType = ref('deposit')
 const store = useProductStore()
 const { productType, amount, period, selectedProduct } = storeToRefs(store)
+const { cookies } = useCookies()
 const periods = reactive([6, 12, 24, 36])
 
 const calcType = computed(() => {
@@ -59,17 +71,43 @@ const calcType = computed(() => {
   }
   return productType.value
 })
+const calcDetail = computed(() => {
+  //props.product의 intrDetails중 선택한 기간에 맞는 것 반환
+  if (props.product?.interestDetails) {
+    // console.log('intrs:')
+    // console.log(props.product.interestDetails)
+    return props.product.interestDetails.reduce((prev, curr) => {
+      if (curr.period <= period.value && (!prev || curr.period > prev.period)) {
+        console.log(curr)
+        return curr
+      } else {
+        console.log(prev)
+        return prev
+      }
+    })
+  } else {
+    console.log('product미전달')
+    return null
+  }
+})
+
+//우대이율 총합(maxRate 고려 전)
+const spSum = computed(() =>
+  props.spcls.reduce((sum, item) => (item.checked ? sum + item.intr : sum), 0)
+)
+//최종 계산에 적용되는 이율
+const calcIntr = computed(() =>
+  Math.min(Number(calcDetail.value.basicRate) + spSum.value, Number(calcDetail.value.maxRate))
+)
 
 const result = computed(() => {
-  let intr = Number(selectedProduct.value.interest) / 100
+  let intr = calcIntr.value / 100
+  console.log('적용 금리: ' + intr)
   let month = Number(period.value)
+  //현재 단리계산만 구현
   if (calcType.value === 'deposit') {
-    //일단 단리계산
-    console.log('예금식계산')
     return Math.floor(Number(amount.value) * (1 + (intr * month) / 12))
   } else if (calcType.value === 'saving') {
-    //일단 단리계산
-    console.log('적금식계산')
     return (
       Math.floor(((Number(amount.value) * intr) / 24) * month * (month + 1)) +
       Number(amount.value) * month
@@ -83,9 +121,27 @@ const onKeyPress = (event) => {
 }
 const likeSnackbar = ref(false)
 function like() {
-  //todo: 찜하기axios호출
-  console.log('찜할래용')
-  likeSnackbar.value = true
+  if (!cookies.get('accessToken')) {
+    alert('찜하기는 회원만 이용할 수 있습니다.')
+    return
+  }
+  let likeInfo = {
+    memberId: cookies.get('member').id,
+    productCode: props.product.productCode,
+    amount: Number(amount.value),
+    interest: calcIntr.value,
+    period: period.value,
+    result: result.value,
+    rsrvType: calcDetail.value.rsrvType
+  }
+  console.log(likeInfo)
+  likeProduct(productType.value, likeInfo).then((response) => {
+    likeSnackbar.value = true
+  })
 }
 </script>
-<style></style>
+<style>
+.v-text-field {
+  width: 200px;
+}
+</style>

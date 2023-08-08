@@ -9,6 +9,7 @@
           icon="mdi-delete"
           color="red"
           style="cursor: pointer"
+          v-if="member.id != nowAdmin.id"
         />
       </v-col>
       <v-col cols="2"> 유저 {{ member.id }} <br />피드 바로가기 </v-col>
@@ -26,7 +27,7 @@ import { useCookies } from 'vue3-cookies'
 const { cookies } = useCookies()
 // members null값 주고
 const members = ref(null)
-
+const nowAdmin = ref(cookies.get('member'))
 // admin 토큰값 받기위해 쿠키에서 멤버정보 가져오고
 const accessToken = computed(() => {
   return cookies.get('accessToken')
@@ -58,6 +59,7 @@ async function userDelete(e) {
       console.log(message)
       if (message.data.message === 'success') {
         alert('삭제되었습니다.')
+        // 삭제하고 목록 다시 불러주기
         loadAlluser()
       }
     } catch (err) {

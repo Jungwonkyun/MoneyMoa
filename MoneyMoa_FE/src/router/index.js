@@ -1,5 +1,5 @@
 import { createRouter, createWebHistory } from 'vue-router'
-
+import { useCookies } from 'vue3-cookies'
 // HomeView
 import HomeView from '../views/HomeView.vue'
 
@@ -7,6 +7,7 @@ import HomeView from '../views/HomeView.vue'
 
 // ProductsView
 import ProductsView from '../views/ProductsView.vue'
+import { useProductStore } from '../stores/productStore.js'
 
 // ChallengeView
 import ChallengeView from '../views/ChallengeView.vue'
@@ -30,7 +31,7 @@ import FindPassword from '../components/Accounts/FindPassword.vue'
 import CheckPassword from '../components/Accounts/CheckPassword.vue'
 import ProfileChange from '../components/Accounts/ProfileChange.vue'
 import { useAccountStore } from '../stores/accountStore.js'
-
+import OAuth from '../components/Accounts/OAuth.vue'
 // AdminView
 import AdminView from '../views/AdminView.vue'
 
@@ -64,9 +65,19 @@ const router = createRouter({
           component: () => import('../components/Products/ProductsList.vue')
         },
         {
+          path: 'saving/:productCode',
+          name: 'savingDetail',
+          component: () => import('../components/Products/savingDetail.vue')
+        },
+        {
           path: 'cma',
           name: 'cmaList',
           component: () => import('../components/Products/CMAList.vue')
+        },
+        {
+          path: 'cma/:id',
+          name: 'cmaDetail',
+          component: () => import('../components/Products/DepositDetail.vue')
         }
       ]
     },
@@ -157,10 +168,38 @@ const router = createRouter({
       redirect: '/account/login',
       component: AccountView,
       children: [
+        // 일반로그인
         {
           path: 'login',
           name: 'loginform',
-          component: LoginForm
+          component: LoginForm,
+
+          // 로그인 한사람은 로그인폼 못가게
+          beforeEnter: function (to, from, next) {
+            const account = useAccountStore()
+            // 소셜로그인은 비밀번호 검사 X
+            if (account.isLogin) {
+              return next({ name: 'home' })
+            } else {
+              return next()
+            }
+          }
+        },
+        // 소셜로그인
+        {
+          path: 'oauth/kakao/login',
+          name: 'oauthkakaologin',
+          component: OAuth
+        },
+        {
+          path: 'oauth/kakao/logout',
+          name: 'oauthkakaologout',
+          component: OAuth
+        },
+        {
+          path: 'oauth/naver/login',
+          name: 'oauthnaverlogin',
+          component: OAuth
         },
         {
           path: 'signup',
@@ -185,10 +224,15 @@ const router = createRouter({
           // 라우터 가드 함수
           beforeEnter: function (to, from, next) {
             const account = useAccountStore()
-            // console.log(to, '라우터 가드 테스트')
-            if (account.pwdChecked === false) {
-              return next({ name: 'checkpassword' })
-            } else {
+            const { cookies } = useCookies()
+            // 소셜로그인은 비밀번호 검사 X
+            if (cookies.get('member') && cookies.get('member').authtokens === 'GENERAL')
+              if (account.pwdChecked === false) {
+                return next({ name: 'checkpassword' })
+              } else {
+                return next()
+              }
+            else {
               return next()
             }
           }
@@ -198,7 +242,20 @@ const router = createRouter({
     {
       path: '/chat',
       name: 'chat',
-      component: () => import('../views/ChatView.vue')
+      component: () => import('../views/ChatView.vue'),
+      redirect: '/chat/list',
+      children: [
+        {
+          path: 'list',
+          name: 'chatrooms',
+          component: () => import('../components/Chat/ChatRooms.vue')
+        },
+        {
+          path: '/:roomId',
+          name: 'chatroomdetail',
+          component: () => import('../components/Chat/ChatRoomDetail.vue')
+        }
+      ]
     },
     {
       path: '/admin',
@@ -219,6 +276,14 @@ const router = createRouter({
       ]
     }
   ]
+})
+
+router.beforeEach((to) => {
+  const store = useProductStore()
+  const productTypeValue = to.path.split('/')[2]
+  if (['deposit', 'saving', 'cma'].includes(productTypeValue)) {
+    store.productType = productTypeValue
+  }
 })
 
 export default router

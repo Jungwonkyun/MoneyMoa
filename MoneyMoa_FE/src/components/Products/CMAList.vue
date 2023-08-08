@@ -11,12 +11,7 @@
     </v-radio-group>
     <v-divider />
     결과 {{ filteredProducts.length }} 건
-    <CMAPreviewItem
-      v-for="(product, index) in filteredProducts"
-      :key="index"
-      :product="product"
-      :productType="productType"
-    />
+    <CMAPreviewItem v-for="(product, index) in filteredProducts" :key="index" :product="product" />
   </div>
 </template>
 <script setup>
@@ -100,6 +95,12 @@ const products_dummy = reactive([
 ])
 // const products = getCMAList()
 // console.log(products)
+
+const products = ref([])
+getCMAList().then((response) => {
+  products.value = response.data.products
+})
+
 const filteredProducts = computed(() =>
   products_dummy.filter(
     (product) => securityList.value.find((bank) => bank.name === product.bank_name)?.selected

@@ -1,34 +1,37 @@
 <template>
   <v-container class="d-flex align-center flex-column">
+    <h1>이메일로 로그인</h1>
     <!-- 로그인폼 -->
     <v-row>
-      <v-col>
+      <v-col cols="12" md="6" sm="2">
         <form class="LoginInput">
-          <v-row class="d-flex align-center flex-column">
-            <h1>이메일로 로그인</h1>
-            <v-col>
-              <v-text-field
-                clearable
-                label="아이디(이메일)"
-                variant="underlined"
-                dense
-                v-model="Email"
-                :rules="rules"
-                @keyup.enter="onLogin"
-                
-              ></v-text-field>
-              <v-text-field
-                clearable
-                label="비밀번호"
-                variant="underlined"
-                dense
-                v-model="password"
-                :type="visible ? 'text' : 'password'"
-                :append-inner-icon="visible ? 'mdi-eye-off' : 'mdi-eye'"
-                @click:append-inner="visible = !visible"
-                :rules="rules"
-                @keyup.enter="onLogin"
-              ></v-text-field>
+          <v-row>
+            <v-col class="d-flex align-center flex-column">
+              <v-row>
+                <v-col>
+                  <v-text-field
+                    clearable
+                    label="아이디(이메일)"
+                    variant="underlined"
+                    dense
+                    v-model="Email"
+                    :rules="rules"
+                    @keyup.enter="onLogin"
+                  ></v-text-field>
+                  <v-text-field
+                    clearable
+                    label="비밀번호"
+                    variant="underlined"
+                    dense
+                    v-model="password"
+                    :type="visible ? 'text' : 'password'"
+                    :append-inner-icon="visible ? 'mdi-eye-off' : 'mdi-eye'"
+                    @click:append-inner="visible = !visible"
+                    :rules="rules"
+                    @keyup.enter="onLogin"
+                  ></v-text-field>
+                </v-col>
+              </v-row>
               <v-row>
                 <v-col class="text-center">
                   <v-btn
@@ -81,10 +84,11 @@ import kakaoLogo from '../../assets/img/카카오로그인.png'
 import functions from '@/api/member.js'
 import { ref } from 'vue'
 import { useAccountStore } from '@/stores/accountStore.js'
-import { useRouter } from 'vue-router'
+import { useRouter, useRoute } from 'vue-router'
 
 const account = useAccountStore()
 const router = useRouter()
+const route = useRoute()
 const Email = ref(null)
 const password = ref(null)
 
@@ -111,7 +115,8 @@ async function onLogin() {
       const member = {
         id: loginResult.data.member.id,
         role: loginResult.data.member.role,
-        nickname: loginResult.data.member.nickname
+        nickname: loginResult.data.member.nickname,
+        oauthProvider: loginResult.data.member.oauthProvider
       }
       const token = loginResult.data['jwt token'].accessToken
       const data = {
@@ -136,18 +141,24 @@ const rules = [(value) => !!value || '필수 입력 값입니다.']
 // 패스워드 인풋 로직
 const visible = ref(false)
 
-// 네이버로그인
-function naverLogin() {
-  window.location.replace(
-    'https://nid.naver.com/oauth2.0/authorize?response_type=code&client_id=Cr4zB5lfM08ugwGyTXD4&state=zJ1F78TI5l&redirect_uri=http://i9d210.p.ssafy.io:9999/api/auth/naver'
-  )
+// 카카오로그인
+async function kakaoLogin() {
+  try {
+    await functions.openkakaoLogin()
+  } catch (error) {
+    alert(error)
+    console.error(error)
+  }
 }
 
-// 카카오로그인
-function kakaoLogin() {
-  window.location.replace(
-    'https://kauth.kakao.com/oauth/authorize?client_id=6bca07d112514b4054347d4fd3bfaf53&redirect_uri=http://i9d210.p.ssafy.io:9999/api/auth/kakao&response_type=code'
-  )
+// 네이버 로그인
+async function naverLogin() {
+  try {
+    await functions.openNaverLogin()
+  } catch (error) {
+    alert(error)
+    console.error(error)
+  }
 }
 </script>
 
@@ -161,5 +172,4 @@ function kakaoLogin() {
 .v-text-field {
   max-width: none;
 }
-
 </style>
