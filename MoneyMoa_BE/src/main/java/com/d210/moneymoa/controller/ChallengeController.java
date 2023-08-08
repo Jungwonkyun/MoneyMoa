@@ -66,7 +66,7 @@ public class ChallengeController {
 
 
     @ApiOperation(value = "챌린지 수정", notes = "챌린지을 수정합니다.")
-    @GetMapping("/update/{id}")
+    @PutMapping("/update/{id}")
     @ResponseStatus(HttpStatus.OK)
     public Response updateChallenge(@PathVariable Long id, @RequestBody ChallengeUpdateRequest req,
                                     @ApiParam(value = "Bearer ${jwt token} 형식으로 전송") @RequestHeader("Authorization") String jwt) throws ChallengeAuthorizationException {
