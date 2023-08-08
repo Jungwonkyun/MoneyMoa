@@ -8,5 +8,6 @@ import socket from 'vue3-websocket'
 import { loadFonts } from './plugins/webfontloader'
 loadFonts()
 const pinia = createPinia()
+window.global = window
 createApp(App).use(router).use(pinia).use(vuetify).use(VueCookies).mount('#app')
 //   .use(socket, 'ws://i9d210.p.ssafy.io/api/ws-stomp')
