@@ -23,8 +23,8 @@ public class LikedCma implements Serializable{
     @ApiModelProperty(example = "0")
     private Long memberId;
 
-    @ApiModelProperty(example = "string")
-    private String cmaId;
+    @ApiModelProperty(example = "0")
+    private Long cmaId;
 
     @ApiModelProperty(example = "0")
     private Long amount;
