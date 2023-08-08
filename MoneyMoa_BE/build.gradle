@@ -60,6 +60,9 @@ dependencies {
 
 	implementation 'com.googlecode.json-simple:json-simple:1.1.1'
 
+	// aws S3
+	implementation 'io.awspring.cloud:spring-cloud-starter-aws:2.3.1'
+
 	//redis관련 수정내용
 	implementation 'org.springframework.boot:spring-boot-starter-data-redis'
 	implementation 'org.webjars:sockjs-client:1.1.2'
