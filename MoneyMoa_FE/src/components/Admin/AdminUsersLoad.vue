@@ -1,22 +1,36 @@
 <template>
   <v-container class="text-center">
     <h2>유저 조회</h2>
-    <v-row v-for="(member, index) in members" :key="index" class="my-4">
-      <v-col cols="3">
-        {{ member.id + ' : ' + member.email
-        }}<v-icon
-          @click="userDelete(member)"
-          icon="mdi-delete"
-          color="red"
-          style="cursor: pointer"
-          v-if="member.id != nowAdmin.id"
-        />
-      </v-col>
-      <v-col cols="2"> 유저 {{ member.id }} <br />피드 바로가기 </v-col>
-      <v-col cols="2"> 유저 {{ member.id }} <br />챌린지 바로가기 </v-col>
-      <v-col cols="2"> 유저 {{ member.id }} <br />오픈 채팅방 바로가기 </v-col>
-      <v-col cols="2"> 유저 {{ member.id }} <br />찜 상품 바로가기 </v-col>
-    </v-row>
+    <v-table>
+      <thead>
+        <tr>
+          <th class="text-center">유저 이름</th>
+          <th class="text-center">피드 조회</th>
+          <th class="text-center">챌린지 조회</th>
+          <th class="text-center">오픈 채팅 조회</th>
+          <th class="text-center">찜한 상품 조회</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr v-for="(member, idx) in members" :key="idx">
+          <td class="text-left">
+            {{ member.id + ' : ' + member.email
+            }}<v-icon
+              @click="userDelete(member)"
+              icon="mdi-delete"
+              color="red"
+              style="cursor: pointer"
+              v-if="member.id != nowAdmin.id"
+            />
+          </td>
+          <td>유저 {{ member.id }} <br />피드 바로가기</td>
+          <td>유저 {{ member.id }} <br />챌린지 바로가기</td>
+          <td>유저 {{ member.id }} <br />오픈 채팅방 바로가기</td>
+          <td>유저 {{ member.id }} <br />찜 상품 바로가기</td>
+        </tr>
+      </tbody>
+      <v-col cols="3"> </v-col>
+    </v-table>
   </v-container>
 </template>
 <script setup>

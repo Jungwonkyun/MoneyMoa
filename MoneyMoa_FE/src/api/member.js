@@ -3,14 +3,12 @@ import { useCookies } from 'vue3-cookies'
 
 const api = apiInstance()
 const { cookies } = useCookies()
-const token = cookies.get('accessToken')
 
 // 유저 정보 API
 async function callUserInfoApi(memberId) {
+  const accessToken = cookies.get('accessToken')
   try {
-    const res = await api.get(`/member/info/${memberId}`, {
-      usertoken: accessToken
-    })
+    const res = await api.get(`/member/info/${memberId}`, {})
     return res
   } catch (err) {
     console.log(err)
@@ -76,9 +74,7 @@ async function postSignup(member) {
 // 유저 토큰이랑 팔로우 할 사람의 id를 보내면 됨
 async function addFollow(memberId) {
   try {
-    const res = await api.post(`/member/follow/${memberId}`, {
-      usertoken: accessToken
-    })
+    const res = await api.post(`/member/follow/${memberId}`, {})
     return res
   } catch (err) {
     console.log(err)
@@ -88,9 +84,7 @@ async function addFollow(memberId) {
 // 팔로워 유저 목록 API
 async function fetchFollowerList(memberId) {
   try {
-    const res = await api.get(`/member/followerlist/${memberId}`, {
-      usertoken: accessToken
-    })
+    const res = await api.get(`/member/followerlist/${memberId}`, {})
     return res
   } catch (err) {
     console.log(err)
@@ -100,9 +94,7 @@ async function fetchFollowerList(memberId) {
 // 팔로잉 유저 목록 API
 async function fetchFollowingList(memberId) {
   try {
-    const res = await api.get(`/member/followinglist/${memberId}`, {
-      usertoken: accessToken
-    })
+    const res = await api.get(`/member/followinglist/${memberId}`, {})
     return res
   } catch (err) {
     console.log(err)
@@ -112,9 +104,7 @@ async function fetchFollowingList(memberId) {
 // 마이 피드 목록 API
 async function fetchFeedList(memberId) {
   try {
-    const res = await api.get(`/member/feed/${memberId}`, {
-      usertoken: accessToken
-    })
+    const res = await api.get(`/member/feed/${memberId}`, {})
     return res
   } catch (err) {
     console.log(err)
@@ -195,6 +185,47 @@ async function deletequitService(token) {
     console.log(err)
   }
 }
+
+// 이미지 업로드 테스트
+async function postUploadFile(img) {
+  const formData = new FormData()
+  formData.append('file', img[0])
+  const headers = {
+    'Content-Type': 'multipart/form-data'
+  }
+  try {
+    console.log(img[0])
+
+    const res = await api.post('/file/upload', formData, { headers })
+    return res.data
+  } catch (err) {
+    console.log(err)
+  }
+}
+// 이미지 다운로드 테스트
+async function getImgDown(filename) {
+  const encodedFilename = encodeURIComponent(filename)
+  try {
+    const res = await api.get(`/file/download/${encodedFilename}`)
+    return res.data
+  } catch (err) {
+    console.log(err)
+  }
+}
+// 회원정보변경
+async function putUpdatedMember(token, member) {
+  const Token = `Bearer ${token}`
+  const headers = {
+    Authorization: Token
+  }
+  try {
+    const res = await api.put('/member/update', member, { headers })
+    return res.data
+  } catch (err) {
+    console.log(err)
+  }
+}
+
 export default {
   callUserInfoApi,
   addFollow,
@@ -213,5 +244,8 @@ export default {
   postKakaoLogin,
   openkakaoLogout,
   openNaverLogin,
-  postNaverLogin
+  postNaverLogin,
+  postUploadFile,
+  getImgDown,
+  putUpdatedMember
 }

@@ -22,6 +22,9 @@
         <v-btn cols="6">DM보내기</v-btn>
       </v-row>
       <v-divider class="border-opacity-20 mb-6"></v-divider>
+      <router-link :to="`/member/${memberId}/challengelist`" class="no-link-style text-center">
+        <v-card-title>챌린지</v-card-title>
+      </router-link>
       <router-link :to="`/member/${memberId}/myfeed`" class="no-link-style text-center">
         <v-card-title>피드</v-card-title>
       </router-link>
