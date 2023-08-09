@@ -5,6 +5,9 @@ import com.d210.moneymoa.domain.kakao.KakaoLoginParams;
 import com.d210.moneymoa.domain.naver.NaverLoginParams;
 import com.d210.moneymoa.domain.oauth.AuthTokens;
 import com.d210.moneymoa.domain.oauth.AuthTokensGenerator;
+import com.d210.moneymoa.dto.Member;
+import com.d210.moneymoa.repository.MemberRepository;
+import com.d210.moneymoa.service.MemberService;
 import com.d210.moneymoa.service.OAuthLoginServiceImpl;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -24,6 +27,7 @@ import java.util.Map;
 public class AuthController {
     private final OAuthLoginServiceImpl oAuthLoginService;
     private final AuthTokensGenerator authTokensGenerator;
+    private final MemberService memberService;
 
     @ApiOperation(value = "카카오 소셜 로그인 ",
             notes = "카카오 로그인을 한 후 [redirect URL]?code= + 뒤에 생기는 Kakao에서 보내주는 Token 을 가져와서 보내준다")
@@ -35,9 +39,13 @@ public class AuthController {
 
         try{
             AuthTokens authTokens = oAuthLoginService.login(params);
+            String jwt = authTokens.getAccessToken();
+
             resultMap.put("message","success");
             resultMap.put("authtokens",authTokens);
-            // resultMap.put("member",oAuthLoginService.findLogin(authTokens));
+            Long memberId = authTokensGenerator.extractMemberId(jwt);
+            Member member = memberService.findMemberById(memberId);
+            resultMap.put("member",member);
 
         }catch (Exception e){
             e.printStackTrace();
@@ -46,9 +54,6 @@ public class AuthController {
         }
 
         return new ResponseEntity<Map<String,Object>>(resultMap, HttpStatus.OK);
-
-
-        //return ResponseEntity.ok(oAuthLoginService.login(params));
     }
 
 
@@ -62,9 +67,12 @@ public class AuthController {
 
         try{
             AuthTokens authTokens = oAuthLoginService.login(params);
+            String jwt = authTokens.getAccessToken();
             resultMap.put("message","success");
             resultMap.put("authtokens",authTokens);
-            // resultMap.put("member",oAuthLoginService.findLogin(authTokens));
+            Long memberId = authTokensGenerator.extractMemberId(jwt);
+            Member member = memberService.findMemberById(memberId);
+            resultMap.put("member",member);
 
         }catch (Exception e){
             e.printStackTrace();
@@ -73,16 +81,6 @@ public class AuthController {
         }
 
         return new ResponseEntity<Map<String,Object>>(resultMap, HttpStatus.OK);
-        //return ResponseEntity.ok(oAuthLoginService.login(params));
     }
-
-
-//    @ApiOperation(value = "접속 유저의 JWT 토큰을 통해서 해당 유저의 ID를 리턴하는 API",
-//                  notes = "전송 형식: Authorization : Bearer $[JWT Token]")
-//    @PostMapping("/findid")
-//    public ResponseEntity<Long> extractIdByAccessToken(@ApiParam(value = "해당 유저의 JWT 토큰") @RequestHeader("Authorization") String jwt){
-//        String accessToken = jwt.replace("Bearer ", "");
-//        return ResponseEntity.ok(authTokensGenerator.extractMemberId(accessToken));
-//    }
 
 }

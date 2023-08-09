@@ -88,7 +88,7 @@ public class ChatRoomController {
             messege = "success";
             status = HttpStatus.OK;
             resultMap.put("message", messege);
-            resultMap.put("Created chatroom",chatRoomDto);
+            resultMap.put("CreatedChatroom",chatRoomDto);
         }catch (Exception e){
             messege = "fail";
             resultMap.put("message", "message");
@@ -145,8 +145,8 @@ public class ChatRoomController {
             messege = "success";
             status = HttpStatus.OK;
             resultMap.put("message", messege);
-            resultMap.put("chatroom Info",chatRoomDto);
-            resultMap.put("chat messages" , chatmessages);
+            resultMap.put("chatroomInfo",chatRoomDto);
+            resultMap.put("chatMessages" , chatmessages);
         }catch (Exception e){
             messege = "fail";
             resultMap.put("message", "message");
@@ -171,7 +171,7 @@ public class ChatRoomController {
             messege = "success";
             status = HttpStatus.OK;
             resultMap.put("message", messege);
-            resultMap.put("chatroom Info",chatRoomDto);
+            resultMap.put("chatroomInfo",chatRoomDto);
         }catch (Exception e){
             messege = "fail";
             resultMap.put("message", messege);
@@ -199,7 +199,7 @@ public class ChatRoomController {
             messege = "success";
             status = HttpStatus.OK;
             resultMap.put("message", messege);
-            resultMap.put("Member who sub this Chatroom",subMemberList);
+            resultMap.put("MemberwhoSubThisChatroom",subMemberList);
         }catch (Exception e){
             messege = "fail";
             resultMap.put("message", "message");
