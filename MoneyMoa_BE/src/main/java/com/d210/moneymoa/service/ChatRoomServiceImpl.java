@@ -191,7 +191,22 @@ public class ChatRoomServiceImpl implements ChatRoomService {
 ////        }
 //    }
 
-    public List<ChatRoomDto> saveChatMessage(String roomId, ChatMessage chatMessage) {
+//    public List<ChatRoomDto> saveChatMessage(String roomId, ChatMessage chatMessage) {
+//        log.info(chatMessage.toString());
+//
+//        ChatMessageDto chatMessages = ChatMessageDto.builder()
+//                .message(chatMessage.getMessage())
+//                .roomId(chatMessage.getRoomId())
+//                .sender(chatMessage.getSender())
+//                .type(chatMessage.getType())
+//                .build();
+//
+//        chatMessageDtoRepository.save(chatMessages);
+//
+//        return chatRoomDtoRepository.findAll();
+//    }
+
+    public List<ChatMessageDto> saveChatMessage(String roomId, ChatMessage chatMessage) {
         log.info(chatMessage.toString());
 
         ChatMessageDto chatMessages = ChatMessageDto.builder()
@@ -203,8 +218,8 @@ public class ChatRoomServiceImpl implements ChatRoomService {
 
         chatMessageDtoRepository.save(chatMessages);
 
-        List<ChatRoomDto> messageList = chatRoomDtoRepository.findAll();
-        return messageList;
+        //return chatRoomDtoRepository.findAll();
+        return chatMessageDtoRepository.findByRoomId(roomId);
     }
 
 

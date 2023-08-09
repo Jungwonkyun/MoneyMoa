@@ -1,9 +1,6 @@
 package com.d210.moneymoa.service;
 
-import com.d210.moneymoa.dto.ChatMessage;
-import com.d210.moneymoa.dto.ChatRoom;
-import com.d210.moneymoa.dto.ChatRoomDto;
-import com.d210.moneymoa.dto.MemberChatroomSubInfo;
+import com.d210.moneymoa.dto.*;
 import org.springframework.data.redis.listener.ChannelTopic;
 
 import java.util.List;
@@ -25,7 +22,10 @@ public interface ChatRoomService {
     public MemberChatroomSubInfo enterChatRoom(long memberId, String roomId);
 
     //public void saveChatMessage(String roomId, ChatMessage chatMessage);
-    public List<ChatRoomDto> saveChatMessage(String roomId, ChatMessage chatMessage);
+    // List<ChatRoomDto> saveChatMessage(String roomId, ChatMessage chatMessage);
+
+    public List<ChatMessageDto> saveChatMessage(String roomId, ChatMessage chatMessage);
+
 //    public void increaseUserCount(String roomId);
 
 //    public void decreaseUserCount(String roomId);
