@@ -65,7 +65,7 @@ function onMyproducts() {
   return router.push({ name: 'myproducts', params: { id: member.id } })
 }
 </script>
-<style>
+<style scoped>
 .logout {
   color: red;
 }

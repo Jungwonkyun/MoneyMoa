@@ -116,6 +116,7 @@ async function onLogin() {
       // 유저 이미지가 있으면 유저이미지 불러오기
       let urlData = img
       if (loginResult.data.member.imageUrl) {
+        console.log(loginResult.data.member.imageUrl)
         const urlres = await functions.getImgDown(loginResult.data.member.imageUrl)
         urlData = 'data:image/jpeg;base64,' + urlres
       }
@@ -129,6 +130,7 @@ async function onLogin() {
         imageUrl: urlData,
         imageName: loginResult.data.member.imageUrl
       }
+      console.log(member)
       const token = loginResult.data['jwt token'].accessToken
       const data = {
         member: member,
@@ -173,7 +175,7 @@ async function naverLogin() {
 }
 </script>
 
-<style>
+<style scoped>
 .LoginInput {
   width: 500px;
 }
