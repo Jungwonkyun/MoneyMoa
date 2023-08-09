@@ -5,7 +5,6 @@ import com.d210.moneymoa.domain.oauth.AuthTokensGenerator;
 import com.d210.moneymoa.dto.feed.FeedCreateRequest;
 import com.d210.moneymoa.dto.feed.FeedCreateResponse;
 import com.d210.moneymoa.dto.feed.FeedUpdateRequest;
-import com.d210.moneymoa.repository.MemberRepository;
 import com.d210.moneymoa.response.Response;
 import com.d210.moneymoa.service.FeedService;
 import io.swagger.annotations.Api;
@@ -14,12 +13,9 @@ import io.swagger.annotations.ApiParam;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 @Api(value = "Feed Controller", tags = "Feed-Controller")
 @RestController
@@ -37,13 +33,15 @@ public class FeedController {
 
     @ResponseStatus(value = HttpStatus.CREATED)
     @ApiOperation(value = "피드 생성", notes = "피드를 작성합니다.")
-    @PostMapping("/create")
-    public Response createFeed(@RequestBody  FeedCreateRequest req,
+    @PostMapping("/create/{challengeId}") // 경로에 challengeId 추가
+    public Response createFeed(@RequestBody FeedCreateRequest req,
                                @ApiParam(value = "Bearer ${jwt token} 형식으로 전송")
-                               @RequestHeader("Authorization") String jwt){
+                               @RequestHeader("Authorization") String jwt,
+                               @PathVariable("challengeId") Long challengeId) { // @PathVariable 어노테이션 추가
         jwt = jwt.replace("Bearer ", "");
-        Long Id = authTokensGenerator.extractMemberId(jwt);
-        return Response.success(feedService.createFeed(req, Id, jwt));
+        Long id = authTokensGenerator.extractMemberId(jwt);
+        FeedCreateResponse response = feedService.createFeed(req, id, jwt, challengeId); // challengeId 전달
+        return Response.success(response);
     }
 
 

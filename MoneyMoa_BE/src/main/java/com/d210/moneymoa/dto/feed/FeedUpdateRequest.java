@@ -22,7 +22,13 @@ public class FeedUpdateRequest {
     @ApiModelProperty(value = "게시글 내용", notes = "게시글 내용을 입력해주세요.")
     private String content;
 
-    public String challenge;
+    @ApiModelProperty(value = "챌린지 선택", notes = "챌린지를 선택해주세요.", required = true, example = "String")
+    @Column(nullable = false)
+    private Long challengeId; // 챌린지 종류
+
+    @JsonIgnore
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "challengeId", referencedColumnName = "id", insertable = false, updatable = false)
 
     public String hashtag;
 
