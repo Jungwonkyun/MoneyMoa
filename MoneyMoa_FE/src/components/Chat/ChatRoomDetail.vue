@@ -7,7 +7,7 @@
   </v-sheet>
   <v-container>
     <v-row>
-      <v-text-field v-model="inputMsg" />
+      <v-text-field v-model="inputMsg" @keyup.enter="sendMessage(room, nickName)" />
       <v-btn @click="sendMessage(room, nickName)">메시지 전송</v-btn>
     </v-row>
   </v-container>
