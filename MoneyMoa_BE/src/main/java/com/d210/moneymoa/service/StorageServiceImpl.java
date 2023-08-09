@@ -31,7 +31,8 @@ public class StorageServiceImpl implements StorageService {
         String fileName = System.currentTimeMillis()+" "+file.getOriginalFilename();
         s3Client.putObject(new PutObjectRequest(bucketName,fileName,fileObj));
         fileObj.delete();
-        return "File uploaded : " + fileName;
+        return fileName;
+//        return "File uploaded : " + fileName;
     }
 
     @Override

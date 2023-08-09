@@ -34,8 +34,8 @@ public class ChatController {
 
     @MessageMapping("/api/chat/message")
     public void message(ChatMessage message) {
-        if (ChatMessage.MessageType.ENTER.equals(message.getType())) {
-            chatRoomService.enterChatRoom(message.getRoomId());
+        if (ChatMessage.MessageType.JOIN.equals(message.getType())) {
+            //chatRoomService.enterChatRoom(message.getRoomId());
 //            chatRoomRepository.increaseUserCount(message.getRoomId());
             message.setMessage(message.getSender() + "님이 입장하셨습니다.");
         }else if (ChatMessage.MessageType.QUIT.equals(message.getType())) {

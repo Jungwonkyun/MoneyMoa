@@ -213,7 +213,7 @@ public class MemberController {
     }
 
     @ApiOperation(value = "멤버 정보 업데이트", notes = "멤버의 정보를 수정하고 업데이트된 멤버 정보를 반환합니다.")
-    @PutMapping("/member/update")
+    @PutMapping("/update")
     public ResponseEntity<Map<String, Object>> updateMember(@ApiParam(value = "수정할 멤버 정보") @RequestBody Member updatedMember,
                                                             @ApiParam(value = "Bearer 타입의 인증토큰") @RequestHeader("Authorization") String jwt) {
         jwt = jwt.replace("Bearer ", "");
