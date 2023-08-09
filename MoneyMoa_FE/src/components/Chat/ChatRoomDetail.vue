@@ -1,15 +1,30 @@
 <template>
-  <v-card variant="outlined">
-    <v-card-title>{{ room.name }}</v-card-title>
-  </v-card>
-  <v-sheet v-for="(msg, index) in messages" elevation="10" rounded>
-    {{ msg.sender }}: {{ msg.message }}
-  </v-sheet>
-  <v-container>
-    <v-row>
-      <v-text-field v-model="inputMsg" @keyup.enter="sendMessage(room, nickName)" />
-      <v-btn @click="sendMessage(room, nickName)">메시지 전송</v-btn>
-    </v-row>
+  <v-container class="fill-height align-start">
+    <v-card variant="outlined">
+      <v-card-title>
+        <v-banner class="text-h5" sticky>
+          {{ room.name }}
+        </v-banner>
+      </v-card-title>
+      <v-card-text class="overflow-auto">
+        <template v-for="(msg, index) in messages">
+          <v-sheet :class="{ 'd-flex flex-row-reverse': isMine(msg.sender) }" class="pa-1">
+            <h4 v-if="!isMine(msg.sender)">
+              {{ msg.sender }}
+            </h4>
+            <v-chip :color="isMine(msg.sender) ? 'primary' : ''">
+              {{ msg.message }}
+            </v-chip>
+          </v-sheet>
+        </template>
+      </v-card-text>
+      <v-footer>
+        <v-row>
+          <v-text-field v-model="inputMsg" @keyup.enter="sendMessage(room, nickName)" />
+          <v-btn @click="sendMessage(room, nickName)">메시지 전송</v-btn>
+        </v-row>
+      </v-footer>
+    </v-card>
   </v-container>
 </template>
 <script setup>
@@ -105,6 +120,10 @@ function sendMessage(room, sender) {
     })
   )
   inputMsg.value = ''
+}
+
+function isMine(sender) {
+  return sender === nickName
 }
 </script>
 <style></style>
