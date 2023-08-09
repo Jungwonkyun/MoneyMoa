@@ -6,13 +6,14 @@
       <router-link :to="{ name: 'cmaList' }"><v-tab value="cma">CMA</v-tab></router-link>
     </v-tabs>
     <router-view />
+
     <DictionarySide />
   </v-container>
 </template>
 <script setup>
 // import { watch } from 'vue'
 import { useProductStore } from '../stores/productStore'
-import { useRouter } from 'vue-router'
+
 import { storeToRefs } from 'pinia'
 import DictionarySide from '@/components/Dictionary/DictionarySide.vue'
 const store = useProductStore()

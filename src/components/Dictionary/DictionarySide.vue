@@ -12,21 +12,21 @@
     <!-- 여기서 크기조절 -->
     <v-card width="500" max-height="500">
       <v-list>
-        <v-list-item title="금융사전">
-          <!-- 금융사전 검색창입니다 -->
-          <v-text-field
-            clearable
-            placeholder="키워드 검색"
-            variant="underlined"
-            append-inner-icon="mdi-magnify"
-            @keyup.enter="onSearch"
-            v-model="searchWord"
-          >
-            <template #append-inner-icon>
-              <v-icon @click="onSearch">mdi-magnify</v-icon>
-            </template>
-          </v-text-field>
-        </v-list-item>
+        <v-list-item> </v-list-item>
+        <!-- 금융사전 검색창입니다 -->
+        <v-text-field
+          clearable
+          placeholder="키워드 검색"
+          variant="underlined"
+          append-inner-icon="mdi-magnify"
+          @keyup.enter="onSearch"
+          v-model="searchWord"
+          style="width: 480px"
+        >
+          <template #append-inner-icon>
+            <v-icon @click="onSearch">mdi-magnify</v-icon>
+          </template>
+        </v-text-field>
       </v-list>
       <v-divider></v-divider>
 
@@ -43,9 +43,6 @@
 
       <!-- 뭐하는앤지 모르겠는데 오류날까봐 일단놔둠 -->
       <v-card-actions>
-        <v-spacer></v-spacer>
-        <!--  -->
-
         <v-btn variant="text" @click="menu = false"> Cancel </v-btn>
       </v-card-actions>
     </v-card>

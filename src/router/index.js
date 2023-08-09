@@ -222,17 +222,17 @@ const router = createRouter({
           name: 'profilechange',
           component: ProfileChange,
           // 라우터 가드 함수
-          beforeEnter: function (to, from, next) {
+          beforeEnter: (to, from, next) => {
             const account = useAccountStore()
             const { cookies } = useCookies()
             // 소셜로그인은 비밀번호 검사 X
-            if (cookies.get('member') && cookies.get('member').authtokens === 'GENERAL')
-              if (account.pwdChecked === false) {
+            if (cookies.get('member') && cookies.get('member').oauthProvider === 'GENERAL') {
+              if (!account.pwdChecked) {
                 return next({ name: 'checkpassword' })
               } else {
                 return next()
               }
-            else {
+            } else {
               return next()
             }
           }

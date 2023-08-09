@@ -3,7 +3,7 @@
     <h1>이메일로 로그인</h1>
     <!-- 로그인폼 -->
     <v-row>
-      <v-col cols="12" md="6" sm="2">
+      <v-col>
         <form class="LoginInput">
           <v-row>
             <v-col class="d-flex align-center flex-column">
@@ -85,6 +85,7 @@ import functions from '@/api/member.js'
 import { ref } from 'vue'
 import { useAccountStore } from '@/stores/accountStore.js'
 import { useRouter, useRoute } from 'vue-router'
+import img from '../../assets/img/default_image.png'
 
 const account = useAccountStore()
 const router = useRouter()
@@ -112,11 +113,21 @@ async function onLogin() {
       if (loginResult.data.member.valid === 0) {
         return alert('탈퇴한 회원입니다.')
       }
+      // 유저 이미지가 있으면 유저이미지 불러오기
+      let urlData = img
+      if (loginResult.data.member.imageUrl) {
+        const urlres = await functions.getImgDown(loginResult.data.member.imageUrl)
+        urlData = 'data:image/jpeg;base64,' + urlres
+      }
+
       const member = {
         id: loginResult.data.member.id,
         role: loginResult.data.member.role,
         nickname: loginResult.data.member.nickname,
-        oauthProvider: loginResult.data.member.oauthProvider
+        oauthProvider: loginResult.data.member.oauthProvider,
+        introduce: loginResult.data.member.introduce,
+        imageUrl: urlData,
+        imageName: loginResult.data.member.imageUrl
       }
       const token = loginResult.data['jwt token'].accessToken
       const data = {
