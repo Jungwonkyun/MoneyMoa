@@ -27,8 +27,7 @@
   </v-container>
 </template>
 <script setup>
-import { ref, inject } from 'vue'
-import { onMessage, onOpen, onClose, onError } from 'vue3-websocket'
+import { ref, watch, nextTick } from 'vue'
 import { getRoomDetail } from '@/api/chat'
 import { useRoute } from 'vue-router'
 import Stomp from 'webstomp-client'
@@ -59,6 +58,14 @@ getRoomDetail(route.params.roomId).then((response) => {
   console.log('after connect')
 })
 
+// watch(messages, () => {
+//   nextTick(() => {
+//     const chatArea = document.querySelector('.chatmessage-area')
+//     console.log(chatArea.scrollHeight + ' ~ ' + chatArea.scrollTop)
+//     chatArea.scrollTop = chatArea.scrollHeight
+//   })
+// })
+
 function recvMessage(recv) {
   // 배열을 반환합니다
   return [
@@ -86,6 +93,12 @@ function connect(room, sender) {
         var recv = JSON.parse(message.body)
         // recvMessage 함수를 호출하고 반환된 값을 사용하여 messages 변수를 업데이트
         messages.value.push(...recvMessage(recv))
+        // messages 갱신되면 스크롤 최하단으로 이동
+        nextTick(() => {
+          const chatArea = document.querySelector('.chatmessage-area')
+          console.log(chatArea.scrollHeight + ' ~ ' + chatArea.scrollTop)
+          chatArea.scrollTop = chatArea.scrollHeight
+        })
       })
       ws.send(
         '/pub/api/chat/message',
