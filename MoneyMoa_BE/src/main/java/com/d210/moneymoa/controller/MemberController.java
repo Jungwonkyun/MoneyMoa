@@ -209,7 +209,8 @@ public class MemberController {
     public ResponseEntity<Member> findByAccessToken(@ApiParam(value = "Bearer ${jwt token} 형식으로 전송")  @RequestHeader("Authorization") String jwt) {
         jwt =  jwt.replace("Bearer ", "");
         Long memberId = authTokensGenerator.extractMemberId(jwt);
-        return ResponseEntity.ok(memberRepository.findById(memberId).orElse(null));
+        //return ResponseEntity.ok(memberRepository.findById(memberId).orElse(null));
+        return ResponseEntity.ok(memberService.findMemberById(memberId));
     }
 
     @ApiOperation(value = "멤버 정보 업데이트", notes = "멤버의 정보를 수정하고 업데이트된 멤버 정보를 반환합니다.")
