@@ -1,8 +1,9 @@
 <template>
-  <v-container class="chat-container fill-height align-start justify-center">
+  <v-container class="chat-container align-start justify-center">
     <v-card variant="outlined" class="chat-card">
       <v-card-title>
         <v-banner class="text-h5" sticky>
+          <!-- <v-icon icon="mdi-arrow-left"></v-icon> -->
           {{ room.name }}
         </v-banner>
       </v-card-title>
@@ -129,9 +130,13 @@ function isMine(sender) {
 </script>
 <style scoped>
 .chat-container {
-  max-height: 90%;
+  height: 90vh;
 }
 .chat-card {
-  min-height: 100%;
+  height: 100%;
+}
+.chatmessage-area {
+  height: calc(100% - 144px);
+  overflow: auto;
 }
 </style>
