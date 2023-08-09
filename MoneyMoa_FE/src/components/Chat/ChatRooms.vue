@@ -1,7 +1,7 @@
 <template>
   <v-container>
     <v-row>
-      <h3>채팅방 목록</h3>
+      <h3>전체 채팅방 목록</h3>
       <v-spacer></v-spacer>
       <v-btn
         >채팅방 만들기
