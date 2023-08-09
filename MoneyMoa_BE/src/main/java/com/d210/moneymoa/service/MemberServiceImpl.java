@@ -278,4 +278,9 @@ public class MemberServiceImpl implements MemberService {
             throw new EntityNotFoundException("Member not found");
         }
     }
+
+    @Override
+    public Member findMemberById(Long memberId) {
+        return memberRepository.findById(memberId).orElse(null);
+    }
 }

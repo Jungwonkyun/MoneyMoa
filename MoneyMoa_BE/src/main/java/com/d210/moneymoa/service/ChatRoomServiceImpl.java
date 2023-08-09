@@ -162,7 +162,7 @@ public class ChatRoomServiceImpl implements ChatRoomService {
                 .memberNickname(nickName)
                 .roomId(roomId)
                 .build();
-        
+
         memberChatroomSubInfoRepository.save(memberChatroomSubInfo);
 
         return memberChatroomSubInfo;
