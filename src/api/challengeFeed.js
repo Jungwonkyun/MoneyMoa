@@ -20,6 +20,19 @@ async function fetchAllFeedList() {
   }
 }
 
+// 해당 유저의 피드 목록 조회 API
+async function getUserFeedList(memberId) {
+  try {
+    const headers = {
+      Authorization: `Bearer ${token}`
+    }
+    const res = await api.get(`/feed/all/${memberId}`, { headers })
+    return res
+  } catch (err) {
+    console.log(err)
+  }
+}
+
 // 피드 상세 조회 API
 async function fetchFeedDetail(feedId) {
   try {
@@ -92,19 +105,6 @@ async function deleteFeed(feedId) {
       Authorization: `Bearer ${token}`
     }
     const res = await api.delete(`/feed/delete/${feedId}`, { headers })
-    return res
-  } catch (err) {
-    console.log(err)
-  }
-}
-
-// 해당 유저의 피드 목록 조회 API
-async function getUserFeedList(memberId) {
-  try {
-    const headers = {
-      Authorization: `Bearer ${token}`
-    }
-    const res = await api.get(`/feed/all/${memberId}`, { headers })
     return res
   } catch (err) {
     console.log(err)

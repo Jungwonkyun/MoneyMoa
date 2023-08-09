@@ -30,7 +30,7 @@
           v-if="condition"
           size="large"
         ></v-btn>
-        <UpdateFeed class="px-10" />
+        <UpdateFeed v-if="condition" class="px-10" />
       </v-col>
     </v-row>
 
