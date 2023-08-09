@@ -34,11 +34,12 @@ const messages = ref([])
 const inputMsg = ref('')
 const nickName = cookies.get('member').nickname
 console.log(nickName + ' is my nickname')
+
 //room이 가진 것? roomId, name(방제), chatMsg배열
 getRoomDetail(route.params.roomId).then((response) => {
   room.value = response.data['chatroomInfo']
   console.log(room.value)
-  messages.value = response.data.chatMessages
+  messages.value = response.data.chatMessages.filter((msg) => msg.message !== null)
   console.log('got room. try connect')
   connect(room.value, nickName)
   console.log('after connect')
