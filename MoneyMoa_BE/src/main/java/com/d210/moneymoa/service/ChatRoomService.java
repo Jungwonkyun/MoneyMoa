@@ -2,24 +2,40 @@ package com.d210.moneymoa.service;
 
 import com.d210.moneymoa.dto.ChatMessage;
 import com.d210.moneymoa.dto.ChatRoom;
+import com.d210.moneymoa.dto.ChatRoomDto;
+import com.d210.moneymoa.dto.MemberChatroomSubInfo;
 import org.springframework.data.redis.listener.ChannelTopic;
 
 import java.util.List;
 
 public interface ChatRoomService {
 
-    public List<ChatRoom> findAllRoom();
-    public ChatRoom findRoomById(String id);
+//    public List<ChatRoom> findAllRoom();
 
-    public ChatRoom createChatRoom(String name);
+    //public ChatRoom findRoomById(String id);
 
-    //public ChatRoomDto createChatRoom(ChatRoomDto chatRoom);
-    public void enterChatRoom(String roomId);
+    public ChatRoomDto findRoomByRoomId(String id);
 
-    public void saveChatMessage(String roomId, ChatMessage chatMessage);
+    // public ChatRoom createChatRoom(String name);
 
+    public ChatRoomDto createChatRoom(ChatRoomDto chatRoom);
+
+    //public void enterChatRoom(String roomId);
+
+    public MemberChatroomSubInfo enterChatRoom(long memberId, String roomId);
+
+    //public void saveChatMessage(String roomId, ChatMessage chatMessage);
+    public List<ChatRoomDto> saveChatMessage(String roomId, ChatMessage chatMessage);
 //    public void increaseUserCount(String roomId);
 
 //    public void decreaseUserCount(String roomId);
     public ChannelTopic getTopic(String roomId);
+
+    public List<ChatRoomDto> findAllRoomFromDB();
+
+    ChatRoomDto findRoomByName(String name);
+
+    List<MemberChatroomSubInfo> chatRoomMembers(String roomId);
+
+    void getOutchatRoom(Long memberId, String roomId);
 }
