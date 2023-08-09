@@ -3,10 +3,10 @@ import { useCookies } from 'vue3-cookies'
 
 const api = apiInstance()
 const { cookies } = useCookies()
-const token = cookies.get('accessToken')
 
 // 유저 정보 API
 async function callUserInfoApi(memberId) {
+  const accessToken = cookies.get('accessToken')
   try {
     const res = await api.get(`/member/info/${memberId}`, {})
     return res
@@ -185,6 +185,47 @@ async function deletequitService(token) {
     console.log(err)
   }
 }
+
+// 이미지 업로드 테스트
+async function postUploadFile(img) {
+  const formData = new FormData()
+  formData.append('file', img[0])
+  const headers = {
+    'Content-Type': 'multipart/form-data'
+  }
+  try {
+    console.log(img[0])
+
+    const res = await api.post('/file/upload', formData, { headers })
+    return res.data
+  } catch (err) {
+    console.log(err)
+  }
+}
+// 이미지 다운로드 테스트
+async function getImgDown(filename) {
+  const encodedFilename = encodeURIComponent(filename)
+  try {
+    const res = await api.get(`/file/download/${encodedFilename}`)
+    return res.data
+  } catch (err) {
+    console.log(err)
+  }
+}
+// 회원정보변경
+async function putUpdatedMember(token, member) {
+  const Token = `Bearer ${token}`
+  const headers = {
+    Authorization: Token
+  }
+  try {
+    const res = await api.put('/member/update', member, { headers })
+    return res.data
+  } catch (err) {
+    console.log(err)
+  }
+}
+
 export default {
   callUserInfoApi,
   addFollow,
@@ -203,5 +244,8 @@ export default {
   postKakaoLogin,
   openkakaoLogout,
   openNaverLogin,
-  postNaverLogin
+  postNaverLogin,
+  postUploadFile,
+  getImgDown,
+  putUpdatedMember
 }

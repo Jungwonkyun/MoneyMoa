@@ -1,6 +1,6 @@
 <template>
   <v-btn id="menu-activator" color="primary">
-    <v-avatar> <v-img src="https://cdn.vuetifyjs.com/images/john.jpg" alt="John"></v-img> </v-avatar
+    <v-avatar> <v-img :src="member.imageUrl" alt="John"></v-img> </v-avatar
   ></v-btn>
   <v-menu activator="#menu-activator">
     <v-list>
