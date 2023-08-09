@@ -57,13 +57,12 @@ function recvMessage(recv) {
 }
 
 function connect(room, sender) {
-  console.log('try subscribe000000')
-  const token = cookies.get('accessToken')
-  const headers = {
-    login: 'mylogin',
-    passcode: 'mypasscode',
-    Authorization: `Bearer ${token}`
-  }
+  // const token = cookies.get('accessToken')
+  // const headers = {
+  //   login: 'mylogin',
+  //   passcode: 'mypasscode',
+  //   Authorization: `Bearer ${token}`
+  // }
   ws.connect(
     {},
     function (frame) {
@@ -72,7 +71,7 @@ function connect(room, sender) {
         console.log('구독 후 받은 것:' + message.body)
         var recv = JSON.parse(message.body)
         // recvMessage 함수를 호출하고 반환된 값을 사용하여 messages 변수를 업데이트
-        messages.value.unshift(...recvMessage(recv))
+        messages.value.push(...recvMessage(recv))
       })
       ws.send(
         '/pub/api/chat/message',
