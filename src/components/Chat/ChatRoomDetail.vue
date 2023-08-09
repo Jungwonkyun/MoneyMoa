@@ -26,6 +26,7 @@ var sock = new SockJS('https://i9d210.p.ssafy.io/api/ws-stomp')
 var ws = Stomp.over(sock)
 var reconnect = 0
 console.log(cookies.get('member').nickname + ' 등장')
+console.log(cookies.get('accessToken'))
 
 const route = useRoute()
 const room = ref({})
