@@ -4,9 +4,7 @@ package com.d210.moneymoa.controller;
 
 
 import com.d210.moneymoa.domain.oauth.AuthTokensGenerator;
-import com.d210.moneymoa.dto.ChatRoom;
-import com.d210.moneymoa.dto.ChatRoomDto;
-import com.d210.moneymoa.dto.MemberChatroomSubInfo;
+import com.d210.moneymoa.dto.*;
 import com.d210.moneymoa.service.ChatRoomService;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
@@ -143,10 +141,12 @@ public class ChatRoomController {
 
         try{
             ChatRoomDto chatRoomDto = chatRoomService.findRoomByRoomId(roomId);
+            List<ChatMessageDto>chatmessages = chatRoomService.getChatMessages(roomId);
             messege = "success";
             status = HttpStatus.OK;
             resultMap.put("message", messege);
             resultMap.put("chatroom Info",chatRoomDto);
+            resultMap.put("chat messages" , chatmessages);
         }catch (Exception e){
             messege = "fail";
             resultMap.put("message", "message");

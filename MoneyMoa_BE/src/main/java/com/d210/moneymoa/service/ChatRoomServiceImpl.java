@@ -244,6 +244,11 @@ public class ChatRoomServiceImpl implements ChatRoomService {
 //            opsHashChatRoom.put(CHAT_ROOMS, chatRoom.getRoomId(), chatRoom);
 //        }
 //    }
+
+    public List<ChatMessageDto> getChatMessages(String roomId){
+        return chatMessageDtoRepository.findByRoomId(roomId);
+    }
+
     public ChannelTopic getTopic(String roomId) {
         return topics.get(roomId);
     }

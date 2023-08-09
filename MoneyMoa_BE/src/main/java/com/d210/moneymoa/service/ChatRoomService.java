@@ -38,4 +38,6 @@ public interface ChatRoomService {
     List<MemberChatroomSubInfo> chatRoomMembers(String roomId);
 
     void getOutchatRoom(Long memberId, String roomId);
+
+    public List<ChatMessageDto> getChatMessages(String roomId);
 }
