@@ -15,6 +15,5 @@ public class MoneymoaApplication {
 	public static void main(String[] args) {
 		SpringApplication.run(MoneymoaApplication.class, args);
 	}
-
 }
 
