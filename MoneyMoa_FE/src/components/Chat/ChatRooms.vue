@@ -3,7 +3,7 @@
     <v-row>
       <h3>채팅방 목록</h3>
       <v-spacer></v-spacer>
-      <v-btn
+      <v-btn v-if="cookies.get('accessToken')"
         >채팅방 만들기
         <v-dialog v-model="dialog" activator="parent" persistent width="auto">
           <v-card>
@@ -67,7 +67,9 @@
 import { ref } from 'vue'
 import { useRouter } from 'vue-router'
 import { getRooms, enterRoom, createRoom } from '@/api/chat'
+import { useCookies } from 'vue3-cookies'
 
+const { cookies } = useCookies()
 const router = useRouter()
 const dialog = ref(false)
 const roomName = ref('')
