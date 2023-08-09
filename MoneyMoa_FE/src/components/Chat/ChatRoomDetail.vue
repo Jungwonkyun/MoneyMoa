@@ -1,12 +1,12 @@
 <template>
-  <v-container class="fill-height align-start">
-    <v-card variant="outlined">
+  <v-container class="chat-container fill-height align-start justify-center">
+    <v-card variant="outlined" class="chat-card">
       <v-card-title>
         <v-banner class="text-h5" sticky>
           {{ room.name }}
         </v-banner>
       </v-card-title>
-      <v-card-text class="overflow-auto">
+      <v-card-text class="chatmessage-area overflow-auto">
         <template v-for="(msg, index) in messages">
           <v-sheet :class="{ 'd-flex flex-row-reverse': isMine(msg.sender) }" class="pa-1">
             <h4 v-if="!isMine(msg.sender)">
@@ -18,12 +18,10 @@
           </v-sheet>
         </template>
       </v-card-text>
-      <v-footer>
-        <v-row>
-          <v-text-field v-model="inputMsg" @keyup.enter="sendMessage(room, nickName)" />
-          <v-btn @click="sendMessage(room, nickName)">메시지 전송</v-btn>
-        </v-row>
-      </v-footer>
+      <v-card-actions class="align-center">
+        <v-text-field v-model="inputMsg" @keyup.enter="sendMessage(room, nickName)" hide-details />
+        <v-btn @click="sendMessage(room, nickName)" icon="mdi-send" />
+      </v-card-actions>
     </v-card>
   </v-container>
 </template>
@@ -109,7 +107,10 @@ function connect(room, sender) {
 }
 
 function sendMessage(room, sender) {
-  console.log('발신자는?' + sender)
+  if (!inputMsg.value.trim()) {
+    inputMsg.value = ''
+    return
+  }
   ws.send(
     '/pub/api/chat/message',
     JSON.stringify({
@@ -126,4 +127,11 @@ function isMine(sender) {
   return sender === nickName
 }
 </script>
-<style></style>
+<style scoped>
+.chat-container {
+  max-height: 90%;
+}
+.chat-card {
+  min-height: 100%;
+}
+</style>
