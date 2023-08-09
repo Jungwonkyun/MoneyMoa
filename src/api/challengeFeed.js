@@ -73,9 +73,12 @@ async function createFeed(feedData) {
 }
 
 // 피드 수정 API
-async function updateFeed() {
+async function updateFeed(feedData, feedId) {
   try {
-    const res = await api.put(`/feed/modifyboard`, {})
+    const headers = {
+      Authorization: `Bearer ${token}`
+    }
+    const res = await api.put(`/feed/update/${feedId}`, JSON.stringify(feedData), { headers })
     return res
   } catch (err) {
     console.log(err)

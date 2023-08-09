@@ -5,7 +5,7 @@
         <SearchBar v-if="shouldShowSearchBar" @custom-event="handleEvent" />
       </v-col>
       <v-col cols="1" class="ma-auto no-margin-padding">
-        <FeedPost />
+        <PostFeed />
       </v-col>
     </v-row>
     <router-view :search-word="searchWord"></router-view>
@@ -14,7 +14,7 @@
 <script setup>
 import { ref, computed } from 'vue'
 import SearchBar from '@/components/ChallengeFeed/item/SearchBar.vue'
-import FeedPost from '@/components/ChallengeFeed/item/FeedPost.vue'
+import PostFeed from '@/components/ChallengeFeed/item/PostFeed.vue'
 
 const searchWord = ref(null)
 

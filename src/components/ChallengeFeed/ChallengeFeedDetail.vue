@@ -10,16 +10,27 @@
     </v-img>
 
     <v-row align="center" class="mt-1">
-      <v-col cols="10" class="d-flex flex-row justify-start">
+      <v-col cols="8" class="d-flex flex-row justify-start">
         <v-card-subtitle v-for="(hashtag, index) in hashtags" :key="index">
-          <v-chip @click="searchFeed(해시태그1)">{{ hashtag }}</v-chip>
+          <v-chip @click.stop="searchFeed(해시태그1)">{{ hashtag }}</v-chip>
         </v-card-subtitle>
       </v-col>
 
-      <v-col cols="2" class="flex">
-        <v-icon @click="addFeedLike(feedId)" size="large" icon="mdi-heart" />
-        <v-space></v-space>
-        <v-icon v-if="condition" @click="deleteFeed(feedId)" size="large" icon="mdi-delete" />
+      <v-col cols="4" class="flex">
+        <v-btn
+          @click.stop="addFeedLike(feedId)"
+          size="large"
+          icon="mdi-heart"
+          variant="text"
+        ></v-btn>
+        <v-btn
+          icon="mdi-delete"
+          variant="text"
+          @click.stop="deleteFeed(feedId)"
+          v-if="condition"
+          size="large"
+        ></v-btn>
+        <UpdateFeed class="px-10" />
       </v-col>
     </v-row>
 
@@ -42,6 +53,7 @@ import { ref, onMounted } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import challengeFeed from '@/api/challengeFeed.js'
 import { useCookies } from 'vue3-cookies'
+import UpdateFeed from './item/UpdateFeed.vue'
 
 // 쿠키 사용
 const { cookies } = useCookies()
@@ -102,6 +114,6 @@ onMounted(() => {
   flex-direction: row;
   justify-content: space-around;
   align-items: center;
-  padding-right: 20px;
+  margin: auto;
 }
 </style>

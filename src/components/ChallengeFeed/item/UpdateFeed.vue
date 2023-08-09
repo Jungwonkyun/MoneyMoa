@@ -7,7 +7,7 @@
         </template>
         <v-card>
           <v-card-title class="text-center mt-4">
-            <span class="text-h5">피드 작성하기</span>
+            <span class="text-h5">피드 수정하기</span>
           </v-card-title>
           <v-card-text>
             <v-container>
@@ -68,6 +68,11 @@ import { ref, onMounted } from 'vue'
 import functions from '@/api/challenge.js'
 import challengeFeedApi from '@/api/challengeFeed.js'
 import { useCookies } from 'vue3-cookies'
+import { useRoute } from 'vue-router'
+
+// 라우터 사용 및 피드 id 가져오기
+const route = useRoute()
+const feedId = ref(route.params.feedId)
 
 // 쿠키 사용
 const { cookies } = useCookies()
@@ -103,15 +108,16 @@ const feedData = {
 const submitFeedData = () => {
   const feedData = {
     memberId: memberId.value,
-    challengeId: challenge.value,
+    challenge: challenge.value,
     content: content.value,
     depositAmount: parseInt(depositAmount.value),
     hashtag: hashtag.value
   }
+  console.log(feedData)
 
-  // 피드 생성 API 호출
-  const createFeed = challengeFeedApi.createFeed
-  createFeed(feedData).then((response) => {
+  // 피드 수정 API 호출
+  const updateFeed = challengeFeedApi.updateFeed
+  updateFeed(feedData, feedId.value).then((response) => {
     console.log(response)
   })
 }
