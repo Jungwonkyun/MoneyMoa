@@ -42,7 +42,6 @@
     <v-container>
       <v-row>
         <v-card-title>{{ room.name }}</v-card-title>
-        <!-- <v-card-subtitle>{{ room.userCount }}명 참여중</v-card-subtitle> -->
         <v-btn @click="enter(room.roomId)">입장</v-btn>
       </v-row>
     </v-container>
