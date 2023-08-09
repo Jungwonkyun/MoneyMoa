@@ -8,7 +8,7 @@
   <v-container>
     <v-row>
       <v-text-field v-model="inputMsg" />
-      <v-btn @click="sendMessage(room)">메시지 전송</v-btn>
+      <v-btn @click="sendMessage(room, nickName)">메시지 전송</v-btn>
     </v-row>
   </v-container>
 </template>
@@ -32,8 +32,9 @@ const route = useRoute()
 const room = ref({})
 const messages = ref([])
 const inputMsg = ref('')
-const nickName = cookies.get('member').nickName
-//room이 가진 것? roomId, name(방제), userCnt, chatMsg배열
+const nickName = cookies.get('member').nickname
+console.log(nickName + ' is my nickname')
+//room이 가진 것? roomId, name(방제), chatMsg배열
 getRoomDetail(route.params.roomId).then((response) => {
   room.value = response.data['chatroomInfo']
   console.log(room.value)
@@ -72,7 +73,10 @@ function connect(room, sender) {
         // recvMessage 함수를 호출하고 반환된 값을 사용하여 messages 변수를 업데이트
         messages.value.unshift(...recvMessage(recv))
       })
-      ws.send('/pub/api/chat/message', JSON.stringify({ type: 'ENTER', roomId: room.roomId }))
+      ws.send(
+        '/pub/api/chat/message',
+        JSON.stringify({ type: 'ENTER', roomId: room.roomId, sender: sender })
+      )
     },
     function (error) {
       console.log('에러가 발생했어요.')
@@ -89,12 +93,14 @@ function connect(room, sender) {
   )
 }
 
-function sendMessage(room) {
+function sendMessage(room, sender) {
+  console.log('발신자는?' + sender)
   ws.send(
     '/pub/api/chat/message',
     JSON.stringify({
       type: 'TALK',
       roomId: room.roomId,
+      sender: sender,
       message: inputMsg.value
     })
   )
