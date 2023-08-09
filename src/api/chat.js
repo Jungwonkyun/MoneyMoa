@@ -12,7 +12,7 @@ var reconnect = 0
 
 async function getRooms() {
   try {
-    const response = await api.get('rooms')
+    const response = await api.get('roomlist')
     return response
   } catch (error) {
     console.log(error)
@@ -22,6 +22,19 @@ async function getRooms() {
 async function getRoomDetail(roomId) {
   try {
     const response = await api.get(`room/${roomId}`)
+    return response
+  } catch (error) {
+    console.log(error)
+  }
+}
+
+async function enterRoom(roomId) {
+  try {
+    const token = cookies.get('accessToken')
+    const headers = {
+      Authorization: `Bearer ${token}`
+    }
+    const response = await api.get(`room/enter/${roomId}`, { headers })
     return response
   } catch (error) {
     console.log(error)
@@ -87,4 +100,4 @@ async function getRoomDetail(roomId) {
 // }
 
 // export { getRooms, getRoomDetail, sendMessage, recvMessage, connect }
-export { getRooms, getRoomDetail }
+export { getRooms, getRoomDetail, enterRoom }

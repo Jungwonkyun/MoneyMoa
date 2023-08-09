@@ -253,7 +253,15 @@ const router = createRouter({
         {
           path: '/:roomId',
           name: 'chatroomdetail',
-          component: () => import('../components/Chat/ChatRoomDetail.vue')
+          component: () => import('../components/Chat/ChatRoomDetail.vue'),
+          beforeEnter: (to, from, next) => {
+            if (!cookies.get('accessToken')) {
+              alert('로그인이 필요합니다.')
+              next('/')
+            } else {
+              next()
+            }
+          }
         }
       ]
     },

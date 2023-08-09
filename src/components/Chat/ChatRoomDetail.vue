@@ -1,7 +1,6 @@
 <template>
   <v-card variant="outlined">
     <v-card-title>{{ room.name }}</v-card-title>
-    <v-card-subtitle>{{ room.userCount }}명 참여중</v-card-subtitle>
   </v-card>
   <v-sheet v-for="(msg, index) in messages" elevation="10" rounded>
     {{ msg.sender }}: {{ msg.message }}
@@ -26,15 +25,18 @@ const { cookies } = useCookies()
 var sock = new SockJS('https://i9d210.p.ssafy.io/api/ws-stomp')
 var ws = Stomp.over(sock)
 var reconnect = 0
+console.log(cookies.get('member').nickname + ' 등장')
 
 const route = useRoute()
 const room = ref({})
 const messages = ref([])
 const inputMsg = ref('')
+const nickName = cookies.get('member').nickName
 //room이 가진 것? roomId, name(방제), userCnt, chatMsg배열
 getRoomDetail(route.params.roomId).then((response) => {
-  room.value = response.data
-  messages.value = response.data.chatmessage
+  room.value = response.data['chatroom Info']
+  console.log(room.value)
+  // messages.value = response.data.chatmessage
   console.log('got room. try connect')
   connect(room.value, '나는연결')
   console.log('after connect')
@@ -52,7 +54,6 @@ function recvMessage(recv) {
 }
 
 function connect(room, sender) {
-  //   var ws = Stomp.over(new SockJS('https://i9d210.p.ssafy.io/api/ws-stomp'))
   console.log('try subscribe000000')
   const token = cookies.get('accessToken')
   const headers = {
