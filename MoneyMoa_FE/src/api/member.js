@@ -8,9 +8,7 @@ const token = cookies.get('accessToken')
 // 유저 정보 API
 async function callUserInfoApi(memberId) {
   try {
-    const res = await api.get(`/member/info/${memberId}`, {
-      usertoken: accessToken
-    })
+    const res = await api.get(`/member/info/${memberId}`, {})
     return res
   } catch (err) {
     console.log(err)
@@ -76,9 +74,7 @@ async function postSignup(member) {
 // 유저 토큰이랑 팔로우 할 사람의 id를 보내면 됨
 async function addFollow(memberId) {
   try {
-    const res = await api.post(`/member/follow/${memberId}`, {
-      usertoken: accessToken
-    })
+    const res = await api.post(`/member/follow/${memberId}`, {})
     return res
   } catch (err) {
     console.log(err)
@@ -88,9 +84,7 @@ async function addFollow(memberId) {
 // 팔로워 유저 목록 API
 async function fetchFollowerList(memberId) {
   try {
-    const res = await api.get(`/member/followerlist/${memberId}`, {
-      usertoken: accessToken
-    })
+    const res = await api.get(`/member/followerlist/${memberId}`, {})
     return res
   } catch (err) {
     console.log(err)
@@ -100,9 +94,7 @@ async function fetchFollowerList(memberId) {
 // 팔로잉 유저 목록 API
 async function fetchFollowingList(memberId) {
   try {
-    const res = await api.get(`/member/followinglist/${memberId}`, {
-      usertoken: accessToken
-    })
+    const res = await api.get(`/member/followinglist/${memberId}`, {})
     return res
   } catch (err) {
     console.log(err)
@@ -112,9 +104,7 @@ async function fetchFollowingList(memberId) {
 // 마이 피드 목록 API
 async function fetchFeedList(memberId) {
   try {
-    const res = await api.get(`/member/feed/${memberId}`, {
-      usertoken: accessToken
-    })
+    const res = await api.get(`/member/feed/${memberId}`, {})
     return res
   } catch (err) {
     console.log(err)
