@@ -1,17 +1,11 @@
 import { apiInstance } from './index'
-import { useAccountStore } from '@/stores/accountStore.js'
 import { useCookies } from 'vue3-cookies'
 
 const api = apiInstance()
+
+// 토큰 받아오기
 const { cookies } = useCookies()
 const token = cookies.get('accessToken')
-
-// 피니아 스토어에서 유저 토큰을 가져오기
-function getAccessToken() {
-  const accountStore = useAccountStore()
-  const accessToken = accountStore.accessToken
-  return accessToken
-}
 
 // 피드 전체 목록 조회 API
 async function fetchAllFeedList() {
@@ -20,6 +14,19 @@ async function fetchAllFeedList() {
       Authorization: `Bearer ${token}`
     }
     const res = await api.get(`/feed/all`, { headers })
+    return res
+  } catch (err) {
+    console.log(err)
+  }
+}
+
+// 해당 유저의 피드 목록 조회 API
+async function getUserFeedList(memberId) {
+  try {
+    const headers = {
+      Authorization: `Bearer ${token}`
+    }
+    const res = await api.get(`/feed/all/${memberId}`, { headers })
     return res
   } catch (err) {
     console.log(err)
@@ -42,13 +49,10 @@ async function fetchFeedDetail(feedId) {
 // 피드 좋아요 API
 async function addFeedLike(feedId) {
   try {
-    const accessToken = getAccessToken()
-    const res = await api.put(`/feed/like`, {
-      usertoken: accessToken,
-      feedlike: {
-        feed_id: feedId
-      }
-    })
+    const headers = {
+      Authorization: `Bearer ${token}`
+    }
+    const res = await api.put(`/feed/like`, { headers })
     return res
   } catch (err) {
     console.log(err)
@@ -58,7 +62,6 @@ async function addFeedLike(feedId) {
 // 피드 검색 API
 async function searchFeed(searchWord) {
   try {
-    const accessToken = getAccessToken()
     const res = await api.get(`/feed/search`, {
       usertoken: accessToken,
       searchWord: searchWord
@@ -69,13 +72,13 @@ async function searchFeed(searchWord) {
   }
 }
 
-// 피드 작성 API
-async function postFeed() {
+// 피드 생성 API
+async function createFeed(feedData) {
   try {
-    const accessToken = getAccessToken()
-    const res = await api.post(`/feed/writeboard`, {
-      usertoken: accessToken
-    })
+    const headers = {
+      Authorization: `Bearer ${token}`
+    }
+    const res = await api.post(`/feed/create`, JSON.stringify(feedData), { headers })
     return res
   } catch (err) {
     console.log(err)
@@ -83,12 +86,12 @@ async function postFeed() {
 }
 
 // 피드 수정 API
-async function updateFeed() {
+async function updateFeed(feedData, feedId) {
   try {
-    const accessToken = getAccessToken()
-    const res = await api.put(`/feed/modifyboard`, {
-      usertoken: accessToken
-    })
+    const headers = {
+      Authorization: `Bearer ${token}`
+    }
+    const res = await api.put(`/feed/update/${feedId}`, JSON.stringify(feedData), { headers })
     return res
   } catch (err) {
     console.log(err)
@@ -96,12 +99,12 @@ async function updateFeed() {
 }
 
 // 피드 삭제 API
-async function deleteFeed() {
+async function deleteFeed(feedId) {
   try {
-    const accessToken = getAccessToken()
-    const res = await api.delete(`/feed/deleteboard`, {
-      usertoken: accessToken
-    })
+    const headers = {
+      Authorization: `Bearer ${token}`
+    }
+    const res = await api.delete(`/feed/delete/${feedId}`, { headers })
     return res
   } catch (err) {
     console.log(err)
@@ -111,7 +114,6 @@ async function deleteFeed() {
 // 댓글 작성 API
 async function postComment() {
   try {
-    const accessToken = getAccessToken()
     const res = await api.get(`/feed/list`, {
       usertoken: accessToken
     })
@@ -124,7 +126,6 @@ async function postComment() {
 // 댓글 삭제 API
 async function deleteComment() {
   try {
-    const accessToken = getAccessToken()
     const res = await api.get(`/feed/list`, {
       usertoken: accessToken
     })
@@ -137,20 +138,6 @@ async function deleteComment() {
 // 댓글 수정 API
 async function updateComment() {
   try {
-    const accessToken = getAccessToken()
-    const res = await api.get(`/feed/list`, {
-      usertoken: accessToken
-    })
-    return res
-  } catch (err) {
-    console.log(err)
-  }
-}
-
-// 전체 유저 피드 리스트 API
-async function fetchFeedList() {
-  try {
-    const accessToken = getAccessToken()
     const res = await api.get(`/feed/list`, {
       usertoken: accessToken
     })
@@ -165,10 +152,11 @@ export default {
   fetchFeedDetail,
   addFeedLike,
   searchFeed,
-  postFeed,
+  createFeed,
   updateFeed,
   deleteFeed,
   postComment,
   deleteComment,
-  updateComment
+  updateComment,
+  getUserFeedList
 }

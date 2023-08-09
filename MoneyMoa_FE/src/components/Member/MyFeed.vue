@@ -1,10 +1,19 @@
 <template>
   <v-container>
     <v-row>
-      <v-col v-for="(feed, index) in myFeed[0].Feed" :key="index" cols="4">
-        <v-card :width="250" height="200" :elevation="10" class="m-30">
-          <v-img :src="feed.img_url"></v-img>
-        </v-card>
+      <v-col v-for="(feed, index) in myFeed" :key="index" cols="4">
+        <router-link :to="`/challenge/feed/${feed.id}`">
+          <v-card width="100%" height="100%" :elevation="10" class="m-30">
+            <v-img
+              class="align-end text-white"
+              src="https://cdn.vuetifyjs.com/images/cards/docks.jpg"
+              cover
+            >
+              <v-card-title>{{ feed.challenge }}</v-card-title>
+            </v-img>
+            <v-card-subtitle>현재까지 모은 금액: {{ feed.depositAmount }} </v-card-subtitle>
+          </v-card>
+        </router-link>
       </v-col>
     </v-row>
   </v-container>
@@ -12,7 +21,7 @@
 <script setup>
 import { ref, onMounted } from 'vue'
 import { useRoute } from 'vue-router'
-import functions from '@/api/member.js'
+import challengeFeed from '@/api/challengeFeed.js'
 
 const dummy = ref([
   {
@@ -131,13 +140,16 @@ const dummy = ref([
     ]
   }
 ])
-const myFeed = ref(dummy)
+const myFeed = ref([])
 
 const route = useRoute()
 const memberId = ref(route.params.id)
 
 onMounted(() => {
-  const res = functions.fetchFeedList(memberId.value)
+  const res = challengeFeed.getUserFeedList(memberId.value).then((response) => {
+    console.log(response.data.result.data)
+    myFeed.value = response.data.result.data
+  })
 })
 </script>
 <style></style>

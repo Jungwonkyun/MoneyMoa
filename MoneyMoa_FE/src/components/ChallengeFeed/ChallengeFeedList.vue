@@ -17,7 +17,7 @@
 </template>
 
 <script setup>
-import { ref, defineProps, computed, watch } from 'vue'
+import { ref, defineProps } from 'vue'
 import InfiniteLoading from 'v3-infinite-loading'
 import 'v3-infinite-loading/lib/style.css'
 import { apiInstance } from '@/api/index.js'
@@ -42,7 +42,6 @@ const load = async ($state) => {
     }
     const res = await api.get(`/feed/all`, { headers })
     // console.log(res.data)
-    console.log(res.data.result.data)
     const data = res.data.result.data
     // 만약 데이터가 2개 이하라면
     // $state.complete()를 호출하여 더 이상 데이터를 로딩하지 않고 완료 상태로 변경

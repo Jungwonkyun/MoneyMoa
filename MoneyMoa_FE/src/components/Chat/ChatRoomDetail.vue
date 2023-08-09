@@ -1,7 +1,6 @@
 <template>
   <v-card variant="outlined">
     <v-card-title>{{ room.name }}</v-card-title>
-    <v-card-subtitle>{{ room.userCount }}명 참여중</v-card-subtitle>
   </v-card>
   <v-sheet v-for="(msg, index) in messages" elevation="10" rounded>
     {{ msg.sender }}: {{ msg.message }}
@@ -9,7 +8,7 @@
   <v-container>
     <v-row>
       <v-text-field v-model="inputMsg" />
-      <v-btn @click="sendMessage(room, '나는전송')">메시지 전송</v-btn>
+      <v-btn @click="sendMessage(room, nickName)">메시지 전송</v-btn>
     </v-row>
   </v-container>
 </template>
@@ -26,17 +25,22 @@ const { cookies } = useCookies()
 var sock = new SockJS('https://i9d210.p.ssafy.io/api/ws-stomp')
 var ws = Stomp.over(sock)
 var reconnect = 0
+console.log(cookies.get('member').nickname + ' 등장')
+console.log(cookies.get('accessToken'))
 
 const route = useRoute()
 const room = ref({})
 const messages = ref([])
 const inputMsg = ref('')
-//room이 가진 것? roomId, name(방제), userCnt, chatMsg배열
+const nickName = cookies.get('member').nickname
+console.log(nickName + ' is my nickname')
+//room이 가진 것? roomId, name(방제), chatMsg배열
 getRoomDetail(route.params.roomId).then((response) => {
-  room.value = response.data
-  messages.value = response.data.chatmessage
+  room.value = response.data['chatroomInfo']
+  console.log(room.value)
+  messages.value = response.data.chatMessages
   console.log('got room. try connect')
-  connect(room.value, '나는연결')
+  connect(room.value, nickName)
   console.log('after connect')
 })
 
@@ -52,7 +56,6 @@ function recvMessage(recv) {
 }
 
 function connect(room, sender) {
-  //   var ws = Stomp.over(new SockJS('https://i9d210.p.ssafy.io/api/ws-stomp'))
   console.log('try subscribe000000')
   const token = cookies.get('accessToken')
   const headers = {
@@ -91,6 +94,7 @@ function connect(room, sender) {
 }
 
 function sendMessage(room, sender) {
+  console.log('발신자는?' + sender)
   ws.send(
     '/pub/api/chat/message',
     JSON.stringify({

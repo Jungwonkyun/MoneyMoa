@@ -31,12 +31,6 @@ import DictionaryItem from '../components/Dictionary/item/DictionaryItem.vue'
 import DictionarySide from '../components/Dictionary/DictionarySide.vue'
 import { ref } from 'vue'
 
-const searchWord = ref('')
-function onSearch() {
-  list.value = listall.filter(
-    (item) => item.word.includes(searchWord.value) || item.description.includes(searchWord.value)
-  )
-}
 const Item1 = {
   word: 'item1',
   description:
@@ -52,8 +46,17 @@ const Item3 = {
   description:
     'Lorem ipsum dolor sit, consectetur  elit, sed do eiusmod tempor  ut labore et dolore magna aliqua. Ut  ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.'
 }
-
+const searchWord = ref('')
 const list = ref([Item1, Item2, Item3])
 const listall = [Item1, Item2, Item3]
+function onSearch() {
+  if (!searchWord) {
+    list.value = listall
+    return
+  }
+  list.value = listall.filter(
+    (item) => item.word.includes(searchWord.value) || item.description.includes(searchWord.value)
+  )
+}
 </script>
 <style></style>
