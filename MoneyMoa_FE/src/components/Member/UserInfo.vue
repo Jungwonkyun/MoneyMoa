@@ -4,7 +4,7 @@
       <v-row>
         <v-col cols="12">
           <v-img
-            class="profileImage"
+            class="profileImage rounded-xl"
             src="https://cdn.vuetifyjs.com/images/parallax/material.jpg"
             cover
           ></v-img>
@@ -13,15 +13,15 @@
       <v-card-title class="text-center ma-6">
         {{ memberId }}
       </v-card-title>
-      <v-card-subtitle class="text-center">한줄소개</v-card-subtitle>
       <v-card-text class="text-center mb-6">
         {{ aboutMe }}
       </v-card-text>
       <v-row class="d-flex justify-space-evenly mt-6 mb-6">
-        <v-btn cols="6" @click="addFollow">팔로잉</v-btn>
+        <v-btn cols="6" @click="addFollow, followingDialog">팔로잉</v-btn>
         <v-btn cols="6">DM보내기</v-btn>
       </v-row>
-      <v-divider class="border-opacity-20 mb-6"></v-divider>
+
+      <v-divider class="border-opacity-20"></v-divider>
       <router-link :to="`/member/${memberId}/challengelist`" class="no-link-style text-center">
         <v-card-title>챌린지</v-card-title>
       </router-link>
@@ -34,6 +34,7 @@
       <router-link :to="`/member/${memberId}/followinglist`" class="no-link-style text-center">
         <v-card-title>팔로잉</v-card-title>
       </router-link>
+      <v-divider class="border-opacity-20"></v-divider>
       <v-row class="ma-2">
         <v-col class="text-center">
           <v-btn>
@@ -59,10 +60,11 @@
 <script setup>
 import { ref, onMounted, computed } from 'vue'
 import functions from '@/api/member.js'
-import { useRoute } from 'vue-router'
+import { useRoute, useRouter } from 'vue-router'
 
 const route = useRoute()
 const memberId = computed(() => route.params.id)
+
 // const props = defineProps(['memberId'])
 // 굳이 멤버 뷰에서 상속 받을 필요 없음 -> 라우터에서 id 받아서 사용
 
@@ -88,5 +90,8 @@ const aboutMe = ref('한줄소개')
   text-decoration: none; /* 밑줄 제거 */
   color: inherit; /* 색상 상속 */
   cursor: pointer; /* 커서를 손가락 모양으로 변경 (선택 사항) */
+}
+.border-radius {
+  border-radius: 10px;
 }
 </style>

@@ -13,15 +13,6 @@
 
 <script setup>
 import UserInfo from '@/components/Member/UserInfo.vue'
-// import { computed } from 'vue'
-// import { useRoute } from 'vue-router'
-
-// const route = useRoute()
-// const memberId = computed(() => route.params.id)
-
-// ref(route.params.id)
-
-// console.log('멤버뷰' + memberId.value)
 </script>
 
 <style></style>

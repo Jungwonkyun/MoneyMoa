@@ -91,14 +91,6 @@ const content = ref('')
 const depositAmount = ref('')
 const hashtag = ref('')
 
-const feedData = {
-  memberId: memberId.value,
-  challengeId: challenge.value,
-  content: content.value,
-  depositAmount: parseInt(depositAmount.value),
-  hashtag: hashtag.value
-}
-
 // 피드 생성하기 버튼 눌렀을 때
 const submitFeedData = () => {
   const feedData = {
