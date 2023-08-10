@@ -58,7 +58,7 @@ const emitEvent = (searchWord) => {
   emits('custom-event', searchWord)
 }
 </script>
-<style>
+<style scoped>
 .v-text-field {
   width: 700px;
   margin: 0 auto;

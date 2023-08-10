@@ -327,7 +327,7 @@ const month = String(formattedDate.getMonth() + 1).padStart(2, '0') // 0부터 �
 const day = String(formattedDate.getDate()).padStart(2, '0') // 2자리로 만들기 위해 padStart 사용
 const today = `${year}-${month}-${day}`
 </script>
-<style>
+<style scoped>
 /* 임시스타일 */
 h3 {
   margin-top: 30px;
