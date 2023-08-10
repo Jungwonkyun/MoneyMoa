@@ -70,6 +70,7 @@ var sock = new SockJS('https://i9d210.p.ssafy.io/api/ws-stomp')
 var ws = Stomp.over(sock)
 var reconnect = 0
 console.log(cookies.get('member').nickname + ' 등장')
+console.log(cookies.get('member'))
 console.log(cookies.get('accessToken'))
 
 const route = useRoute()
@@ -78,6 +79,7 @@ const room = ref({})
 const messages = ref([])
 const inputMsg = ref('')
 const nickName = cookies.get('member').nickname
+const myId = cookies.get('member').id
 const dialog = ref(false)
 const roomMembers = ref([])
 
@@ -153,7 +155,7 @@ function connect(room, sender) {
       })
       ws.send(
         '/pub/api/chat/message',
-        JSON.stringify({ type: 'ENTER', roomId: room.roomId, sender: sender })
+        JSON.stringify({ type: 'ENTER', roomId: room.roomId, sender: sender, memberId: myId })
       )
     },
     function (error) {
@@ -181,7 +183,8 @@ function sendMessage(room, sender) {
       type: 'TALK',
       roomId: room.roomId,
       sender: sender,
-      message: inputMsg.value
+      message: inputMsg.value,
+      memberId: myId
     })
   )
   inputMsg.value = ''
