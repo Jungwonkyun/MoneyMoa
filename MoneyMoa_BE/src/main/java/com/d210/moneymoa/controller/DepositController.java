@@ -2,21 +2,20 @@ package com.d210.moneymoa.controller;
 
 
 import com.d210.moneymoa.domain.oauth.AuthTokensGenerator;
-import com.d210.moneymoa.dto.Deposit;
-import com.d210.moneymoa.dto.DepositComment;
-import com.d210.moneymoa.dto.LikedDeposit;
-import com.d210.moneymoa.dto.Member;
+import com.d210.moneymoa.dto.*;
 import com.d210.moneymoa.repository.MemberRepository;
 import com.d210.moneymoa.service.DepositCommentService;
 import com.d210.moneymoa.service.DepositService;
 
 
+import com.d210.moneymoa.service.StorageService;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.*;
 
@@ -26,6 +25,9 @@ public class DepositController {
 
     @Autowired
     DepositService depositService;
+
+    @Autowired
+    StorageService storageService;
 
     @Autowired
     private AuthTokensGenerator authTokensGenerator;
@@ -241,6 +243,42 @@ public class DepositController {
             status = HttpStatus.INTERNAL_SERVER_ERROR;
             resultMap.put("message", "fail");
             resultMap.put("message2", "jwttoken이 잘못되었거나 commentId가 잘못되었습니다.");
+        }
+
+        return new ResponseEntity<>(resultMap, status);
+    }
+
+    @ApiOperation(value = "예금상품 은행이미지 업로드")
+    @PostMapping("/upload")
+    public ResponseEntity<Map<String, Object>> uploadDepositFile(@ApiParam(value = "예금 상품 은행이미지 파일")
+                                                                     @RequestParam("file") MultipartFile file,
+                                                                 @ApiParam(value = "예금 상품 은행코드")
+                                                                 @RequestParam("bankCode") String bankCode) {
+        Map<String, Object> resultMap = new HashMap<>();
+        HttpStatus status;
+
+        try {
+            String fileName = storageService.uploadFile(file);
+
+            DepositFile depositFile = new DepositFile();
+            depositFile.setImgPath(fileName);
+
+            Deposit deposit = depositService.findByBankCode(bankCode);
+            if (deposit == null) {
+                throw new IllegalArgumentException("Invalid bank code.");
+            } //Deposit에 없는 bankCode를 입력하면 예외처리
+            depositFile.setDeposit(deposit);
+
+            depositService.saveDepositFile(depositFile);
+
+            status = HttpStatus.OK;
+            resultMap.put("message", "success");
+            resultMap.put("fileName", fileName);
+            resultMap.put("depositFile", depositFile);
+        } catch (Exception e) {
+            e.printStackTrace();
+            status = HttpStatus.BAD_REQUEST;
+            resultMap.put("message", "fail");
         }
 
         return new ResponseEntity<>(resultMap, status);

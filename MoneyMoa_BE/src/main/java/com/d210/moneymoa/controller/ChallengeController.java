@@ -83,44 +83,46 @@ public class ChallengeController {
         // 최종 결과와 설정된 HTTP 상태를 반환하는 ResponseEntity 객체를 반환
         return new ResponseEntity<>(resultMap, status);
     }
+
     /*
-
-    @ApiOperation(value = "{id}의 첼린지 목록 조회", notes = "{id}의 첼린지 전체 목록을 조회합니다")
-    @GetMapping("/list/{memberId}")
-    @ResponseStatus(value = HttpStatus.OK)
-    public Response getAllMemberChallenges(@PathVariable(name = "memberId") Long memberId,
-                                           @ApiParam(value = "Bearer ${jwt token} 형식으로 전송") @RequestHeader("Authorization") String jwt) {
-        jwt = jwt.replace("Bearer ", "");
-        return Response.success(challengeService.getMemberChallenges(memberId));
-    }
-
-    @ApiOperation(value = "챌린지 상세 조회", notes = "챌린지을 상세 조회합니다")
-    @GetMapping("/{id}")
-    @ResponseStatus(HttpStatus.OK)
-    public Response findFeed(@ApiParam(value = "챌린지 id", required = true) @PathVariable final Long id,
-                             @RequestHeader("Authorization") String jwt) {
-        jwt = jwt.replace("Bearer ", "");
-        return Response.success(challengeService.findChallenge(id));
-    }
-
-
-    @ApiOperation(value = "챌린지 수정", notes = "챌린지을 수정합니다.")
-    @PutMapping("/update/{id}")
-    @ResponseStatus(HttpStatus.OK)
-    public Response updateChallenge(@PathVariable Long id, @RequestBody Challenge req,
-                                    @ApiParam(value = "Bearer ${jwt token} 형식으로 전송") @RequestHeader("Authorization") String jwt) throws ChallengeAuthorizationException {
-        jwt = jwt.replace("Bearer ", "");
-
-        return Response.success(challengeService.updateChallenge(id, req, jwt));
-    }
-
-    @ApiOperation(value = "챌린지 삭제", notes = "챌린지을 삭제합니다.")
-    @DeleteMapping("/delete/{id}")
-    @ResponseStatus(HttpStatus.OK)
-    public Response deleteChallenge(@ApiParam(value = "챌린지 id", required = true) @PathVariable Long id, @ApiParam(value = "Bearer ${jwt token} 형식으로 전송") @RequestHeader("Authorization") String jwt) {
-        jwt = jwt.replace("Bearer ", "");
-        challengeService.deleteChallenge(id, jwt);
-        return Response.success("게시물이 삭제되었습니다.");
-    }
+     */
 }
+//    @ApiOperation(value = "{id}의 첼린지 목록 조회", notes = "{id}의 첼린지 전체 목록을 조회합니다")
+//    @GetMapping("/list/{memberId}")
+//    @ResponseStatus(value = HttpStatus.OK)
+//    public Response getAllMemberChallenges(@PathVariable(name = "memberId") Long memberId,
+//                                           @ApiParam(value = "Bearer ${jwt token} 형식으로 전송") @RequestHeader("Authorization") String jwt) {
+//        jwt = jwt.replace("Bearer ", "");
+//        return Response.success(challengeService.getMemberChallenges(memberId));
+//    }
+//
+//    @ApiOperation(value = "챌린지 상세 조회", notes = "챌린지을 상세 조회합니다")
+//    @GetMapping("/{id}")
+//    @ResponseStatus(HttpStatus.OK)
+//    public Response findFeed(@ApiParam(value = "챌린지 id", required = true) @PathVariable final Long id,
+//                             @RequestHeader("Authorization") String jwt) {
+//        jwt = jwt.replace("Bearer ", "");
+//        return Response.success(challengeService.findChallenge(id));
+//    }
+//
+//
+//    @ApiOperation(value = "챌린지 수정", notes = "챌린지을 수정합니다.")
+//    @PutMapping("/update/{id}")
+//    @ResponseStatus(HttpStatus.OK)
+//    public Response updateChallenge(@PathVariable Long id, @RequestBody Challenge req,
+//                                    @ApiParam(value = "Bearer ${jwt token} 형식으로 전송") @RequestHeader("Authorization") String jwt) throws ChallengeAuthorizationException {
+//        jwt = jwt.replace("Bearer ", "");
+//
+//        return Response.success(challengeService.updateChallenge(id, req, jwt));
+//    }
+//
+//    @ApiOperation(value = "챌린지 삭제", notes = "챌린지을 삭제합니다.")
+//    @DeleteMapping("/delete/{id}")
+//    @ResponseStatus(HttpStatus.OK)
+//    public Response deleteChallenge(@ApiParam(value = "챌린지 id", required = true) @PathVariable Long id, @ApiParam(value = "Bearer ${jwt token} 형식으로 전송") @RequestHeader("Authorization") String jwt) {
+//        jwt = jwt.replace("Bearer ", "");
+//        challengeService.deleteChallenge(id, jwt);
+//        return Response.success("게시물이 삭제되었습니다.");
+//    }
+//}
 
