@@ -110,7 +110,7 @@ const isPass = ref(false)
 onMounted(() => {
   getMember()
 })
-const userImg = cookies.get('member').imageUrl
+const userImg = ref(null)
 
 const email = ref(null)
 
@@ -128,8 +128,11 @@ const changedPassword2 = ref(null)
 const visible = ref(false)
 // 현재 유저 소셜로그인 유무 변수
 const isGeneral = computed(() => {
-  return cookies.get('member').oauthProvider === 'GENERAL'
+  return !!cookies.get('member') && cookies.get('member').oauthProvider === 'GENERAL'
 })
+// 닉 비어있으면 안됑
+const rules = [(value) => !!value || '필수 입력 값입니다.']
+
 // 비밀번호 유효성 검사
 const PassWordrules = [
   (value) =>
@@ -233,7 +236,7 @@ async function quitService() {
 onBeforeRouteLeave((to, from, next) => {
   if (!isPass.value) {
     console.log(isPass.value)
-    console.log(from, to)
+
     if (window.confirm('사이트에서 나가시겠습니까? 변경사항이 저장되지 않을 수 있습니다.')) {
       const account = useAccountStore()
       account.setPwdChecked(false)
@@ -248,7 +251,7 @@ onBeforeRouteLeave((to, from, next) => {
 })
 
 // 이미지 바꿨는지 안바꿨는지 알려주는 함수
-// 이미지 업로드 취소해서 빈 배열로 남아있어서
+// 이미지 업로드 취소해도 빈 배열로 남아있어서
 // true로 뜨기때문에 lenght로 계산하기
 // 근데 또 다짜고짜 value[0]하면 오류나서 이렇게해줌..
 const isChanged = computed(() => {
@@ -300,10 +303,11 @@ async function getMember() {
     const token = cookies.get('accessToken')
     const res = await functions.getMyInfoApi(token)
     const member = res.data
+    console.log(member)
     birthday.value = member.birthday
     introduce.value = member.introduce
     nickname.value = member.nickname
-    imgUrl.value = member.imgUrl
+    userImg.value = cookies.get('member').imageUrl
     orignPassword.value = member.password
 
     return res.data
@@ -312,7 +316,7 @@ async function getMember() {
   }
 }
 </script>
-<style>
+<style scoped>
 textarea {
   resize: none;
 }

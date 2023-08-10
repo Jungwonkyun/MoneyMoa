@@ -1,29 +1,34 @@
 <template>
   <v-container>
-    <p>금융사전</p>
-    <v-text-field
-      clearable
-      placeholder="키워드 검색"
-      variant="underlined"
-      v-model="searchWord"
-      @keyup.enter="onSearch"
-    >
-      <template v-slot:append-inner>
-        <v-icon @click="onSearch">mdi-magnify</v-icon>
-      </template>
-    </v-text-field>
+    <v-row>
+      <v-col>
+        <p>금융사전</p>
+        <v-text-field
+          clearable
+          placeholder="키워드 검색"
+          variant="underlined"
+          v-model="searchWord"
+          @keyup.enter="onSearch"
+        >
+          <template v-slot:append-inner>
+            <v-icon @click="onSearch">mdi-magnify</v-icon>
+          </template>
+        </v-text-field>
+    
+        <v-expansion-panels variant="accordion">
+          <DictionaryItem
+            v-for="(item, index) in list"
+            :key="index"
+            :item="item"
+            :searchWord="searchWord"
+          />
+        </v-expansion-panels>
+        <br />
 
-    <v-expansion-panels variant="accordion">
-      <DictionaryItem
-        v-for="(item, index) in list"
-        :key="index"
-        :item="item"
-        :searchWord="searchWord"
-      />
-    </v-expansion-panels>
-    <br />
+      </v-col>
+    </v-row>
+    <DictionarySide />
   </v-container>
-  <DictionarySide />
 </template>
 
 <script setup>

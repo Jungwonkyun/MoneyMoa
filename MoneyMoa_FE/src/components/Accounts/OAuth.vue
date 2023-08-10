@@ -5,7 +5,7 @@
 import functions from '../../api/member.js'
 import { useRouter, useRoute } from 'vue-router'
 import { useAccountStore } from '../../stores/accountStore.js'
-
+import img from '../../assets/img/default_image.png'
 const account = useAccountStore()
 const router = useRouter()
 const route = useRoute()
@@ -16,10 +16,21 @@ async function kakaoLogin() {
     console.log(res.data)
     if (res.data.message === 'success') {
       const token = res.data.authtokens.accessToken
-
+      let urlData = img
+      if (res.data.member.imageUrl) {
+        console.log(res.data.member.imageUrl)
+        const urlres = await functions.getImgDown(res.data.member.imageUrl)
+        urlData = 'data:image/jpeg;base64,' + urlres
+      }
       // 지금은 멤버정보를 서버에서 안보내줘서 일단은 로그인 어디서 했는지만 가져오기
       const member = {
-        oauthProvider: 'KAKAO'
+        id: res.data.member.id,
+        role: res.data.member.role,
+        nickname: res.data.member.nickname,
+        oauthProvider: res.data.member.oauthProvider,
+        introduce: res.data.member.introduce,
+        imageUrl: urlData,
+        imageName: res.data.member.imageUrl
       }
       const data = {
         member: member,
@@ -48,10 +59,21 @@ async function naverLogin() {
     console.log(res.data)
     if (res.data.message === 'success') {
       const token = res.data.authtokens.accessToken
-
+      let urlData = img
+      if (res.data.member.imageUrl) {
+        console.log(res.data.member.imageUrl)
+        const urlres = await functions.getImgDown(res.data.member.imageUrl)
+        urlData = 'data:image/jpeg;base64,' + urlres
+      }
       // 지금은 멤버정보를 서버에서 안보내줘서 일단은 로그인 어디서 했는지만 가져오기
       const member = {
-        oauthProvider: 'NAVER'
+        id: res.data.member.id,
+        role: res.data.member.role,
+        nickname: res.data.member.nickname,
+        oauthProvider: res.data.member.oauthProvider,
+        introduce: res.data.member.introduce,
+        imageUrl: urlData,
+        imageName: res.data.member.imageUrl
       }
       const data = {
         member: member,
