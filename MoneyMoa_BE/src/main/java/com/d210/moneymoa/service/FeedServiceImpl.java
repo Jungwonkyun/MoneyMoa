@@ -40,7 +40,7 @@ public class FeedServiceImpl implements FeedService {
                .challengeId(challengeId)
                .hashtag(inputfeed.getHashtag())
                .depositAmount(inputfeed.getDepositAmount())
-               .memberId(memberId)
+//               .memberId(memberId)
                .feedLikeCount(inputfeed.getFeedLikeCount())
                .feedLikeCount(inputfeed.getFeedLikeCount())
                .build();

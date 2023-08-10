@@ -46,6 +46,7 @@ public class Challenge {
     @ApiModelProperty(hidden = true)
     private LocalDate startDate; // 날짜
 
+    @ApiModelProperty(hidden = true)
     private Integer presentAmount; // 현재 유저가 모은 금액
 
 //    @Column(nullable = false)
@@ -59,17 +60,17 @@ public class Challenge {
 
 
     @Builder
-    public Challenge(String title, String content, Long memberId,
-                     String nickname, String period, LocalDate startDate, Integer goalAmount,
-                     Integer presentAmount) {
+    public Challenge(String title, String content,
+                     String nickname, String period, LocalDate startDate, Integer goalAmount
+                  ) {                           // Integer presentAmount,Long memberId,
         this.title = title;
         this.content = content;
-        this.memberId = memberId;
+//        this.memberId = memberId;
         this.nickname = nickname;
         this.period = period;
         this.startDate = startDate;
         this.goalAmount = goalAmount;
-        this.presentAmount = presentAmount;
+//        this.presentAmount = presentAmount;
 
     }
 
