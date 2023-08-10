@@ -13,6 +13,7 @@
           <v-img :src="previewURL" width="100" v-if="isChanged"></v-img>
         </v-avatar>
         <v-file-input
+          multiple
           @change="previewChangeImg"
           label="이미지를 선택해 주세요."
           accept="image/*"
