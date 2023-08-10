@@ -6,12 +6,15 @@ import com.d210.moneymoa.repository.ChallengeRepository;
 import com.d210.moneymoa.repository.MemberRepository;
 import com.d210.moneymoa.service.FeedCommentService;
 import com.d210.moneymoa.service.FeedFileService;
+import com.d210.moneymoa.service.FeedService;
 import com.d210.moneymoa.service.StorageService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
+import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
+import org.checkerframework.common.reflection.qual.GetMethod;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -105,12 +108,12 @@ public class FeedController {
                     //resultMap에 생성된 새 피드와 성공 메시지 추가
                     resultMap.put("feed", newFeed);
                     resultMap.put("message", "success");
-                    }
-                } else {
-                    //챌린지가 존재하지 않을 경우 HTTP 상태를 NOT_FOUND로 변경
-                    status = HttpStatus.NOT_FOUND;
-                    resultMap.put("message", "Challenge not found");
                 }
+            } else {
+                //챌린지가 존재하지 않을 경우 HTTP 상태를 NOT_FOUND로 변경
+                status = HttpStatus.NOT_FOUND;
+                resultMap.put("message", "Challenge not found");
+            }
         } catch (Exception e) {
             // 예외 발생 시 예외를 출력하고 HTTP 상태를 BAD_REQUEST로 설정
             e.printStackTrace();
@@ -345,6 +348,25 @@ public class FeedController {
         return new ResponseEntity<>(resultMap, status);
     }
 
+    @ApiOperation(value = "피드 검색( #붙여서 검색 할 경우 hashtag 검색)")
+    @GetMapping("/search")
+    public ResponseEntity<List<Feed>> findByContent(@RequestParam("keyword") String keyword) {
+        List<Feed> feeds;
+
+        log.info("키워드");
+
+
+        if (keyword.startsWith("#")) {
+            String hashtag = keyword.substring(1);
+            feeds = feedService.findByHashtags(hashtag);
+        } else {
+            feeds = feedService.findByContent(keyword);
+        }
+        if (feeds.isEmpty()) {
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        }
+        return new ResponseEntity<>(feeds, HttpStatus.OK);
+    }
 }
 
 
