@@ -1,5 +1,23 @@
 <template>
   <v-container class="chat-container align-start justify-center">
+    <v-dialog v-model="dialog" width="auto">
+      <v-card>
+        <v-card-title class="text-h6">{{ room.name }} 정보</v-card-title>
+        <v-card-text>{{ room.description }}</v-card-text>
+        <v-table>
+          <thead>
+            <tr>
+              참여자 목록
+            </tr>
+          </thead>
+          <tbody>
+            <tr v-for="(member, index) in roomMembers" :key="index">
+              <td>{{ member.memberNickname }}</td>
+            </tr>
+          </tbody>
+        </v-table>
+      </v-card>
+    </v-dialog>
     <v-card variant="outlined" class="chat-card">
       <v-toolbar>
         <template v-slot:prepend>
@@ -60,6 +78,7 @@ const room = ref({})
 const messages = ref([])
 const inputMsg = ref('')
 const nickName = cookies.get('member').nickname
+const dialog = ref(false)
 const roomMembers = ref([])
 
 //room이 가진 것? roomId, name(방제), chatMsg배열
@@ -88,7 +107,9 @@ function goBack() {
   }
 }
 
-function showRoomInfo() {}
+function showRoomInfo() {
+  dialog.value = true
+}
 
 function quit(roomId) {
   quitRoom(roomId).then((response) => {
