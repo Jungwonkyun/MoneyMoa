@@ -60,12 +60,12 @@ public class Challenge {
 
 
     @Builder
-    public Challenge(String title, String content,
+    public Challenge(String title, String content, Long memberId,
                      String nickname, String period, LocalDate startDate, Integer goalAmount
-                  ) {                           // Integer presentAmount,Long memberId,
+                  ) {                           // Integer presentAmount,
         this.title = title;
         this.content = content;
-//        this.memberId = memberId;
+        this.memberId = memberId;
         this.nickname = nickname;
         this.period = period;
         this.startDate = startDate;
