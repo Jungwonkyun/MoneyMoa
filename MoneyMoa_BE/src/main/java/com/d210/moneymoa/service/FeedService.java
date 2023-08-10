@@ -22,6 +22,8 @@ public interface FeedService {
     void deleteFeed(Long feedId, Long memberId) throws IllegalAccessException;
 
 
+
+
     /*
     List<Feed> getAllFeeds(Long memberId);
     List<Feed> getAllFeedsForMember(Long memberId);

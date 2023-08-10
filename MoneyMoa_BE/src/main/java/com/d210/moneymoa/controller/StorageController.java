@@ -19,12 +19,6 @@ public class StorageController {
     @Autowired
     StorageService storageService;
 
-    //하나만 받을때 기존코드
-//    @PostMapping("/upload")
-//    public ResponseEntity<String> uploadFile(@RequestParam(value = "file") MultipartFile file){
-//        return new ResponseEntity<>(storageService.uploadFile(file), HttpStatus.OK);
-//    }
-
     //여러파일 받기 이걸로 하나도 되면 그냥 활용
     @PostMapping("/upload")
     public ResponseEntity<List<String>> uploadFiles(@RequestParam(value = "files") MultipartFile[] files) {
