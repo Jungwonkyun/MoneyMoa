@@ -17,6 +17,10 @@ public interface FeedService {
 
     Feed getFeedDetail(Long feedId);
 
+    void updateFeed(Long feedId, Feed updateFeed);
+
+    void deleteFeed(Long feedId);
+
 
     /*
     List<Feed> getAllFeeds(Long memberId);

@@ -78,6 +78,35 @@ public class FeedServiceImpl implements FeedService {
         );
     }
 
+    @Override
+    public void updateFeed(Long feedId, Feed updateFeed) {
+        Feed feed = feedRepository.findById(feedId).orElseThrow(
+                ()-> new NoSuchElementException("Feed with id" + feedId + " Not Found")
+        );
+        if (updateFeed.getContent() != null) {
+            feed.setContent(updateFeed.getContent());
+        }
+        if (updateFeed.getChallengeId() != null) {
+            feed.setChallengeId(updateFeed.getChallengeId());
+        }
+        if (updateFeed.getHashtag() != null) {
+            feed.setHashtag(updateFeed.getHashtag());
+        }
+        if (updateFeed.getDepositAmount() != null) {
+            feed.setDepositAmount(updateFeed.getDepositAmount());
+        }
+        feedRepository.save(feed);
+    }
+
+    @Override
+    public void deleteFeed(Long feedId) {
+        feedRepository.findById(feedId).orElseThrow(
+                () -> new NoSuchElementException("Feed with id " + feedId + " not found")
+        );
+        // 피드 삭제
+        feedRepository.deleteById(feedId);
+    }
+
 //
 //    // 특정 회원의 피드 전체 조회
 //    @Transactional(readOnly = true)

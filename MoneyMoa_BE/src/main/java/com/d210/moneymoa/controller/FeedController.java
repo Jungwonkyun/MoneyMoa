@@ -21,7 +21,6 @@ import java.util.Map;
 import java.util.Optional;
 
 
-
 @Api(value = "Feed Controller", tags = "Feed-Controller")
 @RestController
 @Slf4j
@@ -45,7 +44,7 @@ public class FeedController {
     // Swagger API 문서에 Endpoint 정보 추가
     @ApiOperation(value = "피드 생성", notes = "피드 작성합니다.")
     // POST 방식으로 "/create" URL에 매핑
-    @PostMapping("/create/{challengeId}/")
+    @PostMapping("/create/{challengeId}")
     // 메서드의 반환 타입은 ResponseEntity 객체이며, 요청 본문에서 Feed 데이터를 파싱하고 인증 헤더를 사용합니다.
     public ResponseEntity<Map<String, Object>> createFeed(
             @PathVariable Long challengeId,
@@ -164,6 +163,55 @@ public class FeedController {
         }
         return new ResponseEntity<>(resultMap, status);
     }
+
+    @ApiOperation(value = "피드 수정", notes = "피드를 수정합니다.")
+    @PutMapping("/{feedId}")
+    public ResponseEntity<Map<String, Object>> updateFeed(@RequestHeader("Authorization") String jwt,
+                                                          @PathVariable Long feedId,
+                                                          @RequestBody Feed updateFeed) {
+        log.info("피드 수정");
+        HttpStatus status;
+        Map<String, Object> resultMap = new HashMap<String, Object>();
+
+        try {
+            feedService.updateFeed(feedId, updateFeed);
+            resultMap.put("message", "success");
+            return new ResponseEntity<Map<String, Object>>(resultMap, HttpStatus.OK);
+        } catch (Exception e) {
+            // 예외 발생시 예외 및 HTTP BAD_REQUEST 출력
+            e.printStackTrace();
+            status = HttpStatus.BAD_REQUEST;
+            //resultMap에 실패 메시지 추가
+            resultMap.put("message", "fail");
+
+        }
+        return new ResponseEntity<>(resultMap, status);
+
+    }
+
+    @ApiOperation(value = "피드 삭제", notes = "특정 피드를 삭제합니다.")
+    @DeleteMapping("/{feedId}")
+    public ResponseEntity<Map<String, Object>> deleteFeed(@RequestHeader("Authorization") String jwt,
+                                                          @PathVariable Long feedId) {
+        log.info("피드 삭제");
+        HttpStatus status;
+        Map<String, Object> resultMap = new HashMap<String, Object>();
+
+        try {
+            feedService.deleteFeed(feedId);
+            resultMap.put("message", "success");
+            return new ResponseEntity<Map<String, Object>>(resultMap, HttpStatus.OK);
+
+        } catch (Exception e) {
+            // 예외 발생 시 예외를 출력하고 HTTP 상태를 BAD_REQUEST로 설정
+            e.printStackTrace();
+            status = HttpStatus.BAD_REQUEST;
+            // resultMap에 실패 메시지를 추가
+            resultMap.put("message", "fail");
+        }
+        return new ResponseEntity<>(resultMap, status);
+    }
+
     /*
 
     @ApiOperation(value = "특정 회원의 피드 전체 조회", notes = "특정 회원의 피드 전체목록을 조회합니다")
@@ -255,8 +303,6 @@ public class FeedController {
     }
 
 */
-
-
 
 
 }
