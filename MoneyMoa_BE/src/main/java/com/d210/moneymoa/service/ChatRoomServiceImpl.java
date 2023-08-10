@@ -156,6 +156,10 @@ public class ChatRoomServiceImpl implements ChatRoomService {
 
         String nickName = memberRepository.findById(memberId).get().getNickname();
 
+        //이미 구독하고 있는지 체크
+        MemberChatroomSubInfo findMember = memberChatroomSubInfoRepository.findByMemberIdAndRoomId(memberId,roomId).orElse(null);
+        if(findMember!=null)return null;
+        
         //구독 정보 DB에 저장
         MemberChatroomSubInfo memberChatroomSubInfo = MemberChatroomSubInfo.builder()
                 .memberId(memberId)
