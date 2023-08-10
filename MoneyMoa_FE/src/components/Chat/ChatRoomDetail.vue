@@ -1,12 +1,15 @@
 <template>
   <v-container class="chat-container align-start justify-center">
     <v-card variant="outlined" class="chat-card">
-      <v-card-title>
-        <v-banner class="text-h5" sticky>
-          <!-- <v-icon icon="mdi-arrow-left"></v-icon> -->
-          {{ room.name }}
-        </v-banner>
-      </v-card-title>
+      <v-toolbar>
+        <template v-slot:prepend>
+          <v-btn icon="mdi-arrow-left" @click="goBack()"></v-btn>
+        </template>
+        <v-toolbar-title class="text-h6"> {{ room.name }} </v-toolbar-title>
+        <template v-slot:append>
+          <v-btn icon="mdi-dots-vertical"></v-btn>
+        </template>
+      </v-toolbar>
       <v-card-text class="chatmessage-area overflow-auto">
         <template v-for="(msg, index) in messages">
           <v-sheet :class="{ 'd-flex flex-row-reverse': isMine(msg.sender) }" class="pa-1">
@@ -29,7 +32,7 @@
 <script setup>
 import { ref, watch, nextTick } from 'vue'
 import { getRoomDetail } from '@/api/chat'
-import { useRoute } from 'vue-router'
+import { useRoute, useRouter } from 'vue-router'
 import Stomp from 'webstomp-client'
 import SockJS from 'sockjs-client'
 import { useCookies } from 'vue3-cookies'
@@ -42,6 +45,7 @@ console.log(cookies.get('member').nickname + ' 등장')
 console.log(cookies.get('accessToken'))
 
 const route = useRoute()
+const router = useRouter()
 const room = ref({})
 const messages = ref([])
 const inputMsg = ref('')
@@ -53,18 +57,19 @@ getRoomDetail(route.params.roomId).then((response) => {
   room.value = response.data['chatroomInfo']
   console.log(room.value)
   messages.value = response.data.chatMessages.filter((msg) => msg.message !== null)
-  console.log('got room. try connect')
   connect(room.value, nickName)
-  console.log('after connect')
 })
 
-// watch(messages, () => {
-//   nextTick(() => {
-//     const chatArea = document.querySelector('.chatmessage-area')
-//     console.log(chatArea.scrollHeight + ' ~ ' + chatArea.scrollTop)
-//     chatArea.scrollTop = chatArea.scrollHeight
-//   })
-// })
+function goBack() {
+  if (window.history.length > 1) {
+    console.log()
+    router.go(-1)
+  } else {
+    router.push({
+      name: 'chatrooms'
+    })
+  }
+}
 
 function recvMessage(recv) {
   // 배열을 반환합니다
@@ -87,9 +92,7 @@ function connect(room, sender) {
   ws.connect(
     {},
     function (frame) {
-      console.log('try subscribe')
       ws.subscribe(`/sub/api/chat/room/${room.roomId}`, function (message) {
-        console.log('구독 후 받은 것:' + message.body)
         var recv = JSON.parse(message.body)
         // recvMessage 함수를 호출하고 반환된 값을 사용하여 messages 변수를 업데이트
         messages.value.push(...recvMessage(recv))
@@ -106,7 +109,6 @@ function connect(room, sender) {
       )
     },
     function (error) {
-      console.log('에러가 발생했어요.')
       console.log(error)
       if (reconnect++ <= 5) {
         setTimeout(function () {
