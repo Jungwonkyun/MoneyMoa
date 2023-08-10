@@ -4,8 +4,10 @@
       <v-row>
         <v-col cols="12">
           <v-img
-            class="profileImage rounded-xl"
-            src="https://cdn.vuetifyjs.com/images/parallax/material.jpg"
+            width="250px"
+            height="250px"
+            class="profileImage rounded-circle mx-auto"
+            :src="img"
             cover
           ></v-img>
         </v-col>
@@ -61,6 +63,7 @@
 import { ref, onMounted, computed } from 'vue'
 import functions from '@/api/member.js'
 import { useRoute, useRouter } from 'vue-router'
+import img from '@/assets/img/beauty.png'
 
 const route = useRoute()
 const memberId = computed(() => route.params.id)
@@ -81,8 +84,11 @@ const addFollow = () => {
   functions.addFollow('팔로우 할 사람의 id')
 }
 
+// 이미지
+const image = ref('@/assets/img/얼빡이.jpg')
+
 const nickname = ref('닉네임')
-const aboutMe = ref('안녕하세요 ㅇㅇㅇㅇㅇㅇㅇㅁ래ㅓㅈㄷ랴ㅐ멎ㄷ랴')
+const aboutMe = ref('안녕하세요 프론트엔드 희망하는 개발 신입입니다. 잘 부탁드립니다.')
 </script>
 <style>
 .profileImage {
@@ -93,7 +99,7 @@ const aboutMe = ref('안녕하세요 ㅇㅇㅇㅇㅇㅇㅇㅁ래ㅓㅈㄷ랴ㅐ�
   color: inherit; /* 색상 상속 */
   cursor: pointer; /* 커서를 손가락 모양으로 변경 (선택 사항) */
 }
-.border-radius {
-  border-radius: 10px;
+.circle {
+  border-radius: 50%;
 }
 </style>

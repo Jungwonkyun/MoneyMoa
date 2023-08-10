@@ -1,7 +1,7 @@
 <template>
   <v-container>
-    <v-row>
-      <v-col cols="6">
+    <v-row justify="space-around">
+      <v-col cols="3">
         <UserInfo />
       </v-col>
       <v-col cols="6">

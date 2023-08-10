@@ -1,16 +1,13 @@
 <template>
   <v-container>
-    <h1 align="center" class="mb-5">챌린지</h1>
-    <v-spacer></v-spacer>
-    <ChallengeCard
-      v-for="(challenge, index) in challenges"
-      :key="index"
-      :challenge="challenge"
-      class="mb-8"
-    />
+    <v-card elevation="24" class="rounded-xl">
+      <v-carousel cycle hide-delimiters show-arrows="hover" height="100%" width="100%">
+        <ChallengeCard :challenges="challenges" @update="update" />
+      </v-carousel>
+    </v-card>
 
     <!-- 챌린지 생성 다이얼로그 -->
-    <v-row class="justify-end pa-3">
+    <v-row class="justify-end pa-3 mt-5">
       <v-row justify="center">
         <v-dialog v-model="dialog" width="auto">
           <template v-slot:activator="{ props }">
@@ -115,23 +112,16 @@ const content = ref('')
 const period = ref('')
 const goalAmount = ref('')
 
-// 서버에 전달할 챌린지 생성 데이터
-const data = ref({
-  title: title.value,
-  content: content.value,
-  goalAmount: parseInt(goalAmount.value),
-  memberId: memberId.value,
-  period: period.value
-})
-
 // 챌린지 생성 메서드
 const createChallenge = () => {
   // data 객체 업데이트
-  data.value.title = title.value
-  data.value.content = content.value
-  data.value.goalAmount = parseInt(goalAmount.value)
-  data.value.memberId = memberId.value
-  data.value.period = period.value
+  const data = ref({
+    title: title.value,
+    content: content.value,
+    goalAmount: parseInt(goalAmount.value),
+    id: memberId.value,
+    period: period.value
+  })
 
   // 챌린지 생성 API 호출
   const postChallenge = functions.postChallenge
@@ -169,12 +159,21 @@ const handleFileUpload = (event) => {
   }
 }
 
+// 챌린지 업데이트
+const update = () => {
+  const getChallengeList = functions.getChallengeList
+  getChallengeList(memberId.value).then((response) => {
+    console.log(response.data.challenges)
+    challenges.value = response.data.challenges
+  })
+}
+
 //// 마운트 시에 챌린지 리스트 API 호출, memberId가 변경되면 다시 호출
 onMounted(() => {
   const res = functions.getChallengeList(memberId.value)
   res.then((response) => {
-    console.log(response.data.result.data)
-    challenges.value = response.data.result.data
+    console.log(response.data.challenges)
+    challenges.value = response.data.challenges
   })
 })
 </script>
