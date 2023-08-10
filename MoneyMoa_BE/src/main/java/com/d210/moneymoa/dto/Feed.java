@@ -12,6 +12,7 @@ import org.hibernate.annotations.CreationTimestamp;
 import javax.persistence.*;
 import java.io.Serializable;
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Entity
 @Data
@@ -61,6 +62,10 @@ public class Feed implements Serializable {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "challengeId", insertable=false, updatable = false)
     private Challenge challenge; //id
+
+    @OneToMany(mappedBy = "feed", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JsonIgnore
+    private List<FeedFile> feedFiles;
 
 
     @Builder

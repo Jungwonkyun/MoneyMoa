@@ -3,19 +3,14 @@ package com.d210.moneymoa.controller;
 import com.amazonaws.services.s3.model.AmazonS3Exception;
 import com.d210.moneymoa.service.StorageService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.io.ByteArrayResource;
-import org.springframework.core.io.Resource;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
+
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-
-import javax.servlet.http.HttpServletRequest;
-import java.io.IOException;
-import java.util.Base64;
+import java.util.ArrayList;
+import java.util.List;
 
 
 @RestController
@@ -24,9 +19,23 @@ public class StorageController {
     @Autowired
     StorageService storageService;
 
+    //하나만 받을때 기존코드
+//    @PostMapping("/upload")
+//    public ResponseEntity<String> uploadFile(@RequestParam(value = "file") MultipartFile file){
+//        return new ResponseEntity<>(storageService.uploadFile(file), HttpStatus.OK);
+//    }
+
+    //여러파일 받기 이걸로 하나도 되면 그냥 활용
     @PostMapping("/upload")
-    public ResponseEntity<String> uploadFile(@RequestParam(value = "file") MultipartFile file){
-        return new ResponseEntity<>(storageService.uploadFile(file), HttpStatus.OK);
+    public ResponseEntity<List<String>> uploadFiles(@RequestParam(value = "files") MultipartFile[] files) {
+        List<String> uploadedFileNames = new ArrayList<>();
+
+        for (MultipartFile file : files) {
+            String fileName = storageService.uploadFile(file);
+            uploadedFileNames.add(fileName);
+        }
+
+        return new ResponseEntity<>(uploadedFileNames, HttpStatus.OK);
     }
 
     @GetMapping("/download/{fileName}")

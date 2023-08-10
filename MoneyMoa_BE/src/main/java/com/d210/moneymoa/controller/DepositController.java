@@ -251,7 +251,7 @@ public class DepositController {
     @ApiOperation(value = "예금상품 은행이미지 업로드")
     @PostMapping("/upload")
     public ResponseEntity<Map<String, Object>> uploadDepositFile(@ApiParam(value = "예금 상품 은행이미지 파일")
-                                                                 @RequestParam("file") MultipartFile file,
+                                                                 @RequestParam("files") MultipartFile file,
                                                                  @ApiParam(value = "예금 상품 은행코드")
                                                                  @RequestParam("bankCode") String bankCode) {
         Map<String, Object> resultMap = new HashMap<>();
