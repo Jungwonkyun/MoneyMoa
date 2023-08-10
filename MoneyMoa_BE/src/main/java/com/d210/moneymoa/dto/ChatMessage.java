@@ -8,6 +8,7 @@ import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import java.io.Serializable;
 
+
 @Getter
 @Setter
 public class ChatMessage implements Serializable {
@@ -33,4 +34,6 @@ public class ChatMessage implements Serializable {
     private String sender; // 메시지 보낸사람
     private String message; // 메시지
     private long memberId; //해당 멤버 아이디
+
+
 }
