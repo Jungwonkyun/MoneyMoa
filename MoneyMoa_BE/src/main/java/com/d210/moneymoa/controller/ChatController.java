@@ -44,7 +44,6 @@ public class ChatController {
             message.setMessage(message.getSender() + "님이 퇴장하셨습니다.");
         }
 
-        log.info(message);
         
         //채팅 내역 저장
         chatRoomService.saveChatMessage(message.getRoomId(), message);
