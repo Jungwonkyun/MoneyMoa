@@ -35,7 +35,7 @@ public class ChatController {
     @MessageMapping("/api/chat/message")
     public void message(ChatMessage message) {
 
-        if(chatRoomService.enterChatRoom(message.getMemberId(), message.getRoomId()) == null){
+        if(chatRoomService.enterChatRoom(message.getMemberId(), message.getRoomId()) != null){
             message.setType(ChatMessage.MessageType.JOIN);
         }
 
