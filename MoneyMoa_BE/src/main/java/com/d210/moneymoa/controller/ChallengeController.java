@@ -123,4 +123,5 @@ public class ChallengeController {
         return Response.success("게시물이 삭제되었습니다.");
     }
 }
+*/
 
