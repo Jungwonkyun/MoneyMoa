@@ -9,6 +9,4 @@ public interface StorageService {
     byte[] downloadFile(String fileName);
 
     String deleteFile(String fileName);
-
-    String downloadFileAsBase64(String fileName);
 }

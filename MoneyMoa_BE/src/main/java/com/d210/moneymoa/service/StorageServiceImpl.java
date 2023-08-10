@@ -66,11 +66,4 @@ public class StorageServiceImpl implements StorageService {
         return convertedFile;
     }
 
-    @Override
-    public String downloadFileAsBase64(String fileName) {
-        byte[] data = downloadFile(fileName);
-
-        // 바이트 배열을 Base64로 인코딩
-        return Base64.getEncoder().encodeToString(data);
-    }
 }
