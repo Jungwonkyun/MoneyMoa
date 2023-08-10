@@ -16,13 +16,12 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
 
 
-// 피드 생성 메서드
-// Swagger API 문서에 Endpoint 정보 추가
 @Api(value = "Feed Controller", tags = "Feed-Controller")
 @RestController
 @Slf4j
@@ -46,7 +45,7 @@ public class FeedController {
     // Swagger API 문서에 Endpoint 정보 추가
     @ApiOperation(value = "피드 생성", notes = "피드 작성합니다.")
     // POST 방식으로 "/create" URL에 매핑
-    @PostMapping("/create/{challengeId}")
+    @PostMapping("/{challengeId}/create/")
     // 메서드의 반환 타입은 ResponseEntity 객체이며, 요청 본문에서 Feed 데이터를 파싱하고 인증 헤더를 사용합니다.
     public ResponseEntity<Map<String, Object>> createFeed(
             @PathVariable Long challengeId,
@@ -91,25 +90,33 @@ public class FeedController {
         // 최종 결과와 설정된 HTTP 상태를 반환하는 ResponseEntity 객체를 반환
         return new ResponseEntity<>(resultMap, status);
     }
-}
+
+    @ApiOperation(value = "피드 전체 조회", notes = "피드 전체목록을 조회합니다")
+    @GetMapping("/all")
+    public ResponseEntity<Map<String, Object>> getAllFeeds(@RequestHeader("Authorization") String jwt) {
+        log.info("BoardList 모두 반환");
+        HttpStatus status;
+        List<Feed> feedList;
+        Map<String, Object> resultMap = new HashMap<String, Object>();
+
+        try {
+            feedList = feedService.getAllFeeds();
+            resultMap.put("feedList", feedList);
+            resultMap.put("message", "success");
+            return new ResponseEntity<Map<String, Object>>(resultMap, HttpStatus.OK);
+
+        } catch (Exception e) {
+            // 예외 발생 시 예외를 출력하고 HTTP 상태를 BAD_REQUEST로 설정
+            e.printStackTrace();
+            status = HttpStatus.BAD_REQUEST;
+            // resultMap에 실패 메시지를 추가
+            resultMap.put("message", "fail");
+        }
+        return new ResponseEntity<>(resultMap, status);
+    }
 
 
     /*
-
-        //    @GetMapping("/all")
-//    @ResponseStatus(value = HttpStatus.OK)
-//    public Response getAllFeeds(@RequestHeader("Authorization") String jwt) {
-//        jwt = jwt.replace("Bearer ", "");
-//        return Response.success(feedService.getAllFeeds());
-//    }
-    @ApiOperation(value = "피드 전체 조회", notes = "피드 전체목록을 조회합니다")
-    @GetMapping("/all")
-    public Response getAllFeeds(@RequestHeader("Authorization") String jwt) {
-        jwt = jwt.replace("Bearer ", "");
-        Long memberId = authTokensGenerator.extractMemberId(jwt);
-        return Response.success(feedService.getAllFeeds(memberId));
-    }
-
 
     @ApiOperation(value = "특정 회원의 피드 전체 조회", notes = "특정 회원의 피드 전체목록을 조회합니다")
     @GetMapping("/all/{memberId}")
@@ -202,3 +209,6 @@ public class FeedController {
 */
 
 
+
+
+}

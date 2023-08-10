@@ -10,6 +10,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Service
 @Slf4j
 public class FeedServiceImpl implements FeedService {
@@ -51,16 +54,16 @@ public class FeedServiceImpl implements FeedService {
 
 
 
-//    // 피드 전체 조회
-//    @Transactional(readOnly = true)
-//    public List<Feed> getAllFeeds(Long memberId) {
-//        List<Feed> feeds = feedRepository.findAllByMemberId(memberId);
+    // 피드 전체 조회
+    @Transactional(readOnly = true)
+    public List<Feed> getAllFeeds() throws InterruptedException {
+//        List<Feed> feeds = feedRepository.findAllByMemberId();
 //        List<Feed> feedResponses = new ArrayList<>();
 //        // feeds 리스트의 각 Feed 객체를 FeedCreateResponse로 변환하여 feedResponses 리스트에 저장
 //        feeds.forEach(feed -> feedResponses.add(Feed(feed)));
 //        // 변환된 피드 목록을 반환
-//        return feedResponses;
-//    }
+        return feedRepository.findAll();
+    }
 //
 //    // 특정 회원의 피드 전체 조회
 //    @Transactional(readOnly = true)
