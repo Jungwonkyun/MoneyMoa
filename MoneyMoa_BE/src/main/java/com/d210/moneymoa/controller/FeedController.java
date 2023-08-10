@@ -45,7 +45,7 @@ public class FeedController {
     // Swagger API 문서에 Endpoint 정보 추가
     @ApiOperation(value = "피드 생성", notes = "피드 작성합니다.")
     // POST 방식으로 "/create" URL에 매핑
-    @PostMapping("/{challengeId}/create/")
+    @PostMapping("/create/{challengeId}/")
     // 메서드의 반환 타입은 ResponseEntity 객체이며, 요청 본문에서 Feed 데이터를 파싱하고 인증 헤더를 사용합니다.
     public ResponseEntity<Map<String, Object>> createFeed(
             @PathVariable Long challengeId,
