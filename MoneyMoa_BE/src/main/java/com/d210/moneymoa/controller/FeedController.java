@@ -19,28 +19,11 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 
+
+
+// 피드 생성 메서드
+// Swagger API 문서에 Endpoint 정보 추가
 @Api(value = "Feed Controller", tags = "Feed-Controller")
-@RestController
-@Slf4j
-@RequestMapping("/api/feed")
-public class FeedController {
-
-    @Autowired
-    FeedService feedService;
-
-    @Autowired
-    MemberRepository memberRepository;
-
-    @Autowired
-    private AuthTokensGenerator authTokensGenerator;
-
-    @Autowired
-    private ChallengeRepository challengeRepository;
-
-
-    // 피드 생성 메서드
-    // Swagger API 문서에 Endpoint 정보 추가
-    @Api(value = "Feed Controller", tags = "Feed-Controller")
 @RestController
 @Slf4j
 @RequestMapping("/api/feed")
@@ -108,6 +91,9 @@ public class FeedController {
         // 최종 결과와 설정된 HTTP 상태를 반환하는 ResponseEntity 객체를 반환
         return new ResponseEntity<>(resultMap, status);
     }
+}
+
+
     /*
 
         //    @GetMapping("/all")
@@ -216,6 +202,3 @@ public class FeedController {
 */
 
 
-
-
-}
