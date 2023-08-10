@@ -4,16 +4,6 @@ import { useCookies } from 'vue3-cookies'
 const api = apiInstance()
 const { cookies } = useCookies()
 
-// 유저 정보 API
-async function callUserInfoApi(memberId) {
-  const accessToken = cookies.get('accessToken')
-  try {
-    const res = await api.get(`/member/info/${memberId}`, {})
-    return res
-  } catch (err) {
-    console.log(err)
-  }
-}
 // 내 정보 API
 async function getMyInfoApi(token) {
   try {
@@ -227,7 +217,6 @@ async function putUpdatedMember(token, member) {
 }
 
 export default {
-  callUserInfoApi,
   addFollow,
   fetchFollowerList,
   fetchFollowingList,

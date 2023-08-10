@@ -3,7 +3,7 @@
     <v-row>
       <h3>전체 채팅방 목록</h3>
       <v-spacer></v-spacer>
-      <v-btn
+      <v-btn v-if="cookies.get('accessToken')"
         >채팅방 만들기
         <v-dialog v-model="dialog" activator="parent" persistent width="auto">
           <v-card>
@@ -42,7 +42,6 @@
     <v-container>
       <v-row>
         <v-card-title>{{ room.name }}</v-card-title>
-        <!-- <v-card-subtitle>{{ room.userCount }}명 참여중</v-card-subtitle> -->
         <v-btn @click="enter(room.roomId)">입장</v-btn>
       </v-row>
     </v-container>
@@ -68,7 +67,9 @@
 import { ref } from 'vue'
 import { useRouter } from 'vue-router'
 import { getRooms, enterRoom, createRoom } from '@/api/chat'
+import { useCookies } from 'vue3-cookies'
 
+const { cookies } = useCookies()
 const router = useRouter()
 const dialog = ref(false)
 const roomName = ref('')

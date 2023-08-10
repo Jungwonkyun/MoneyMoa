@@ -69,8 +69,10 @@ const memberId = computed(() => route.params.id)
 // 마운트 시에 유저 정보 API 호출, memberId가 변경되면 다시 호출
 // memberId가 변경되는 경우는 MemberView.vue에서 UserInfo를 호출할 때
 // 받은 데이터 파싱해서 템프릿에 바인딩해야함, 아직 api 구현 안됨
+
+// api 함수 지워서 임의로 1 박아놨어요 -종률-
 onMounted(() => {
-  const res = functions.callUserInfoApi(memberId.value)
+  const res = 1
 })
 
 const addFollow = () => {

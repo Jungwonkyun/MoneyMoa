@@ -140,7 +140,7 @@ function like() {
   })
 }
 </script>
-<style>
+<style scoped>
 .v-text-field {
   width: 200px;
 }
