@@ -1,6 +1,8 @@
 package com.d210.moneymoa.controller;
 
 import com.d210.moneymoa.domain.oauth.AuthTokensGenerator;
+import com.d210.moneymoa.dto.Challenge;
+import com.d210.moneymoa.dto.Feed;
 import com.d210.moneymoa.repository.ChallengeRepository;
 import com.d210.moneymoa.repository.MemberRepository;
 import com.d210.moneymoa.service.FeedService;
@@ -18,6 +20,27 @@ import java.util.Map;
 import java.util.Optional;
 
 @Api(value = "Feed Controller", tags = "Feed-Controller")
+@RestController
+@Slf4j
+@RequestMapping("/api/feed")
+public class FeedController {
+
+    @Autowired
+    FeedService feedService;
+
+    @Autowired
+    MemberRepository memberRepository;
+
+    @Autowired
+    private AuthTokensGenerator authTokensGenerator;
+
+    @Autowired
+    private ChallengeRepository challengeRepository;
+
+
+    // 피드 생성 메서드
+    // Swagger API 문서에 Endpoint 정보 추가
+    @Api(value = "Feed Controller", tags = "Feed-Controller")
 @RestController
 @Slf4j
 @RequestMapping("/api/feed")
