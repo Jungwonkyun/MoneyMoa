@@ -154,7 +154,6 @@ public class ChatRoomServiceImpl implements ChatRoomService {
         redisMessageListener.addMessageListener(redisSubscriber, topic);
         topics.put(roomId, topic);
 
-        String nickName = memberRepository.findById(memberId).get().getNickname();
 
         //이미 구독하고 있는지 체크
         Optional<Member> optionalMember = memberRepository.findById(memberId);
@@ -162,6 +161,8 @@ public class ChatRoomServiceImpl implements ChatRoomService {
         if (!optionalMember.isPresent()) {
             return null;
         }
+
+        String nickName = memberRepository.findById(memberId).get().getNickname();
 
         // MemberChatroomSubInfo findMember = memberChatroomSubInfoRepository.findByMemberIdAndRoomId(memberId,roomId).orElse(null);
         // if(findMember!=null)return null;
