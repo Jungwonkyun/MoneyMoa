@@ -40,7 +40,6 @@ public class Feed implements Serializable {
     @ApiModelProperty(hidden = true)
     private Long memberId;
 
-
     @JsonIgnore
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "memberId", insertable=false, updatable = false)
