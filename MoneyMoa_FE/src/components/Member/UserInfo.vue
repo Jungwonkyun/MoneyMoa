@@ -1,6 +1,6 @@
 <template>
   <v-container>
-    <v-card :elevation="24" justify="center">
+    <v-card :elevation="24" justify="center" class="rounded-xl">
       <v-row>
         <v-col cols="12">
           <v-img
@@ -80,7 +80,7 @@ const addFollow = () => {
 }
 
 const nickname = ref('닉네임')
-const aboutMe = ref('한줄소개')
+const aboutMe = ref('안녕하세요 ㅇㅇㅇㅇㅇㅇㅇㅁ래ㅓㅈㄷ랴ㅐ멎ㄷ랴')
 </script>
 <style>
 .profileImage {
