@@ -156,7 +156,7 @@ public class ChatRoomServiceImpl implements ChatRoomService {
 
 
         //이미 구독하고 있는지 체크
-        Optional<Member> optionalMember = memberRepository.findById(memberId);
+        Optional<MemberChatroomSubInfo> optionalMember = memberChatroomSubInfoRepository.findByMemberIdAndRoomId(memberId,roomId);
 
         if (optionalMember.isPresent()) {
             return null;
