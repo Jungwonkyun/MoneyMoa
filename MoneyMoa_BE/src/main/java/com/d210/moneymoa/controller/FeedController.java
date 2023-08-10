@@ -1,8 +1,6 @@
 package com.d210.moneymoa.controller;
 
 import com.d210.moneymoa.domain.oauth.AuthTokensGenerator;
-import com.d210.moneymoa.dto.Challenge;
-import com.d210.moneymoa.dto.Feed;
 import com.d210.moneymoa.repository.ChallengeRepository;
 import com.d210.moneymoa.repository.MemberRepository;
 import com.d210.moneymoa.service.FeedService;
@@ -40,7 +38,7 @@ public class FeedController {
 
     // 피드 생성 메서드
     // Swagger API 문서에 Endpoint 정보 추가
-    @ApiOperation(value = "챌린지 생성", notes = "챌린지 작성합니다.")
+    @ApiOperation(value = "피드 생성", notes = "피드 작성합니다.")
     // POST 방식으로 "/create" URL에 매핑
     @PostMapping("/{challengeId}/create/")
     // 메서드의 반환 타입은 ResponseEntity 객체이며, 요청 본문에서 Feed 데이터를 파싱하고 인증 헤더를 사용합니다.

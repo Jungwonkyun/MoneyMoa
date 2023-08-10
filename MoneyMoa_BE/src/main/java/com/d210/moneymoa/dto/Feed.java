@@ -64,7 +64,7 @@ public class Feed implements Serializable {
 
 
     @Builder
-    public Feed(String content, Long challengeId, String hashtag, Integer depositAmount,  Long memberId, Integer feedLikeCount, String nickname) {
+    public Feed(String content, Long challengeId, String hashtag, Integer depositAmount, Long memberId, Integer feedLikeCount, String nickname) {
         this.content = content;
         this.challengeId = challengeId;
         this.hashtag = hashtag;

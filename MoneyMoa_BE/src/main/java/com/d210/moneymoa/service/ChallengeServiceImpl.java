@@ -9,6 +9,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
+
 @Service
 @Slf4j
 public class ChallengeServiceImpl implements ChallengeService {
@@ -26,22 +28,25 @@ public class ChallengeServiceImpl implements ChallengeService {
 
     @Transactional
     public Challenge createChallenge(Challenge inputChallenge, Long memberId) {
-        
-        
-        
+        // 사용자 닉네임 조회
+        String nickName = memberRepository.findById(memberId).get().getNickname();
+        LocalDate startDate = inputChallenge.getStartDate()!=null?inputChallenge.getStartDate():LocalDate.now();
         Challenge challenge = Challenge.builder()
                 .title(inputChallenge.getTitle())
                 .content(inputChallenge.getContent())
                 .period(inputChallenge.getPeriod())
                 .goalAmount(inputChallenge.getGoalAmount())
+                .startDate(startDate) // startDate 값 설정
                 .presentAmount(inputChallenge.getPresentAmount())
+                .memberId(memberId) // memberId 설정
+                .nickname(nickName) // 사용자 닉네임 설정
                 .build();
 
-        String nickName = memberRepository.findById(memberId).get().getNickname();
-        challenge.setId(memberId);
-        challenge.setNickname(nickName);
+//        String nickName = memberRepository.findById(memberId).get().getNickname();
+//        challenge.setId(memberId);
+//        challenge.setNickname(nickName);
 
-        challengeRepository.save(inputChallenge);
+        challengeRepository.save(challenge);
         return challenge;
         }
 
