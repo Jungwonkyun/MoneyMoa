@@ -115,7 +115,55 @@ public class FeedController {
         return new ResponseEntity<>(resultMap, status);
     }
 
+    @ApiOperation(value = "특정 회원의 피드 조회", notes = "특정 회원의 피드 목록을 조회합니다.")
+    @GetMapping("/member/{memberId}")
+    public ResponseEntity<Map<String, Object>> getMemberFeeds(@RequestHeader("Authorization") String jwt,
+                                                              @PathVariable Long memberId) {
+        log.info("특정 회원의 피드 반환");
+        HttpStatus status;
+        List<Feed> feedList;
+        Map<String, Object> resultMap = new HashMap<String, Object>();
 
+        try {
+            feedList = feedService.getMemberFeeds(memberId);
+            resultMap.put("feedList", feedList);
+            resultMap.put("message", "success");
+            return new ResponseEntity<Map<String, Object>>(resultMap, HttpStatus.OK);
+
+        } catch (Exception e) {
+            // 예외 발생 시 예외를 출력하고 HTTP 상태를 BAD_REQUEST로 설정
+            e.printStackTrace();
+            status = HttpStatus.BAD_REQUEST;
+            // resultMap에 실패 메시지를 추가
+            resultMap.put("message", "fail");
+        }
+        return new ResponseEntity<>(resultMap, status);
+    }
+
+    @ApiOperation(value = "피드 상세 조회", notes = "특정 피드의 상세 정보를 조회합니다.")
+    @GetMapping("/detail/{feedId}")
+    public ResponseEntity<Map<String, Object>> getFeedDetail(@RequestHeader("Authorization") String jwt,
+                                                             @PathVariable Long feedId) {
+        log.info("피드 상세 정보 반환");
+        HttpStatus status;
+        Feed feed;
+        Map<String, Object> resultMap = new HashMap<String, Object>();
+
+        try {
+            feed = feedService.getFeedDetail(feedId);
+            resultMap.put("feed", feed);
+            resultMap.put("message", "success");
+            return new ResponseEntity<Map<String, Object>>(resultMap, HttpStatus.OK);
+
+        } catch (Exception e) {
+            // 예외 발생 시 예외를 출력하고 HTTP 상태를 BAD_REQUEST로 설정
+            e.printStackTrace();
+            status = HttpStatus.BAD_REQUEST;
+            // resultMap에 실패 메시지를 추가
+            resultMap.put("message", "fail");
+        }
+        return new ResponseEntity<>(resultMap, status);
+    }
     /*
 
     @ApiOperation(value = "특정 회원의 피드 전체 조회", notes = "특정 회원의 피드 전체목록을 조회합니다")

@@ -13,6 +13,11 @@ public interface FeedService {
 
     List<Feed> getAllFeeds() throws InterruptedException;
 
+    List<Feed> getMemberFeeds(Long memberId);
+
+    Feed getFeedDetail(Long feedId);
+
+
     /*
     List<Feed> getAllFeeds(Long memberId);
     List<Feed> getAllFeedsForMember(Long memberId);

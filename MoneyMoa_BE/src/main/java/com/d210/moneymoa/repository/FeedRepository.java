@@ -9,9 +9,7 @@ import java.util.Optional;
 public interface FeedRepository extends JpaRepository<Feed, Long> {
     Optional<Feed> findById(Long id);
     List<Feed> findAllByMemberId(Long memberId);
+    List<Feed> findByMemberId(Long memberId);
 
-//    List<Feed> findAll(Long memberId);
-
-//    List<Feed> findByMemberIdAndChallengeTitle(Long memberId, String challengeTitle);
 
 }

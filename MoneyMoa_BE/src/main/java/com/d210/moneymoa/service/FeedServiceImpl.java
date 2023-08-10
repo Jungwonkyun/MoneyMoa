@@ -12,6 +12,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.NoSuchElementException;
 
 @Service
 @Slf4j
@@ -64,6 +65,19 @@ public class FeedServiceImpl implements FeedService {
 //        // 변환된 피드 목록을 반환
         return feedRepository.findAll();
     }
+
+    @Override
+    public List<Feed> getMemberFeeds(Long memberId) {
+        return feedRepository.findByMemberId(memberId);
+    }
+
+    @Override
+    public Feed getFeedDetail(Long feedId) {
+        return feedRepository.findById(feedId).orElseThrow(
+                () -> new NoSuchElementException("Feed with id " + feedId + " not found")
+        );
+    }
+
 //
 //    // 특정 회원의 피드 전체 조회
 //    @Transactional(readOnly = true)
