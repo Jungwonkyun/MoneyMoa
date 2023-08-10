@@ -1,11 +1,17 @@
 <template>
   <v-container>
-    <h1>회원가입</h1>
+    <v-sheet
+      max-width="800"
+      class="mx-auto mt-8 rounded-lg px-10 py-5"
+      elevation="3"
+      min-height="700"
+      width="100%"
+    >
+      <h1 class="my-16">회원가입</h1>
 
-    <!-- 가입폼 -->
+      <!-- 가입폼 -->
 
-    <form>
-      <h3>아이디(이메일)</h3>
+      <h3 class="mt-15 title-left">아이디(이메일)</h3>
       <!-- 이메일 입력, 버튼 정렬 -->
       <v-row>
         <v-col>
@@ -21,13 +27,13 @@
           </v-text-field>
         </v-col>
         <!-- 버튼 차지cols 변경해야함 -->
-        <v-col cols="2" class="text-center">
+        <v-col cols="3" class="text-center">
           <v-btn
             @click.prevent="onAthentic"
-            variant="flat"
-            class="text-none text-white"
-            color="blue-darken-4"
+            class="Athentic-Btn"
             :disabled="showBtn"
+            elevation="3"
+            height="40"
             >인증번호 전송</v-btn
           >
         </v-col>
@@ -61,7 +67,7 @@
       <!-- 비밀번호 -->
       <v-row>
         <v-col>
-          <h3>비밀번호</h3>
+          <h3 class="title-left">비밀번호</h3>
           <v-row>
             <v-col>
               <v-text-field
@@ -103,7 +109,7 @@
       <v-row>
         <!-- 이름칸 -->
         <v-col>
-          <h3>이름</h3>
+          <h3 class="title-left">이름</h3>
           <v-text-field
             clearable
             placeholder="이름"
@@ -117,7 +123,7 @@
         </v-col>
         <!-- 닉네임칸 -->
         <v-col>
-          <h3>닉네임</h3>
+          <h3 class="title-left">닉네임</h3>
           <v-text-field
             clearable
             placeholder="최대 15자 까지만 입력 가능합니다."
@@ -134,7 +140,7 @@
       <!-- 생년월일 -->
       <v-row>
         <v-col>
-          <h3>생년월일</h3>
+          <h3 class="title-left">생년월일</h3>
           <v-text-field
             type="date"
             variant="underlined"
@@ -147,7 +153,7 @@
       <!-- 성별 -->
       <v-row>
         <v-col>
-          <h3>성별</h3>
+          <h3 class="title-left">성별</h3>
           <v-radio-group inline v-model="gender">
             <v-col class="d-flex justify-space-around">
               <v-radio label="선택하지 않음" :value="null"></v-radio>
@@ -159,15 +165,11 @@
       </v-row>
       <!-- 가입버튼 -->
       <v-row class="d-flex justify-space-around">
-        <v-btn
-          @click.prevent="onSignUp"
-          variant="flat"
-          class="text-none text-white"
-          color="blue-darken-4"
+        <v-btn @click.prevent="onSignUp" class="Athentic-Btn mb-10" height="40" width="100"
           >가입하기</v-btn
         >
       </v-row>
-    </form>
+    </v-sheet>
   </v-container>
 </template>
 
@@ -327,9 +329,17 @@ const month = String(formattedDate.getMonth() + 1).padStart(2, '0') // 0부터 �
 const day = String(formattedDate.getDate()).padStart(2, '0') // 2자리로 만들기 위해 padStart 사용
 const today = `${year}-${month}-${day}`
 </script>
-<style scoped>
+<style scoped lang="scss">
 /* 임시스타일 */
 h3 {
   margin-top: 30px;
+}
+.Athentic-Btn {
+  color: white;
+  background-color: $primary-color;
+  border-radius: 20px;
+}
+.title-left {
+  text-align: left;
 }
 </style>
