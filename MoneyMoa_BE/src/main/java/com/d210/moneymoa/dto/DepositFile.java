@@ -21,7 +21,7 @@ public class DepositFile implements Serializable {
     private String imgPath;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "bank_code", referencedColumnName = "bankCode")
+    @JoinColumn(name = "bankCode", referencedColumnName = "bankCode")
     private Deposit deposit;
 
     @Builder

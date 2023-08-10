@@ -10,4 +10,6 @@ public interface StorageService {
 
     String deleteFile(String fileName);
 
+    String downloadFileAsBase64(String fileName);
+
 }
