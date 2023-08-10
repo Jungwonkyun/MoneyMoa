@@ -10,7 +10,7 @@ import javax.persistence.*;
 import java.io.Serializable;
 import org.hibernate.annotations.CreationTimestamp;
 import java.time.LocalDateTime;
-
+import java.time.ZoneId;
 
 @Getter
 @Setter
