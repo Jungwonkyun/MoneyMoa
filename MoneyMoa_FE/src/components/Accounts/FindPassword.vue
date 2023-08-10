@@ -1,42 +1,45 @@
 <template>
   <v-container>
-    <v-row>
-      <v-col class="text-center">
-        <h1>비밀번호 찾기</h1>
-        <v-row>
-          <v-col>
-            <v-text-field
-              clearable
-              placeholder="아이디(이메일)"
-              variant="underlined"
-              dense
-              v-model="Email"
-              :rules="Emailrules"
-              @keyup.enter="onAthentic"
-            >
-            </v-text-field>
-          </v-col>
-          <v-col cols="2">
-            <v-btn
-              @click.prevent="onAthentic"
-              variant="flat"
-              class="text-none text-white"
-              color="blue-darken-4"
-              >인증하기</v-btn
-            >
-          </v-col>
-        </v-row>
-        <v-row>
-          <v-col class="text-center">
-            <router-link :to="{ name: 'loginform' }"
-              ><v-btn variant="flat" class="text-none text-white" color="blue-darken-4"
-                >로그인 페이지로 이동</v-btn
-              ></router-link
-            >
-          </v-col>
-        </v-row>
-      </v-col>
-    </v-row>
+    <v-sheet
+      max-width="800"
+      class="mx-auto mt-8 rounded-lg px-10 py-5"
+      min-height="700"
+      width="100%"
+    >
+      <v-row>
+        <v-col class="text-center">
+          <h1>비밀번호 찾기</h1>
+          <v-row>
+            <v-col>
+              <v-text-field
+                clearable
+                placeholder="아이디(이메일)"
+                variant="underlined"
+                dense
+                v-model="Email"
+                :rules="Emailrules"
+                @keyup.enter="onAthentic"
+              >
+              </v-text-field>
+            </v-col>
+            <v-col cols="2">
+              <v-btn @click.prevent="onAthentic" variant="flat" class="Athentic-Btn"
+                >인증하기</v-btn
+              >
+            </v-col>
+          </v-row>
+          <v-row>
+            <v-col class="text-center">
+              <router-link :to="{ name: 'loginform' }"
+                ><v-btn variant="flat" class="Athentic-Btn"
+                  >로그인 페이지로 이동</v-btn
+                ></router-link
+              >
+            </v-col>
+          </v-row>
+        </v-col>
+      </v-row>
+    </v-sheet>
   </v-container>
 </template>
 <script setup>
@@ -48,18 +51,17 @@ async function onAthentic() {
   const isValid = Emailrules.every((rule) => typeof rule(Email.value) !== 'string')
   if (isValid) {
     // 이메일 유효성 검사 통과시 로직 쓰기
-    try{
+    try {
       const res = await functions.postfindpassword(Email.value)
-      console.log(res.message)
+      console.log(res)
 
-      if (res.message === 'success'){
+      if (res.message === 'success') {
         console.log(res.message)
         alert('임시번호를 발송하였습니다. 메일을 확인해 주세요.')
-      }
-      else{
+      } else {
         alert('존재하지 않는 메일입니다.')
       }
-    }catch(err){
+    } catch (err) {
       console.log(err)
     }
   } else {
@@ -78,4 +80,10 @@ const Emailrules = [
   }
 ]
 </script>
-<style></style>
+<style scoped lang="scss">
+.Athentic-Btn {
+  color: white;
+  background-color: $primary-color;
+  border-radius: 20px;
+}
+</style>

@@ -43,7 +43,6 @@ async function postfindpassword(email) {
   try {
     const res = await api.post(`/member/findpassword`, email)
     console.log(res)
-
     return res.data
   } catch (err) {
     console.log(err)
