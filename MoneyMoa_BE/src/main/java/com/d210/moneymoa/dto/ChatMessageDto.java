@@ -26,8 +26,6 @@ public class ChatMessageDto implements Serializable {
     private String sender; // 메시지 보낸사람
     private int senderId; // 메시지 보낸사람
     private String message; // 메시지
-
-    @CreationTimestamp
     private LocalDateTime createdTime; // 메시지 생성 시간
 
     @Builder
@@ -37,6 +35,8 @@ public class ChatMessageDto implements Serializable {
         this.sender = sender;
         this.senderId = senderId;
         this.message = message;
+        this.createdTime = LocalDateTime.now(); // 현재 시간 설정
+}
     }
 
 
