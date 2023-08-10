@@ -224,6 +224,7 @@ public class ChatRoomServiceImpl implements ChatRoomService {
                 .message(chatMessage.getMessage())
                 .roomId(chatMessage.getRoomId())
                 .sender(chatMessage.getSender())
+                .senderId(chatMessage.getSenderId())
                 .type(chatMessage.getType())
                 .build();
 
