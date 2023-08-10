@@ -37,7 +37,6 @@ public class ChallengeController {
     private AuthTokensGenerator authTokensGenerator;
 
     @Autowired
-
     private FeedRepository feedRepository;
 
 
