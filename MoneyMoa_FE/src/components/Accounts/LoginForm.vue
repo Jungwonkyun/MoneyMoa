@@ -1,80 +1,82 @@
 <template>
-  <v-container class="d-flex align-center flex-column">
-    <h1>이메일로 로그인</h1>
-    <!-- 로그인폼 -->
-    <v-row>
-      <v-col>
-        <form class="LoginInput">
-          <v-row>
-            <v-col class="d-flex align-center flex-column">
-              <v-row>
-                <v-col>
-                  <v-text-field
-                    clearable
-                    label="아이디(이메일)"
-                    variant="underlined"
-                    dense
-                    v-model="Email"
-                    :rules="rules"
-                    @keyup.enter="onLogin"
-                  ></v-text-field>
-                  <v-text-field
-                    clearable
-                    label="비밀번호"
-                    variant="underlined"
-                    dense
-                    v-model="password"
-                    :type="visible ? 'text' : 'password'"
-                    :append-inner-icon="visible ? 'mdi-eye-off' : 'mdi-eye'"
-                    @click:append-inner="visible = !visible"
-                    :rules="rules"
-                    @keyup.enter="onLogin"
-                  ></v-text-field>
-                </v-col>
-              </v-row>
-              <v-row>
-                <v-col class="text-center">
-                  <v-btn
-                    @click.prevent="onLogin"
-                    variant="flat"
-                    class="text-none ms-4 text-white"
-                    color="blue-darken-4"
-                    >로그인</v-btn
-                  >
-                </v-col>
-              </v-row>
-            </v-col>
-          </v-row>
-        </form>
-      </v-col>
-    </v-row>
-
-    <v-row>
-      <v-col>
-        <router-link :to="{ name: 'signupform' }">회원가입</router-link>
-        &nbsp;&nbsp;
-        <router-link :to="{ name: 'findpassword' }">비밀번호 찾기</router-link>
-      </v-col>
-    </v-row>
-
-    <v-row>
-      <v-col>
-        <v-row>
-          <v-col class="text-center">
-            <span>소셜 회원으로 이용하기</span>
-          </v-col>
-        </v-row>
-        <v-row>
-          <!-- 소셜로그인 임시로 사진만 -->
-          <v-col>
-            <v-img :src="naverLogo" :width="200" @click="naverLogin" class="buttons"></v-img>
-          </v-col>
-          <v-col>
-            <v-img :src="kakaoLogo" :width="200" @click="kakaoLogin" class="buttons"></v-img>
-          </v-col>
-        </v-row>
-      </v-col>
-    </v-row>
+  <v-container>
+    <v-sheet
+      max-width="600"
+      class="mx-auto mt-8 rounded-lg px-10 py-5"
+      elevation="3"
+      min-height="700"
+      width="100%"
+    >
+      <h1 class="mb-15 mt-10">이메일로 로그인</h1>
+      <p class="text-left my-5">
+        아직 회원이 아니신가요?
+        <router-link class="router-link-style" :to="{ name: 'signupform' }"
+          >회원가입하러 가기</router-link
+        >
+      </p>
+      <!-- 로그인폼 -->
+      <v-row>
+        <v-col cols="12">
+          <v-text-field
+            width="100%"
+            clearable
+            label="아이디(이메일)"
+            variant="outlined"
+            dense
+            v-model="Email"
+            :rules="rules"
+            @keyup.enter="onLogin"
+          ></v-text-field>
+        </v-col>
+      </v-row>
+      <v-row>
+        <v-col cols="12">
+          <v-text-field
+            clearable
+            label="비밀번호"
+            variant="outlined"
+            dense
+            v-model="password"
+            :type="visible ? 'text' : 'password'"
+            :append-inner-icon="visible ? 'mdi-eye-off' : 'mdi-eye'"
+            @click:append-inner="visible = !visible"
+            :rules="rules"
+            @keyup.enter="onLogin"
+          ></v-text-field>
+        </v-col>
+      </v-row>
+      <v-row>
+        <v-col class="d-flex align-center">
+          <router-link class="router-link-style" :to="{ name: 'findpassword' }"
+            >비밀번호 찾기</router-link
+          >
+        </v-col>
+        <v-col class="text-right">
+          <v-btn @click.prevent="onLogin" variant="flat" elevation="3" height="50" class="login-Btn"
+            >로그인</v-btn
+          >
+        </v-col>
+      </v-row>
+      <v-row class="my-8">
+        <v-col class="d-flex align-center">
+          <v-divider class="border-opacity-25"></v-divider
+        ></v-col>
+        <v-col class="text-center px-0" cols="4">
+          <span class="social-Text">소셜 회원으로 이용하기 </span>
+        </v-col>
+        <v-col class="d-flex align-center"
+          ><v-divider class="border-opacity-25"></v-divider>
+        </v-col>
+      </v-row>
+      <v-row>
+        <v-col align="center">
+          <v-img :src="naverLogo" width="200" @click="naverLogin" class="buttons"></v-img>
+        </v-col>
+        <v-col align="center">
+          <v-img :src="kakaoLogo" width="215" @click="kakaoLogin" class="buttons"></v-img>
+        </v-col>
+      </v-row>
+    </v-sheet>
   </v-container>
 </template>
 
@@ -175,14 +177,21 @@ async function naverLogin() {
 }
 </script>
 
-<style scoped>
-.LoginInput {
-  width: 500px;
-}
+<style lang="scss" scoped>
 .buttons {
   cursor: pointer;
 }
-.v-text-field {
-  max-width: none;
+.router-link-style {
+  text-decoration: none;
+  color: $primary-color;
+}
+.login-Btn {
+  color: white;
+  background-color: $primary-color;
+  border-radius: 50px;
+  width: 130px;
+}
+.social-Text {
+  font-size: medium;
 }
 </style>
