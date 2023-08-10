@@ -36,17 +36,16 @@ public class ChatController {
     public void message(ChatMessage message) {
 
         if(chatRoomService.enterChatRoom(message.getMemberId(), message.getRoomId()) != null){
-            message.setType(ChatMessage.MessageType.JOIN);
-        }
-
-        if(ChatMessage.MessageType.JOIN.equals(message.getType())){
             message.setMessage(message.getSender() + "님이 입장하셨습니다.");
         }
-        else if (ChatMessage.MessageType.QUIT.equals(message.getType())) {
+
+        if (ChatMessage.MessageType.QUIT.equals(message.getType())) {
 //            chatRoomRepository.decreaseUserCount(message.getRoomId());  // User count 감소
             message.setMessage(message.getSender() + "님이 퇴장하셨습니다.");
         }
 
+        log.info(message);
+        
         //채팅 내역 저장
         chatRoomService.saveChatMessage(message.getRoomId(), message);
 
