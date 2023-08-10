@@ -14,6 +14,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.util.Base64;
 
 @Service
 @Slf4j
@@ -63,5 +64,13 @@ public class StorageServiceImpl implements StorageService {
             e.printStackTrace();
         }
         return convertedFile;
+    }
+
+    @Override
+    public String downloadFileAsBase64(String fileName) {
+        byte[] data = downloadFile(fileName);
+
+        // 바이트 배열을 Base64로 인코딩
+        return Base64.getEncoder().encodeToString(data);
     }
 }

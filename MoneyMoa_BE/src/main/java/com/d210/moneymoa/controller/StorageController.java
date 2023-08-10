@@ -32,10 +32,7 @@ public class StorageController {
     @GetMapping("/download/{fileName}")
     public ResponseEntity<String> downloadFile(@PathVariable String fileName) {
         try {
-            byte[] data = storageService.downloadFile(fileName);
-
-            // 바이트 배열을 Base64로 인코딩
-            String base64ImageData = Base64.getEncoder().encodeToString(data);
+            String base64ImageData = storageService.downloadFileAsBase64(fileName);
             return ResponseEntity.ok().body(base64ImageData);
 
         } catch (AmazonS3Exception e) {
