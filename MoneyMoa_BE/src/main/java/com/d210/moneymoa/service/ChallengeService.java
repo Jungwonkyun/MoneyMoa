@@ -1,25 +1,23 @@
 package com.d210.moneymoa.service;
 
-import com.d210.moneymoa.Exception.ChallengeAuthorizationException;
-import com.d210.moneymoa.Exception.ChallengeNotFoundException;
-import com.d210.moneymoa.dto.challenge.ChallengeCreateRequest;
-import com.d210.moneymoa.dto.challenge.ChallengeCreateResponse;
-import com.d210.moneymoa.dto.challenge.ChallengeResponse;
-import com.d210.moneymoa.dto.challenge.ChallengeUpdateRequest;
-
-import java.util.List;
+import com.d210.moneymoa.dto.Challenge;
 
 public interface ChallengeService {
-    ChallengeCreateResponse createChallenge(ChallengeCreateRequest req, Long memberId);
+    public Challenge createChallenge(Challenge challenge, Long memberId);
 
-    List<ChallengeCreateResponse> getMemberChallenges(Long memberId);
+    /*
+    Challenge createChallenge(Challenge req, Long memberId);
 
-    ChallengeResponse findChallenge (Long id);
+    List<Challenge> getMemberChallenges(Long memberId);
 
-    ChallengeCreateResponse updateChallenge(Long id, ChallengeUpdateRequest req, String jwt) throws ChallengeAuthorizationException;
+    Challenge findChallenge (Long id);
+
+    void updatePresentAmount(Long memberId, String challengeTitle, Integer depositAmount);
+
+    Challenge updateChallenge(Long id, Challenge req, String jwt) throws ChallengeAuthorizationException;
 
     void deleteChallenge(Long id, String jwt) throws ChallengeNotFoundException;
-    /*
 
      */
+
 }

@@ -1,35 +1,31 @@
 package com.d210.moneymoa.service;
 
-import com.d210.moneymoa.Exception.AuthorizationException;
-import com.d210.moneymoa.dto.feed.FeedCreateRequest;
-import com.d210.moneymoa.dto.feed.FeedCreateResponse;
-import com.d210.moneymoa.dto.feed.FeedResponse;
-import com.d210.moneymoa.dto.feed.FeedUpdateRequest;
+import com.d210.moneymoa.dto.Feed;
 import org.springframework.stereotype.Service;
-
-import java.util.List;
 
 @Service
 public interface FeedService {
 
 
-    FeedCreateResponse createFeed(FeedCreateRequest req, Long memberId, String jwt, Long challengeId);
-    List<FeedCreateResponse> getAllFeeds(Long memberId);
-    List<FeedCreateResponse> getAllFeedsForMember(Long memberId);
-    FeedCreateResponse updateFeed(Long id, FeedUpdateRequest req, Long memberId, String jwt) throws AuthorizationException;
+    Feed createFeed(Long challengeId, Long memberId, Feed feed);
 
-    FeedResponse findFeed(Long id);
+    /*
+    List<Feed> getAllFeeds(Long memberId);
+    List<Feed> getAllFeedsForMember(Long memberId);
+    Feed updateFeed(Long id, Feed req, Long memberId, String jwt) throws AuthorizationException;
+
+    Feed findFeed(Long id);
 
 
 
     void deleteFeed(Long id, String jwt) throws AuthorizationException;
 
 
-    // 좋아요 카운트
+    //    댓글 카운트
     void addLikeCount(Long feedId);
 
     void subLikeCount(Long feedId);
 
+     */
 
-    Object createFeed(FeedCreateResponse response);
 }
