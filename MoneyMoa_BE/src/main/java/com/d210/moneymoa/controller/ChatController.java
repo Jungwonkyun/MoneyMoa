@@ -4,6 +4,7 @@ package com.d210.moneymoa.controller;
 import com.d210.moneymoa.domain.oauth.AuthTokensGenerator;
 import com.d210.moneymoa.domain.redis.RedisPublisher;
 import com.d210.moneymoa.dto.ChatMessage;
+import com.d210.moneymoa.dto.MemberChatroomSubInfo;
 import com.d210.moneymoa.repository.MemberRepository;
 import com.d210.moneymoa.service.ChatRoomService;
 import lombok.RequiredArgsConstructor;
@@ -20,13 +21,12 @@ public class ChatController {
 
     private final RedisPublisher redisPublisher;
 
-    private final ChatRoomService chatRoomService;
+    @Autowired
+    ChatRoomService chatRoomService;
 
     @Autowired
     AuthTokensGenerator authTokensGenerator;
 
-    @Autowired
-    MemberRepository memberRepository;
 
     /**
      * websocket "/pub/chat/message"로 들어오는 메시징을 처리한다.
@@ -34,6 +34,10 @@ public class ChatController {
 
     @MessageMapping("/api/chat/message")
     public void message(ChatMessage message) {
+
+        if(chatRoomService.enterChatRoom(message.getMemberId(), message.getRoomId()) == null){
+            message.setType(ChatMessage.MessageType.JOIN);
+        }
         if (ChatMessage.MessageType.JOIN.equals(message.getType())) {
             //chatRoomService.enterChatRoom(message.getRoomId());
 //            chatRoomRepository.increaseUserCount(message.getRoomId());
