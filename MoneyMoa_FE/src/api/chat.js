@@ -41,6 +41,15 @@ async function enterRoom(roomId) {
   }
 }
 
+async function createRoom(roomInfo) {
+  try {
+    const response = await api.post('room/create', JSON.stringify(roomInfo))
+    return response
+  } catch (error) {
+    console.log(error)
+  }
+}
+
 // function sendMessage(room, sender, message) {
 //   ws.send(
 //     '/pub/api/chat/message',
@@ -100,4 +109,4 @@ async function enterRoom(roomId) {
 // }
 
 // export { getRooms, getRoomDetail, sendMessage, recvMessage, connect }
-export { getRooms, getRoomDetail, enterRoom }
+export { getRooms, getRoomDetail, enterRoom, createRoom }

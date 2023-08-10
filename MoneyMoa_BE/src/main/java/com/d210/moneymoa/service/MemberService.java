@@ -15,4 +15,6 @@ public interface MemberService {
     void mailSend(String email, String pwd);
 
     Member updateMember(Member updatedMember);
+
+    Member findMemberById(Long memberId);
 }

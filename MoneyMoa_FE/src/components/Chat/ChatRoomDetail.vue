@@ -1,20 +1,33 @@
 <template>
-  <v-card variant="outlined">
-    <v-card-title>{{ room.name }}</v-card-title>
-  </v-card>
-  <v-sheet v-for="(msg, index) in messages" elevation="10" rounded>
-    {{ msg.sender }}: {{ msg.message }}
-  </v-sheet>
-  <v-container>
-    <v-row>
-      <v-text-field v-model="inputMsg" />
-      <v-btn @click="sendMessage(room, nickName)">메시지 전송</v-btn>
-    </v-row>
+  <v-container class="chat-container align-start justify-center">
+    <v-card variant="outlined" class="chat-card">
+      <v-card-title>
+        <v-banner class="text-h5" sticky>
+          <!-- <v-icon icon="mdi-arrow-left"></v-icon> -->
+          {{ room.name }}
+        </v-banner>
+      </v-card-title>
+      <v-card-text class="chatmessage-area overflow-auto">
+        <template v-for="(msg, index) in messages">
+          <v-sheet :class="{ 'd-flex flex-row-reverse': isMine(msg.sender) }" class="pa-1">
+            <h4 v-if="!isMine(msg.sender)">
+              {{ msg.sender }}
+            </h4>
+            <v-chip :color="isMine(msg.sender) ? 'primary' : ''">
+              {{ msg.message }}
+            </v-chip>
+          </v-sheet>
+        </template>
+      </v-card-text>
+      <v-card-actions class="align-center">
+        <v-text-field v-model="inputMsg" @keyup.enter="sendMessage(room, nickName)" hide-details />
+        <v-btn @click="sendMessage(room, nickName)" icon="mdi-send" />
+      </v-card-actions>
+    </v-card>
   </v-container>
 </template>
 <script setup>
-import { ref, inject } from 'vue'
-import { onMessage, onOpen, onClose, onError } from 'vue3-websocket'
+import { ref, watch, nextTick } from 'vue'
 import { getRoomDetail } from '@/api/chat'
 import { useRoute } from 'vue-router'
 import Stomp from 'webstomp-client'
@@ -34,15 +47,24 @@ const messages = ref([])
 const inputMsg = ref('')
 const nickName = cookies.get('member').nickname
 console.log(nickName + ' is my nickname')
+
 //room이 가진 것? roomId, name(방제), chatMsg배열
 getRoomDetail(route.params.roomId).then((response) => {
   room.value = response.data['chatroomInfo']
   console.log(room.value)
-  messages.value = response.data.chatMessages
+  messages.value = response.data.chatMessages.filter((msg) => msg.message !== null)
   console.log('got room. try connect')
   connect(room.value, nickName)
   console.log('after connect')
 })
+
+// watch(messages, () => {
+//   nextTick(() => {
+//     const chatArea = document.querySelector('.chatmessage-area')
+//     console.log(chatArea.scrollHeight + ' ~ ' + chatArea.scrollTop)
+//     chatArea.scrollTop = chatArea.scrollHeight
+//   })
+// })
 
 function recvMessage(recv) {
   // 배열을 반환합니다
@@ -56,13 +78,12 @@ function recvMessage(recv) {
 }
 
 function connect(room, sender) {
-  console.log('try subscribe000000')
-  const token = cookies.get('accessToken')
-  const headers = {
-    login: 'mylogin',
-    passcode: 'mypasscode',
-    Authorization: `Bearer ${token}`
-  }
+  // const token = cookies.get('accessToken')
+  // const headers = {
+  //   login: 'mylogin',
+  //   passcode: 'mypasscode',
+  //   Authorization: `Bearer ${token}`
+  // }
   ws.connect(
     {},
     function (frame) {
@@ -71,7 +92,13 @@ function connect(room, sender) {
         console.log('구독 후 받은 것:' + message.body)
         var recv = JSON.parse(message.body)
         // recvMessage 함수를 호출하고 반환된 값을 사용하여 messages 변수를 업데이트
-        messages.value.unshift(...recvMessage(recv))
+        messages.value.push(...recvMessage(recv))
+        // messages 갱신되면 스크롤 최하단으로 이동
+        nextTick(() => {
+          const chatArea = document.querySelector('.chatmessage-area')
+          console.log(chatArea.scrollHeight + ' ~ ' + chatArea.scrollTop)
+          chatArea.scrollTop = chatArea.scrollHeight
+        })
       })
       ws.send(
         '/pub/api/chat/message',
@@ -94,7 +121,10 @@ function connect(room, sender) {
 }
 
 function sendMessage(room, sender) {
-  console.log('발신자는?' + sender)
+  if (!inputMsg.value.trim()) {
+    inputMsg.value = ''
+    return
+  }
   ws.send(
     '/pub/api/chat/message',
     JSON.stringify({
@@ -106,5 +136,20 @@ function sendMessage(room, sender) {
   )
   inputMsg.value = ''
 }
+
+function isMine(sender) {
+  return sender === nickName
+}
 </script>
-<style></style>
+<style scoped>
+.chat-container {
+  height: 90vh;
+}
+.chat-card {
+  height: 100%;
+}
+.chatmessage-area {
+  height: calc(100% - 144px);
+  overflow: auto;
+}
+</style>
