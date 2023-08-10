@@ -1,12 +1,43 @@
 <template>
   <v-container class="chat-container align-start justify-center">
+    <v-dialog v-model="dialog" width="auto">
+      <v-card>
+        <v-card-title class="text-h6">{{ room.name }} 정보</v-card-title>
+        <v-card-text>{{ room.description }}</v-card-text>
+        <v-table>
+          <thead>
+            <tr>
+              참여자 목록
+            </tr>
+          </thead>
+          <tbody>
+            <tr v-for="(member, index) in roomMembers" :key="index">
+              <td>{{ member.memberNickname }}</td>
+            </tr>
+          </tbody>
+        </v-table>
+      </v-card>
+    </v-dialog>
     <v-card variant="outlined" class="chat-card">
-      <v-card-title>
-        <v-banner class="text-h5" sticky>
-          <!-- <v-icon icon="mdi-arrow-left"></v-icon> -->
-          {{ room.name }}
-        </v-banner>
-      </v-card-title>
+      <v-toolbar>
+        <template v-slot:prepend>
+          <v-btn icon="mdi-arrow-left" @click="goBack()"></v-btn>
+        </template>
+        <v-toolbar-title class="text-h6"> {{ room.name }} </v-toolbar-title>
+        <template v-slot:append>
+          <v-btn id="chatmenu-activator" icon="mdi-dots-vertical" />
+          <v-menu activator="#chatmenu-activator">
+            <v-list>
+              <v-list-item @click="showRoomInfo()">
+                <v-list-item-title>채팅방 정보</v-list-item-title>
+              </v-list-item>
+              <v-list-item @click="quit(room.roomId)">
+                <v-list-item-title>채팅방 나가기</v-list-item-title>
+              </v-list-item>
+            </v-list>
+          </v-menu>
+        </template>
+      </v-toolbar>
       <v-card-text class="chatmessage-area overflow-auto">
         <template v-for="(msg, index) in messages">
           <v-sheet :class="{ 'd-flex flex-row-reverse': isMine(msg.sender) }" class="pa-1">
@@ -28,8 +59,8 @@
 </template>
 <script setup>
 import { ref, watch, nextTick } from 'vue'
-import { getRoomDetail } from '@/api/chat'
-import { useRoute } from 'vue-router'
+import { getRoomDetail, getRoomMembers, quitRoom } from '@/api/chat'
+import { useRoute, useRouter } from 'vue-router'
 import Stomp from 'webstomp-client'
 import SockJS from 'sockjs-client'
 import { useCookies } from 'vue3-cookies'
@@ -39,32 +70,56 @@ var sock = new SockJS('https://i9d210.p.ssafy.io/api/ws-stomp')
 var ws = Stomp.over(sock)
 var reconnect = 0
 console.log(cookies.get('member').nickname + ' 등장')
+console.log(cookies.get('member'))
 console.log(cookies.get('accessToken'))
 
 const route = useRoute()
+const router = useRouter()
 const room = ref({})
 const messages = ref([])
 const inputMsg = ref('')
 const nickName = cookies.get('member').nickname
-console.log(nickName + ' is my nickname')
+const myId = cookies.get('member').id
+const dialog = ref(false)
+const roomMembers = ref([])
 
 //room이 가진 것? roomId, name(방제), chatMsg배열
 getRoomDetail(route.params.roomId).then((response) => {
-  room.value = response.data['chatroomInfo']
-  console.log(room.value)
+  //방정보 가져오고
+  room.value = response.data.chatroomInfo
+  // console.log(room.value)
+  //기존메시지 가져오고
   messages.value = response.data.chatMessages.filter((msg) => msg.message !== null)
-  console.log('got room. try connect')
+  //참여자 가져오고
+  getRoomMembers(room.value.roomId).then((response) => {
+    roomMembers.value = response.data.MemberwhoSubThisChatroom
+  })
+  //소켓연결합니다
   connect(room.value, nickName)
-  console.log('after connect')
 })
 
-// watch(messages, () => {
-//   nextTick(() => {
-//     const chatArea = document.querySelector('.chatmessage-area')
-//     console.log(chatArea.scrollHeight + ' ~ ' + chatArea.scrollTop)
-//     chatArea.scrollTop = chatArea.scrollHeight
-//   })
-// })
+function goBack() {
+  if (window.history.length > 1) {
+    console.log()
+    router.go(-1)
+  } else {
+    router.push({
+      name: 'chatrooms'
+    })
+  }
+}
+
+function showRoomInfo() {
+  dialog.value = true
+}
+
+function quit(roomId) {
+  quitRoom(roomId).then((response) => {
+    router.push({
+      name: 'chatrooms'
+    })
+  })
+}
 
 function recvMessage(recv) {
   // 배열을 반환합니다
@@ -87,9 +142,7 @@ function connect(room, sender) {
   ws.connect(
     {},
     function (frame) {
-      console.log('try subscribe')
       ws.subscribe(`/sub/api/chat/room/${room.roomId}`, function (message) {
-        console.log('구독 후 받은 것:' + message.body)
         var recv = JSON.parse(message.body)
         // recvMessage 함수를 호출하고 반환된 값을 사용하여 messages 변수를 업데이트
         messages.value.push(...recvMessage(recv))
@@ -102,11 +155,10 @@ function connect(room, sender) {
       })
       ws.send(
         '/pub/api/chat/message',
-        JSON.stringify({ type: 'ENTER', roomId: room.roomId, sender: sender })
+        JSON.stringify({ type: 'ENTER', roomId: room.roomId, sender: sender, memberId: myId })
       )
     },
     function (error) {
-      console.log('에러가 발생했어요.')
       console.log(error)
       if (reconnect++ <= 5) {
         setTimeout(function () {
@@ -131,7 +183,8 @@ function sendMessage(room, sender) {
       type: 'TALK',
       roomId: room.roomId,
       sender: sender,
-      message: inputMsg.value
+      message: inputMsg.value,
+      memberId: myId
     })
   )
   inputMsg.value = ''
