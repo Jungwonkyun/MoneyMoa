@@ -27,7 +27,7 @@ public class ChallengeServiceImpl implements ChallengeService {
     @Transactional
     public Challenge createChallenge(Challenge inputChallenge, Long memberId) {
         
-        String nickName = memberRepository.findById(memberId).get().getNickname();
+        
         
         Challenge challenge = Challenge.builder()
                 .title(inputChallenge.getTitle())
@@ -39,9 +39,9 @@ public class ChallengeServiceImpl implements ChallengeService {
                 .presentAmount(inputChallenge.getPresentAmount())
                 .build();
 
-        
-        // challenge.setId(memberId);
-        // challenge.setNickname(nickName);
+        String nickName = memberRepository.findById(memberId).get().getNickname();
+        challenge.setId(memberId);
+        challenge.setNickname(nickName);
 
         challengeRepository.save(inputChallenge);
         return challenge;
