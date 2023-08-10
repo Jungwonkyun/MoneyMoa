@@ -1,5 +1,6 @@
 package com.d210.moneymoa.controller;
 
+import com.amazonaws.services.s3.AmazonS3;
 import com.d210.moneymoa.domain.oauth.AuthTokensGenerator;
 import com.d210.moneymoa.dto.Challenge;
 import com.d210.moneymoa.dto.Feed;
@@ -16,16 +17,14 @@ import io.swagger.annotations.ApiParam;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-import org.springframework.http.MediaType;
 
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.net.URL;
+import java.util.*;
 
 
 @Api(value = "Feed Controller", tags = "Feed-Controller")
@@ -51,6 +50,9 @@ public class FeedController {
 
     @Autowired
     private ChallengeRepository challengeRepository;
+
+    @Autowired
+    private AmazonS3 s3Client;
 
 
     // 피드 생성 메서드
@@ -127,15 +129,31 @@ public class FeedController {
     public ResponseEntity<Map<String, Object>> getAllFeeds(@RequestHeader("Authorization") String jwt) {
         log.info("BoardList 모두 반환");
         HttpStatus status;
-        List<Feed> feedList;
+        List<Object> feedDtoList = new ArrayList<>();
         Map<String, Object> resultMap = new HashMap<String, Object>();
 
         try {
-            feedList = feedService.getAllFeeds();
-            resultMap.put("feedList", feedList);
+            List<Feed> feedList = feedService.getAllFeeds();
+
+            for (Feed feed : feedList) {
+                List<FeedFile> feedFiles = feed.getFeedFiles();
+                List<String> fileUrls = new ArrayList<>();
+
+                // 각 Feed별로 저장된 이미지에 대해 파일 URL 생성
+                for (FeedFile feedFile : feedFiles) {
+                    URL fileUrl = s3Client.getUrl("moneymoa-first-bucket", feedFile.getImgPath());
+                    fileUrls.add(fileUrl.toString());
+                }
+
+                Map<String, Object> feedData = new HashMap<>();
+                feedData.put("feed", feed);
+                feedData.put("fileUrls", fileUrls);
+                feedDtoList.add(feedData);
+            }
+
+            resultMap.put("feeds", feedDtoList);
             resultMap.put("message", "success");
             return new ResponseEntity<Map<String, Object>>(resultMap, HttpStatus.OK);
-
         } catch (Exception e) {
             // 예외 발생 시 예외를 출력하고 HTTP 상태를 BAD_REQUEST로 설정
             e.printStackTrace();

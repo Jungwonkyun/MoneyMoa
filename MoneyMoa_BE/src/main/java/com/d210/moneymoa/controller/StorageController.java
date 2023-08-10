@@ -32,22 +32,22 @@ public class StorageController {
         return new ResponseEntity<>(uploadedFileNames, HttpStatus.OK);
     }
 
-    @GetMapping("/download/{fileName}")
-    public ResponseEntity<String> downloadFile(@PathVariable String fileName) {
-        try {
-            String base64ImageData = storageService.downloadFileAsBase64(fileName);
-            return ResponseEntity.ok().body(base64ImageData);
-
-        } catch (AmazonS3Exception e) {
-            if (e.getStatusCode() == HttpStatus.NOT_FOUND.value()) {
-                // 파일이 존재하지 않는 경우를 처리하는 코드
-                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Requested file not found.");
-            } else {
-                // 기타 S3 에러 처리 코드
-                return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Internal server error.");
-            }
-        }
-    }
+//    @GetMapping("/download/{fileName}")
+//    public ResponseEntity<String> downloadFile(@PathVariable String fileName) {
+//        try {
+//            String base64ImageData = storageService.downloadFileAsBase64(fileName);
+//            return ResponseEntity.ok().body(base64ImageData);
+//
+//        } catch (AmazonS3Exception e) {
+//            if (e.getStatusCode() == HttpStatus.NOT_FOUND.value()) {
+//                // 파일이 존재하지 않는 경우를 처리하는 코드
+//                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Requested file not found.");
+//            } else {
+//                // 기타 S3 에러 처리 코드
+//                return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Internal server error.");
+//            }
+//        }
+//    }
 
     @GetMapping("/delete/{fileName}")
     public ResponseEntity<String> deleteFile(@PathVariable String fileName){

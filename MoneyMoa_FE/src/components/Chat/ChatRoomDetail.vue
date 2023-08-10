@@ -126,7 +126,7 @@ function recvMessage(recv) {
   return [
     {
       type: recv.type,
-      sender: recv.type == 'ENTER' ? '[알림]' : recv.sender,
+      sender: recv.type == 'JOIN' ? '[알림]' : recv.sender,
       message: recv.message
     }
   ]
