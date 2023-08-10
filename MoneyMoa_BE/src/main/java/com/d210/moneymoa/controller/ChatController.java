@@ -35,12 +35,10 @@ public class ChatController {
     @MessageMapping("/api/chat/message")
     public void message(ChatMessage message) {
 
-        if(chatRoomService.enterChatRoom(message.getMemberId(), message.getRoomId()) != null){
-            message.setType(ChatMessage.MessageType.JOIN);
+        if(ChatMessage.MessageType.JOIN.equals(message.getType())){
             message.setMessage(message.getSender() + "님이 입장하셨습니다.");
         }
-
-        if (ChatMessage.MessageType.QUIT.equals(message.getType())) {
+        else if (ChatMessage.MessageType.QUIT.equals(message.getType())) {
 //            chatRoomRepository.decreaseUserCount(message.getRoomId());  // User count 감소
             message.setMessage(message.getSender() + "님이 퇴장하셨습니다.");
         }
