@@ -8,6 +8,8 @@ import org.springframework.data.mongodb.core.mapping.Document;
 
 import javax.persistence.*;
 import java.io.Serializable;
+import org.hibernate.annotations.CreationTimestamp;
+import java.time.LocalDateTime;
 
 
 @Getter
@@ -25,6 +27,9 @@ public class ChatMessageDto implements Serializable {
     private int senderId; // 메시지 보낸사람
     private String message; // 메시지
 
+    @CreationTimestamp
+    private LocalDateTime createdTime; // 메시지 생성 시간
+
     @Builder
     public ChatMessageDto(ChatMessage.MessageType type, String roomId, String sender, int senderId, String message) {
         this.type = type;
@@ -33,6 +38,8 @@ public class ChatMessageDto implements Serializable {
         this.senderId = senderId;
         this.message = message;
     }
+
+
 
     @Override
     public String toString() {
