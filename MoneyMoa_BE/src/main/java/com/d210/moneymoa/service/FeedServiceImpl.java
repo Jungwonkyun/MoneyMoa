@@ -10,7 +10,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
 
@@ -79,10 +78,14 @@ public class FeedServiceImpl implements FeedService {
     }
 
     @Override
-    public void updateFeed(Long feedId, Feed updateFeed) {
-        Feed feed = feedRepository.findById(feedId).orElseThrow(
-                ()-> new NoSuchElementException("Feed with id" + feedId + " Not Found")
-        );
+    public void updateFeed(Long feedId, Feed updateFeed, Long memberId) throws IllegalAccessException {
+        Feed feed = feedRepository.findById(feedId)
+                .orElseThrow(() -> new NoSuchElementException("챌린지를 찾을 수 없습니다."));
+
+        if (!feed.getMemberId().equals(memberId)) {
+            throw new IllegalAccessException("수정 권한이 없습니다.");
+        }
+
         if (updateFeed.getContent() != null) {
             feed.setContent(updateFeed.getContent());
         }
@@ -99,10 +102,13 @@ public class FeedServiceImpl implements FeedService {
     }
 
     @Override
-    public void deleteFeed(Long feedId) {
-        feedRepository.findById(feedId).orElseThrow(
-                () -> new NoSuchElementException("Feed with id " + feedId + " not found")
-        );
+    public void deleteFeed(Long feedId, Long memberId) throws IllegalAccessException {
+        Feed feed = feedRepository.findById(feedId)
+                .orElseThrow(() -> new NoSuchElementException("챌린지를 찾을 수 없습니다."));
+
+        if (!feed.getMemberId().equals(memberId)) {
+            throw new IllegalAccessException("삭제 권한이 없습니다.");
+        }
         // 피드 삭제
         feedRepository.deleteById(feedId);
     }

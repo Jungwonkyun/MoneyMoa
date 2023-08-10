@@ -16,6 +16,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @Api(value = "Challenge Controller", tags = "Challenge-Controller")
@@ -37,7 +38,6 @@ public class ChallengeController {
     private AuthTokensGenerator authTokensGenerator;
 
     @Autowired
-
     private FeedRepository feedRepository;
 
 
@@ -47,11 +47,9 @@ public class ChallengeController {
     // POST 방식으로 "/create" URL에 매핑
     @PostMapping("/create")
     // 메서드의 반환 타입은 ResponseEntity 객체이며, 요청 본문에서 Challenge 데이터를 파싱하고 인증 헤더를 사용합니다.
-    public ResponseEntity<Map<String, Object>> createChallenge(
-            @RequestBody Challenge challenge,
-            // JWT 토큰을 헤더에서 인증 정보로 사용
-            @ApiParam(value = "Bearer ${jwt token} 형식으로 전송")
-            @RequestHeader("Authorization") String jwt) {
+    public ResponseEntity<Map<String, Object>> createChallenge(@RequestBody Challenge challenge,// JWT 토큰을 헤더에서 인증 정보로 사용
+                                                               @ApiParam(value = "Bearer ${jwt token} 형식으로 전송")
+                                                               @RequestHeader("Authorization") String jwt) {
         // 결과를 반환할 Map 객체 생성
         Map<String, Object> resultMap = new HashMap<>();
         // HTTP 상태 기본값 설정
@@ -83,16 +81,105 @@ public class ChallengeController {
         // 최종 결과와 설정된 HTTP 상태를 반환하는 ResponseEntity 객체를 반환
         return new ResponseEntity<>(resultMap, status);
     }
-    /*
 
-    @ApiOperation(value = "{id}의 첼린지 목록 조회", notes = "{id}의 첼린지 전체 목록을 조회합니다")
+    @ApiOperation(value = "멤버의 챌린지 목록 조회", notes = "특정 멤버의 챌린지 목록을 조회합니다.")
     @GetMapping("/list/{memberId}")
-    @ResponseStatus(value = HttpStatus.OK)
-    public Response getAllMemberChallenges(@PathVariable(name = "memberId") Long memberId,
-                                           @ApiParam(value = "Bearer ${jwt token} 형식으로 전송") @RequestHeader("Authorization") String jwt) {
-        jwt = jwt.replace("Bearer ", "");
-        return Response.success(challengeService.getMemberChallenges(memberId));
+    public ResponseEntity<Map<String, Object>> getMemberChallenges(@PathVariable Long memberId,
+                                                                   @RequestHeader("Authorization") String jwt) {
+        log.info("멤버 챌린지 목록 반환");
+        HttpStatus status;
+        Map<String, Object> resultMap = new HashMap<String, Object>();
+        List<Challenge> challenges;
+
+        try {
+            challenges = challengeService.getMemberChallenges(memberId);
+            resultMap.put("challenges", challenges);
+            resultMap.put("message", "succsess");
+            return new ResponseEntity<Map<String, Object>>(resultMap, HttpStatus.OK);
+
+        } catch (Exception e) {
+            //예외 발생시 예외 출력 후 BAD_REQUEST 설정
+            e.printStackTrace();
+            status = HttpStatus.BAD_REQUEST;
+            resultMap.put("message", "fail");
+        }
+        return new ResponseEntity<>(resultMap, status);
     }
+
+    @ApiOperation(value = "챌린지 상세조회", notes = "특정 챌린지의 상세 정보를 조회합니다.")
+    @GetMapping("/{id}")
+    public ResponseEntity<Map<String, Object>> getChallenge(@PathVariable Long id,
+                                                            @RequestHeader("Authorization") String jwt) {
+        log.info("챌린지 상세 정보 조회");
+        HttpStatus status;
+        Map<String, Object> resultMap = new HashMap<String, Object>();
+        Challenge challenge;
+
+        try {
+            challenge = challengeService.getChallenge(id);
+            resultMap.put("challenge", challenge);
+            resultMap.put("message", "success");
+            return new ResponseEntity<Map<String, Object>>(resultMap, HttpStatus.OK);
+        } catch (Exception e) {
+            // 예외 발생 시 예외 출력 및 BAD_REQUEST 설정
+            e.printStackTrace();
+            status = HttpStatus.BAD_REQUEST;
+            //resultMap 실패 메시지
+            resultMap.put("message", "fail");
+        }
+        return new ResponseEntity<>(resultMap, status);
+    }
+
+    @ApiOperation(value = "챌린지 업데이트", notes = "챌린지 정보를 업데이트 합니다.")
+    @PutMapping("/update/{id}")
+    public ResponseEntity<Map<String, Object>> updateChallenge(@RequestHeader("Authorization") String jwt,
+                                                               @PathVariable Long id,
+                                                               @RequestBody Challenge challengeInfo) {
+        log.info("챌린지 업데이트");
+        HttpStatus status;
+        Map<String, Object> resultMap = new HashMap<String, Object>();
+
+        try {
+            jwt = jwt.replace("Bearer ", "");
+            Long memberId = authTokensGenerator.extractMemberId(jwt.replace("Bearer ", ""));
+            challengeService.updateChallenge(id, challengeInfo, memberId);
+            resultMap.put("message", "success");
+            return new ResponseEntity<Map<String, Object>>(resultMap, HttpStatus.OK);
+        } catch (Exception e) {
+            // 예외 발생시 예외 출력, BAD_REQUEST
+            e.printStackTrace();
+            status = HttpStatus.BAD_REQUEST;
+            // resultMap에 실패 메시지 추가
+            resultMap.put("message", "fail");
+        }
+        return new ResponseEntity<>(resultMap, status);
+    }
+
+    @ApiOperation(value = "챌린지 삭제", notes = "챌린지를 삭제합니다.")
+    @DeleteMapping("/delete/{id}")
+    public ResponseEntity<Map<String, Object>> deleteChallenge(@PathVariable Long id,
+                                                               @RequestHeader("Authorization") String jwt) {
+        log.info("챌린지 삭제");
+        HttpStatus status;
+        Map<String, Object> resultMap = new HashMap<String, Object>();
+
+        try {
+            jwt = jwt.replace("Bearer ", "");
+
+            Long memberId = authTokensGenerator.extractMemberId(jwt.replace("Bearer ", ""));
+            challengeService.deleteChallenge(id, memberId);
+            resultMap.put("message", "success");
+            return new ResponseEntity<Map<String, Object>>(resultMap, HttpStatus.OK);
+        } catch (Exception e) {
+            //예외 발생시 예외 출력 및 BAD_REQUEST
+            e.printStackTrace();
+            status = HttpStatus.BAD_REQUEST;
+            // resultMap에 실패 메시지 추가
+            resultMap.put("message", "fail");
+        }
+        return new ResponseEntity<>(resultMap, status);
+    }
+    /*
 
     @ApiOperation(value = "챌린지 상세 조회", notes = "챌린지을 상세 조회합니다")
     @GetMapping("/{id}")
@@ -124,5 +211,5 @@ public class ChallengeController {
     }
 
     */
-    }
+}
 

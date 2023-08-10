@@ -46,12 +46,11 @@ public class FeedController {
     // POST 방식으로 "/create" URL에 매핑
     @PostMapping("/create/{challengeId}")
     // 메서드의 반환 타입은 ResponseEntity 객체이며, 요청 본문에서 Feed 데이터를 파싱하고 인증 헤더를 사용합니다.
-    public ResponseEntity<Map<String, Object>> createFeed(
-            @PathVariable Long challengeId,
-            @RequestBody Feed feed,
-            // JWT 토큰을 헤더에서 인증 정보로 사용
-            @ApiParam(value = "Bearer ${jwt token} 형식으로 전송")
-            @RequestHeader("Authorization") String jwt) {
+    public ResponseEntity<Map<String, Object>> createFeed(@PathVariable Long challengeId,
+                                                          @RequestBody Feed feed,
+                                                          // JWT 토큰을 헤더에서 인증 정보로 사용
+                                                          @ApiParam(value = "Bearer ${jwt token} 형식으로 전송")
+                                                          @RequestHeader("Authorization") String jwt) {
         // 결과를 반환할 Map 객체 생성
         Map<String, Object> resultMap = new HashMap<>();
         // HTTP 상태 기본값 설정
@@ -85,7 +84,6 @@ public class FeedController {
             // resultMap에 실패 메시지를 추가
             resultMap.put("message", "fail");
         }
-
         // 최종 결과와 설정된 HTTP 상태를 반환하는 ResponseEntity 객체를 반환
         return new ResponseEntity<>(resultMap, status);
     }
@@ -165,7 +163,7 @@ public class FeedController {
     }
 
     @ApiOperation(value = "피드 수정", notes = "피드를 수정합니다.")
-    @PutMapping("/{feedId}")
+    @PutMapping("/update/{feedId}")
     public ResponseEntity<Map<String, Object>> updateFeed(@RequestHeader("Authorization") String jwt,
                                                           @PathVariable Long feedId,
                                                           @RequestBody Feed updateFeed) {
@@ -174,7 +172,8 @@ public class FeedController {
         Map<String, Object> resultMap = new HashMap<String, Object>();
 
         try {
-            feedService.updateFeed(feedId, updateFeed);
+            Long memberId = authTokensGenerator.extractMemberId(jwt.replace("Bearer ", ""));
+            feedService.updateFeed(feedId, updateFeed, memberId);
             resultMap.put("message", "success");
             return new ResponseEntity<Map<String, Object>>(resultMap, HttpStatus.OK);
         } catch (Exception e) {
@@ -190,7 +189,7 @@ public class FeedController {
     }
 
     @ApiOperation(value = "피드 삭제", notes = "특정 피드를 삭제합니다.")
-    @DeleteMapping("/{feedId}")
+    @DeleteMapping("/delete/{feedId}")
     public ResponseEntity<Map<String, Object>> deleteFeed(@RequestHeader("Authorization") String jwt,
                                                           @PathVariable Long feedId) {
         log.info("피드 삭제");
@@ -198,7 +197,8 @@ public class FeedController {
         Map<String, Object> resultMap = new HashMap<String, Object>();
 
         try {
-            feedService.deleteFeed(feedId);
+            Long memberId = authTokensGenerator.extractMemberId(jwt.replace("Bearer ", ""));
+            feedService.deleteFeed(feedId, memberId);
             resultMap.put("message", "success");
             return new ResponseEntity<Map<String, Object>>(resultMap, HttpStatus.OK);
 
