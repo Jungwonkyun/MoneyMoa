@@ -1,98 +1,109 @@
 <template>
   <v-container>
-    <v-row>
-      <v-col>
-        <h1>회원정보 변경</h1>
-      </v-col>
-    </v-row>
+    <v-sheet
+      max-width="700"
+      class="mx-auto mt-8 rounded-lg px-10 py-5"
+      elevation="3"
+      min-height="450"
+      width="100%"
+    >
+      <v-row>
+        <v-col>
+          <h1>회원정보 변경</h1>
+        </v-col>
+      </v-row>
 
-    <v-row>
-      <v-col>
-        <v-avatar size="150" class="elevation-10">
-          <v-img :src="userImg" width="100" v-if="!isChanged"></v-img>
-          <v-img :src="previewURL" width="100" v-if="isChanged"></v-img>
-        </v-avatar>
-        <v-file-input
-          @change="previewChangeImg"
-          label="이미지를 선택해 주세요."
-          accept="image/*"
-          v-model="UpoaldImg"
-        ></v-file-input>
-      </v-col>
-      <v-btn @click="upload">test</v-btn>
-    </v-row>
+      <v-row>
+        <v-col>
+          <v-avatar size="150" class="elevation-10">
+            <v-img :src="userImg" width="100" v-if="!isChanged"></v-img>
+            <v-img :src="previewURL" width="100" v-if="isChanged"></v-img>
+          </v-avatar>
+          <v-file-input
+            @change="previewChangeImg"
+            label="이미지를 선택해 주세요."
+            accept="image/*"
+            v-model="UpoaldImg"
+            class="my-10"
+          ></v-file-input>
+        </v-col>
+        <v-btn @click="upload">test</v-btn>
+      </v-row>
 
-    <v-row>
-      <v-col>
-        <p>닉네임</p>
-        <v-text-field
-          clearable
-          variant="underlined"
-          dense
-          v-model="nickname"
-          :rules="rules"
-          :maxlength="15"
-          counter
-        ></v-text-field>
-      </v-col>
-    </v-row>
+      <v-row>
+        <v-col>
+          <h3 class="title-left">닉네임</h3>
+          <v-text-field
+            clearable
+            variant="underlined"
+            dense
+            v-model="nickname"
+            :rules="rules"
+            :maxlength="15"
+            counter
+          ></v-text-field>
+        </v-col>
+      </v-row>
 
-    <v-row>
-      <v-col>
-        <p>자기소개</p>
-        <v-textarea
-          no-resize
-          variant="outlined"
-          dense
-          v-model="introduce"
-          :maxlength="150"
-          counter
-        ></v-textarea>
-      </v-col>
-    </v-row>
+      <v-row>
+        <v-col>
+          <h3 class="title-left">자기소개</h3>
+          <v-textarea
+            no-resize
+            variant="outlined"
+            dense
+            v-model="introduce"
+            :maxlength="150"
+            counter
+          ></v-textarea>
+        </v-col>
+      </v-row>
 
-    <v-row>
-      <v-col> </v-col>
-    </v-row>
-    <v-row v-if="isGeneral">
-      <v-col>
-        <p>비밀번호</p>
-        <v-text-field
-          clearable
-          label="비밀번호"
-          variant="underlined"
-          dense
-          v-model="changedPassword1"
-          :type="visible ? 'text' : 'password'"
-          :append-inner-icon="visible ? 'mdi-eye-off' : 'mdi-eye'"
-          @click:append-inner="visible = !visible"
-          :rules="PassWordrules"
-        ></v-text-field>
+      <v-row>
+        <v-col> </v-col>
+      </v-row>
+      <v-row v-if="isGeneral">
+        <v-col>
+          <h3 class="title-left">비밀번호</h3>
+          <v-text-field
+            clearable
+            label="비밀번호"
+            variant="underlined"
+            dense
+            v-model="changedPassword1"
+            :type="visible ? 'text' : 'password'"
+            :append-inner-icon="visible ? 'mdi-eye-off' : 'mdi-eye'"
+            @click:append-inner="visible = !visible"
+            :rules="PassWordrules"
+          ></v-text-field>
 
-        <p>비밀번호 확인</p>
-        <v-text-field
-          clearable
-          label="비밀번호 확인"
-          variant="underlined"
-          dense
-          v-model="changedPassword2"
-          :type="visible ? 'text' : 'password'"
-          :append-inner-icon="visible ? 'mdi-eye-off' : 'mdi-eye'"
-          @click:append-inner="visible = !visible"
-          :rules="PassCheckWordrules"
-        ></v-text-field>
-      </v-col>
-    </v-row>
-    <v-row>
-      <v-col>
-        <v-btn @click="quitService">회원탈퇴</v-btn>
-      </v-col>
-      <v-col>
-        <!-- 개발땐 홈으로 돌아가게 -->
-        <router-link :to="{ name: 'home' }"><v-btn>취소</v-btn></router-link>
-        <v-btn @click="onUpdate">수정</v-btn>
-      </v-col>
-    </v-row>
+          <h3 class="title-left">비밀번호 확인</h3>
+          <v-text-field
+            clearable
+            label="비밀번호 확인"
+            variant="underlined"
+            dense
+            v-model="changedPassword2"
+            :type="visible ? 'text' : 'password'"
+            :append-inner-icon="visible ? 'mdi-eye-off' : 'mdi-eye'"
+            @click:append-inner="visible = !visible"
+            :rules="PassCheckWordrules"
+          ></v-text-field>
+        </v-col>
+      </v-row>
+      <v-row>
+        <v-col class="text-left">
+          <v-btn @click="quitService" class="Btns">회원탈퇴</v-btn>
+        </v-col>
+        <v-col class="text-right mb-5">
+          <!-- 개발땐 홈으로 돌아가게 -->
+          <router-link :to="{ name: 'home' }"
+            ><v-btn class="Btns mr-5" color="red">취소</v-btn></router-link
+          >
+          <v-btn class="Btns" @click="onUpdate">수정</v-btn>
+        </v-col>
+      </v-row>
+    </v-sheet>
   </v-container>
 </template>
 <script setup>
@@ -316,8 +327,16 @@ async function getMember() {
   }
 }
 </script>
-<style scoped>
+<style scoped lang="scss">
 textarea {
   resize: none;
+}
+.Btns {
+  color: white;
+  background-color: $primary-color;
+  border-radius: 20px;
+}
+.title-left {
+  text-align: left;
 }
 </style>

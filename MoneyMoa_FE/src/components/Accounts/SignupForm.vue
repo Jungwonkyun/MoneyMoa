@@ -54,13 +54,7 @@
         </v-col>
         <!-- 버튼 차지cols 변경해야함 -->
         <v-col cols="2" class="text-center">
-          <v-btn
-            @click.prevent="checkAccess"
-            variant="flat"
-            class="text-none text-white"
-            color="blue-darken-4"
-            >인증하기</v-btn
-          >
+          <v-btn @click.prevent="checkAccess" variant="flat" class="Athentic-Btn">인증하기</v-btn>
         </v-col>
       </v-row>
 

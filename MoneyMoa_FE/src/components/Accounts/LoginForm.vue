@@ -9,7 +9,7 @@
     >
       <h1 class="mb-15 mt-10">이메일로 로그인</h1>
       <p class="text-left my-5">
-        아직 회원이 아니신가요?
+        <span class="bold"> 아직 회원이 아니신가요? </span>
         <router-link class="router-link-style" :to="{ name: 'signupform' }"
           >회원가입하러 가기</router-link
         >
@@ -48,7 +48,7 @@
       <v-row>
         <v-col class="d-flex align-center">
           <router-link class="router-link-style" :to="{ name: 'findpassword' }"
-            >비밀번호 찾기</router-link
+            ><span class="underline">비밀번호 찾기</span></router-link
           >
         </v-col>
         <v-col class="text-right">
@@ -193,5 +193,12 @@ async function naverLogin() {
 }
 .social-Text {
   font-size: medium;
+}
+.bold {
+  font-weight: bold;
+}
+.underline {
+  text-decoration-line: underline;
+  font-weight: 500;
 }
 </style>
