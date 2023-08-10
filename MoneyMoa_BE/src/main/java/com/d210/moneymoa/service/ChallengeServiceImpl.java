@@ -10,6 +10,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
+import java.util.List;
+import java.util.NoSuchElementException;
 
 @Service
 @Slf4j
@@ -49,6 +51,49 @@ public class ChallengeServiceImpl implements ChallengeService {
         challengeRepository.save(challenge);
         return challenge;
         }
+
+    @Override //멤버의 챌린지 검색
+    public List<Challenge> getMemberChallenges(Long memberId) {
+        return challengeRepository.findAllByMemberId(memberId);
+    }
+
+    @Override
+    public Challenge getChallenge(Long id) {
+        return challengeRepository.findById(id)
+                .orElseThrow(() -> new NoSuchElementException("챌린지를 찾을 수 없습니다."));
+    }
+
+    //챌린지 수정
+    @Override
+    public void updateChallenge(Long id, Challenge challengeInfo, Long memberId) throws IllegalAccessException {
+        Challenge challengeToUpdate = challengeRepository.findById(id)
+                .orElseThrow(() -> new NoSuchElementException("챌린지를 찾을 수 없습니다."));
+
+        if (!challengeToUpdate.getMemberId().equals(memberId)) {
+            throw new IllegalAccessException("수정 권한이 없습니다.");
+        }
+        //챌린지 업데이트 정보
+        challengeToUpdate.setTitle(challengeInfo.getTitle());
+        challengeToUpdate.setContent(challengeInfo.getContent());
+        challengeToUpdate.setGoalAmount(challengeInfo.getGoalAmount());
+        challengeToUpdate.setPeriod(challengeInfo.getPeriod());
+
+        //변경된 정보 저장
+        challengeRepository.save(challengeToUpdate);
+    }
+
+    @Override
+    public void deleteChallenge(Long id, Long memberId) throws IllegalAccessException {
+        Challenge challengeToDelete = challengeRepository.findById(id)
+                .orElseThrow(() -> new NoSuchElementException("챌린지를 찾을 수 없습니다."));
+
+        if (!challengeToDelete.getMemberId().equals(memberId)) {
+            throw new IllegalAccessException("삭제 권한이 없습니다.");
+        }
+        challengeRepository.deleteById(id);
+    }
+
+
 
     /*
 

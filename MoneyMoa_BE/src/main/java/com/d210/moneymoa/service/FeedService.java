@@ -17,9 +17,11 @@ public interface FeedService {
 
     Feed getFeedDetail(Long feedId);
 
-    void updateFeed(Long feedId, Feed updateFeed);
+    void updateFeed(Long feedId, Feed updateFeed, Long memberId) throws IllegalAccessException;
 
-    void deleteFeed(Long feedId);
+    void deleteFeed(Long feedId, Long memberId) throws IllegalAccessException;
+
+
 
 
     /*

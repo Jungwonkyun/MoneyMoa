@@ -10,6 +10,8 @@ public interface ChallengeRepository extends JpaRepository<Challenge, Long> {
 
     List<Challenge> findByMemberIdAndTitle(Long memberId, String title);
 
+    List<Challenge> findAllByMemberId(Long memberId);
+
 //    Challenge getChallenge(Long challengeId);
 
 //    void updateChallenge(Long id, Challenge challenge);
