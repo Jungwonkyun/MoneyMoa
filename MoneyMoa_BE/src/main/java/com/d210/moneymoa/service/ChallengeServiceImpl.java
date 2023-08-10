@@ -31,8 +31,6 @@ public class ChallengeServiceImpl implements ChallengeService {
         
         Challenge challenge = Challenge.builder()
                 .title(inputChallenge.getTitle())
-                .memberId(memberId)
-                .nickname(nickName)
                 .content(inputChallenge.getContent())
                 .period(inputChallenge.getPeriod())
                 .goalAmount(inputChallenge.getGoalAmount())
