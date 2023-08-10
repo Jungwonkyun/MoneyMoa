@@ -155,7 +155,7 @@ function connect(room, sender) {
       })
       ws.send(
         '/pub/api/chat/message',
-        JSON.stringify({ type: 'ENTER', roomId: room.roomId, sender: sender, senderId: myId })
+        JSON.stringify({ type: 'ENTER', roomId: room.roomId, sender: sender, memberId: myId })
       )
     },
     function (error) {
@@ -184,7 +184,7 @@ function sendMessage(room, sender) {
       roomId: room.roomId,
       sender: sender,
       message: inputMsg.value,
-      senderId: myId
+      memberId: myId
     })
   )
   inputMsg.value = ''
