@@ -35,7 +35,7 @@ public class ChatMessageDto implements Serializable {
         this.sender = sender;
         this.senderId = senderId;
         this.message = message;
-        this.createdTime = LocalDateTime.now(); // 현재 시간 설정
+        this.createdTime = LocalDateTime.now(ZoneId.of("Asia/Seoul")) // 현재 시간 설정
     }
 
     @Override
