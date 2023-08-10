@@ -7,7 +7,17 @@
         </template>
         <v-toolbar-title class="text-h6"> {{ room.name }} </v-toolbar-title>
         <template v-slot:append>
-          <v-btn icon="mdi-dots-vertical"></v-btn>
+          <v-btn id="chatmenu-activator" icon="mdi-dots-vertical" />
+          <v-menu activator="#chatmenu-activator">
+            <v-list>
+              <v-list-item @click="showRoomInfo()">
+                <v-list-item-title>채팅방 정보</v-list-item-title>
+              </v-list-item>
+              <v-list-item @click="quit(room.roomId)">
+                <v-list-item-title>채팅방 나가기</v-list-item-title>
+              </v-list-item>
+            </v-list>
+          </v-menu>
         </template>
       </v-toolbar>
       <v-card-text class="chatmessage-area overflow-auto">
@@ -31,7 +41,7 @@
 </template>
 <script setup>
 import { ref, watch, nextTick } from 'vue'
-import { getRoomDetail } from '@/api/chat'
+import { getRoomDetail, getRoomMembers, quitRoom } from '@/api/chat'
 import { useRoute, useRouter } from 'vue-router'
 import Stomp from 'webstomp-client'
 import SockJS from 'sockjs-client'
@@ -50,13 +60,20 @@ const room = ref({})
 const messages = ref([])
 const inputMsg = ref('')
 const nickName = cookies.get('member').nickname
-console.log(nickName + ' is my nickname')
+const roomMembers = ref([])
 
 //room이 가진 것? roomId, name(방제), chatMsg배열
 getRoomDetail(route.params.roomId).then((response) => {
-  room.value = response.data['chatroomInfo']
-  console.log(room.value)
+  //방정보 가져오고
+  room.value = response.data.chatroomInfo
+  // console.log(room.value)
+  //기존메시지 가져오고
   messages.value = response.data.chatMessages.filter((msg) => msg.message !== null)
+  //참여자 가져오고
+  getRoomMembers(room.value.roomId).then((response) => {
+    roomMembers.value = response.data.MemberwhoSubThisChatroom
+  })
+  //소켓연결합니다
   connect(room.value, nickName)
 })
 
@@ -69,6 +86,16 @@ function goBack() {
       name: 'chatrooms'
     })
   }
+}
+
+function showRoomInfo() {}
+
+function quit(roomId) {
+  quitRoom(roomId).then((response) => {
+    router.push({
+      name: 'chatrooms'
+    })
+  })
 }
 
 function recvMessage(recv) {
