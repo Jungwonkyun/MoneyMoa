@@ -45,7 +45,10 @@ public class MemberServiceImpl implements MemberService {
 
     //로그인시 유저이메일을 가져와서 DB에 회원정보가 있는지 확인
     public Member findMemberByEmail(String email) {
+        log.info("이메일로 멤버 찾기 시이이이작");
         Optional<Member> oMember = memberRepository.findByEmail(email);
+        log.info(oMember.orElse(null));
+        
         return oMember.orElse(null);
     }
 
