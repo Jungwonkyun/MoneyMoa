@@ -190,6 +190,7 @@ public class MemberController {
     public ResponseEntity<?> emailAuth(@ApiParam(value = "유저 이메일")@RequestBody String email)throws Exception{
         Map<String,Object> resultMap = new HashMap<>();
         HttpStatus status;
+        String message = "";
 
         log.info(email);
 
