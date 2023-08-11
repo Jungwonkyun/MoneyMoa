@@ -47,7 +47,7 @@ public class MemberServiceImpl implements MemberService {
     public Member findMemberByEmail(String email) {
         log.info("이메일로 멤버 찾기 시이이이작");
         Optional<Member> oMember = memberRepository.findByEmail(email);
-        log.info(oMember.orElse(null));
+        log.info(oMember.orElse(null).toString());
         
         return oMember.orElse(null);
     }
