@@ -12,3 +12,19 @@
 // .row {
 //     color: $color-main; // 변수 사용
 // }
+a {
+  text-decoration: none;
+  color: inherit;
+}
+#header {
+  background-color: #ffffff;
+  .v-btn__content {
+    color: $primary-color;
+    font-size: 16px;
+  }
+  .header-title {
+    color: $primary-color;
+    font-size: 24px;
+    font-weight: bold;
+  }
+}

@@ -77,7 +77,7 @@ const router = createRouter({
         {
           path: 'cma/:id',
           name: 'cmaDetail',
-          component: () => import('../components/Products/DepositDetail.vue')
+          component: () => import('../components/Products/CMADetail.vue')
         }
       ]
     },
