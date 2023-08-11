@@ -47,9 +47,9 @@ async function getSaving(productCode) {
     console.log(error)
   }
 }
-async function getCMA(productCode) {
+async function getCMA(id) {
   try {
-    const response = await api.get(`/cma/${productCode}`)
+    const response = await api.get(`/cma/${id}`)
     return response
   } catch (error) {
     console.log(error)

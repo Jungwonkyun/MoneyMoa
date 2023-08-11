@@ -11,6 +11,7 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -19,7 +20,7 @@ import org.springframework.web.bind.annotation.*;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
-
+@Slf4j
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/member")
@@ -157,15 +158,20 @@ public class MemberController {
     public ResponseEntity<?> findPassword(@ApiParam(value = "유저 이메일")@RequestBody String email)throws Exception{
         Map<String,Object> resultMap = new HashMap<>();
         HttpStatus status;
-
+        email = email.replaceAll("\"","");
+        log.info(email);
+        
         try {
             Member member = memberService.findMemberByEmail(email);
+            log.info("member는 정상적으로 가져옴: " +  member.toString());
             String authCode = memberService.sendEmail2(email);
+            log.info("이메일 인증까지 받아서 코드 보냄: " +  authCode);
             member.setPassword(authCode);
 
 //            String encPw = encoder.encode(authCode);
 //            member.setPassword(encPw);
             memberRepository.save(member);
+            log.info("객체 저장 완료!!");
 
             resultMap.put("message", "success");
             resultMap.put("member", member);
@@ -185,11 +191,29 @@ public class MemberController {
     public ResponseEntity<?> emailAuth(@ApiParam(value = "유저 이메일")@RequestBody String email)throws Exception{
         Map<String,Object> resultMap = new HashMap<>();
         HttpStatus status;
+        String message = "";
+
+        email = email.replaceAll("\"","");
+        log.info(email);
+
+        email = email.replaceAll("\"","");
 
         try {
-            String authCode = memberService.sendEmail(email);
+            message = "success";
 
-            resultMap.put("message", "success");
+            
+            if(memberService.findMemberByEmail(email)!= null){
+                message = "already in Database";
+                resultMap.put("message", message);
+                return new ResponseEntity<Map<String,Object>>(resultMap, HttpStatus.OK);
+            }
+
+            String authCode = memberService.sendEmail(email);
+            if(memberService.findMemberByEmail(email)!= null){
+                message = "already in Database";
+            }
+
+            resultMap.put("message", message);
             resultMap.put("emailAuth", authCode);
             status = HttpStatus.OK;
 

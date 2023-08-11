@@ -57,7 +57,8 @@ import {
 } from '@/api/product'
 const props = defineProps({
   product: Object,
-  spcls: Array
+  spcls: Array,
+  retRate: Number
 })
 const cmaType = ref('deposit')
 const store = useProductStore()

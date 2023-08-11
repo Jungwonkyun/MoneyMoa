@@ -57,6 +57,12 @@ public class AuthController {
     }
 
 
+    @ApiOperation(value = "카카오 연결끊기 ")
+    @GetMapping("/api/auth/leave")
+    public ResponseEntity<?> unconnectKakao() {
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
 
     @ApiOperation(value = "네이버 소셜 로그인 ", notes = "네이버 로그인을 한 후 [redirect URL]?code= + 뒤에 생기는 네이버에서 보내주는 Token과" +
             "state 부분을 가져와서 보내준다")

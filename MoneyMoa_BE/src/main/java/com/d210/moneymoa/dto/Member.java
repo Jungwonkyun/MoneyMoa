@@ -85,6 +85,16 @@ public class Member implements Serializable {
     @JsonIgnore
     private List<CmaComment> cmaComments;
 
+    @OneToMany(mappedBy = "member", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JsonIgnore
+    private List<Challenge> challenges;
+
+
+    @OneToMany(mappedBy = "member", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JsonIgnore
+    private List<Feed> feeds;
+
+
     //OAuth로그인 버전
     @Builder
     public Member(String email, String name, Role role, OAuthProvider oAuthProvider, String password, String nickname) {

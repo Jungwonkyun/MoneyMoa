@@ -1,5 +1,5 @@
 <template>
-  <v-container>
+  <v-container class="px-10">
     <v-card :elevation="24" justify="center" class="rounded-xl">
       <v-row>
         <v-col cols="12">
