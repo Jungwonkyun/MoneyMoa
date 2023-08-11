@@ -46,11 +46,7 @@ public class MemberServiceImpl implements MemberService {
     //로그인시 유저이메일을 가져와서 DB에 회원정보가 있는지 확인
     public Member findMemberByEmail(String email) {
         Optional<Member> oMember = memberRepository.findByEmail(email);
-
-        if(oMember.isEmpty()){
-            return null;
-        }
-        return oMember.get();
+        return oMember.orElse(null);
     }
 
     public AuthTokens login(Member member) {
