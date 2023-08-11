@@ -154,8 +154,22 @@ public class ChatRoomServiceImpl implements ChatRoomService {
         redisMessageListener.addMessageListener(redisSubscriber, topic);
         topics.put(roomId, topic);
 
+
+        //이미 구독하고 있는지 체크
+        Optional<MemberChatroomSubInfo> optionalMember = memberChatroomSubInfoRepository.findByMemberIdAndRoomId(memberId,roomId);
+
+        if (optionalMember.isPresent()) {
+            log.info("사용자 {}는 이미 roomId {}에 구독 중입니다.", memberId, roomId);
+            return null;
+        }
+        
+        log.info("사용자 {}는 roomId {}에 처음 입장합니다.", memberId, roomId);
+        
         String nickName = memberRepository.findById(memberId).get().getNickname();
 
+        // MemberChatroomSubInfo findMember = memberChatroomSubInfoRepository.findByMemberIdAndRoomId(memberId,roomId).orElse(null);
+        // if(findMember!=null)return null;
+        
         //구독 정보 DB에 저장
         MemberChatroomSubInfo memberChatroomSubInfo = MemberChatroomSubInfo.builder()
                 .memberId(memberId)
@@ -213,6 +227,7 @@ public class ChatRoomServiceImpl implements ChatRoomService {
                 .message(chatMessage.getMessage())
                 .roomId(chatMessage.getRoomId())
                 .sender(chatMessage.getSender())
+                .senderId(chatMessage.getMemberId())
                 .type(chatMessage.getType())
                 .build();
 

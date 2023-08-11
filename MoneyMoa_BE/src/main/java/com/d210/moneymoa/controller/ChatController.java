@@ -4,6 +4,7 @@ package com.d210.moneymoa.controller;
 import com.d210.moneymoa.domain.oauth.AuthTokensGenerator;
 import com.d210.moneymoa.domain.redis.RedisPublisher;
 import com.d210.moneymoa.dto.ChatMessage;
+import com.d210.moneymoa.dto.MemberChatroomSubInfo;
 import com.d210.moneymoa.repository.MemberRepository;
 import com.d210.moneymoa.service.ChatRoomService;
 import lombok.RequiredArgsConstructor;
@@ -12,7 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 //import org.springframework.web.bind.annotation.Controller;
 import org.springframework.stereotype.Controller;
-// TODO: 2023-08-04 REST Controller로 바꿔야함
+
 @Slf4j
 @RequiredArgsConstructor
 @Controller
@@ -20,13 +21,12 @@ public class ChatController {
 
     private final RedisPublisher redisPublisher;
 
-    private final ChatRoomService chatRoomService;
+    @Autowired
+    ChatRoomService chatRoomService;
 
     @Autowired
     AuthTokensGenerator authTokensGenerator;
 
-    @Autowired
-    MemberRepository memberRepository;
 
     /**
      * websocket "/pub/chat/message"로 들어오는 메시징을 처리한다.
@@ -34,15 +34,20 @@ public class ChatController {
 
     @MessageMapping("/api/chat/message")
     public void message(ChatMessage message) {
-        if (ChatMessage.MessageType.JOIN.equals(message.getType())) {
-            //chatRoomService.enterChatRoom(message.getRoomId());
-//            chatRoomRepository.increaseUserCount(message.getRoomId());
+
+        if(chatRoomService.enterChatRoom(message.getMemberId(), message.getRoomId()) != null){
+            message.setType(ChatMessage.MessageType.JOIN);
             message.setMessage(message.getSender() + "님이 입장하셨습니다.");
-        }else if (ChatMessage.MessageType.QUIT.equals(message.getType())) {
+            log.info("얘는 처음 들어오는 사람");
+        }
+
+        if (ChatMessage.MessageType.QUIT.equals(message.getType())) {
 //            chatRoomRepository.decreaseUserCount(message.getRoomId());  // User count 감소
             message.setMessage(message.getSender() + "님이 퇴장하셨습니다.");
         }
 
+        log.info("message: "+ message);
+        
         //채팅 내역 저장
         chatRoomService.saveChatMessage(message.getRoomId(), message);
 

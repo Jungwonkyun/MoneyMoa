@@ -14,6 +14,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.util.Base64;
 
 @Service
 @Slf4j
@@ -64,4 +65,5 @@ public class StorageServiceImpl implements StorageService {
         }
         return convertedFile;
     }
+
 }

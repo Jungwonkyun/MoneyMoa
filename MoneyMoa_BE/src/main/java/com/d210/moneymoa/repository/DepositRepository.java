@@ -9,4 +9,6 @@ import java.util.Optional;
 @Repository
 public interface DepositRepository extends JpaRepository<Deposit, Long> {
     Optional<Deposit> findByProductCode(String productCode);
+
+    Optional<Deposit> findByBankCode(String bankCode);
 }

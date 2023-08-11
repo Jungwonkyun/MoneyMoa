@@ -45,7 +45,9 @@ public class MemberServiceImpl implements MemberService {
 
     //로그인시 유저이메일을 가져와서 DB에 회원정보가 있는지 확인
     public Member findMemberByEmail(String email) {
+        log.info("이메일로 멤버 찾기 시이이이작");
         Optional<Member> oMember = memberRepository.findByEmail(email);
+        
         return oMember.orElse(null);
     }
 
@@ -161,6 +163,7 @@ public class MemberServiceImpl implements MemberService {
 
 
     public MimeMessage createEmailForm(String email) throws UnsupportedEncodingException, MessagingException {
+
         // 코드를 생성합니다.
         authNum = createCode();
         String setFrom = "wjddnjsrbs97@gmail.com";	// 보내는 사람
