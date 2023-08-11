@@ -195,7 +195,7 @@ public class MemberController {
         log.info(email);
 
         try {
-            message = "success";
+            message = "ssssssss";
 
             String authCode = memberService.sendEmail(email);
             if(memberService.findMemberByEmail(email)!= null){
