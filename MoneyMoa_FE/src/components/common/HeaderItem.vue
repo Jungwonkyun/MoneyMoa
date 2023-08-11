@@ -3,10 +3,10 @@
     <v-toolbar-title class="header-title"
       ><router-link to="/">MoneyMoa</router-link></v-toolbar-title
     >
-    <router-link to="/products"><v-btn>내 돈 굴리기</v-btn></router-link>
-    <router-link to="/challenge"><v-btn>챌린지</v-btn></router-link>
-    <router-link to="/chat"><v-btn>오픈채팅</v-btn></router-link>
-    <router-link to="/dictionary"><v-btn>금융사전</v-btn></router-link>
+    <router-link to="/products"><v-btn class="mx-8">내 돈 굴리기</v-btn></router-link>
+    <router-link to="/challenge"><v-btn class="mx-8">챌린지</v-btn></router-link>
+    <router-link to="/chat"><v-btn class="mx-8">오픈채팅</v-btn></router-link>
+    <router-link to="/dictionary"><v-btn class="mx-8">금융사전</v-btn></router-link>
     <router-link to="/admin" v-if="isAdmin"><v-btn>관리자 페이지</v-btn></router-link>
     <v-spacer></v-spacer>
     <router-link to="/"

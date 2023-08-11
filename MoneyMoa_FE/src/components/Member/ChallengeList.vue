@@ -1,6 +1,6 @@
 <template>
-  <v-container>
-    <v-card elevation="24" class="rounded-xl">
+  <v-container class="px-10">
+    <v-card elevation="24" class="rounded-xl mx-auto" max-width="80%">
       <v-carousel cycle hide-delimiters show-arrows="hover" height="100%" width="100%">
         <ChallengeCard />
       </v-carousel>
