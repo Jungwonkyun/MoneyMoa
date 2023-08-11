@@ -190,6 +190,8 @@ public class MemberController {
         Map<String,Object> resultMap = new HashMap<>();
         HttpStatus status;
 
+        log.info(email);
+
         try {
             String authCode = memberService.sendEmail(email);
 
