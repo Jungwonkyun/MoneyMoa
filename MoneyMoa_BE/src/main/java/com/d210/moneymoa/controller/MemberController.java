@@ -201,7 +201,7 @@ public class MemberController {
             if(memberService.findMemberByEmail(email)!= null){
                 message = "already in Database";
                 resultMap.put("message", message);
-                return new ResponseEntity<Map<String,Object>>(resultMap, status);
+                return new ResponseEntity<Map<String,Object>>(resultMap, HttpStatus.OK);
             }
 
             resultMap.put("message", message);
