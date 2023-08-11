@@ -200,6 +200,8 @@ public class MemberController {
             String authCode = memberService.sendEmail(email);
             if(memberService.findMemberByEmail(email)!= null){
                 message = "already in Database";
+                resultMap.put("message", message);
+                return new ResponseEntity<Map<String,Object>>(resultMap, status);
             }
 
             resultMap.put("message", message);
