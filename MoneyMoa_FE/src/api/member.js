@@ -32,7 +32,7 @@ async function test(token) {
 // 회원가입시 유저 이메일 인증
 async function postEmailauth(email) {
   try {
-    const res = await api.post(`/member/emailauth`, email)
+    const res = await api.post(`/member/emailauth`, { email: email })
     return res.data
   } catch (err) {
     console.log(err)
