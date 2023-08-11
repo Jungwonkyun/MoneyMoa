@@ -76,10 +76,16 @@ async function searchFeed(searchWord) {
 // 피드 생성 API
 async function createFeed(feedData, challengeId) {
   try {
+    const formData = new FormData()
+    formData.append('feed', new Blob([JSON.stringify(feedData)], { type: 'application/json' }))
+    // formData.append('files', feedData.file) // 'file'은 서버에서 사용하는 파일 필드 이름
+    // formData.append('otherField', feedData.otherField)
+    const feed = JSON.stringify(feedData)
     const headers = {
-      Authorization: `Bearer ${token}`
+      Authorization: `Bearer ${token}`,
+      'Content-Type': 'multipart/form-data'
     }
-    const res = await api.post(`/feed/create/${challengeId}`, JSON.stringify(feedData), { headers })
+    const res = await api.post(`/feed/create/${challengeId}`, feedData, { headers })
     return res
   } catch (err) {
     console.log(err)
