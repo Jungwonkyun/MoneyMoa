@@ -194,9 +194,14 @@ public class MemberController {
         log.info(email);
 
         try {
-            String authCode = memberService.sendEmail(email);
+            message = "success";
 
-            resultMap.put("message", "success");
+            String authCode = memberService.sendEmail(email);
+            if(memberService.findMemberByEmail(email)!= null){
+                message = "already in Database";
+            }
+
+            resultMap.put("message", message);
             resultMap.put("emailAuth", authCode);
             status = HttpStatus.OK;
 
