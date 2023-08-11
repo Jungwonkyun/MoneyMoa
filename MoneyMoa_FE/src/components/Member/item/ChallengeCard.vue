@@ -1,117 +1,125 @@
 <template>
-  <v-card class="mx-auto" max-width="344">
-    <v-img
-      src="https://cdn.vuetifyjs.com/images/cards/sunshine.jpg"
-      class="align-end text-white"
-      height="200"
-      cover
-    >
-      <v-card-title> {{ challenge.title }} </v-card-title>
-    </v-img>
+  <v-carousel-item class="mx-auto" v-for="(challenge, index) in challenges" :key="index">
+    <v-card>
+      <v-img
+        src="https://cdn.vuetifyjs.com/images/cards/sunshine.jpg"
+        class="align-end text-white"
+        cover
+      >
+        <v-card-title> {{ challenge.title }} </v-card-title>
+      </v-img>
 
-    <v-card-actions>
-      <v-btn color="orange-lighten-2" variant="text" @click="show = !show"> 상세보기 </v-btn>
+      <v-card-actions>
+        <v-btn color="orange-lighten-2" variant="text" @click="show = !show"> 상세보기 </v-btn>
 
-      <v-spacer></v-spacer>
-      <v-dialog v-model="dialog" width="auto">
-        <template v-slot:activator="{ props }">
-          <v-btn icon="mdi-pencil" v-bind="props"></v-btn>
-        </template>
-        <v-card>
-          <v-card-title class="text-center mt-4">
-            <span class="text-h5">챌린지 수정하기</span>
-          </v-card-title>
-          <v-card-text>
-            <v-container>
-              <v-row>
-                <v-col cols="12">
-                  <v-text-field
-                    v-model="title"
-                    label="챌린지 이름을 설정하세요"
-                    required
-                    variant="solo-filled"
-                  ></v-text-field>
-                </v-col>
-                <v-col cols="12">
-                  <v-text-field
-                    v-model="goalAmount"
-                    label="목표 금액을 입력하세요"
-                    required
-                    variant="solo-filled"
-                  ></v-text-field>
-                </v-col>
-                <v-col cols="12">
-                  <v-textarea
-                    v-model="content"
-                    clearable
-                    label="내용을 입력하세요"
-                    variant="solo-filled"
-                  ></v-textarea>
-                </v-col>
-                <v-col cols="12">
-                  <v-text-field
-                    v-model="period"
-                    label="기간을 입력하세요"
-                    variant="solo-filled"
-                  ></v-text-field>
-                </v-col>
-                <v-col cols="12">
-                  <!-- 파일 업로드를 위한 input 요소 추가 -->
-                  <v-file-input
-                    prepend-icon="mdi-camera"
-                    label="이미지를 선택하세요"
-                    variant="solo-filled"
-                    @change="handleFileUpload"
-                    class="input-btn"
-                  ></v-file-input>
-                </v-col>
-                <v-col cols="12">
-                  <!-- 사진 미리보기를 위한 img 요소 추가 -->
-                  <img
-                    v-if="previewImageUrl"
-                    :src="previewImageUrl"
-                    alt="Uploaded Image"
-                    style="max-width: 100%; max-height: 400px; margin: 20px auto; display: block"
-                  />
-                </v-col>
-              </v-row>
-            </v-container>
-          </v-card-text>
-          <v-card-actions>
-            <v-spacer></v-spacer>
-            <v-btn color="blue-darken-1" variant="text" @click="dialog = false"> 닫기 </v-btn>
-            <v-btn
-              color="blue-darken-1"
-              variant="text"
-              @click=";(dialog = false), updateChallenge()"
-            >
-              만들기
-            </v-btn>
-          </v-card-actions>
-        </v-card>
-      </v-dialog>
-      <v-btn icon="mdi-delete" @click="deleteChallenge()"></v-btn>
-    </v-card-actions>
+        <v-spacer></v-spacer>
+        <v-dialog v-model="dialog" width="auto">
+          <template v-slot:activator="{ props }">
+            <v-btn icon="mdi-pencil" v-bind="props"></v-btn>
+          </template>
+          <v-card>
+            <v-card-title class="text-center mt-4">
+              <span class="text-h5">챌린지 수정하기</span>
+            </v-card-title>
+            <v-card-text>
+              <v-container>
+                <v-row>
+                  <v-col cols="12">
+                    <v-text-field
+                      v-model="title"
+                      label="챌린지 이름을 설정하세요"
+                      required
+                      variant="solo-filled"
+                    ></v-text-field>
+                  </v-col>
+                  <v-col cols="12">
+                    <v-text-field
+                      v-model="goalAmount"
+                      label="목표 금액을 입력하세요"
+                      required
+                      variant="solo-filled"
+                    ></v-text-field>
+                  </v-col>
+                  <v-col cols="12">
+                    <v-textarea
+                      v-model="content"
+                      clearable
+                      label="내용을 입력하세요"
+                      variant="solo-filled"
+                    ></v-textarea>
+                  </v-col>
+                  <v-col cols="12">
+                    <v-text-field
+                      v-model="period"
+                      label="기간을 입력하세요"
+                      variant="solo-filled"
+                    ></v-text-field>
+                  </v-col>
+                  <v-col cols="12">
+                    <!-- 파일 업로드를 위한 input 요소 추가 -->
+                    <v-file-input
+                      prepend-icon="mdi-camera"
+                      label="이미지를 선택하세요"
+                      variant="solo-filled"
+                      @change="handleFileUpload"
+                      class="input-btn"
+                    ></v-file-input>
+                  </v-col>
+                  <v-col cols="12">
+                    <!-- 사진 미리보기를 위한 img 요소 추가 -->
+                    <img
+                      v-if="previewImageUrl"
+                      :src="previewImageUrl"
+                      alt="Uploaded Image"
+                      style="max-width: 100%; max-height: 400px; margin: 20px auto; display: block"
+                    />
+                  </v-col>
+                </v-row>
+              </v-container>
+            </v-card-text>
+            <v-card-actions>
+              <v-spacer></v-spacer>
+              <v-btn color="blue-darken-1" variant="text" @click="dialog = false"> 닫기 </v-btn>
+              <v-btn
+                color="blue-darken-1"
+                variant="text"
+                @click=";(dialog = false), updateChallenge(challenge.id)"
+              >
+                만들기
+              </v-btn>
+            </v-card-actions>
+          </v-card>
+        </v-dialog>
+        <v-btn icon="mdi-delete" @click="deleteChallenge(challenge.id)"></v-btn>
+      </v-card-actions>
 
-    <v-expand-transition>
-      <div v-show="show">
-        <v-divider></v-divider>
-        <v-card-text> 챌린지 내용: {{ challenge.content }} </v-card-text>
-        <v-divider></v-divider>
-        <v-card-text> 챌린지 종료 날짜: {{ challenge.period }} </v-card-text>
-        <v-card-text> 목표 금액: {{ challenge.goalAmount }} </v-card-text>
-        <v-card-text> 챌린지 시작 날짜: {{ challenge.startDate }} </v-card-text>
-      </div>
-    </v-expand-transition>
-  </v-card>
+      <v-expand-transition>
+        <div v-show="show">
+          <v-divider></v-divider>
+          <v-card-text> 챌린지 내용: {{ challenge.content }} </v-card-text>
+          <v-divider></v-divider>
+          <v-card-text> 챌린지 종료 날짜: {{ challenge.period }} </v-card-text>
+          <v-card-text> 목표 금액: {{ challenge.goalAmount }} </v-card-text>
+          <v-card-text> 챌린지 시작 날짜: {{ challenge.startDate }} </v-card-text>
+        </div>
+      </v-expand-transition>
+    </v-card>
+  </v-carousel-item>
 </template>
 <script setup>
-import { ref } from 'vue'
+import { ref, onMounted } from 'vue'
 import functions from '@/api/challenge.js'
+import { useCookies } from 'vue3-cookies'
 
-const props = defineProps({
-  challenge: Object
-})
+// 쿠키 사용
+const { cookies } = useCookies()
+
+// 멤버 정보 호출
+const memberInfo = ref(cookies.get('member'))
+const memberId = ref(memberInfo.value.id)
+
+// 챌린지 목록을 담을 배열
+const challenges = ref([])
 
 // 챌린지 생성을 위한 변수
 const dialog = ref(false)
@@ -123,9 +131,16 @@ const challengeId = ref('')
 const show = ref(false)
 
 // 챌린지 삭제 API 호출
-const deleteChallenge = () => {
-  challengeId.value = props.challenge.id
-  const res = functions.deleteChallenge(challengeId.value)
+const deleteChallenge = (challengeId) => {
+  const deleteChallenge = functions.deleteChallenge
+  deleteChallenge(challengeId).then((response) => {
+    console.log(response) // 응답 확인
+    const getChallengeList = functions.getChallengeList
+    getChallengeList(memberId.value).then((response) => {
+      console.log(response.data.challenges)
+      challenges.value = response.data.challenges
+    })
+  })
 }
 
 // 챌린지 생성 위한 변수
@@ -135,7 +150,7 @@ const period = ref('')
 const goalAmount = ref('')
 
 // 챌린지 수정 API 호출
-const updateChallenge = () => {
+const updateChallenge = (challengeId) => {
   // 전달할 data 객체 업데이트
   const data = {
     title: title.value,
@@ -146,9 +161,13 @@ const updateChallenge = () => {
 
   // 챌린지 수정 API 호출
   const updateChallenge = functions.updateChallenge
-  challengeId.value = props.challenge.id
-  updateChallenge(challengeId.value, data).then((response) => {
+  updateChallenge(challengeId, data).then((response) => {
     console.log(response) // 응답 확인
+    const getChallengeList = functions.getChallengeList
+    getChallengeList(memberId.value).then((response) => {
+      console.log(response.data.challenges)
+      challenges.value = response.data.challenges
+    })
   })
 }
 
@@ -174,5 +193,14 @@ const handleFileUpload = (event) => {
     reader.readAsDataURL(file)
   }
 }
+
+//// 마운트 시에 챌린지 리스트 API 호출, memberId가 변경되면 다시 호출
+onMounted(() => {
+  const res = functions.getChallengeList(memberId.value)
+  res.then((response) => {
+    console.log(response.data.challenges)
+    challenges.value = response.data.challenges
+  })
+})
 </script>
 <style></style>

@@ -41,8 +41,8 @@ const load = async ($state) => {
       Authorization: `Bearer ${token}`
     }
     const res = await api.get(`/feed/all`, { headers })
-    // console.log(res.data)
-    const data = res.data.result.data
+    console.log(res.data.feeds)
+    const data = res.data.feeds.feed
     // 만약 데이터가 2개 이하라면
     // $state.complete()를 호출하여 더 이상 데이터를 로딩하지 않고 완료 상태로 변경
     if (data.length < 2) $state.complete()

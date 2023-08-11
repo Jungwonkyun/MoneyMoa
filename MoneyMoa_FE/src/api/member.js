@@ -176,15 +176,20 @@ async function deletequitService(token) {
 }
 
 // 이미지 업로드 테스트
-async function postUploadFile(img) {
+async function postUploadFile(imgs) {
+  console.log(imgs)
   const formData = new FormData()
-  formData.append('file', img[0])
+  for (const img of imgs) {
+    console.log('넣기 전 img: ', img)
+    formData.append('file', img)
+    console.log('넣은 후 이미지: ', img)
+    console.log('넣은 후 폼데이터:', formData)
+  }
   const headers = {
     'Content-Type': 'multipart/form-data'
   }
   try {
-    console.log(img[0])
-
+    console.log(formData)
     const res = await api.post('/file/upload', formData, { headers })
     return res.data
   } catch (err) {
