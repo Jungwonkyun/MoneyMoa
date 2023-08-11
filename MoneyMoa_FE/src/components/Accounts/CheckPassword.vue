@@ -1,44 +1,52 @@
 <template>
   <v-container>
-    <v-row>
-      <v-col class="text-center">
-        <h1>비밀번호 확인</h1>
-      </v-col>
-    </v-row>
+    <v-sheet
+      max-width="600"
+      class="mx-auto mt-8 rounded-lg px-10 py-5"
+      elevation="3"
+      min-height="450"
+      width="100%"
+    >
+      <v-row>
+        <v-col class="text-center">
+          <h1>비밀번호 확인</h1>
+        </v-col>
+      </v-row>
 
-    <v-row>
-      <v-col class="text-center">
-        <h3>사용중인 비밀번호를 입력해 주세요.</h3>
-      </v-col>
-    </v-row>
+      <v-row>
+        <v-col class="text-left mt-15">
+          <h3>사용중인 비밀번호를 입력해 주세요.</h3>
+        </v-col>
+      </v-row>
 
-    <v-row>
-      <v-col>
-        <v-text-field
-          clearable
-          label="비밀번호"
-          variant="underlined"
-          dense
-          v-model="password"
-          :type="visible ? 'text' : 'password'"
-          :append-inner-icon="visible ? 'mdi-eye-off' : 'mdi-eye'"
-          @click:append-inner="visible = !visible"
-          :rules="rules"
-          @keyup.enter="onCheckPwd"
-        ></v-text-field>
-      </v-col>
-    </v-row>
-    <v-row>
-      <v-col class="text-end">
-        <v-btn @click="onCheckPwd">확인</v-btn>
-      </v-col>
-    </v-row>
-    <v-row>
-      <v-col class="text-end">
-        <!-- 홈 아니라 유저프로필로 가야함 임시임 -->
-        <v-btn @click="goBack">돌아가기</v-btn>
-      </v-col>
-    </v-row>
+      <v-row>
+        <v-col>
+          <v-text-field
+            clearable
+            label="비밀번호"
+            variant="underlined"
+            dense
+            v-model="password"
+            :type="visible ? 'text' : 'password'"
+            :append-inner-icon="visible ? 'mdi-eye-off' : 'mdi-eye'"
+            @click:append-inner="visible = !visible"
+            :rules="rules"
+            @keyup.enter="onCheckPwd"
+          ></v-text-field>
+        </v-col>
+      </v-row>
+      <v-row>
+        <v-col class="text-end">
+          <v-btn @click="onCheckPwd" class="Btns">확인</v-btn>
+        </v-col>
+      </v-row>
+      <v-row>
+        <v-col class="text-end">
+          <!-- 홈 아니라 유저프로필로 가야함 임시임 -->
+          <v-btn @click="goBack" class="Btns">돌아가기</v-btn>
+        </v-col>
+      </v-row>
+    </v-sheet>
   </v-container>
 </template>
 <script setup>
@@ -86,4 +94,10 @@ async function onCheckPwd() {
   }
 }
 </script>
-<style></style>
+<style scoped lang="scss">
+.Btns {
+  color: white;
+  background-color: $primary-color;
+  border-radius: 20px;
+}
+</style>
