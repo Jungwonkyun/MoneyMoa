@@ -196,6 +196,8 @@ public class MemberController {
         email = email.replaceAll("\"","");
         log.info(email);
 
+        email = email.replaceAll("\"","");
+
         try {
             message = "success";
 
@@ -207,6 +209,9 @@ public class MemberController {
             }
 
             String authCode = memberService.sendEmail(email);
+            if(memberService.findMemberByEmail(email)!= null){
+                message = "already in Database";
+            }
 
             resultMap.put("message", message);
             resultMap.put("emailAuth", authCode);

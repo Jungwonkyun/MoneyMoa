@@ -164,6 +164,7 @@ public class MemberServiceImpl implements MemberService {
 
 
     public MimeMessage createEmailForm(String email) throws UnsupportedEncodingException, MessagingException {
+
         // 코드를 생성합니다.
         authNum = createCode();
         String setFrom = "wjddnjsrbs97@gmail.com";	// 보내는 사람
