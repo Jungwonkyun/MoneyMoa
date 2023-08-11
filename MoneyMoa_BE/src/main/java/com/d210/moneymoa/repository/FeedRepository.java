@@ -10,6 +10,9 @@ public interface FeedRepository extends JpaRepository<Feed, Long> {
     Optional<Feed> findById(Long id);
     List<Feed> findAllByMemberId(Long memberId);
     List<Feed> findByMemberId(Long memberId);
+    
 
+    List<Feed> findByHashtagContaining(String hashtag);
 
+    List<Feed> findByContentContaining(String content);
 }

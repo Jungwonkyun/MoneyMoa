@@ -159,9 +159,12 @@ public class ChatRoomServiceImpl implements ChatRoomService {
         Optional<MemberChatroomSubInfo> optionalMember = memberChatroomSubInfoRepository.findByMemberIdAndRoomId(memberId,roomId);
 
         if (optionalMember.isPresent()) {
+            log.info("사용자 {}는 이미 roomId {}에 구독 중입니다.", memberId, roomId);
             return null;
         }
-
+        
+        log.info("사용자 {}는 roomId {}에 처음 입장합니다.", memberId, roomId);
+        
         String nickName = memberRepository.findById(memberId).get().getNickname();
 
         // MemberChatroomSubInfo findMember = memberChatroomSubInfoRepository.findByMemberIdAndRoomId(memberId,roomId).orElse(null);

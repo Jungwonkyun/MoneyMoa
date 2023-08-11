@@ -36,6 +36,7 @@ public class ChatController {
     public void message(ChatMessage message) {
 
         if(chatRoomService.enterChatRoom(message.getMemberId(), message.getRoomId()) != null){
+            message.setType(ChatMessage.MessageType.JOIN);
             message.setMessage(message.getSender() + "님이 입장하셨습니다.");
             log.info("얘는 처음 들어오는 사람");
         }

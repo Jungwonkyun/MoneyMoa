@@ -21,6 +21,10 @@ public interface FeedService {
 
     void deleteFeed(Long feedId, Long memberId) throws IllegalAccessException;
 
+    List<Feed> findByHashtags(String hashtag);
+
+    List<Feed> findByContent(String content);
+
 
 
 

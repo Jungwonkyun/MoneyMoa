@@ -35,5 +35,15 @@ public class ChatMessage implements Serializable {
     private String message; // 메시지
     private long memberId; //해당 멤버 아이디
 
+    @Override
+    public String toString() {
+        return "ChatMessage{" +
+                "type=" + type +
+                ", roomId='" + roomId + '\'' +
+                ", sender='" + sender + '\'' +
+                ", message='" + message + '\'' +
+                ", memberId=" + memberId +
+                '}';
+    }
 
 }

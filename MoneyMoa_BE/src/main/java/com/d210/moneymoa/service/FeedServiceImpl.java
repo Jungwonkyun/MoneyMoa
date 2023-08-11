@@ -33,25 +33,24 @@ public class FeedServiceImpl implements FeedService {
     // 피드 생성
     @Override
     @Transactional
-    public Feed createFeed(Long challengeId, Long memberId,Feed inputfeed) {
+    public Feed createFeed(Long challengeId, Long memberId, Feed inputfeed) {
 
-       Feed feed = Feed.builder()
-               .content(inputfeed.getContent())
-               .challengeId(challengeId)
-               .hashtag(inputfeed.getHashtag())
-               .depositAmount(inputfeed.getDepositAmount())
+        Feed feed = Feed.builder()
+                .content(inputfeed.getContent())
+                .challengeId(challengeId)
+                .hashtag(inputfeed.getHashtag())
+                .depositAmount(inputfeed.getDepositAmount())
 //               .memberId(memberId)
-               .feedLikeCount(inputfeed.getFeedLikeCount())
-               .feedLikeCount(inputfeed.getFeedLikeCount())
-               .build();
+                .feedLikeCount(inputfeed.getFeedLikeCount())
+                .feedLikeCount(inputfeed.getFeedLikeCount())
+                .build();
 
-       String nickname =  memberRepository.findById(memberId).get().getNickname();
-       feed.setNickname(nickname);
+        String nickname = memberRepository.findById(memberId).get().getNickname();
+        feed.setNickname(nickname);
 
-       feedRepository.save(feed);
-       return feed;
+        feedRepository.save(feed);
+        return feed;
     }
-
 
 
     // 피드 전체 조회
@@ -113,82 +112,14 @@ public class FeedServiceImpl implements FeedService {
         feedRepository.deleteById(feedId);
     }
 
-//
-//    // 특정 회원의 피드 전체 조회
-//    @Transactional(readOnly = true)
-//    public List<Feed> getAllFeedsForMember(Long memberId) {
-//        List<Feed> feeds = feedRepository.findAllByMemberId(memberId);
-//        return feeds.stream()
-//                .map(Feed::toDto)
-//                .collect(Collectors.toList());
-//    }
-//
-//
-//    // 피드 상세 조회
-//    @Transactional(readOnly = true)
-//    public Feed findFeed(final Long id) {
-//        Optional<Feed> oFeed = feedRepository.findById(id);
-//        Feed feed = oFeed.orElseThrow(() -> new FeedNotFoundException("피드를 찾을 수 없습니다. id: " + id));
-//
-//        return Feed.toDto(feed);
-//    }
-//
-//
-//    //throws AuthorizationException 삭제 했을 때.
-//    @Transactional
-//    public Feed updateFeed(Long id, Feed req, Long memberId, String jwt) throws AuthorizationException {
-//        Optional<Feed> oFeed = feedRepository.findById(id);
-//        Optional<Member> oMember = memberRepository.findById(memberId);
-//
-//        Feed feed = oFeed.orElseThrow(() -> new FeedNotFoundException("피드를 찾을 수 없습니다. id: " + id));
-//        Member member = oMember.orElseThrow(() -> new MemberNotFoundException("삭제 할 권한이 없습니다. id: " + memberId));
-//
-//        if (member.getId().equals(feed.getMemberId())) {
-//            feed.setContent(req.getContent());
-//            feed.setChallengeId(req.getChallengeId());
-//            feed.setHashtag(req.getHashtag());
-//            feed.setDepositAmount(req.getDepositAmount());
-//
-//            Feed updatedFeed = feedRepository.save(feed);
-//            return Feed.toDto(updatedFeed);
-//        } else {
-//            throw new AuthorizationException("권한이 없습니다.");
-//        }
-//    }
-//
-//    @Transactional
-//    public void addLikeCount(Long feedId) {
-//        Optional<Feed> oFeed = feedRepository.findById(feedId);
-//        Feed feed = oFeed.orElseThrow(() -> new FeedNotFoundException("피드를 찾을 수 없습니다. id: " + feedId));
-//        feed.setLikeCount(feed.getLikeCount() + 1);
-//        feedRepository.save(feed);
-//    }
-//
-//    @Transactional
-//    public void subLikeCount(Long feedId) {
-//        Optional<Feed> oFeed = feedRepository.findById(feedId);
-//        Feed feed = oFeed.orElseThrow(() -> new FeedNotFoundException("피드를 찾을 수 없습니다. id: " + feedId));
-//
-//        feed.setLikeCount(Math.max(feed.getLikeCount() - 1, 0));
-//        feedRepository.save(feed);
-//    }
-//
-//
-//    // 피드 삭제 메소드
-//    @Transactional
-//    public void deleteFeed(Long id, @RequestHeader("Authorization") String jwt) { // 불필요한 인자 제거
-//        // JWT 토큰에서 사용자 ID 추출
-//        Long memberId = authTokensGenerator.extractMemberId(jwt);
-//        Optional<Feed> oFeed = feedRepository.findById(id);
-//        Feed feed = oFeed.orElseThrow(() -> new FeedNotFoundException("피드를 찾을 수 없습니다. id: " + id));
-//
-//        log.info(String.valueOf(feed.getMemberId()));
-//
-//        if (!feed.getMemberId().equals(memberId)) { // 피드 작성자의 멤버 ID와 현재 멤버의 ID 비교
-//            throw new UnauthorizedException("게시글 삭제 권한이 없습니다.");
-//        }
-//
-//        feedRepository.deleteById(id);
-//    }
+    @Override
+    public List<Feed> findByHashtags(String hashtag) {
+        return feedRepository.findByHashtagContaining(hashtag);
+    }
 
+    @Override
+    public List<Feed> findByContent(String content) {
+        return feedRepository.findByContentContaining(content);
+
+    }
 }
