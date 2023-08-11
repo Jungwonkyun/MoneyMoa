@@ -46,7 +46,9 @@ getCMAList().then((response) => {
 
 const filteredProducts = computed(() =>
   state.products.filter(
-    (product) => securityList.value.find((secu) => secu.name === product.stockName)?.selected
+    (product) =>
+      securityList.value.find((secu) => secu.name === product.stockName)?.selected &&
+      product[cmaType.value]
   )
 )
 </script>
