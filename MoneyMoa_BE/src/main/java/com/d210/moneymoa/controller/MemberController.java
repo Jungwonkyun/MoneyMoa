@@ -158,7 +158,8 @@ public class MemberController {
     public ResponseEntity<?> findPassword(@ApiParam(value = "유저 이메일")@RequestBody String email)throws Exception{
         Map<String,Object> resultMap = new HashMap<>();
         HttpStatus status;
-
+        log.info(email);
+        
         try {
             Member member = memberService.findMemberByEmail(email);
             log.info("member는 정상적으로 가져옴: " +  member.toString());
