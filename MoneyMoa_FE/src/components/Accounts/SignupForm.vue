@@ -202,7 +202,7 @@ async function onAthentic() {
     showBtn.value = true
     try {
       const authResult = await functions.postEmailauth(Email.value)
-      console.log(typeof Email)
+      console.log(typeof Email.value)
       console.log(authResult)
       // 이메일 유효성 검사 통과시 로직 쓰기
       if (authResult.message === 'success') {
