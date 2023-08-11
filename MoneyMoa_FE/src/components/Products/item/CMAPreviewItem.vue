@@ -20,13 +20,17 @@
               </v-card-title>
             </v-card-item>
           </v-col>
-          <!-- <v-col cols="2" align-self="center"> {{ product.interest }}% </v-col> -->
+          <v-col cols="2" align-self="center"> {{ product[RBJ] }}% </v-col>
         </v-row>
       </v-card>
     </router-link>
   </v-container>
 </template>
 <script setup>
+import { useProductStore } from '@/stores/productStore'
+import { storeToRefs } from 'pinia'
+const store = useProductStore()
+const { RBJ } = storeToRefs(store)
 defineProps({
   product: Object
 })
