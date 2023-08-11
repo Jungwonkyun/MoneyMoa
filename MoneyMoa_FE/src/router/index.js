@@ -289,4 +289,18 @@ router.beforeEach((to) => {
   }
 })
 
+// 로그인 필요한 페이지
+router.beforeEach((to, from, next) => {
+  const { cookies } = useCookies()
+  const isLogined = !!cookies.get('accessToken')
+  const urlPath = to.path.split('/').splice(1)
+  const needLogin = ['profilechange', 'checkpassword', 'challenge', 'admin']
+  for (let i in urlPath) {
+    if (needLogin.includes(urlPath[i]) && !isLogined) {
+      return next({ name: 'loginform' })
+    }
+    next()
+  }
+})
+
 export default router

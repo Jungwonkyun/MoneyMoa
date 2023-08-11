@@ -42,7 +42,6 @@
       </v-row>
       <v-row>
         <v-col class="text-end">
-          <!-- 홈 아니라 유저프로필로 가야함 임시임 -->
           <v-btn @click="goBack" class="Btns">돌아가기</v-btn>
         </v-col>
       </v-row>
@@ -99,5 +98,6 @@ async function onCheckPwd() {
   color: white;
   background-color: $primary-color;
   border-radius: 20px;
+  width: 85px;
 }
 </style>
