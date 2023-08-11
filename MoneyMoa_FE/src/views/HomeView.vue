@@ -43,3 +43,8 @@
 import landing from '../assets/img/micheile-henderson-f030K9IzpcM-unsplash.jpg'
 const moamoa = './src/assets/img/money_moa_moa.gif'
 </script>
+<style scoped lang="scss">
+h1 {
+  font-size: 36px;
+}
+</style>
