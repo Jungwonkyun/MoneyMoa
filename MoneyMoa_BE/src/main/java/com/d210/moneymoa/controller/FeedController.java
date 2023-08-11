@@ -63,18 +63,16 @@ public class FeedController {
     // 피드 생성 메서드
     // Swagger API 문서에 Endpoint 정보 추가
     @ApiOperation(value = "피드 생성", notes = "피드 작성합니다.")
-
-    @PostMapping(path = "/create/{challengeId}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    // POST 방식으로 "/create" URL에 매핑
+    @PostMapping("/create/{challengeId}")
+    // 메서드의 반환 타입은 ResponseEntity 객체이며, 요청 본문에서 Feed 데이터를 파싱하고 인증 헤더를 사용합니다.
     public ResponseEntity<Map<String, Object>> createFeed(
             @PathVariable Long challengeId,
-            @RequestPart("feed") String feedString,
+            @RequestPart("feed") Feed feed,
             @RequestPart(value = "files", required = false) MultipartFile[] files,
+            // JWT 토큰을 헤더에서 인증 정보로 사용
             @ApiParam(value = "Bearer ${jwt token} 형식으로 전송")
-            @RequestHeader("Authorization") String jwt) throws IOException {
-
-        ObjectMapper objectMapper = new ObjectMapper();
-        Feed feed = objectMapper.readValue(feedString, Feed.class);
-
+            @RequestHeader("Authorization") String jwt) {
         // 결과를 반환할 Map 객체 생성
         Map<String, Object> resultMap = new HashMap<>();
         // HTTP 상태 기본값 설정
@@ -91,10 +89,7 @@ public class FeedController {
                 // 존재하면 새 피드를 생성하고 입력받은 memberId, challengeId로 Feed 객체를 만들어 반환
                 Feed newFeed = feedService.createFeed(challengeId, memberId, feed);
 
-                // 피드가 성공적으로 생성되면 HTTP 상태를 CREATE로 변경
-                status = HttpStatus.CREATED;
 
-                // 파일이 전달되었다면, 각 파일을 처리하고 피드에 추가합니다.
                 if (files != null && files.length > 0) {
                     for (MultipartFile file : files) {
                         String fileName = storageService.uploadFile(file);
@@ -102,16 +97,15 @@ public class FeedController {
                         FeedFile feedFile = new FeedFile();
                         feedFile.setImgPath(fileName);
                         feedFile.setFeed(newFeed);
-
-                        // feedFile 저장 로직은 여기에 구현해야 합니다.
                         feedFileService.saveFeedFile(feedFile);
                     }
-
-
-                    //resultMap에 생성된 새 피드와 성공 메시지 추가
-                    resultMap.put("feed", newFeed);
-                    resultMap.put("message", "success");
                 }
+
+                // 피드가 성공적으로 생성되면 HTTP 상태를 CREATE로 변경
+                status = HttpStatus.CREATED;
+                //resultMap에 생성된 새 피드와 성공 메시지 추가
+                resultMap.put("feed", newFeed);
+                resultMap.put("message", "success");
             } else {
                 //챌린지가 존재하지 않을 경우 HTTP 상태를 NOT_FOUND로 변경
                 status = HttpStatus.NOT_FOUND;
@@ -123,7 +117,6 @@ public class FeedController {
             status = HttpStatus.BAD_REQUEST;
             // resultMap에 실패 메시지를 추가
             resultMap.put("message", "fail");
-
         }
         // 최종 결과와 설정된 HTTP 상태를 반환하는 ResponseEntity 객체를 반환
         return new ResponseEntity<>(resultMap, status);
