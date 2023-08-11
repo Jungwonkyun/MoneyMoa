@@ -9,7 +9,7 @@
     >
       <v-row>
         <v-col>
-          <h1>회원정보 변경</h1>
+          <h1 class="my-10">회원정보 변경</h1>
         </v-col>
       </v-row>
 
@@ -20,6 +20,7 @@
             <v-img :src="previewURL" width="100" v-if="isChanged"></v-img>
           </v-avatar>
           <v-file-input
+            multiple
             @change="previewChangeImg"
             label="이미지를 선택해 주세요."
             accept="image/*"
@@ -279,10 +280,9 @@ async function upload() {
     console.log(UpoaldImg.value)
     const res = await functions.postUploadFile(UpoaldImg.value)
     console.log(res)
-    const imgName = res.split(' ')
+    // const imgName = res.split(' ')
     // 이 이름으로 멤버에 저장해야돼서
     // originImg.value = `${imgName[3]} ${imgName[4]}`
-    console.log(originImg.value)
   } catch (err) {
     console.log(err)
   }

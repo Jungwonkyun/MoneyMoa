@@ -252,7 +252,7 @@ const router = createRouter({
             const { cookies } = useCookies()
             if (!cookies.get('accessToken')) {
               alert('로그인이 필요합니다.')
-              next('/')
+              next({ name: 'loginform' })
             } else {
               next()
             }
