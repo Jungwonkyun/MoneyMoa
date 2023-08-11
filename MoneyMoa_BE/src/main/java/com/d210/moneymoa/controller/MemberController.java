@@ -158,6 +158,7 @@ public class MemberController {
     public ResponseEntity<?> findPassword(@ApiParam(value = "유저 이메일")@RequestBody String email)throws Exception{
         Map<String,Object> resultMap = new HashMap<>();
         HttpStatus status;
+        email = email.replaceAll("\"","");
         log.info(email);
         
         try {
@@ -192,6 +193,7 @@ public class MemberController {
         HttpStatus status;
         String message = "";
 
+        email = email.replaceAll("\"","");
         log.info(email);
 
         try {
