@@ -7,7 +7,9 @@
     transition="fab-transition"
   >
     <template v-slot:activator="{ props }">
-      <v-btn color="indigo" v-bind="props"> <v-icon icon="mdi-magnify"></v-icon> </v-btn>
+      <v-sheet class="dic-Btn rounded-circle" v-bind="props" elevation="4">
+        <v-icon icon="mdi-magnify"></v-icon>
+      </v-sheet>
     </template>
     <!-- 여기서 크기조절 -->
     <v-card width="500" max-height="500">
@@ -40,10 +42,8 @@
           />
         </v-expansion-panels>
       </v-list>
-
-      <!-- 뭐하는앤지 모르겠는데 오류날까봐 일단놔둠 -->
-      <v-card-actions>
-        <v-btn variant="text" @click="menu = false"> Cancel </v-btn>
+      <v-card-actions class="text-right">
+        <v-btn variant="text" @click="menu = false" class="ml-auto"> Cancel </v-btn>
       </v-card-actions>
     </v-card>
   </v-menu>
@@ -84,3 +84,14 @@ const Item3 = {
 const listall = [Item1, Item2, Item3]
 const list = ref(listall)
 </script>
+<style scoped lang="scss">
+.dic-Btn {
+  background-color: $primary-color;
+  color: white;
+  width: 70px;
+  height: 70px;
+  text-align: center;
+  line-height: 70px;
+  cursor: pointer;
+}
+</style>

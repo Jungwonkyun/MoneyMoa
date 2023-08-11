@@ -77,7 +77,7 @@ const router = createRouter({
         {
           path: 'cma/:id',
           name: 'cmaDetail',
-          component: () => import('../components/Products/DepositDetail.vue')
+          component: () => import('../components/Products/CMADetail.vue')
         }
       ]
     },
@@ -252,7 +252,7 @@ const router = createRouter({
             const { cookies } = useCookies()
             if (!cookies.get('accessToken')) {
               alert('로그인이 필요합니다.')
-              next('/')
+              next({ name: 'loginform' })
             } else {
               next()
             }
@@ -286,6 +286,20 @@ router.beforeEach((to) => {
   const productTypeValue = to.path.split('/')[2]
   if (['deposit', 'saving', 'cma'].includes(productTypeValue)) {
     store.productType = productTypeValue
+  }
+})
+
+// 로그인 필요한 페이지
+router.beforeEach((to, from, next) => {
+  const { cookies } = useCookies()
+  const isLogined = !!cookies.get('accessToken')
+  const urlPath = to.path.split('/').splice(1)
+  const needLogin = ['profilechange', 'checkpassword', 'challenge', 'admin']
+  for (let i in urlPath) {
+    if (needLogin.includes(urlPath[i]) && !isLogined) {
+      return next({ name: 'loginform' })
+    }
+    next()
   }
 })
 

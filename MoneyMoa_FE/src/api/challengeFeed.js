@@ -1,3 +1,4 @@
+import challenge from './challenge'
 import { apiInstance } from './index'
 import { useCookies } from 'vue3-cookies'
 
@@ -73,12 +74,12 @@ async function searchFeed(searchWord) {
 }
 
 // 피드 생성 API
-async function createFeed(feedData) {
+async function createFeed(feedData, challengeId) {
   try {
     const headers = {
       Authorization: `Bearer ${token}`
     }
-    const res = await api.post(`/feed/create`, JSON.stringify(feedData), { headers })
+    const res = await api.post(`/feed/create/${challengeId}`, JSON.stringify(feedData), { headers })
     return res
   } catch (err) {
     console.log(err)

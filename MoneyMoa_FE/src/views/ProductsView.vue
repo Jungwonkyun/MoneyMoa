@@ -6,8 +6,9 @@
       <router-link :to="{ name: 'cmaList' }"><v-tab value="cma">CMA</v-tab></router-link>
     </v-tabs>
     <router-view />
-
-    <DictionarySide />
+    <v-sheet class="fixed">
+      <DictionarySide />
+    </v-sheet>
   </v-container>
 </template>
 <script setup>
@@ -32,4 +33,11 @@ const { productType } = storeToRefs(store)
 //   }
 // )
 </script>
-<style></style>
+<style scoped lang="scss">
+.fixed {
+  position: fixed;
+  bottom: 100px;
+  right: 10%;
+  border-radius: 100px;
+}
+</style>
