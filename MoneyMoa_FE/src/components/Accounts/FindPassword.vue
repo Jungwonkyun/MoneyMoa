@@ -3,12 +3,13 @@
     <v-sheet
       max-width="800"
       class="mx-auto mt-8 rounded-lg px-10 py-5"
-      min-height="700"
+      min-height="400"
       width="100%"
+      elevation="3"
     >
       <v-row>
         <v-col class="text-center">
-          <h1>비밀번호 찾기</h1>
+          <h1 class="my-10">비밀번호 찾기</h1>
           <v-row>
             <v-col>
               <v-text-field
@@ -29,10 +30,10 @@
             </v-col>
           </v-row>
           <v-row>
-            <v-col class="text-center">
+            <v-col class="text-center mt-10">
               <router-link :to="{ name: 'loginform' }"
                 ><v-btn variant="flat" class="Athentic-Btn"
-                  >로그인 페이지로 이동</v-btn
+                  >로그인 페이지로 돌아가기</v-btn
                 ></router-link
               >
             </v-col>

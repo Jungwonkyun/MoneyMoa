@@ -197,9 +197,11 @@ async function onUpdate() {
     }
 
     const res = await functions.putUpdatedMember(token, member)
+    isPass.value = true
     console.log(res)
   } catch (err) {
     console.log(err)
+    return alert('수정에 실패했습니다.')
   }
   return router.push({ name: 'home' })
 }
@@ -245,19 +247,17 @@ async function quitService() {
 // 페이지 떠날시 아래문구, 회원탈퇴나 수정 클릭시에도 문구만 바꾸면됨
 // isPass같은 변수만들어서 회원탈퇴나 수정 클릭하면  true로 바꾸기, 새로고침 안해도 false로 바뀌면 냅두고 안바뀌면 next()전에 false로 다시 바꿔버리기
 onBeforeRouteLeave((to, from, next) => {
-  if (!isPass.value) {
+  if (isPass.value) {
     console.log(isPass.value)
-
-    if (window.confirm('사이트에서 나가시겠습니까? 변경사항이 저장되지 않을 수 있습니다.')) {
-      const account = useAccountStore()
-      account.setPwdChecked(false)
-      console.log(account.pwdChecked)
-      next()
-    } else {
-      next(false)
-    }
-  } else {
+    return next()
+  }
+  if (window.confirm('사이트에서 나가시겠습니까? 변경사항이 저장되지 않을 수 있습니다.')) {
+    const account = useAccountStore()
+    account.setPwdChecked(false)
+    console.log(account.pwdChecked)
     next()
+  } else {
+    next(false)
   }
 })
 
