@@ -37,7 +37,6 @@ async function kakaoLogin() {
         token: token
       }
       account.onLogin(data)
-      alert('로그인 되었습니다.')
       router.push({ name: 'home' }).then(() => {
         location.reload()
       })
@@ -80,7 +79,6 @@ async function naverLogin() {
         token: token
       }
       account.onLogin(data)
-      alert('로그인 되었습니다.')
       router.push({ name: 'home' }).then(() => {
         location.reload()
       })
