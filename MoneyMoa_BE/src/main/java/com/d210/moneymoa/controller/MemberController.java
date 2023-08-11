@@ -11,6 +11,7 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -19,7 +20,7 @@ import org.springframework.web.bind.annotation.*;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
-
+@Slf4j
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/member")
@@ -160,12 +161,15 @@ public class MemberController {
 
         try {
             Member member = memberService.findMemberByEmail(email);
+            log.info("member는 정상적으로 가져옴: " +  member.toString());
             String authCode = memberService.sendEmail2(email);
+            log.info("이메일 인증까지 받아서 코드 보냄: " +  authCode);
             member.setPassword(authCode);
 
 //            String encPw = encoder.encode(authCode);
 //            member.setPassword(encPw);
             memberRepository.save(member);
+            log.info("객체 저장 완료!!");
 
             resultMap.put("message", "success");
             resultMap.put("member", member);

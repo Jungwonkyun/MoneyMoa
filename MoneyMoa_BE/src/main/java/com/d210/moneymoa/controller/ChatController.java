@@ -13,7 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 //import org.springframework.web.bind.annotation.Controller;
 import org.springframework.stereotype.Controller;
-// TODO: 2023-08-04 REST Controller로 바꿔야함
+
 @Slf4j
 @RequiredArgsConstructor
 @Controller
@@ -37,6 +37,7 @@ public class ChatController {
 
         if(chatRoomService.enterChatRoom(message.getMemberId(), message.getRoomId()) != null){
             message.setMessage(message.getSender() + "님이 입장하셨습니다.");
+            log.info("얘는 처음 들어오는 사람");
         }
 
         if (ChatMessage.MessageType.QUIT.equals(message.getType())) {
@@ -44,6 +45,7 @@ public class ChatController {
             message.setMessage(message.getSender() + "님이 퇴장하셨습니다.");
         }
 
+        log.info("message: "+ message);
         
         //채팅 내역 저장
         chatRoomService.saveChatMessage(message.getRoomId(), message);
