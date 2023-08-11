@@ -7,7 +7,7 @@
         prepend-icon="mdi-comment-processing-outline"
         rows="2"
         no-resize
-        @keyup.enter="write"
+        @keyup.enter="write($event)"
       ></v-textarea>
       <v-btn @click="write">댓글 작성</v-btn>
     </v-row>
@@ -63,7 +63,12 @@ const commentContent = ref('')
 console.log('댓글:')
 console.log(props.commentList)
 
-function write() {
+function write(event) {
+  if (event && event.shiftKey) {
+    // Shift + Enter 키가 눌렸을 때 이벤트 중지
+    event.preventDefault()
+    return
+  }
   let comment = {
     content: commentContent.value
   }
