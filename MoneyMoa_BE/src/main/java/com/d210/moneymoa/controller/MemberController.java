@@ -195,14 +195,16 @@ public class MemberController {
         log.info(email);
 
         try {
-            message = "ssssssss";
+            message = "success";
 
-            String authCode = memberService.sendEmail(email);
+            
             if(memberService.findMemberByEmail(email)!= null){
                 message = "already in Database";
                 resultMap.put("message", message);
                 return new ResponseEntity<Map<String,Object>>(resultMap, HttpStatus.OK);
             }
+
+            String authCode = memberService.sendEmail(email);
 
             resultMap.put("message", message);
             resultMap.put("emailAuth", authCode);
