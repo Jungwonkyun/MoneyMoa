@@ -80,7 +80,7 @@ const memberId = ref(memberInfo.value.id)
 const dialog = ref(false)
 
 // 피드 생성할 때 보여줄 챌린지 리스트
-const challengeList = ref('')
+const challengeList = ref([])
 
 // condition정의하여 false로 초기화
 const condition = ref(false)
@@ -90,12 +90,17 @@ const challenge = ref('')
 const content = ref('')
 const depositAmount = ref('')
 const hashtag = ref('')
+const challengeset = ref([])
+const challengeId = ref('')
 
 // 피드 생성하기 버튼 눌렀을 때
 const submitFeedData = () => {
+  for (const set of challengeset.value) {
+    if (set.title === challenge.value) {
+      challengeId.value = set.id
+    }
+  }
   const feedData = {
-    memberId: memberId.value,
-    challenge: challenge.value,
     content: content.value,
     depositAmount: parseInt(depositAmount.value),
     hashtag: hashtag.value
@@ -104,7 +109,7 @@ const submitFeedData = () => {
 
   // 피드 생성 API 호출
   const createFeed = challengeFeedApi.createFeed
-  createFeed(feedData).then((response) => {
+  createFeed(feedData, challengeId.value).then((response) => {
     console.log(response)
   })
 }
@@ -114,8 +119,18 @@ const submitFeedData = () => {
 onMounted(() => {
   const getChallengeList = functions.getChallengeList
   getChallengeList(memberId.value).then((response) => {
-    challengeList.value = response.data.result.data
-    if (response.data.result.data.length > 0) {
+    console.log('postfeed', response)
+    for (const challengeKey in response.data.challenges) {
+      const challenge = response.data.challenges[challengeKey]
+      const id = challenge.id
+      const title = challenge.title
+      challengeList.value.push(title)
+      challengeset.value.push({ id, title })
+    }
+    console.log(challengeset.value)
+    challengeList.value = response.data.challenges
+    // 챌린지 리스트 길이가 0 보다 크면 버튼 보이게 처리
+    if (challengeList.value.length > 0) {
       condition.value = true
     }
   })

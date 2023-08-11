@@ -83,7 +83,7 @@
               <v-btn
                 color="blue-darken-1"
                 variant="text"
-                @click=";(dialog = false), updateChallenge()"
+                @click=";(dialog = false), updateChallenge(challenge.id)"
               >
                 만들기
               </v-btn>
@@ -107,14 +107,19 @@
   </v-carousel-item>
 </template>
 <script setup>
-import { ref } from 'vue'
+import { ref, onMounted } from 'vue'
 import functions from '@/api/challenge.js'
+import { useCookies } from 'vue3-cookies'
 
-const emit = defineEmits(['update'])
+// 쿠키 사용
+const { cookies } = useCookies()
 
-const props = defineProps({
-  challenges: Object
-})
+// 멤버 정보 호출
+const memberInfo = ref(cookies.get('member'))
+const memberId = ref(memberInfo.value.id)
+
+// 챌린지 목록을 담을 배열
+const challenges = ref([])
 
 // 챌린지 생성을 위한 변수
 const dialog = ref(false)
@@ -130,8 +135,12 @@ const deleteChallenge = (challengeId) => {
   const deleteChallenge = functions.deleteChallenge
   deleteChallenge(challengeId).then((response) => {
     console.log(response) // 응답 확인
+    const getChallengeList = functions.getChallengeList
+    getChallengeList(memberId.value).then((response) => {
+      console.log(response.data.challenges)
+      challenges.value = response.data.challenges
+    })
   })
-  this.$forceUpdate()
 }
 
 // 챌린지 생성 위한 변수
@@ -141,7 +150,7 @@ const period = ref('')
 const goalAmount = ref('')
 
 // 챌린지 수정 API 호출
-const updateChallenge = () => {
+const updateChallenge = (challengeId) => {
   // 전달할 data 객체 업데이트
   const data = {
     title: title.value,
@@ -152,9 +161,13 @@ const updateChallenge = () => {
 
   // 챌린지 수정 API 호출
   const updateChallenge = functions.updateChallenge
-  challengeId.value = props.challenge.id
-  updateChallenge(challengeId.value, data).then((response) => {
+  updateChallenge(challengeId, data).then((response) => {
     console.log(response) // 응답 확인
+    const getChallengeList = functions.getChallengeList
+    getChallengeList(memberId.value).then((response) => {
+      console.log(response.data.challenges)
+      challenges.value = response.data.challenges
+    })
   })
 }
 
@@ -180,5 +193,14 @@ const handleFileUpload = (event) => {
     reader.readAsDataURL(file)
   }
 }
+
+//// 마운트 시에 챌린지 리스트 API 호출, memberId가 변경되면 다시 호출
+onMounted(() => {
+  const res = functions.getChallengeList(memberId.value)
+  res.then((response) => {
+    console.log(response.data.challenges)
+    challenges.value = response.data.challenges
+  })
+})
 </script>
 <style></style>

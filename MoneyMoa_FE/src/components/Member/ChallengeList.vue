@@ -2,7 +2,7 @@
   <v-container>
     <v-card elevation="24" class="rounded-xl">
       <v-carousel cycle hide-delimiters show-arrows="hover" height="100%" width="100%">
-        <ChallengeCard :challenges="challenges" @update="update" />
+        <ChallengeCard />
       </v-carousel>
     </v-card>
 
@@ -92,15 +92,12 @@
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue'
+import { ref } from 'vue'
 import functions from '@/api/challenge.js'
 import { useCookies } from 'vue3-cookies'
 import ChallengeCard from '@/components/Member/item/ChallengeCard.vue'
 
 const { cookies } = useCookies()
-
-// 챌린지 목록을 담을 배열
-const challenges = ref([])
 
 // 멤버 정보 호출
 const memberInfo = ref(cookies.get('member'))
@@ -158,24 +155,6 @@ const handleFileUpload = (event) => {
     reader.readAsDataURL(file)
   }
 }
-
-// 챌린지 업데이트
-const update = () => {
-  const getChallengeList = functions.getChallengeList
-  getChallengeList(memberId.value).then((response) => {
-    console.log(response.data.challenges)
-    challenges.value = response.data.challenges
-  })
-}
-
-//// 마운트 시에 챌린지 리스트 API 호출, memberId가 변경되면 다시 호출
-onMounted(() => {
-  const res = functions.getChallengeList(memberId.value)
-  res.then((response) => {
-    console.log(response.data.challenges)
-    challenges.value = response.data.challenges
-  })
-})
 </script>
 <style>
 .text-center {
