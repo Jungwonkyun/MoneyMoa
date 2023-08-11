@@ -15,11 +15,11 @@
         </v-col>
       </v-row>
       <v-card-item>
-        <v-radio-group v-model="cmaType" column class="info-by-cmatype" hide-details>
+        <v-radio-group v-model="RBJ" column class="info-by-cmatype" hide-details>
           <v-table>
             <tbody>
               <tr v-if="memo['RP형'].length">
-                <td class="cmatype-col"><v-radio label="RP형"></v-radio></td>
+                <td class="cmatype-col"><v-radio label="RP형" value="RP형"></v-radio></td>
                 <v-table>
                   <tbody>
                     <tr v-for="(item, index) in memo['RP형']" :key="index">
@@ -29,7 +29,9 @@
                 </v-table>
               </tr>
               <tr v-if="memo['발행어음형'].length">
-                <td class="cmatype-col"><v-radio label="발행어음형"></v-radio></td>
+                <td class="cmatype-col">
+                  <v-radio label="발행어음형" value="발행어음형"></v-radio>
+                </td>
                 <v-table>
                   <tbody>
                     <tr v-for="(item, index) in memo['발행어음형']" :key="index">
@@ -39,7 +41,7 @@
                 </v-table>
               </tr>
               <tr v-if="memo['종금형'].length">
-                <td class="cmatype-col"><v-radio label="종금형"></v-radio></td>
+                <td class="cmatype-col"><v-radio label="종금형" value="종금형"></v-radio></td>
                 <v-table>
                   <tbody>
                     <tr v-for="(item, index) in memo['종금형']" :key="index">
@@ -72,8 +74,9 @@ import { getCMA, getPeriodRange, spclConditionIntrList } from '@/api/product'
 import IntrCalcItem from './item/IntrCalcItem.vue'
 import ProductCommentItem from './item/ProductCommentItem.vue'
 const store = useProductStore()
+const { RBJ } = storeToRefs(store)
+console.log(RBJ.value)
 const route = useRoute()
-const cmaType = ref('RP형')
 const product = ref({})
 const memo = ref({
   RP형: [],
