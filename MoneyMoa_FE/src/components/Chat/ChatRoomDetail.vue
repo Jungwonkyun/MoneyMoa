@@ -40,18 +40,33 @@
       </v-toolbar>
       <v-card-text class="chatmessage-area overflow-auto">
         <template v-for="(msg, index) in messages">
-          <v-sheet :class="{ 'd-flex flex-row-reverse': isMine(msg.sender) }" class="pa-1">
+          <v-sheet
+            :class="{ 'd-flex flex-row-reverse': isMine(msg.sender) }"
+            class="pa-1 align-end"
+          >
             <h4 v-if="!isMine(msg.sender)">
               {{ msg.sender }}
             </h4>
-            <v-chip :color="isMine(msg.sender) ? 'primary' : ''">
+            <v-chip
+              class="chatmessage-chip white-space-normal"
+              :color="isMine(msg.sender) ? 'primary' : ''"
+            >
               {{ msg.message }}
             </v-chip>
+            <span class="pa-1">
+              {{ formatDate(msg.createdTime) }}
+            </span>
           </v-sheet>
         </template>
       </v-card-text>
       <v-card-actions class="align-center">
-        <v-text-field v-model="inputMsg" @keyup.enter="sendMessage(room, nickName)" hide-details />
+        <v-text-field
+          v-model="inputMsg"
+          @keyup.enter="sendMessage(room, nickName)"
+          :maxlength="100"
+          :counter="100"
+          hide-details
+        />
         <v-btn @click="sendMessage(room, nickName)" icon="mdi-send" />
       </v-card-actions>
     </v-card>
@@ -63,7 +78,9 @@ import { getRoomDetail, getRoomMembers, quitRoom } from '@/api/chat'
 import { useRoute, useRouter } from 'vue-router'
 import Stomp from 'webstomp-client'
 import SockJS from 'sockjs-client'
+import dayjs from 'dayjs'
 import { useCookies } from 'vue3-cookies'
+
 const { cookies } = useCookies()
 
 var sock = new SockJS('https://i9d210.p.ssafy.io/api/ws-stomp')
@@ -111,6 +128,16 @@ function goBack() {
 
 function showRoomInfo() {
   dialog.value = true
+}
+
+const formatDate = (dateString) => {
+  const date = dayjs(dateString)
+  const now = dayjs()
+  if (date.isSame(now, 'day')) {
+    return date.format('HH:mm')
+  } else {
+    return date.format('MM/DD HH:mm')
+  }
 }
 
 function quit(roomId) {
@@ -204,5 +231,9 @@ function isMine(sender) {
 .chatmessage-area {
   height: calc(100% - 144px);
   overflow: auto;
+}
+.chatmessage-chip {
+  max-width: 70%;
+  /* height: auto !important; */
 }
 </style>
