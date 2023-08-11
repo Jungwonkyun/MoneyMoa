@@ -1,5 +1,5 @@
 <template>
-  <v-container @click="setProduct(product)">
+  <v-container>
     <!-- CMA는 productCode 대신 id 쓸거임 -->
     <router-link
       :to="{
