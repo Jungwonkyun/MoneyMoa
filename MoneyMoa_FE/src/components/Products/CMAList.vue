@@ -1,10 +1,10 @@
 <template>
   <v-container>
     <SecuritySelectItem />
-    <v-radio-group inline v-model="cmaType">
+    <v-radio-group inline v-model="RBJ">
       <h5>유형 선택</h5>
       <v-col class="d-flex justify-space-around">
-        <v-radio label="RP형" value="RP형" selected="true"></v-radio>
+        <v-radio label="RP형" value="RP형"></v-radio>
         <v-radio label="발행어음형" value="발행어음형"></v-radio>
         <v-radio label="종금형" value="종금형"></v-radio>
       </v-col>
@@ -28,9 +28,8 @@ import { getCMAList } from '@/api/product'
 import SecuritySelectItem from './item/SecuritySelectItem.vue'
 import CMAPreviewItem from './item/CMAPreviewItem.vue'
 
-const cmaType = ref('RP형')
 const store = useProductStore()
-const { productType, securityList } = storeToRefs(store)
+const { productType, securityList, RBJ } = storeToRefs(store)
 const state = reactive({
   products: []
 })
@@ -46,7 +45,9 @@ getCMAList().then((response) => {
 
 const filteredProducts = computed(() =>
   state.products.filter(
-    (product) => securityList.value.find((secu) => secu.name === product.stockName)?.selected
+    (product) =>
+      securityList.value.find((secu) => secu.name === product.stockName)?.selected &&
+      product[RBJ.value]
   )
 )
 </script>

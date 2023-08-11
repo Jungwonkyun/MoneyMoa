@@ -82,6 +82,7 @@ export const useProductStore = defineStore('product', () => {
       })
     }
   }
+  const RBJ = ref('RP형')
   return {
     productType,
     amount,
@@ -89,6 +90,7 @@ export const useProductStore = defineStore('product', () => {
     selectedProduct,
     bankList,
     securityList,
+    RBJ,
     setProductType,
     setAmount,
     setPeriod,
