@@ -7,6 +7,7 @@
         prepend-icon="mdi-comment-processing-outline"
         rows="2"
         no-resize
+        @keyup.enter="write"
       ></v-textarea>
       <v-btn @click="write">댓글 작성</v-btn>
     </v-row>
