@@ -1,5 +1,6 @@
 package com.d210.moneymoa.controller;
 
+import com.amazonaws.services.s3.AmazonS3;
 import com.d210.moneymoa.domain.oauth.AuthTokensGenerator;
 import com.d210.moneymoa.dto.*;
 import com.d210.moneymoa.repository.ChallengeRepository;
@@ -21,10 +22,8 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.http.MediaType;
 
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.net.URL;
+import java.util.*;
 
 
 @Api(value = "Feed Controller", tags = "Feed-Controller")
@@ -54,6 +53,8 @@ public class FeedController {
     @Autowired
     FeedCommentService feedCommentService;
 
+    @Autowired
+    private AmazonS3 s3Client;
 
     // 피드 생성 메서드
     // Swagger API 문서에 Endpoint 정보 추가
@@ -134,6 +135,24 @@ public class FeedController {
 
         try {
             feedList = feedService.getAllFeeds();
+
+            for (Feed feed : feedList) {
+                List<FeedFile> feedFiles = feed.getFeedFiles();
+                List<String> fileUrls = new ArrayList<>();
+
+                // 각 Feed별로 저장된 이미지에 대해 파일 URL 생성
+                for (FeedFile feedFile : feedFiles) {
+                    URL fileUrl = s3Client.getUrl("moneymoa-first-bucket", feedFile.getImgPath());
+                    fileUrls.add(fileUrl.toString());
+                }
+
+                // Feed 객체에 fileUrls 설정
+                feed.setFileUrls(fileUrls);
+
+                // feedDtoList에 feed 객체 추가
+                feedList.add(feed);
+            }
+
             resultMap.put("feedList", feedList);
             resultMap.put("message", "success");
             return new ResponseEntity<Map<String, Object>>(resultMap, HttpStatus.OK);
@@ -159,6 +178,22 @@ public class FeedController {
 
         try {
             feedList = feedService.getMemberFeeds(memberId);
+
+
+            for (Feed feed : feedList) {
+                List<FeedFile> feedFiles = feed.getFeedFiles();
+                List<String> fileUrls = new ArrayList<>();
+
+                // 각 Feed별로 저장된 이미지에 대해 파일 URL 생성
+                for (FeedFile feedFile : feedFiles) {
+                    URL fileUrl = s3Client.getUrl("moneymoa-first-bucket", feedFile.getImgPath());
+                    fileUrls.add(fileUrl.toString());
+                }
+
+                // Feed 객체에 fileUrls 설정
+                feed.setFileUrls(fileUrls);
+            }
+
             resultMap.put("feedList", feedList);
             resultMap.put("message", "success");
             return new ResponseEntity<Map<String, Object>>(resultMap, HttpStatus.OK);
@@ -184,6 +219,19 @@ public class FeedController {
 
         try {
             feed = feedService.getFeedDetail(feedId);
+
+            List<FeedFile> feedFiles = feed.getFeedFiles();
+            List<String> fileUrls = new ArrayList<>();
+
+            // 각 Feed별로 저장된 이미지에 대해 파일 URL 생성
+            for (FeedFile feedFile : feedFiles) {
+                URL fileUrl = s3Client.getUrl("moneymoa-first-bucket", feedFile.getImgPath());
+                fileUrls.add(fileUrl.toString());
+            }
+
+            // Feed 객체에 fileUrls 설정
+            feed.setFileUrls(fileUrls);
+
             // 피드 댓글 조회
             List<FeedComment> feedComments = feedCommentService.findByFeedId(feedId);
 
@@ -239,6 +287,18 @@ public class FeedController {
 
         try {
             Long memberId = authTokensGenerator.extractMemberId(jwt.replace("Bearer ", ""));
+
+
+            // 해당 피드의 파일들을 조회
+            Feed feed = feedService.getFeedDetail(feedId);
+            List<FeedFile> feedFiles = feed.getFeedFiles();
+
+            // 파일들을 삭제
+            for (FeedFile feedFile : feedFiles) {
+                storageService.deleteFile(feedFile.getImgPath());
+            }
+
+            // 피드 삭제
             feedService.deleteFeed(feedId, memberId);
             resultMap.put("message", "success");
             return new ResponseEntity<Map<String, Object>>(resultMap, HttpStatus.OK);

@@ -64,6 +64,19 @@ public class Feed implements Serializable {
     @JsonIgnore
     private List<FeedFile> feedFiles;
 
+    // fileUrls 필드 추가
+    @Transient
+    private List<String> fileUrls;
+
+    // Getter 및 Setter
+    public List<String> getFileUrls() {
+        return fileUrls;
+    }
+
+    public void setFileUrls(List<String> fileUrls) {
+        this.fileUrls = fileUrls;
+    }
+
     @ColumnDefault("0")
     private Integer feedLikeCount;
 
