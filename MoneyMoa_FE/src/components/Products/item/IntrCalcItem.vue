@@ -142,7 +142,7 @@ function like() {
   let likeInfo = {
     memberId: cookies.get('member').id,
     productCode: props.product.productCode || '',
-    cmaId: props.product.id || '',
+    cmaId: props.product.id || 0,
     amount: Number(amount.value),
     interest: calcIntr.value,
     period: period.value,
