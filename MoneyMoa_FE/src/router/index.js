@@ -34,6 +34,7 @@ import { useAccountStore } from '../stores/accountStore.js'
 import OAuth from '../components/Accounts/OAuth.vue'
 // AdminView
 import AdminView from '../views/AdminView.vue'
+import { storeToRefs } from 'pinia'
 
 const router = createRouter({
   history: createWebHistory(),

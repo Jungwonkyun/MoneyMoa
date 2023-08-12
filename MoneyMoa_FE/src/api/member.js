@@ -99,7 +99,6 @@ async function fetchFeedList(memberId) {
     console.log(err)
   }
 }
-
 // 로그인
 async function postLogin(loginInfo) {
   try {
@@ -218,6 +217,19 @@ async function putUpdatedMember(token, member) {
     console.log(err)
   }
 }
+// 리프레시 토큰 이용한 토큰 재발급
+async function postGetAccessid() {
+  const data = {
+    accessToken: cookies.get('accessToken'),
+    refreshToken: cookies.get('refreshToken')
+  }
+  try {
+    const res = await api.post('/auth/getaccessid', data)
+    return res.data
+  } catch (err) {
+    console.log(err)
+  }
+}
 
 export default {
   addFollow,
@@ -239,5 +251,6 @@ export default {
   postNaverLogin,
   postUploadFile,
   getImgDown,
-  putUpdatedMember
+  putUpdatedMember,
+  postGetAccessid
 }

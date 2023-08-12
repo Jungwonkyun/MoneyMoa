@@ -1,7 +1,7 @@
 import { defineStore } from 'pinia'
-import { ref, computed } from 'vue'
+import { ref } from 'vue'
 import { useCookies } from 'vue3-cookies'
-
+import functions from '../api/member.js'
 export const useAccountStore = defineStore('account', () => {
   const { cookies } = useCookies()
   const memberId = ref('')
@@ -16,24 +16,39 @@ export const useAccountStore = defineStore('account', () => {
 
   // 로그인 정보, 로그인 여부 저장
   // 아마 로그인 여부는 라우터에도 저장해야될듯
-  const isLogin = computed(() => {
-    return !!cookies.get('accessToken')
-  })
+  const isLogin = ref(!!cookies.get('member'))
   const member = ref(null)
-  cookies.get('member')
+
   // 로그인 함수
   function onLogin(data) {
     // 로그인 후 자동 새로고침 되게 해놨기 때문에 store에 멤버정보 저장하면 초기화됨, 일단 쿠키에 멤버정보 넣기
     cookies.set('member', data.member, '30MIN')
     cookies.set('accessToken', data.token, '30MIN')
     cookies.set('refreshToken', data.refreshToken, '7D')
+    isLogin.value = !!cookies.get('member')
   }
   function onLogout() {
     cookies.remove('accessToken')
     cookies.remove('member')
     cookies.remove('refreshToken')
+    isLogin.value = !!cookies.get('member')
   }
-
+  // 리프레시 토큰으로 토큰 재발급받기
+  async function getNewToken() {
+    if (cookies.get('refreshToken')) {
+      try {
+        const res = await functions.postGetAccessid()
+        console.log(res)
+        if (res.message === 'success') {
+          cookies.set('accessToken', res.RefreshedAccessToken, '2')
+        }
+      } catch (err) {
+        console.log(err)
+      }
+    }
+  }
+  // 1790000
+  // setInterval(getNewToken, 5000)
   return {
     memberId,
     pwdChecked,
@@ -41,6 +56,7 @@ export const useAccountStore = defineStore('account', () => {
     member,
     onLogin,
     isLogin,
-    onLogout
+    onLogout,
+    getNewToken
   }
 })

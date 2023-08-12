@@ -58,10 +58,10 @@
         </v-col>
       </v-row>
       <v-row class="my-8">
-        <v-col class="d-flex align-center">
+        <v-col class="d-flex align-center" xs="1">
           <v-divider class="border-opacity-25"></v-divider
         ></v-col>
-        <v-col class="text-center px-0" cols="4">
+        <v-col class="text-center px-0 xs-10" cols="4">
           <span class="social-Text">소셜 회원으로 이용하기 </span>
         </v-col>
         <v-col class="d-flex align-center"
@@ -142,7 +142,7 @@ async function onLogin() {
       }
       account.onLogin(data)
       router.push({ name: 'home' }).then(() => {
-        location.reload()
+        // location.reload()
       })
     }
   } catch (err) {

@@ -88,10 +88,10 @@ const list = ref(listall)
 .dic-Btn {
   background-color: $primary-color;
   color: white;
-  width: 70px;
-  height: 70px;
+  width: 60px;
+  height: 60px;
   text-align: center;
-  line-height: 70px;
+  line-height: 60px;
   cursor: pointer;
 }
 </style>
