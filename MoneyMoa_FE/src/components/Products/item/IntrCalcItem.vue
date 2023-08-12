@@ -100,7 +100,7 @@ const spSum = computed(() => {
   console.log('우대합계: ' + sum)
   return sum
 })
-//최종 계산에 적용되는 이율
+//최종 계산에 적용되는 이율(maxRate를 넘지 않게)
 const calcIntr = computed(() => {
   if (productType.value === 'cma') {
     return props.retRate
@@ -138,14 +138,16 @@ function like() {
     alert('찜하기는 회원만 이용할 수 있습니다.')
     return
   }
+
   let likeInfo = {
     memberId: cookies.get('member').id,
-    productCode: props.product.productCode,
+    productCode: props.product.productCode || '',
+    cmaId: props.product.id || '',
     amount: Number(amount.value),
     interest: calcIntr.value,
     period: period.value,
     result: result.value,
-    rsrvType: calcDetail.value.rsrvType
+    rsrvType: calcType.value
   }
   console.log(likeInfo)
   likeProduct(productType.value, likeInfo).then((response) => {
