@@ -2,9 +2,13 @@
   <v-row class="card-container" justify="center">
     <v-card class="result ma-2" v-for="feed in feeds" :key="feed.id" text-center>
       <v-col>
-        <router-link :to="'/challenge/feed/' + feed.id">
-          <v-img src="https://cdn.vuetifyjs.com/images/parallax/material.jpg"></v-img>
-        </router-link>
+        <v-carousel hide-delimiter-background show-arrows="hover">
+          <v-carousel-item v-for="(fileUrl, index) in feed.fileUrls" :key="index">
+            <router-link :to="'/challenge/feed/' + feed.id">
+              <v-img :src="fileUrl" height="100%"></v-img>
+            </router-link>
+          </v-carousel-item>
+        </v-carousel>
       </v-col>
       <v-col>{{ feed.id }}</v-col>
       <v-col>{{ feed.content }}</v-col>
@@ -41,8 +45,8 @@ const load = async ($state) => {
       Authorization: `Bearer ${token}`
     }
     const res = await api.get(`/feed/all`, { headers })
-    console.log(res.data.feeds)
-    const data = res.data.feeds.feed
+    console.log(res.data.feedList)
+    const data = res.data.feedList
     // 만약 데이터가 2개 이하라면
     // $state.complete()를 호출하여 더 이상 데이터를 로딩하지 않고 완료 상태로 변경
     if (data.length < 2) $state.complete()

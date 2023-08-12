@@ -40,7 +40,7 @@ async function fetchFeedDetail(feedId) {
     const headers = {
       Authorization: `Bearer ${token}`
     }
-    const res = await api.get(`/feed/${feedId}`, { headers })
+    const res = await api.get(`/feed/detail/${feedId}`, { headers })
     return res
   } catch (err) {
     console.log(err)

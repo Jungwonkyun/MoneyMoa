@@ -66,6 +66,7 @@ const route = useRoute()
 const router = useRouter()
 const feedId = ref(route.params.feedId)
 
+// 화면에 표시할 데이터
 const content = ref('')
 const challenge = ref('')
 const hashtags = ref([])
@@ -84,12 +85,11 @@ const deleteFeed = async () => {
 // 마운트 시에 피드 상세 조회 API 호출, memberId가 변경되면 다시 호출
 onMounted(() => {
   const res = challengeFeed.fetchFeedDetail(feedId.value).then((response) => {
-    const data = ref('')
-    data.value = response.data.result.data
-    content.value = data.value.content
-    challenge.value = data.value.challenge
+    console.log(response)
+    content.value = response.data.feed.content
+    challenge.value = response.data.feed.challengeId
     // 정규식을 사용하여 '#'으로 시작하는 단어를 추출하여 리스트로 만듦
-    hashtags.value = data.value.hashtag.match(/#[^\s#]+/g) || []
+    hashtags.value = response.data.feed.hashtag.match(/#[^\s#]+/g) || []
   })
 })
 
