@@ -46,16 +46,13 @@
 </template>
 
 <script setup>
-// import landing from '../assets/img/micheile-henderson-f030K9IzpcM-unsplash.jpg'
-// import MomenyMoa_main from '../assets/img/MoneyMoa_main.gif'
-
 // carousel item
-const MomenyMoa_main = './src/assets/img/MoneyMoa_main.gif'
-const landing = './src/assets/img/micheile-henderson-f030K9IzpcM-unsplash.jpg'
+import MomenyMoa_main from '@/assets/img/MoneyMoa_main.gif'
+import landing from '@/assets/img/micheile-henderson-f030K9IzpcM-unsplash.jpg'
 
 const slides = [MomenyMoa_main, landing]
 
-const moamoa = './src/assets/img/money_moa_moa.gif'
+// const moamoa = './src/assets/img/money_moa_moa.gif'
 </script>
 <style scoped lang="scss">
 h1 {

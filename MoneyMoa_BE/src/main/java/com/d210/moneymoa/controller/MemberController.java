@@ -3,6 +3,7 @@ package com.d210.moneymoa.controller;
 
 import com.d210.moneymoa.domain.oauth.AuthTokens;
 import com.d210.moneymoa.domain.oauth.AuthTokensGenerator;
+import com.d210.moneymoa.dto.AuthToken;
 import com.d210.moneymoa.dto.LoginInfo;
 import com.d210.moneymoa.dto.Member;
 import com.d210.moneymoa.repository.MemberRepository;
@@ -131,17 +132,15 @@ public class MemberController {
 
     @ApiOperation(value = "유저 로그아웃", notes = "유저 jwt 토큰을 보내주면 블랙리스트 방식으로 jwt 토큰을 말소하고 성공 여부를 반환")
     @GetMapping ("/loggout")
-    public ResponseEntity<Map<String,Object>> logout (@ApiParam(value = "Bearer ${jwt token} 형식으로 전송")  @RequestHeader("Authorization") String jwt){
+    public ResponseEntity<Map<String,Object>> logout (@ApiParam(value = "Bearer ${jwt token} 형식으로 전송")  @RequestBody AuthToken jwtTokens){
 
-        jwt =  jwt.replace("Bearer ", "");
         Map<String,Object> resultMap = new HashMap<>();
         HttpStatus status;
 
         try{
-            Long expire = memberService.logout(jwt);
+            AuthToken authToken = memberService.logout(jwtTokens);
             resultMap.put("message","success");
-            resultMap.put("expire",expire);
-            resultMap.put("expired jwt", jwt);
+            resultMap.put("expired jwt", authToken);
             status = HttpStatus.OK;
         }catch (Exception e){
             e.printStackTrace();
@@ -196,12 +195,9 @@ public class MemberController {
         email = email.replaceAll("\"","");
         log.info(email);
 
-        email = email.replaceAll("\"","");
-
         try {
             message = "success";
 
-            
             if(memberService.findMemberByEmail(email)!= null){
                 message = "already in Database";
                 resultMap.put("message", message);
@@ -258,3 +254,4 @@ public class MemberController {
         }
     }
 }
+

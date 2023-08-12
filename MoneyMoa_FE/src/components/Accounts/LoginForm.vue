@@ -132,14 +132,15 @@ async function onLogin() {
         imageUrl: urlData,
         imageName: loginResult.data.member.imageUrl
       }
-      console.log(member)
+      console.log(loginResult.data)
       const token = loginResult.data['jwt token'].accessToken
+      const refreshToken = loginResult.data['jwt token'].refreshToken
       const data = {
         member: member,
-        token: token
+        token: token,
+        refreshToken: refreshToken
       }
       account.onLogin(data)
-      alert('로그인 되었습니다.')
       router.push({ name: 'home' }).then(() => {
         location.reload()
       })

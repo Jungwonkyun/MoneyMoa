@@ -79,10 +79,8 @@ const calcDetail = computed(() => {
     // console.log(props.product.interestDetails)
     return props.product.interestDetails.reduce((prev, curr) => {
       if (curr.period <= period.value && (!prev || curr.period > prev.period)) {
-        console.log(curr)
         return curr
       } else {
-        console.log(prev)
         return prev
       }
     })
@@ -93,15 +91,29 @@ const calcDetail = computed(() => {
 })
 
 //우대이율 총합(maxRate 고려 전)
-const spSum = computed(() =>
-  props.spcls.reduce((sum, item) => (item.checked ? sum + item.intr : sum), 0)
-)
-//최종 계산에 적용되는 이율
-const calcIntr = computed(() =>
-  Math.min(Number(calcDetail.value.basicRate) + spSum.value, Number(calcDetail.value.maxRate))
-)
+const spSum = computed(() => {
+  if (productType.value === 'cma') return 0
+  let sum = 0
+  props.spcls.forEach((item) => {
+    if (item.checked) sum = sum + item.intr
+  })
+  console.log('우대합계: ' + sum)
+  return sum
+})
+//최종 계산에 적용되는 이율(maxRate를 넘지 않게)
+const calcIntr = computed(() => {
+  if (productType.value === 'cma') {
+    return props.retRate
+  }
+  let finIntr = Math.min(
+    Number(calcDetail.value.basicRate) + spSum.value,
+    Number(calcDetail.value.maxRate)
+  )
+  return finIntr
+})
 
 const result = computed(() => {
+  // console.log(calcIntr.value)
   let intr = calcIntr.value / 100
   console.log('적용 금리: ' + intr)
   let month = Number(period.value)
@@ -126,14 +138,16 @@ function like() {
     alert('찜하기는 회원만 이용할 수 있습니다.')
     return
   }
+
   let likeInfo = {
     memberId: cookies.get('member').id,
-    productCode: props.product.productCode,
+    productCode: props.product.productCode || '',
+    cmaId: props.product.id || 0,
     amount: Number(amount.value),
     interest: calcIntr.value,
     period: period.value,
     result: result.value,
-    rsrvType: calcDetail.value.rsrvType
+    rsrvType: calcType.value
   }
   console.log(likeInfo)
   likeProduct(productType.value, likeInfo).then((response) => {
