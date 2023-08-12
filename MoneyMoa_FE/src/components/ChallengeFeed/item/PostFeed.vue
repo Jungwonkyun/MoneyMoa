@@ -104,17 +104,25 @@ const submitFeedData = () => {
       challengeId.value = set.id
     }
   }
-  const feedData = {
-    content: content.value,
-    depositAmount: parseInt(depositAmount.value),
-    hashtag: hashtag.value,
-    files: files.value
+  const formData = new FormData()
+  for (const file of files.value) {
+    formData.append('fileUrls', file)
   }
-  console.log(feedData)
+  formData.append('content', content.value)
+  // depositAmount 값을 정수로 변환하여 변수에 할당
+  const parsedDepositAmount = parseInt(depositAmount.value)
+  formData.append('depositAmount', parsedDepositAmount)
+  formData.append('hashtag', hashtag.value)
 
+  // 폼 데이터 확인
+  for (const pair of formData.entries()) {
+    console.log(pair[0], pair[1], typeof pair[1])
+  }
+
+  console.log(formData.getAll('depositAmount'))
   // 피드 생성 API 호출
   const createFeed = challengeFeedApi.createFeed
-  createFeed(feedData, challengeId.value).then((response) => {
+  createFeed(formData, challengeId.value).then((response) => {
     console.log(response)
   })
 }
