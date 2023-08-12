@@ -16,10 +16,7 @@ import org.springframework.stereotype.Service;
 
 import javax.annotation.PostConstruct;
 import javax.transaction.Transactional;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 
 @Slf4j
 @Service
@@ -63,9 +60,7 @@ public class ChatRoomServiceImpl implements ChatRoomService {
         topics = new HashMap<>();
     }
 
-//    public List<ChatRoom> findAllRoom() {
-//        return opsHashChatRoom.values(CHAT_ROOMS);
-//    }
+
 
     public List<ChatRoomDto> findAllRoomFromDB() {
         return chatRoomDtoRepository.findAll();
@@ -90,10 +85,6 @@ public class ChatRoomServiceImpl implements ChatRoomService {
         return;
     }
 
-//    public ChatRoom findRoomById(String id) {
-//        return opsHashChatRoom.get(CHAT_ROOMS, id);
-//    }
-
     /**
      * 채팅방 검색 : 채팅방 id를 통해서 정보 받기
      */
@@ -102,25 +93,6 @@ public class ChatRoomServiceImpl implements ChatRoomService {
         //return opsHashChatRoom.get(CHAT_ROOMS, id);
         return oChatRoomDto.orElse(null);
     }
-
-
-    /**
-     * 채팅방 생성 : 서버간 채팅방 공유를 위해 redis hash에 저장한다.
-     */
-//    @Transactional
-//    public ChatRoom createChatRoom(String name) {
-//        ChatRoom chatRoom = ChatRoom.create(name);
-//
-//        ChatRoomDto chatRoomDto = ChatRoomDto.builder()
-//                .roomId(chatRoom.getRoomId())
-//                .name(chatRoom.getName())
-//                .build();
-//
-//        chatRoomDtoRepository.save(chatRoomDto);
-//        opsHashChatRoom.put(CHAT_ROOMS, chatRoom.getRoomId(), chatRoom);
-//
-//        return chatRoom;
-//    }
 
     /**
      * 채팅방 생성 : 서버간 채팅방 공유를 위해 redis hash에 저장한다.
@@ -167,8 +139,6 @@ public class ChatRoomServiceImpl implements ChatRoomService {
         
         String nickName = memberRepository.findById(memberId).get().getNickname();
 
-        // MemberChatroomSubInfo findMember = memberChatroomSubInfoRepository.findByMemberIdAndRoomId(memberId,roomId).orElse(null);
-        // if(findMember!=null)return null;
         
         //구독 정보 DB에 저장
         MemberChatroomSubInfo memberChatroomSubInfo = MemberChatroomSubInfo.builder()
@@ -181,44 +151,6 @@ public class ChatRoomServiceImpl implements ChatRoomService {
 
         return memberChatroomSubInfo;
     }
-
-//    public void saveChatMessage(String roomId, ChatMessage chatMessage) {
-//        log.info(chatMessage.toString());
-//        // 방 id로 채팅방 찾기
-//        //ChatRoom chatRoom = findRoomById(roomId);
-//
-//        ChatMessageDto chatMessages = ChatMessageDto.builder()
-//                .message(chatMessage.getMessage())
-//                .roomId(chatMessage.getRoomId())
-//                .sender(chatMessage.getSender())
-//                .type(chatMessage.getType())
-//                .build();
-//
-//        chatMessageDtoRepository.save(chatMessages);
-//
-////        if (chatRoom != null) {
-////
-////            // 채팅 메시지 리스트에 메시지 추가
-////            chatRoom.getChatmessage().add(chatMessage);
-////            // 변경된 채팅방 정보를 다시 Redis에 저장
-////            opsHashChatRoom.put(CHAT_ROOMS, chatRoom.getRoomId(), chatRoom);
-////        }
-//    }
-
-//    public List<ChatRoomDto> saveChatMessage(String roomId, ChatMessage chatMessage) {
-//        log.info(chatMessage.toString());
-//
-//        ChatMessageDto chatMessages = ChatMessageDto.builder()
-//                .message(chatMessage.getMessage())
-//                .roomId(chatMessage.getRoomId())
-//                .sender(chatMessage.getSender())
-//                .type(chatMessage.getType())
-//                .build();
-//
-//        chatMessageDtoRepository.save(chatMessages);
-//
-//        return chatRoomDtoRepository.findAll();
-//    }
 
     public List<ChatMessageDto> saveChatMessage(String roomId, ChatMessage chatMessage) {
         log.info(chatMessage.toString());
@@ -237,28 +169,38 @@ public class ChatRoomServiceImpl implements ChatRoomService {
         return chatMessageDtoRepository.findByRoomId(roomId);
     }
 
+    public List<MemberChatroomSubInfo> sendDirectMessage(Long senderId, Long sendedId){
 
-//    public void increaseUserCount(String roomId) {
-//        // 방 id로 채팅방 찾기
-//        ChatRoom chatRoom = findRoomById(roomId);
-//        if (chatRoom != null) {
-//            // 유저 수 증가
-//            chatRoom.setUserCount(chatRoom.getUserCount() + 1);
-//            // 변경된 채팅방 정보를 다시 Redis에 저장
-//            opsHashChatRoom.put(CHAT_ROOMS, chatRoom.getRoomId(), chatRoom);
-//        }
-//    }
+        String nickName1 = memberRepository.findById(senderId).get().getNickname();
+        String nickName2 = memberRepository.findById(sendedId).get().getNickname();
 
-//    public void decreaseUserCount(String roomId) {
-//        // 방 id로 채팅방 찾기
-//        ChatRoom chatRoom = findRoomById(roomId);
-//        if (chatRoom != null && chatRoom.getUserCount() > 0) {
-//            // 유저 수 감소
-//            chatRoom.setUserCount(chatRoom.getUserCount() - 1);
-//            // 변경된 채팅방 정보를 다시 Redis에 저장
-//            opsHashChatRoom.put(CHAT_ROOMS, chatRoom.getRoomId(), chatRoom);
-//        }
-//    }
+        DirectMessageRoom DmRoom = DirectMessageRoom.builder()
+                .sender(nickName1)
+                .receiver(nickName2)
+                .build();
+
+        MemberChatroomSubInfo memberChatroomSubInfo1 = MemberChatroomSubInfo.builder()
+                .memberId(senderId)
+                .memberNickname(nickName1)
+                .roomId(DmRoom.getRoomId())
+                .build();
+
+        MemberChatroomSubInfo memberChatroomSubInfo2 = MemberChatroomSubInfo.builder()
+                .memberId(sendedId)
+                .memberNickname(nickName2)
+                .roomId(DmRoom.getRoomId())
+                .build();
+
+        memberChatroomSubInfoRepository.save(memberChatroomSubInfo1);
+        memberChatroomSubInfoRepository.save(memberChatroomSubInfo2);
+
+        List<MemberChatroomSubInfo>subList = new ArrayList<>();
+        subList.add(memberChatroomSubInfo1);
+        subList.add(memberChatroomSubInfo2);
+
+        return subList;
+    }
+
 
     public List<ChatMessageDto> getChatMessages(String roomId){
         return chatMessageDtoRepository.findByRoomId(roomId);
