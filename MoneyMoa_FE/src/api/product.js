@@ -65,7 +65,6 @@ async function likeProduct(productType, likeInfo) {
     const headers = {
       Authorization: `Bearer ${token}`
     }
-    console.log(token)
     console.log(headers)
     const response = await api.post(`/${productType}/like`, JSON.stringify(likeInfo), { headers })
     console.log('찜했다')
