@@ -72,7 +72,8 @@ function write(event) {
   let comment = {
     content: commentContent.value
   }
-  writeComment(productType.value, route.params.productCode, comment).then((response) => {
+  let codeORid = productType.value === 'cma' ? route.params.id : route.params.productCode
+  writeComment(productType.value, codeORid, comment).then((response) => {
     commentContent.value = ''
     emit('comment-updated')
   })

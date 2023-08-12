@@ -116,6 +116,7 @@ import { useCookies } from 'vue3-cookies'
 import functions from '../../api/member.js'
 
 const { cookies } = useCookies()
+console.log(cookies.get('member'))
 const router = useRouter()
 const isPass = ref(false)
 
