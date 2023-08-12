@@ -39,7 +39,7 @@ public class ChallengeServiceImpl implements ChallengeService {
                 .period(inputChallenge.getPeriod())
                 .goalAmount(inputChallenge.getGoalAmount())
                 .startDate(startDate) // startDate 값 설정
-//                .presentAmount(inputChallenge.getPresentAmount())
+                .presentAmount(inputChallenge.getPresentAmount())
                 .memberId(memberId) // memberId 설정
                 .nickname(nickName) // 사용자 닉네임 설정
                 .build();

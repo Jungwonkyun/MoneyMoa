@@ -61,8 +61,9 @@ public class Challenge {
 
     @Builder
     public Challenge(String title, String content, Long memberId,
-                     String nickname, String period, LocalDate startDate, Integer goalAmount
-                  ) {                           // Integer presentAmount,
+                     String nickname, String period, LocalDate startDate, Integer goalAmount,
+                     Integer presentAmount
+                  ) {                           //
         this.title = title;
         this.content = content;
         this.memberId = memberId;
@@ -70,8 +71,7 @@ public class Challenge {
         this.period = period;
         this.startDate = startDate;
         this.goalAmount = goalAmount;
-//        this.presentAmount = presentAmount;
-
+        this.presentAmount = presentAmount;
     }
 
 
