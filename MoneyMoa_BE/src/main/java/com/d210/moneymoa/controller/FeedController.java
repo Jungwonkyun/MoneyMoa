@@ -136,6 +136,8 @@ public class FeedController {
         try {
             feedList = feedService.getAllFeeds();
 
+            List<Feed> modifiedFeedList = new ArrayList<>();
+
             for (Feed feed : feedList) {
                 List<FeedFile> feedFiles = feed.getFeedFiles();
                 List<String> fileUrls = new ArrayList<>();
@@ -149,11 +151,11 @@ public class FeedController {
                 // Feed 객체에 fileUrls 설정
                 feed.setFileUrls(fileUrls);
 
-                // feedDtoList에 feed 객체 추가
-                feedList.add(feed);
+                // 수정된 feed 객체를 modifiedFeedList에 추가
+                modifiedFeedList.add(feed);
             }
 
-            resultMap.put("feedList", feedList);
+            resultMap.put("feedList", modifiedFeedList);
             resultMap.put("message", "success");
             return new ResponseEntity<Map<String, Object>>(resultMap, HttpStatus.OK);
 
