@@ -1,5 +1,6 @@
 <template lang="">
   <v-container>
+    <LikedProductItem v-for="(item, index) in tmpLike" :key="index" :liked="item" />
     <v-card
       v-for="(product, index) in myProducts[0].LikeProduct"
       :key="index"
@@ -52,78 +53,91 @@
     </v-card>
   </v-container>
 </template>
-<script>
+<script setup>
 import { ref } from 'vue'
-
-export default {
-  setup() {
-    const dummy = [
+import LikedProductItem from './item/LikedProductItem.vue'
+const tmpLike = ref([
+  {
+    productCode: 'WR0001B',
+    productName: '우리예금',
+    period: 12,
+    interest: '3.5',
+    amount: '1000000',
+    productType: 'deposit',
+    result: '1035000',
+    bankName: '우리은행'
+  },
+  {
+    // productCode: 'WR0001B',
+    id: 15,
+    productName: 'myCMA',
+    period: 12,
+    interest: '3.5',
+    amount: '10000',
+    productType: 'cma2',
+    result: '123000',
+    bankName: '한국투자증권'
+  }
+])
+const dummy = [
+  {
+    message: 'success',
+    LikeProduct: [
       {
-        message: 'success',
-        LikeProduct: [
-          {
-            id: 1,
-            member_id: 2,
-            product_code: '1223dde',
-            product_name: '꿈노아 적금',
-            period: '12',
-            interest: '3.5',
-            amount: '100000',
-            product_type: '적금',
-            result: '1035000',
-            bank: '우리은행'
-          },
-          {
-            id: 2,
-            member_id: 2,
-            product_code: '1223dde',
-            product_name: '꿈노아 예금',
-            period: '24',
-            interest: '4',
-            amount: '1500000',
-            product_type: '예금',
-            result: '1560000',
-            bank: '우리은행'
-          },
-          {
-            id: 3,
-            member_id: 2,
-            product_code: '1223dde',
-            product_name: "노's CMA",
-            period: '6',
-            interest: '3',
-            amount: '2000000',
-            product_type: 'CMA예금식',
-            result: '2060000',
-            bank: '우리은행'
-          },
-          {
-            id: 3,
-            member_id: 2,
-            product_code: '1223dde',
-            product_name: "노's CMA",
-            period: '6',
-            interest: '3',
-            amount: '100000',
-            product_type: 'CMA적금식',
-            result: '1035000',
-            bank: '우리은행'
-          }
-        ]
+        id: 1,
+        member_id: 2,
+        product_code: '1223dde',
+        product_name: '꿈노아 적금',
+        period: '12',
+        interest: '3.5',
+        amount: '100000',
+        product_type: '적금',
+        result: '1035000',
+        bank: '우리은행'
+      },
+      {
+        id: 2,
+        member_id: 2,
+        product_code: '1223dde',
+        product_name: '꿈노아 예금',
+        period: '24',
+        interest: '4',
+        amount: '1500000',
+        product_type: '예금',
+        result: '1560000',
+        bank: '우리은행'
+      },
+      {
+        id: 3,
+        member_id: 2,
+        product_code: '1223dde',
+        product_name: "노's CMA",
+        period: '6',
+        interest: '3',
+        amount: '2000000',
+        product_type: 'CMA예금식',
+        result: '2060000',
+        bank: '우리은행'
+      },
+      {
+        id: 3,
+        member_id: 2,
+        product_code: '1223dde',
+        product_name: "노's CMA",
+        period: '6',
+        interest: '3',
+        amount: '100000',
+        product_type: 'CMA적금식',
+        result: '1035000',
+        bank: '우리은행'
       }
     ]
-
-    const myProducts = ref(dummy)
-
-    const wooriLogo = '/src/assets/bankLogo/woori.png'
-    const kbLogo = '/src/assets/bankLogo/kb.svg'
-
-    return {
-      myProducts,
-      wooriLogo,
-      kbLogo
-    }
   }
-}
+]
+
+const myProducts = ref(dummy)
+
+const wooriLogo = '/src/assets/bankLogo/woori.png'
+const kbLogo = '/src/assets/bankLogo/kb.svg'
 </script>
 <style lang=""></style>

@@ -55,7 +55,7 @@
         </v-radio-group>
       </v-card-item>
     </v-card>
-    <!-- <IntrCalcItem v-if="loaded" :product="product" /> -->
+    <IntrCalcItem v-if="loaded" :product="product" :retRate="retByRBJ" />
     <v-container>
       <ProductCommentItem
         v-if="loaded"
@@ -70,7 +70,7 @@ import { ref, computed } from 'vue'
 import { useProductStore } from '@/stores/productStore'
 import { storeToRefs } from 'pinia'
 import { useRoute } from 'vue-router'
-import { getCMA, getPeriodRange, spclConditionIntrList } from '@/api/product'
+import { getCMA } from '@/api/product'
 import IntrCalcItem from './item/IntrCalcItem.vue'
 import ProductCommentItem from './item/ProductCommentItem.vue'
 const store = useProductStore()
@@ -83,7 +83,6 @@ const memo = ref({
   종금형: [],
   발행어음형: []
 })
-const spclConditionIntrs = ref([])
 const commentList = ref([])
 const loaded = ref(false)
 function getContent() {
@@ -106,6 +105,10 @@ function getContent() {
   })
 }
 getContent()
+const retByRBJ = computed(() => {
+  //라디오버튼에 없는 유형이 store에 있을 시 수익률 0으로 계산합니다
+  return product.value.hasOwnProperty(RBJ.value) ? Number(product.value[RBJ.value]) : 0
+})
 </script>
 <style scoped lang="scss">
 .cmatype-col {
