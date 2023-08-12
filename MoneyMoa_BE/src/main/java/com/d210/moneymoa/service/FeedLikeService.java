@@ -1,13 +1,19 @@
 //package com.d210.moneymoa.service;
 //
 //
-//import com.d210.moneymoa.dto.FeedLikeDto.FeedLikeRequest;
+//import com.d210.moneymoa.dto.Feed;
+//
+//import java.util.List;
 //
 //public interface FeedLikeService {
 //
-//    void insert(FeedLikeRequest feedLikeReqest);
+//    boolean toggleLike(Long memberId, Long feedId) ;
 //
-//    void delete(FeedLikeRequest feedLikeReqest);
+//
+//    Feed getFeedById(Long feedId);
+//
+//    void increaseFeedLikeCount(Long feedId);
+//    void decreaseFeedLikeCount(Long feedId);
 //
 //
 //

@@ -7,9 +7,11 @@ import com.d210.moneymoa.domain.oauth.AuthTokensGenerator;
 import com.d210.moneymoa.domain.oauth.OAuthProvider;
 import com.d210.moneymoa.dto.AuthToken;
 import com.d210.moneymoa.dto.Member;
+import com.d210.moneymoa.dto.RefreshToken;
 import com.d210.moneymoa.dto.Role;
 import com.d210.moneymoa.repository.AuthTokensRepository;
 import com.d210.moneymoa.repository.MemberRepository;
+import com.d210.moneymoa.repository.RefreshTokenRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.SimpleMailMessage;
@@ -39,15 +41,14 @@ public class MemberServiceImpl implements MemberService {
     AuthTokensRepository authTokensRepository;
     @Autowired
     private PasswordEncoder passwordEncoder;
-
+    @Autowired
+    private RefreshTokenRepository refreshTokenRepository;
     private String authNum;
 
 
     //로그인시 유저이메일을 가져와서 DB에 회원정보가 있는지 확인
     public Member findMemberByEmail(String email) {
-        log.info("이메일로 멤버 찾기 시이이이작");
         Optional<Member> oMember = memberRepository.findByEmail(email);
-        
         return oMember.orElse(null);
     }
 
@@ -163,7 +164,6 @@ public class MemberServiceImpl implements MemberService {
 
 
     public MimeMessage createEmailForm(String email) throws UnsupportedEncodingException, MessagingException {
-
         // 코드를 생성합니다.
         authNum = createCode();
         String setFrom = "wjddnjsrbs97@gmail.com";	// 보내는 사람
@@ -255,13 +255,25 @@ public class MemberServiceImpl implements MemberService {
         return authNum; //인증 코드 반환
     }
 
-    public Long logout(String accessToken) {
-        AuthToken AT = authTokensRepository.findByAccessToken(accessToken).get();
-        AT.setExpiresIn(0L);
+    public AuthToken logout(AuthToken jwtToken) {
 
-        authTokensRepository.save(AT);
-        return AT.getExpiresIn();
+        String aT = jwtToken.getAccessToken();
+        String rT = jwtToken.getRefreshToken();
+
+        jwtToken.setExpiresIn(0L);
+
+        Optional<RefreshToken> refreshToken = refreshTokenRepository.findByRefreshToken(rT);
+
+        refreshToken.ifPresent(token -> refreshTokenRepository.delete(token));
+        return jwtToken;
+
+        //        AuthToken AT = authTokensRepository.findByAccessToken(accessToken).get();
+        //        AT.setExpiresIn(0L);
+        //
+        //        authTokensRepository.save(AT);
+        //        return AT.getExpiresIn();
     }
+
 
 
     @Transactional

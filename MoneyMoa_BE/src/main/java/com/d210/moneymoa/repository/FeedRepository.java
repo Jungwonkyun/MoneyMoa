@@ -7,7 +7,7 @@ import java.util.List;
 import java.util.Optional;
 
 public interface FeedRepository extends JpaRepository<Feed, Long> {
-    Optional<Feed> findById(Long id);
+//    Long findById(Long id);
     List<Feed> findAllByMemberId(Long memberId);
     List<Feed> findByMemberId(Long memberId);
     
