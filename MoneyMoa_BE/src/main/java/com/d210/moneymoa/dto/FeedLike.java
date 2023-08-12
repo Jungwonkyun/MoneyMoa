@@ -13,9 +13,9 @@ import javax.persistence.*;
 @Getter
 @Entity
 @NoArgsConstructor
-@IdClass(FeedLikeId.class) // 복합키 클래스 참조
+//@IdClass(FeedLikeId.class) // 복합키 클래스 참조
 public class FeedLike {
-
+/* 복합키 참조 코드. 이제 필요 없음
     @Id
     @ApiModelProperty(hidden = true)
     private Long memberId;
@@ -36,9 +36,11 @@ public class FeedLike {
         this.feedId = feedId;
     }
 
+ */
+
 
     // 수정 .FeedLikeId랑 합친 코드
-/*
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -61,5 +63,5 @@ public class FeedLike {
         this.feedId = feedId;
     }
 
- */
+
 }

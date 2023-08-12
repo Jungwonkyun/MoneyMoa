@@ -104,6 +104,7 @@ public class FeedController {
                     }
 
 
+
                     //resultMap에 생성된 새 피드와 성공 메시지 추가
                     resultMap.put("feed", newFeed);
                     resultMap.put("message", "success");
