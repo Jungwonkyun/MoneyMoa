@@ -5,16 +5,14 @@ import com.d210.moneymoa.domain.oauth.AuthTokensGenerator;
 import com.d210.moneymoa.dto.*;
 import com.d210.moneymoa.repository.ChallengeRepository;
 import com.d210.moneymoa.repository.MemberRepository;
-import com.d210.moneymoa.service.FeedCommentService;
-import com.d210.moneymoa.service.FeedFileService;
-import com.d210.moneymoa.service.FeedService;
-import com.d210.moneymoa.service.StorageService;
+import com.d210.moneymoa.service.*;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
+import org.checkerframework.checker.units.qual.A;
 import org.checkerframework.common.reflection.qual.GetMethod;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -58,21 +56,21 @@ public class FeedController {
     @Autowired
     private AmazonS3 s3Client;
 
-
-
     // 피드 생성 메서드
     // Swagger API 문서에 Endpoint 정보 추가
     @ApiOperation(value = "피드 생성", notes = "피드 작성합니다.")
-    // POST 방식으로 "/create" URL에 매핑
-    @PostMapping("/create/{challengeId}")
-    // 메서드의 반환 타입은 ResponseEntity 객체이며, 요청 본문에서 Feed 데이터를 파싱하고 인증 헤더를 사용합니다.
+
+    @PostMapping(path = "/create/{challengeId}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<Map<String, Object>> createFeed(
             @PathVariable Long challengeId,
-            @RequestPart("feed") Feed feed,
+            @RequestPart("feed") String feedString,
             @RequestPart(value = "files", required = false) MultipartFile[] files,
-            // JWT 토큰을 헤더에서 인증 정보로 사용
             @ApiParam(value = "Bearer ${jwt token} 형식으로 전송")
-            @RequestHeader("Authorization") String jwt) {
+            @RequestHeader("Authorization") String jwt) throws IOException {
+
+        ObjectMapper objectMapper = new ObjectMapper();
+        Feed feed = objectMapper.readValue(feedString, Feed.class);
+
         // 결과를 반환할 Map 객체 생성
         Map<String, Object> resultMap = new HashMap<>();
         // HTTP 상태 기본값 설정
@@ -89,7 +87,10 @@ public class FeedController {
                 // 존재하면 새 피드를 생성하고 입력받은 memberId, challengeId로 Feed 객체를 만들어 반환
                 Feed newFeed = feedService.createFeed(challengeId, memberId, feed);
 
+                // 피드가 성공적으로 생성되면 HTTP 상태를 CREATE로 변경
+                status = HttpStatus.CREATED;
 
+                // 파일이 전달되었다면, 각 파일을 처리하고 피드에 추가합니다.
                 if (files != null && files.length > 0) {
                     for (MultipartFile file : files) {
                         String fileName = storageService.uploadFile(file);
@@ -97,15 +98,16 @@ public class FeedController {
                         FeedFile feedFile = new FeedFile();
                         feedFile.setImgPath(fileName);
                         feedFile.setFeed(newFeed);
+
+                        // feedFile 저장 로직은 여기에 구현해야 합니다.
                         feedFileService.saveFeedFile(feedFile);
                     }
-                }
 
-                // 피드가 성공적으로 생성되면 HTTP 상태를 CREATE로 변경
-                status = HttpStatus.CREATED;
-                //resultMap에 생성된 새 피드와 성공 메시지 추가
-                resultMap.put("feed", newFeed);
-                resultMap.put("message", "success");
+
+                    //resultMap에 생성된 새 피드와 성공 메시지 추가
+                    resultMap.put("feed", newFeed);
+                    resultMap.put("message", "success");
+                }
             } else {
                 //챌린지가 존재하지 않을 경우 HTTP 상태를 NOT_FOUND로 변경
                 status = HttpStatus.NOT_FOUND;
@@ -117,6 +119,7 @@ public class FeedController {
             status = HttpStatus.BAD_REQUEST;
             // resultMap에 실패 메시지를 추가
             resultMap.put("message", "fail");
+
         }
         // 최종 결과와 설정된 HTTP 상태를 반환하는 ResponseEntity 객체를 반환
         return new ResponseEntity<>(resultMap, status);
@@ -127,11 +130,13 @@ public class FeedController {
     public ResponseEntity<Map<String, Object>> getAllFeeds(@RequestHeader("Authorization") String jwt) {
         log.info("BoardList 모두 반환");
         HttpStatus status;
-        List<Object> feedDtoList = new ArrayList<>();
+        List<Feed> feedList;
         Map<String, Object> resultMap = new HashMap<String, Object>();
 
         try {
-            List<Feed> feedList = feedService.getAllFeeds();
+            feedList = feedService.getAllFeeds();
+
+            List<Feed> modifiedFeedList = new ArrayList<>();
 
             for (Feed feed : feedList) {
                 List<FeedFile> feedFiles = feed.getFeedFiles();
@@ -143,14 +148,14 @@ public class FeedController {
                     fileUrls.add(fileUrl.toString());
                 }
 
-                Map<String, Object> feedData = new HashMap<>();
-                feedData.put("feed", feed);
-                feedData.put("fileUrls", fileUrls);
-                feedDtoList.add(feedData);
+                // Feed 객체에 fileUrls 설정
+                feed.setFileUrls(fileUrls);
+
+                // 수정된 feed 객체를 modifiedFeedList에 추가
+                modifiedFeedList.add(feed);
             }
 
-            resultMap.put("feeds", feedDtoList);
-
+            resultMap.put("feedList", modifiedFeedList);
             resultMap.put("message", "success");
             return new ResponseEntity<Map<String, Object>>(resultMap, HttpStatus.OK);
 
@@ -175,6 +180,22 @@ public class FeedController {
 
         try {
             feedList = feedService.getMemberFeeds(memberId);
+
+
+            for (Feed feed : feedList) {
+                List<FeedFile> feedFiles = feed.getFeedFiles();
+                List<String> fileUrls = new ArrayList<>();
+
+                // 각 Feed별로 저장된 이미지에 대해 파일 URL 생성
+                for (FeedFile feedFile : feedFiles) {
+                    URL fileUrl = s3Client.getUrl("moneymoa-first-bucket", feedFile.getImgPath());
+                    fileUrls.add(fileUrl.toString());
+                }
+
+                // Feed 객체에 fileUrls 설정
+                feed.setFileUrls(fileUrls);
+            }
+
             resultMap.put("feedList", feedList);
             resultMap.put("message", "success");
             return new ResponseEntity<Map<String, Object>>(resultMap, HttpStatus.OK);
@@ -200,6 +221,19 @@ public class FeedController {
 
         try {
             feed = feedService.getFeedDetail(feedId);
+
+            List<FeedFile> feedFiles = feed.getFeedFiles();
+            List<String> fileUrls = new ArrayList<>();
+
+            // 각 Feed별로 저장된 이미지에 대해 파일 URL 생성
+            for (FeedFile feedFile : feedFiles) {
+                URL fileUrl = s3Client.getUrl("moneymoa-first-bucket", feedFile.getImgPath());
+                fileUrls.add(fileUrl.toString());
+            }
+
+            // Feed 객체에 fileUrls 설정
+            feed.setFileUrls(fileUrls);
+
             // 피드 댓글 조회
             List<FeedComment> feedComments = feedCommentService.findByFeedId(feedId);
 
@@ -255,6 +289,18 @@ public class FeedController {
 
         try {
             Long memberId = authTokensGenerator.extractMemberId(jwt.replace("Bearer ", ""));
+
+
+            // 해당 피드의 파일들을 조회
+            Feed feed = feedService.getFeedDetail(feedId);
+            List<FeedFile> feedFiles = feed.getFeedFiles();
+
+            // 파일들을 삭제
+            for (FeedFile feedFile : feedFiles) {
+                storageService.deleteFile(feedFile.getImgPath());
+            }
+
+            // 피드 삭제
             feedService.deleteFeed(feedId, memberId);
             resultMap.put("message", "success");
             return new ResponseEntity<Map<String, Object>>(resultMap, HttpStatus.OK);
@@ -381,6 +427,28 @@ public class FeedController {
         }
         return new ResponseEntity<>(feeds, HttpStatus.OK);
     }
+
+    @PutMapping("/like/{feedId}")
+    public ResponseEntity<?> toggleFeedLike(@PathVariable Long feedId, @RequestHeader("Authorization") String jwt) {
+        Map<String, Object> resultMap = new HashMap<>();
+        HttpStatus status;
+        try {
+            Long memberId = authTokensGenerator.extractMemberId(jwt.replace("Bearer ", ""));
+            boolean isLiked = feedService.toggleLike(memberId, feedId);
+            Feed updateFeed = feedService.getFeedById(feedId);
+            status = HttpStatus.OK;
+            resultMap.put("message", "success");
+            resultMap.put("feed", updateFeed);
+            resultMap.put("isLiked", isLiked);
+        } catch (Exception e) {
+            e.printStackTrace();
+            status = HttpStatus.INTERNAL_SERVER_ERROR;
+            resultMap.put("message", "fail");
+            resultMap.put("message2", "로그인 토큰(JWT) 또는 FeedID에 문제가 있습니다.");
+        }
+        return new ResponseEntity<>(resultMap, status);
+    }
+
 }
 
 

@@ -45,8 +45,6 @@ public class Feed implements Serializable {
     @JoinColumn(name = "memberId", insertable=false, updatable = false)
     private Member member; //id
 
-    @ColumnDefault("0")
-    private Integer feedLikeCount;
 
 //    @Column(nullable = false)
     @ApiModelProperty(hidden = true)
@@ -66,9 +64,34 @@ public class Feed implements Serializable {
     @JsonIgnore
     private List<FeedFile> feedFiles;
 
+    // fileUrls 필드 추가
+    @Transient
+    private List<String> fileUrls;
+
+    // Getter 및 Setter
+    public List<String> getFileUrls() {
+        return fileUrls;
+    }
+
+    public void setFileUrls(List<String> fileUrls) {
+        this.fileUrls = fileUrls;
+    }
+
+    @ColumnDefault("0")
+    private Integer feedLikeCount;
+
+    // 좋아요 수 증가 메서드
+    public void increaseFeedLikeCount() {
+        this.feedLikeCount += 1;
+    }
+
+    // 좋아요 수 감소 메서드
+    public void decreaseFeedLikeCount() {
+        this.feedLikeCount -= 1;
+    }
 
     @Builder
-    public Feed(String content, Long challengeId, String hashtag, Integer depositAmount,Integer feedLikeCount, String nickname, Long memberId) { //
+    public Feed(String content, Long challengeId, String hashtag, Integer depositAmount,Integer feedLikeCount, Long memberId, String nickname) { //
         this.content = content;
         this.challengeId = challengeId;
         this.hashtag = hashtag;

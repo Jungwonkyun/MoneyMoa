@@ -46,7 +46,7 @@ public class SpringSecurity extends WebSecurityConfigurerAdapter {
                 .frameOptions().disable()
                 .and()
                 .authorizeRequests()
-                .antMatchers("/swagger-ui/**", "/v2/api-docs/**", "/webjars/**", "/swagger-resources/**").permitAll()
+                .antMatchers("/swagger-ui/**", "/v2/api-docs/**", "/webjars/**", "/swagger-resources/**", "/api/feed/search").permitAll()
                 .antMatchers( "/api/auth/**", "/api/member/login", "/api/member/signup", "/api/member/findpassword",
                         "/api/member/emailauth", "/api/file/**", "/api/deposit/**", "/api/saving/**","/api/cma/**", "/api/interestdetail/**","/api/ws-stomp","/pub/**", "/sub/**",
                         "/api/chat/**", "/api/ws-stomp/**").permitAll()
