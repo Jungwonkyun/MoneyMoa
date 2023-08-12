@@ -12,3 +12,35 @@
 // .row {
 //     color: $color-main; // 변수 사용
 // }
+@font-face {
+  font-family: 'NanumGothic';
+  src: url('../fonts/NanumGothic-Bold.ttf') format('truetype');
+}
+
+@font-face {
+  font-family: 'Handjet';
+  src: url('../fonts/Handjet-Regular.ttf') format('truetype');
+}
+
+a {
+  text-decoration: none;
+  color: inherit;
+}
+#header {
+  background-color: #ffffff;
+  height: 80px;
+  display: flex;
+  justify-content: center;
+  z-index: 100;
+  .v-btn__content {
+    color: $menu-color;
+    font-size: 20px;
+    font-family: 'NanumGothic';
+  }
+  .header-title {
+    color: $logo-color;
+    font-size: 30px;
+    font-weight: bold;
+    font-family: 'NanumGothic';
+  }
+}

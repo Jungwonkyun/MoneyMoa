@@ -1,18 +1,24 @@
 <template>
   <div>
-    <v-card :elevation="0">
-      <v-img height="500" :src="landing" class="text-white" cover>
-        <v-container class="fill-height">
-          <v-row>
-            <v-spacer></v-spacer>
-            <v-col align="right">
-              <h1>돈 모으고 싶을 때,</h1>
-              <h1>머니모아</h1>
-            </v-col>
-          </v-row>
-        </v-container>
-      </v-img>
-    </v-card>
+    <v-carousel cycle hide-delimiter-background show-arrows="hover" height="720">
+      <v-carousel-item v-for="(slide, i) in slides" :key="i">
+        <div class="custom-slide">
+          <v-img v-if="i === 0" :src="slide" height="720" class="main"></v-img>
+          <v-img v-if="i === 1" :src="slide" height="720" cover class="text-white"
+            ><v-container class="fill-height">
+              <v-row>
+                <v-spacer></v-spacer>
+                <v-col align="right">
+                  <h1>돈 모으고 싶을 때,</h1>
+                  <h1>머니모아</h1>
+                </v-col>
+              </v-row>
+            </v-container></v-img
+          >
+        </div>
+      </v-carousel-item>
+    </v-carousel>
+
     <v-container>
       <v-row justify="space-around">
         <v-col align="center">
@@ -40,6 +46,20 @@
 </template>
 
 <script setup>
-import landing from '../assets/img/micheile-henderson-f030K9IzpcM-unsplash.jpg'
-const moamoa = './src/assets/img/money_moa_moa.gif'
+// carousel item
+import MomenyMoa_main from '@/assets/img/MoneyMoa_main.gif'
+import landing from '@/assets/img/micheile-henderson-f030K9IzpcM-unsplash.jpg'
+
+const slides = [MomenyMoa_main, landing]
+
+// const moamoa = './src/assets/img/money_moa_moa.gif'
 </script>
+<style scoped lang="scss">
+h1 {
+  font-size: 36px;
+}
+
+.main {
+  background-color: #eff5ff;
+}
+</style>

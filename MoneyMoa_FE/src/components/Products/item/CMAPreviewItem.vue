@@ -1,10 +1,10 @@
 <template>
-  <v-container @click="setProduct(product)">
+  <v-container>
     <!-- CMA는 productCode 대신 id 쓸거임 -->
     <router-link
       :to="{
-        name: 'depositDetail',
-        params: { productCode: product.product_code }
+        name: 'cmaDetail',
+        params: { id: product.id }
       }"
     >
       <v-card variant="tonal">
@@ -13,14 +13,14 @@
             <v-card-item>
               <v-card-subtitle>
                 <v-icon icon="mdi-face" />
-                {{ product.bank_name }}
+                {{ product.stockName }}
               </v-card-subtitle>
               <v-card-title>
-                {{ product.product_name }}
+                {{ product.cmaName }}
               </v-card-title>
             </v-card-item>
           </v-col>
-          <v-col cols="2" align-self="center"> {{ product.interest }}% </v-col>
+          <v-col cols="2" align-self="center"> {{ product[RBJ] }}% </v-col>
         </v-row>
       </v-card>
     </router-link>
@@ -28,13 +28,11 @@
 </template>
 <script setup>
 import { useProductStore } from '@/stores/productStore'
-
+import { storeToRefs } from 'pinia'
+const store = useProductStore()
+const { RBJ } = storeToRefs(store)
 defineProps({
   product: Object
 })
-const store = useProductStore()
-function setProduct(product) {
-  store.setProduct(product)
-}
 </script>
 <style></style>
