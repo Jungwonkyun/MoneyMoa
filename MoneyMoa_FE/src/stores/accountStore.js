@@ -1,5 +1,5 @@
 import { defineStore } from 'pinia'
-import { ref } from 'vue'
+import { ref, onMounted } from 'vue'
 import { useCookies } from 'vue3-cookies'
 import functions from '../api/member.js'
 export const useAccountStore = defineStore('account', () => {
@@ -19,12 +19,22 @@ export const useAccountStore = defineStore('account', () => {
   const isLogin = ref(!!cookies.get('member'))
   const member = ref(null)
 
+  // 리프레시 토큰 날짜 저장해줘야함
+  // 일주일 뒤 날짜 반환하는 함수
+  function getNextWeekDate() {
+    const today = new Date()
+    const nextWeek = new Date(today)
+    nextWeek.setDate(today.getDate() + 7)
+    return nextWeek.toUTCString()
+  }
   // 로그인 함수
   function onLogin(data) {
-    // 로그인 후 자동 새로고침 되게 해놨기 때문에 store에 멤버정보 저장하면 초기화됨, 일단 쿠키에 멤버정보 넣기
-    cookies.set('member', data.member, '30MIN')
+    const expireTimes = getNextWeekDate()
     cookies.set('accessToken', data.token, '30MIN')
+    cookies.set('expireTimes', expireTimes, expireTimes)
+    cookies.set('accessTokenRef', data.token, '7D')
     cookies.set('refreshToken', data.refreshToken, '7D')
+    cookies.set('member', data.member, '7D')
     isLogin.value = !!cookies.get('member')
   }
   function onLogout() {
@@ -33,22 +43,28 @@ export const useAccountStore = defineStore('account', () => {
     cookies.remove('refreshToken')
     isLogin.value = !!cookies.get('member')
   }
-  // 리프레시 토큰으로 토큰 재발급받기
+  // 토큰이 없고 리프레시 토큰이 있으면 토큰 재발급받기
   async function getNewToken() {
-    if (cookies.get('refreshToken')) {
+    if (!cookies.get('accessToken') && cookies.get('refreshToken')) {
       try {
         const res = await functions.postGetAccessid()
         console.log(res)
         if (res.message === 'success') {
-          cookies.set('accessToken', res.RefreshedAccessToken, '2')
+          cookies.set('accessToken', res.RefreshedAccessToken, '30MIN')
+          const expireTimes = cookies.get('expireTimes')
+          // 리프레시 토큰 수명만큼 새로 저장
+          cookies.set('accessTokenRef', res.RefreshedAccessToken, expireTimes)
+          // isLogin값도 갱신해주자
+          isLogin.value = !!cookies.get('accessToken')
         }
       } catch (err) {
         console.log(err)
       }
     }
   }
-  // 1790000
-  // setInterval(getNewToken, 5000)
+  onMounted(() => {
+    getNewToken()
+  })
   return {
     memberId,
     pwdChecked,
