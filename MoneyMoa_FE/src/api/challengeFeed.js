@@ -122,11 +122,15 @@ async function deleteFeed(feedId) {
 }
 
 // 댓글 작성 API
-async function postComment() {
+async function postComment(feedId, comment) {
   try {
-    const res = await api.get(`/feed/list`, {
-      usertoken: accessToken
-    })
+    // 토큰 받아오기
+    const { cookies } = useCookies()
+    const token = cookies.get('accessToken')
+    const headers = {
+      Authorization: `Bearer ${token}`
+    }
+    const res = await api.post(`/feed/comment/${feedId}`, JSON.stringify(comment), { headers })
     return res
   } catch (err) {
     console.log(err)

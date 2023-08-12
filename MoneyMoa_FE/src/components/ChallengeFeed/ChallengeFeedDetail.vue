@@ -9,13 +9,13 @@
     </v-carousel>
 
     <v-row align="center" class="mt-1">
-      <v-col cols="8" class="d-flex flex-row justify-start">
+      <v-col cols="9" class="d-flex flex-row justify-start">
         <v-card-subtitle v-for="(hashtag, index) in hashtags" :key="index">
           <v-chip @click.stop="searchFeed(해시태그1)">{{ hashtag }}</v-chip>
         </v-card-subtitle>
       </v-col>
 
-      <v-col cols="4" class="flex">
+      <v-col cols="3" class="flex">
         <v-btn
           @click.stop="addFeedLike(feedId)"
           size="large"
@@ -32,14 +32,25 @@
         <UpdateFeed v-if="condition" class="px-10" />
       </v-col>
     </v-row>
+    <v-divider></v-divider>
 
     <v-card-text class="my-5">
       {{ content }}
     </v-card-text>
-
-    <v-card-text v-for="(comment, index) in comments" :key="index">
-      {{ comment }}
+    <v-divider></v-divider>
+    <v-card-text v-for="(com, index) in comments" :key="index">
+      {{ com.nickname }}: {{ com.content }}
+      <v-btn icon="mdi-delete" variant="text"></v-btn>
     </v-card-text>
+    <v-text-field
+      class="px-5"
+      v-model="comment"
+      label="댓글 달기..."
+      variant="underlined"
+      append-inner-icon="mdi-comment-check-outline"
+      @click:append-inner="addComment"
+      @keyup.enter="addComment"
+    ></v-text-field>
   </v-card>
 </template>
 <script setup>
@@ -67,6 +78,10 @@ const hashtags = ref([])
 const comments = ref([])
 const imgs = ref([])
 
+// 댓글 작성 위한 모델
+const comment = ref('')
+
+// 피드 삭제 버튼 보여주기 위한 조건
 const condition = ref(false)
 
 const deleteFeed = async () => {
@@ -104,6 +119,27 @@ onMounted(() => {
     }
   })
 })
+
+// 댓글 생성 및 댓글 목록 조회
+const addComment = async () => {
+  try {
+    const commentData = {
+      content: comment.value
+    }
+
+    // 댓글 생성
+    await challengeFeed.postComment(feedId.value, commentData)
+
+    // 댓글 목록 업데이트
+    const response = await challengeFeed.fetchFeedDetail(feedId.value)
+    comments.value = response.data.comments
+
+    // 입력 필드 초기화
+    comment.value = ''
+  } catch (error) {
+    console.error('에러 발생:', error)
+  }
+}
 </script>
 <style>
 .flex {
