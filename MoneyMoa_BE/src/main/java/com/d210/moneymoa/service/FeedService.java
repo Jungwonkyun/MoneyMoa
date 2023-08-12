@@ -4,6 +4,7 @@ import com.d210.moneymoa.dto.Feed;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public interface FeedService {
@@ -22,29 +23,17 @@ public interface FeedService {
     void deleteFeed(Long feedId, Long memberId) throws IllegalAccessException;
 
     List<Feed> findByHashtags(String hashtag);
-
     List<Feed> findByContent(String content);
 
 
+// 피드 좋아요
+    Feed getFeedById(Long feedId);
 
-
-    /*
-    List<Feed> getAllFeeds(Long memberId);
-    List<Feed> getAllFeedsForMember(Long memberId);
-    Feed updateFeed(Long id, Feed req, Long memberId, String jwt) throws AuthorizationException;
-
-    Feed findFeed(Long id);
+    boolean toggleLike(Long memberId, Long feedId);
+//    void increaseFeedLikeCount(Long feedId);
+//    void decreaseFeedLikeCount(Long feedId);
 
 
 
-    void deleteFeed(Long id, String jwt) throws AuthorizationException;
-
-
-    //    댓글 카운트
-    void addLikeCount(Long feedId);
-
-    void subLikeCount(Long feedId);
-
-     */
 
 }

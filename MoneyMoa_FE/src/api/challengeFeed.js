@@ -27,7 +27,7 @@ async function getUserFeedList(memberId) {
     const headers = {
       Authorization: `Bearer ${token}`
     }
-    const res = await api.get(`/feed/all/${memberId}`, { headers })
+    const res = await api.get(`/feed/member/${memberId}`, { headers })
     return res
   } catch (err) {
     console.log(err)
@@ -40,7 +40,7 @@ async function fetchFeedDetail(feedId) {
     const headers = {
       Authorization: `Bearer ${token}`
     }
-    const res = await api.get(`/feed/${feedId}`, { headers })
+    const res = await api.get(`/feed/detail/${feedId}`, { headers })
     return res
   } catch (err) {
     console.log(err)
@@ -76,10 +76,19 @@ async function searchFeed(searchWord) {
 // 피드 생성 API
 async function createFeed(feedData, challengeId) {
   try {
-    const headers = {
-      Authorization: `Bearer ${token}`
+    const formData = new FormData()
+    for (const file of feedData.files) {
+      formData.append('files', file)
     }
-    const res = await api.post(`/feed/create/${challengeId}`, JSON.stringify(feedData), { headers })
+    formData.append('content', feedData.content)
+    formData.append('depositAmount', feedData.depositAmount)
+    formData.append('hashtag', feedData.hashtag)
+
+    const headers = {
+      Authorization: `Bearer ${token}`,
+      'Content-Type': 'multipart/form-data'
+    }
+    const res = await api.post(`/feed/create/${challengeId}`, formData, { headers })
     return res
   } catch (err) {
     console.log(err)
@@ -113,11 +122,15 @@ async function deleteFeed(feedId) {
 }
 
 // 댓글 작성 API
-async function postComment() {
+async function postComment(feedId, comment) {
   try {
-    const res = await api.get(`/feed/list`, {
-      usertoken: accessToken
-    })
+    // 토큰 받아오기
+    const { cookies } = useCookies()
+    const token = cookies.get('accessToken')
+    const headers = {
+      Authorization: `Bearer ${token}`
+    }
+    const res = await api.post(`/feed/comment/${feedId}`, JSON.stringify(comment), { headers })
     return res
   } catch (err) {
     console.log(err)
@@ -125,11 +138,15 @@ async function postComment() {
 }
 
 // 댓글 삭제 API
-async function deleteComment() {
+async function deleteComment(commentId) {
   try {
-    const res = await api.get(`/feed/list`, {
-      usertoken: accessToken
-    })
+    // 토큰 받아오기
+    const { cookies } = useCookies()
+    const token = cookies.get('accessToken')
+    const headers = {
+      Authorization: `Bearer ${token}`
+    }
+    const res = await api.delete(`/feed/comment/delete/${commentId}`, { headers })
     return res
   } catch (err) {
     console.log(err)

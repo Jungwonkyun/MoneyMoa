@@ -1,6 +1,7 @@
 package com.d210.moneymoa.service;
 
 import com.d210.moneymoa.domain.oauth.AuthTokens;
+import com.d210.moneymoa.dto.AuthToken;
 import com.d210.moneymoa.dto.Member;
 
 public interface MemberService {
@@ -17,4 +18,5 @@ public interface MemberService {
     Member updateMember(Member updatedMember);
 
     Member findMemberById(Long memberId);
+    AuthToken logout(AuthToken accessToken);
 }

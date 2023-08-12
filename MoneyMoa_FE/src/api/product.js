@@ -65,7 +65,6 @@ async function likeProduct(productType, likeInfo) {
     const headers = {
       Authorization: `Bearer ${token}`
     }
-    console.log(token)
     console.log(headers)
     const response = await api.post(`/${productType}/like`, JSON.stringify(likeInfo), { headers })
     console.log('찜했다')
@@ -179,7 +178,7 @@ function getMatchingDetail(product, period) {
   }, null)
 }
 
-//우대금리 조건배열에서 이율 분리해서 합치기
+//우대금리 조건배열에서 이율 추출한 객체 생성
 function spclConditionIntrList(product) {
   return product.spclList
     .filter((str) => str.trim().length > 0)

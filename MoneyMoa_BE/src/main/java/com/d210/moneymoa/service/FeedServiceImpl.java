@@ -2,7 +2,9 @@ package com.d210.moneymoa.service;
 
 import com.d210.moneymoa.domain.oauth.AuthTokensGenerator;
 import com.d210.moneymoa.dto.Feed;
+import com.d210.moneymoa.dto.FeedLike;
 import com.d210.moneymoa.repository.ChallengeRepository;
+import com.d210.moneymoa.repository.FeedLikeRepository;
 import com.d210.moneymoa.repository.FeedRepository;
 import com.d210.moneymoa.repository.MemberRepository;
 import lombok.extern.slf4j.Slf4j;
@@ -12,6 +14,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.NoSuchElementException;
+import java.util.Optional;
 
 @Service
 @Slf4j
@@ -28,6 +31,14 @@ public class FeedServiceImpl implements FeedService {
 
     @Autowired
     ChallengeRepository challengeRepository;
+
+    @Autowired
+    FeedLikeRepository feedLikeRepository;
+
+    public FeedServiceImpl(FeedRepository feedRepository, FeedLikeRepository feedLikeRepository) {
+        this.feedRepository = feedRepository;
+        this.feedLikeRepository = feedLikeRepository;
+    }
 
 
     // 피드 생성
@@ -120,6 +131,30 @@ public class FeedServiceImpl implements FeedService {
     @Override
     public List<Feed> findByContent(String content) {
         return feedRepository.findByContentContaining(content);
+    }
 
+    @Override
+    public Feed getFeedById(Long feedId) {
+        return feedRepository.findById(feedId)
+                .orElseThrow(() -> new NoSuchElementException("Feed with id " + feedId + " not found"));
+    }
+
+
+public boolean toggleLike(Long memberId, Long feedId) {
+    Optional<FeedLike> like = feedLikeRepository.findByMemberIdAndFeedId(memberId, feedId);
+    Feed feed = feedRepository.findById(feedId).orElseThrow(() -> new NoSuchElementException("해당 피드가 존재하지 않습니다."));
+    if (like.isPresent()) {
+        feedLikeRepository.delete(like.get());
+        feed.decreaseFeedLikeCount();
+        feedRepository.save(feed);
+        return false;
+    } else {
+        feedLikeRepository.save(new FeedLike(memberId, feedId));
+        feed.increaseFeedLikeCount();
+        feedRepository.save(feed);
+        return true;
+    }
     }
 }
+
+

@@ -40,4 +40,6 @@ public interface ChatRoomService {
     void getOutchatRoom(Long memberId, String roomId);
 
     public List<ChatMessageDto> getChatMessages(String roomId);
+
+    List<MemberChatroomSubInfo> sendDirectMessage(Long senderId, Long sendedId);
 }

@@ -38,29 +38,3 @@ public class ChatRoomDto implements Serializable {
     }
 }
 
-
-
-//@Getter
-//@Setter
-//@Entity
-//@NoArgsConstructor
-//public class ChatRoomDto implements Serializable {
-//
-//    private static final long serialVersionUID = 6494678977089006639L;
-//
-//    @Id
-//    @GeneratedValue(strategy = GenerationType.IDENTITY)
-//    private Long id;
-//    private String roomId;
-//    private String name;
-//    private String description;
-//    private String imgUrl;
-//
-//    @Builder
-//    public ChatRoomDto(String roomId, String name, String description, String imgUrl) {
-//        this.roomId = UUID.randomUUID().toString();
-//        this.name = name;
-//        this.description = description;
-//        this.imgUrl = imgUrl;
-//    }
-//}

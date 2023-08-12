@@ -44,6 +44,9 @@
                     v-model="depositAmount"
                   ></v-text-field>
                 </v-col>
+                <v-col cols="12">
+                  <v-file-input label="사진을 추가하세요" multiple v-model="files"></v-file-input>
+                </v-col>
               </v-row>
             </v-container>
           </v-card-text>
@@ -92,6 +95,7 @@ const depositAmount = ref('')
 const hashtag = ref('')
 const challengeset = ref([])
 const challengeId = ref('')
+const files = ref([])
 
 // 피드 생성하기 버튼 눌렀을 때
 const submitFeedData = () => {
@@ -103,7 +107,8 @@ const submitFeedData = () => {
   const feedData = {
     content: content.value,
     depositAmount: parseInt(depositAmount.value),
-    hashtag: hashtag.value
+    hashtag: hashtag.value,
+    files: files.value
   }
   console.log(feedData)
 
@@ -119,7 +124,6 @@ const submitFeedData = () => {
 onMounted(() => {
   const getChallengeList = functions.getChallengeList
   getChallengeList(memberId.value).then((response) => {
-    console.log('postfeed', response)
     for (const challengeKey in response.data.challenges) {
       const challenge = response.data.challenges[challengeKey]
       const id = challenge.id
@@ -127,7 +131,6 @@ onMounted(() => {
       challengeList.value.push(title)
       challengeset.value.push({ id, title })
     }
-    console.log(challengeset.value)
     challengeList.value = response.data.challenges
     // 챌린지 리스트 길이가 0 보다 크면 버튼 보이게 처리
     if (challengeList.value.length > 0) {
