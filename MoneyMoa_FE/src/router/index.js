@@ -294,13 +294,14 @@ router.beforeEach((to, from, next) => {
   const { cookies } = useCookies()
   const isLogined = !!cookies.get('accessToken')
   const urlPath = to.path.split('/').splice(1)
+  console.log(urlPath)
   const needLogin = ['profilechange', 'checkpassword', 'challenge', 'admin']
   for (let i in urlPath) {
     if (needLogin.includes(urlPath[i]) && !isLogined) {
       return next({ name: 'loginform' })
     }
-    next()
   }
+  next()
 })
 
 export default router

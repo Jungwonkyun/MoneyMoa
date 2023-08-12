@@ -31,7 +31,7 @@
           <v-btn
             @click.prevent="onAthentic"
             class="Athentic-Btn"
-            :disabled="showBtn"
+            :disabled="disableBtn"
             elevation="3"
             height="40"
             >인증번호 전송</v-btn
@@ -54,7 +54,13 @@
         </v-col>
         <!-- 버튼 차지cols 변경해야함 -->
         <v-col cols="2" class="text-center">
-          <v-btn @click.prevent="checkAccess" variant="flat" class="Athentic-Btn">인증하기</v-btn>
+          <v-btn
+            @click.prevent="checkAccess"
+            variant="flat"
+            class="Athentic-Btn"
+            :disabled="disableAthentic"
+            >인증하기</v-btn
+          >
         </v-col>
       </v-row>
 
@@ -136,6 +142,7 @@
         <v-col>
           <h3 class="title-left">생년월일</h3>
           <v-text-field
+            :rules="Checkbirthday"
             type="date"
             variant="underlined"
             :max="today"
@@ -190,16 +197,16 @@ const sent = ref(false)
 const gender = ref(null)
 
 // 인증메일 보내기 보여줄지말지 함수
-const showBtn = ref(false)
+const disableBtn = ref(false)
 
 // 이메일 인증함수
 async function onAthentic() {
   const isValid = Emailrules.every((rule) => typeof rule(Email.value) !== 'string')
-  if (showBtn.value) {
+  if (disableBtn.value) {
     return
   }
   if (isValid) {
-    showBtn.value = true
+    disableBtn.value = true
     try {
       const authResult = await functions.postEmailauth(Email.value)
       console.log(typeof Email.value)
@@ -209,22 +216,28 @@ async function onAthentic() {
         sent.value = true
         alert('인증번호를 발송했습니다.')
         Access.value = authResult.emailAuth
+        return
+      } else if (authResult.message === 'already in Database') {
+        alert('이미 존재하는 메일입니다.')
       } else {
         alert('인증번호 전송에 실패했습니다.')
       }
-      showBtn.value = false
+      disableBtn.value = false
     } catch (error) {
-      console.error('에러 발생:', error)
+      alert('인증번호 전송에 실패했습니다.')
+      disableBtn.value = false
     }
   } else {
     alert('이메일 형식이 올바르지 않습니다.')
   }
 }
 // 이메일 인증번호 맞는지 검사
+const disableAthentic = ref(false)
 function checkAccess() {
   if (userAccess.value === Access.value) {
     alert('인증되었습니다.')
     isAuthentic.value = true
+    disableAthentic.value = true
   } else {
     alert('인증번호가 일치하지 않습니다. 다시 시도해 주세요.')
   }
@@ -279,20 +292,26 @@ const CheckNickName = [
     !(/^[ㄱ-ㅎ]+$/.test(value) || /^[ㅏ-ㅣ]+$/.test(value)) || '입력 형식이 올바르지 않습니다.'
 ]
 
+const Checkbirthday = [
+  (value) => !!value || '생일을 입력해 주세요.',
+  (value) =>
+    new Date(value) >= new Date('1900-01-01') || '1900년도 이후 출생자만 가입이 가능합니다.'
+]
+
 // 가입하기 버튼
 async function onSignUp() {
   if (!Email.value) {
-    return alert('이메일을 입력해 주세요.')
+    return
   } else if (!isAuthentic.value) {
     return alert('이메일 인증을 완료해 주세요.')
   } else if (!password1.value) {
-    alert('비밀번호를 입력해 주세요.')
+    return
   } else if (password1.value != password2.value) {
-    return alert('비밀번호가 일치하지 않습니다.')
+    return
   } else if (!Name.value) {
-    return alert('이름을 입력해 주세요.')
+    return
   } else if (!NickName.value) {
-    return alert('닉네임을 입력해 주세요.')
+    return
   } else if (!birthday.value) {
     return alert('생년월일을 입력해 주세요.')
   }

@@ -26,10 +26,12 @@ export const useAccountStore = defineStore('account', () => {
     // 로그인 후 자동 새로고침 되게 해놨기 때문에 store에 멤버정보 저장하면 초기화됨, 일단 쿠키에 멤버정보 넣기
     cookies.set('member', data.member, '30MIN')
     cookies.set('accessToken', data.token, '30MIN')
+    cookies.set('refreshToken', data.refreshToken, '7D')
   }
   function onLogout() {
     cookies.remove('accessToken')
     cookies.remove('member')
+    cookies.remove('refreshToken')
   }
 
   return {
