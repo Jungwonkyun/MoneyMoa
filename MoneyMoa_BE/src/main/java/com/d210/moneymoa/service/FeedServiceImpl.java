@@ -47,13 +47,12 @@ public class FeedServiceImpl implements FeedService {
     public Feed createFeed(Long challengeId, Long memberId, Feed inputfeed) {
 
         Feed feed = Feed.builder()
+                .memberId(memberId)
                 .content(inputfeed.getContent())
                 .challengeId(challengeId)
                 .hashtag(inputfeed.getHashtag())
                 .depositAmount(inputfeed.getDepositAmount())
-                .memberId(memberId)
-                .feedLikeCount(inputfeed.getFeedLikeCount())
-                .feedLikeCount(inputfeed.getFeedLikeCount())
+                .feedLikeCount(inputfeed.getFeedLikeCount()) // 보기 위해 코드 저장. 08130440
                 .build();
 
         String nickname = memberRepository.findById(memberId).get().getNickname();

@@ -84,6 +84,13 @@ public class FeedController {
 
             Optional<Challenge> challengeOptional = challengeRepository.findById(challengeId);
             if (challengeOptional.isPresent()) {
+
+                // 8월 13일 02:41 코드 추가 : 챌린지의 presentAmount에 depositAmount 더하기
+                Challenge challenge = challengeOptional.get();
+                challenge.setPresentAmount(challenge.getPresentAmount() + feed.getDepositAmount());
+
+                challengeRepository.save(challenge);
+
                 // 존재하면 새 피드를 생성하고 입력받은 memberId, challengeId로 Feed 객체를 만들어 반환
                 Feed newFeed = feedService.createFeed(challengeId, memberId, feed);
 
@@ -266,6 +273,17 @@ public class FeedController {
         try {
             Long memberId = authTokensGenerator.extractMemberId(jwt.replace("Bearer ", ""));
             feedService.updateFeed(feedId, updateFeed, memberId);
+
+            // 코드 추가: 챌린지의 presentAmount에서 이전 depositAmount 빼기
+            Challenge challenge = challengeRepository.findById(updateFeed.getChallengeId())
+                    .orElseThrow(() -> new NoSuchElementException("해당 챌린지가 존재하지 않습니다."));
+            challenge.setPresentAmount(challenge.getPresentAmount() - updateFeed.getDepositAmount()); // 그냥 하드 코딩
+
+            // 코드 추가: 챌린지의 presentAmount에 수정된 depositAmount 더하기
+            challenge.setPresentAmount(challenge.getPresentAmount() + updateFeed.getDepositAmount());
+
+            challengeRepository.save(challenge);
+
             resultMap.put("message", "success");
             return new ResponseEntity<Map<String, Object>>(resultMap, HttpStatus.OK);
         } catch (Exception e) {

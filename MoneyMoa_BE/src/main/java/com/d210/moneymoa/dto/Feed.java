@@ -78,6 +78,7 @@ public class Feed implements Serializable {
     }
 
     @ColumnDefault("0")
+    @ApiModelProperty(hidden = true)
     private Integer feedLikeCount;
 
     // 좋아요 수 증가 메서드
