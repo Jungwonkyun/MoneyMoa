@@ -40,7 +40,8 @@
     <v-divider></v-divider>
     <v-card-text v-for="(com, index) in comments" :key="index">
       {{ com.nickname }}: {{ com.content }}
-      <v-btn icon="mdi-delete" variant="text"></v-btn>
+      <v-btn icon="mdi-delete" variant="text" @click="deleteComment(com.id)"></v-btn>
+      <v-btn icon="mdi-pencil" variant="text"></v-btn>
     </v-card-text>
     <v-text-field
       class="px-5"
@@ -136,6 +137,18 @@ const addComment = async () => {
 
     // 입력 필드 초기화
     comment.value = ''
+  } catch (error) {
+    console.error('에러 발생:', error)
+  }
+}
+
+// 댓글 삭제
+const deleteComment = async (commentId) => {
+  try {
+    await challengeFeed.deleteComment(commentId)
+    // 댓글 목록 업데이트
+    const response = await challengeFeed.fetchFeedDetail(feedId.value)
+    comments.value = response.data.comments
   } catch (error) {
     console.error('에러 발생:', error)
   }

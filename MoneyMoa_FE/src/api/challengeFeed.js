@@ -138,11 +138,15 @@ async function postComment(feedId, comment) {
 }
 
 // 댓글 삭제 API
-async function deleteComment() {
+async function deleteComment(commentId) {
   try {
-    const res = await api.get(`/feed/list`, {
-      usertoken: accessToken
-    })
+    // 토큰 받아오기
+    const { cookies } = useCookies()
+    const token = cookies.get('accessToken')
+    const headers = {
+      Authorization: `Bearer ${token}`
+    }
+    const res = await api.delete(`/feed/comment/delete/${commentId}`, { headers })
     return res
   } catch (err) {
     console.log(err)
