@@ -187,6 +187,7 @@ public class MemberController {
         HttpStatus status;
 
         email = email.replaceAll("\"","");
+        String message = "";
         log.info(email);
 
         try {
