@@ -3,7 +3,10 @@ package com.d210.moneymoa.domain.oauth;
 
 import com.d210.moneymoa.domain.JwtTokenProvider;
 import com.d210.moneymoa.dto.AuthToken;
+import com.d210.moneymoa.dto.RefreshToken;
 import com.d210.moneymoa.repository.AuthTokensRepository;
+import com.d210.moneymoa.repository.RefreshTokenRepository;
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.hibernate.Session;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,13 +16,17 @@ import java.util.Date;
 
 @Component
 @RequiredArgsConstructor
+@Getter
 public class AuthTokensGenerator {
     private static final String BEARER_TYPE = "Bearer";
-    private static final long ACCESS_TOKEN_EXPIRE_TIME = 1000 * 60* 30;  // 30분
+    private static final long ACCESS_TOKEN_EXPIRE_TIME = 1000 * 60 *30;  // 30분 -> 1분
     private static final long REFRESH_TOKEN_EXPIRE_TIME = 1000 * 60 * 60 * 24 * 7;  // 7일
 
 
     private final JwtTokenProvider jwtTokenProvider;
+
+    @Autowired
+    RefreshTokenRepository refreshTokenRepository;
 
     @Autowired
     AuthTokensRepository authTokensRepository;
@@ -42,13 +49,13 @@ public class AuthTokensGenerator {
 
         authTokensRepository.save(authToken);
 
+        //refresh 토큰 redis에 저장
+        RefreshToken newRefreshToken = new RefreshToken(refreshToken, memberId);
+        refreshTokenRepository.save(newRefreshToken);
 
         return AuthTokens.of(accessToken, refreshToken, BEARER_TYPE, ACCESS_TOKEN_EXPIRE_TIME / 1000L);
     }
     public Long extractMemberId(String accessToken) {
         return Long.valueOf(jwtTokenProvider.extractSubject(accessToken));
     }
-
-
-
 }

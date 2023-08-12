@@ -37,5 +37,4 @@ public class AuthToken implements Serializable {
         this.tokenType = tokenType;
         this.expiresIn = expiresIn;
     }
-
 }
