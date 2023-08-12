@@ -179,7 +179,7 @@ function getMatchingDetail(product, period) {
   }, null)
 }
 
-//우대금리 조건배열에서 이율 분리해서 합치기
+//우대금리 조건배열에서 이율 추출한 객체 생성
 function spclConditionIntrList(product) {
   return product.spclList
     .filter((str) => str.trim().length > 0)
