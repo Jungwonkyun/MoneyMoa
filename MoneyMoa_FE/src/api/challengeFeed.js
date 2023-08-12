@@ -27,7 +27,7 @@ async function getUserFeedList(memberId) {
     const headers = {
       Authorization: `Bearer ${token}`
     }
-    const res = await api.get(`/feed/all/${memberId}`, { headers })
+    const res = await api.get(`/feed/member/${memberId}`, { headers })
     return res
   } catch (err) {
     console.log(err)
@@ -77,15 +77,18 @@ async function searchFeed(searchWord) {
 async function createFeed(feedData, challengeId) {
   try {
     const formData = new FormData()
-    formData.append('feed', new Blob([JSON.stringify(feedData)], { type: 'application/json' }))
-    // formData.append('files', feedData.file) // 'file'은 서버에서 사용하는 파일 필드 이름
-    // formData.append('otherField', feedData.otherField)
-    const feed = JSON.stringify(feedData)
+    for (const file of feedData.files) {
+      formData.append('files', file)
+    }
+    formData.append('content', feedData.content)
+    formData.append('depositAmount', feedData.depositAmount)
+    formData.append('hashtag', feedData.hashtag)
+
     const headers = {
       Authorization: `Bearer ${token}`,
       'Content-Type': 'multipart/form-data'
     }
-    const res = await api.post(`/feed/create/${challengeId}`, feedData, { headers })
+    const res = await api.post(`/feed/create/${challengeId}`, formData, { headers })
     return res
   } catch (err) {
     console.log(err)

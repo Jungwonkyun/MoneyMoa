@@ -1,13 +1,12 @@
 <template>
   <v-card class="mx-auto" max-width="700" :elevation="10">
-    <v-img
-      class="align-end text-white"
-      height="600"
-      src="https://cdn.vuetifyjs.com/images/cards/docks.jpg"
-      cover
-    >
-      <v-card-title>{{ challenge }} </v-card-title>
-    </v-img>
+    <v-carousel hide-delimiter-background show-arrows="hover">
+      <v-carousel-item v-for="(img, index) in imgs" :key="index">
+        <v-img :src="img" height="100%" class="align-end text-white" cover>
+          <v-card-title>{{ challenge }} </v-card-title>
+        </v-img>
+      </v-carousel-item>
+    </v-carousel>
 
     <v-row align="center" class="mt-1">
       <v-col cols="8" class="d-flex flex-row justify-start">
@@ -38,13 +37,8 @@
       {{ content }}
     </v-card-text>
 
-    <v-card-text>
-      <div>댓글</div>
-      <div>댓글</div>
-      <div>댓글</div>
-      <div>댓글</div>
-      <div>댓글</div>
-      <div>댓글</div>
+    <v-card-text v-for="(comment, index) in comments" :key="index">
+      {{ comment }}
     </v-card-text>
   </v-card>
 </template>
@@ -70,6 +64,8 @@ const feedId = ref(route.params.feedId)
 const content = ref('')
 const challenge = ref('')
 const hashtags = ref([])
+const comments = ref([])
+const imgs = ref([])
 
 const condition = ref(false)
 
@@ -85,21 +81,22 @@ const deleteFeed = async () => {
 // 마운트 시에 피드 상세 조회 API 호출, memberId가 변경되면 다시 호출
 onMounted(() => {
   const res = challengeFeed.fetchFeedDetail(feedId.value).then((response) => {
-    console.log(response)
     content.value = response.data.feed.content
     challenge.value = response.data.feed.challengeId
     // 정규식을 사용하여 '#'으로 시작하는 단어를 추출하여 리스트로 만듦
     hashtags.value = response.data.feed.hashtag.match(/#[^\s#]+/g) || []
+    comments.value = response.data.comments
+    imgs.value = response.data.feed.fileUrls
+    console.log('comments', comments.value)
   })
 })
 
 // 마운트 시에 유저 피드 목록 조회하여 이 피드가 해당 유저 피드면 삭제 버튼 보여주기
 onMounted(() => {
   const res = challengeFeed.getUserFeedList(memberId.value).then((response) => {
-    const data = response.data.result.data
+    const data = response.data.feedList
     // data 순회하면서 id만 추출
     const feedIdList = data.map((item) => item.id)
-    console.log(feedIdList)
     const intFeedId = parseInt(feedId.value)
     // feedIdList에 현재 피드 id가 있으면 condition을 true로 변경
     if (feedIdList.includes(intFeedId)) {
