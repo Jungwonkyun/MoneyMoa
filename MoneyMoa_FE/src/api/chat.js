@@ -19,6 +19,19 @@ async function getRooms() {
   }
 }
 
+async function getDMRooms() {
+  try {
+    const token = cookies.get('accessToken')
+    const headers = {
+      Authorization: `Bearer ${token}`
+    }
+    const response = await api.get('dmlist', { headers })
+    return response
+  } catch (error) {
+    console.log(error)
+  }
+}
+
 async function getRoomDetail(roomId) {
   try {
     const response = await api.get(`room/${roomId}`)
@@ -75,4 +88,4 @@ async function quitRoom(roomId) {
     console.log(error)
   }
 }
-export { getRooms, getRoomDetail, enterRoom, getRoomMembers, createRoom, quitRoom }
+export { getRooms, getRoomDetail, enterRoom, getRoomMembers, createRoom, quitRoom, getDMRooms }

@@ -38,7 +38,7 @@
       </v-btn>
     </v-row>
   </v-container>
-  <v-card v-for="(room, index) in roomList" :key="index" variant="outlined">
+  <v-card v-for="(room, index) in roomList" :key="index" class="chatroom-card">
     <v-container>
       <v-row>
         <v-card-title>{{ room.name }}</v-card-title>
@@ -46,22 +46,6 @@
       </v-row>
     </v-container>
   </v-card>
-  <!-- <v-card class="overflow-y-auto" max-height="400">
-    <v-banner class="justify-center text-h5 font-weight-light" sticky> Scroll Me </v-banner>
-
-    <v-card-text>
-      <div v-for="n in 12" :key="n" class="mb-4">
-        Lorem ipsum dolor sit amet consectetur adipisicing elit. Modi commodi earum tenetur.
-        Asperiores dolorem placeat ab nobis iusto culpa, autem molestias molestiae quidem pariatur.
-        Debitis beatae expedita nam facere perspiciatis. Lorem ipsum dolor sit amet consectetur
-        adipisicing elit. Repellendus ducimus cupiditate rerum officiis consequuntur laborum
-        doloremque quaerat ipsa voluptates, nobis nam quis nulla ullam at corporis, similique
-        ratione quasi illo!
-      </div>
-    </v-card-text>
-    <v-banner class="justify-center text-h5 font-weight-light" sticky> Scroll You </v-banner>
-  </v-card>
-  <v-card variant="tonal">fixed on bottom?</v-card> -->
 </template>
 <script setup>
 import { ref } from 'vue'

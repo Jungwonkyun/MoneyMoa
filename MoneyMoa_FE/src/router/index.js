@@ -238,15 +238,15 @@ const router = createRouter({
       path: '/chat',
       name: 'chat',
       component: () => import('../views/ChatView.vue'),
-      redirect: '/chat/list',
+      redirect: '/chat/roomlist',
       children: [
         {
-          path: 'list',
+          path: 'roomlist',
           name: 'chatrooms',
           component: () => import('../components/Chat/ChatRooms.vue')
         },
         {
-          path: '/:roomId',
+          path: 'room/:roomId',
           name: 'chatroomdetail',
           component: () => import('../components/Chat/ChatRoomDetail.vue'),
           beforeEnter: (to, from, next) => {
@@ -258,6 +258,11 @@ const router = createRouter({
               next()
             }
           }
+        },
+        {
+          path: 'dmlist',
+          name: 'dmlist',
+          component: () => import('../components/Chat/DMList.vue')
         }
       ]
     },

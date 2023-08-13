@@ -15,9 +15,7 @@
     </v-toolbar-items>
     <!-- <v-spacer /> -->
     <v-toolbar-items class="align-center">
-      <router-link to="/"
-        ><v-btn><v-icon icon="mdi-send" /></v-btn
-      ></router-link>
+      <router-link to="/chat/dmlist"> <v-btn icon="mdi-send" /></router-link>
       <ProfileMenu v-if="isLogin" />
       <router-link to="/account" v-else><v-btn>로그인</v-btn></router-link>
     </v-toolbar-items>
