@@ -20,8 +20,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-
-// TODO: 2023-08-04 REST Controller로 바꿔야함 
 @RequiredArgsConstructor
 @RestController
 @RequestMapping("/api/chat")
@@ -31,11 +29,6 @@ public class ChatRoomController {
 
     @Autowired
     AuthTokensGenerator authTokensGenerator;
-
-    // @GetMapping("/room")
-    // public String rooms(Model model) {
-    //     return "chat/room";
-    // }
 
     //모든 채팅방 리턴
     @ApiOperation(value = "채팅방 전체보기", notes = "모든 채팅방 정보를 DB에서 가져다가 리턴")
@@ -62,17 +55,32 @@ public class ChatRoomController {
         return new ResponseEntity<Map<String,Object>>(resultMap,status);
     }
 
-//    @GetMapping("/rooms")
-//    @ResponseBody
-//    public List<ChatRoom> roomlist() {
-//        return chatRoomService.findAllRoom();
-//    }
+    @ApiOperation(value = "내가 참여한 DM방 전체보기")
+    @GetMapping("/dmlist")
+    @ResponseBody
+    public ResponseEntity<Map<String, Object>> DmListDB(@ApiParam(value = "Bearer ${jwt token}") @RequestHeader("Authorization") String jwt) {
 
-//    @PostMapping("/room")
-//    @ResponseBody
-//    public ChatRoom createRoom(@RequestParam String name) {
-//        return chatRoomService.createChatRoom(name);
-//    }
+        HashMap<String, Object>resultMap = new HashMap<>();
+        HttpStatus status;
+        String messege = "";
+
+        try{
+            jwt = jwt.replace("Bearer ", "");
+            Long memberId = authTokensGenerator.extractMemberId(jwt);
+            List<DirectMessageRoom> dmList = chatRoomService.findAllDMFromDB(memberId);
+            messege = "success";
+            status = HttpStatus.OK;
+            resultMap.put("message", messege);
+            resultMap.put("dmList", dmList);
+        }catch (Exception e){
+            messege = "fail";
+            resultMap.put("message", "message");
+            status = HttpStatus.BAD_REQUEST;
+        }
+
+        return new ResponseEntity<Map<String,Object>>(resultMap,status);
+    }
+
 
     @ApiOperation(value = "채팅방 생성하기", notes = "생성할 채팅방 정보 입력하고 생성")
     @PostMapping("/room/create")

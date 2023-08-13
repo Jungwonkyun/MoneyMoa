@@ -11,27 +11,28 @@ public interface ChatRoomService {
 
     //public ChatRoom findRoomById(String id);
 
-    public ChatRoomDto findRoomByRoomId(String id);
+    ChatRoomDto findRoomByRoomId(String id);
 
     // public ChatRoom createChatRoom(String name);
 
-    public ChatRoomDto createChatRoom(ChatRoomDto chatRoom);
+    ChatRoomDto createChatRoom(ChatRoomDto chatRoom);
 
     //public void enterChatRoom(String roomId);
 
-    public MemberChatroomSubInfo enterChatRoom(long memberId, String roomId);
+    MemberChatroomSubInfo enterChatRoom(long memberId, String roomId);
 
     //public void saveChatMessage(String roomId, ChatMessage chatMessage);
     // List<ChatRoomDto> saveChatMessage(String roomId, ChatMessage chatMessage);
 
-    public List<ChatMessageDto> saveChatMessage(String roomId, ChatMessage chatMessage);
+    List<ChatMessageDto> saveChatMessage(String roomId, ChatMessage chatMessage);
 
 //    public void increaseUserCount(String roomId);
 
 //    public void decreaseUserCount(String roomId);
-    public ChannelTopic getTopic(String roomId);
+     ChannelTopic getTopic(String roomId);
 
-    public List<ChatRoomDto> findAllRoomFromDB();
+    List<ChatRoomDto> findAllRoomFromDB();
+    List<DirectMessageRoom> findAllDMFromDB(Long memberId);
 
     ChatRoomDto findRoomByName(String name);
 
