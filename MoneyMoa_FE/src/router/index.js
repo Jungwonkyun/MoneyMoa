@@ -291,13 +291,15 @@ router.beforeEach((to) => {
 })
 
 // 로그인 필요한 페이지
-router.beforeEach((to, from, next) => {
-  const account = useAccountStore()
+router.beforeEach(async (to, from, next) => {
   // 전역에서 이동할때마다 토큰 갱신하기
-  account.getNewToken()
-  const { isLogin } = storeToRefs(account)
+  // 항상 토큰검사하고 나서 이동하기
+
+  const account = useAccountStore()
+  await account.getNewToken()
   const urlPath = to.path.split('/').splice(1)
   const needLogin = ['profilechange', 'checkpassword', 'challenge', 'admin']
+  const { isLogin } = storeToRefs(account)
   for (let i in urlPath) {
     if (needLogin.includes(urlPath[i]) && !isLogin.value) {
       return next({ name: 'loginform' })
