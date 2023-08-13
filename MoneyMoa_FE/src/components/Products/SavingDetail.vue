@@ -1,6 +1,6 @@
 <template>
   <div>
-    <v-card variant="tonal">
+    <v-card variant="flat" class="product-card">
       <v-row>
         <v-col>
           <v-card-item>
@@ -92,7 +92,7 @@ import { getSaving, getPeriodRange, spclConditionIntrList } from '@/api/product'
 import IntrCalcItem from './item/IntrCalcItem.vue'
 import ProductCommentItem from './item/ProductCommentItem.vue'
 const store = useProductStore()
-const { selectedProduct, period } = storeToRefs(store)
+const { period } = storeToRefs(store)
 const route = useRoute()
 const product = ref({})
 const spclConditionIntrs = ref([])

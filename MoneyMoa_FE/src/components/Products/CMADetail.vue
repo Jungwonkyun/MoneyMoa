@@ -1,6 +1,6 @@
 <template>
   <div>
-    <v-card variant="tonal">
+    <v-card variant="flat" class="product-card">
       <v-row>
         <v-col>
           <v-card-item>
