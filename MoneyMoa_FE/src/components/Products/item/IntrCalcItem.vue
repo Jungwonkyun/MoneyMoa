@@ -27,8 +27,8 @@
       <v-col v-else>개월 동안 예치하면</v-col>
     </v-row>
     <v-row v-if="!isNaN(result) && result > 0">
-      <v-col cols="2">{{ result }}</v-col>
       <v-col
+        ><span>{{ result }}</span
         >원을 받을 수 있어요. (이자
         {{ result - amount * (calcType === 'saving' ? period : 1) }}원)</v-col
       >

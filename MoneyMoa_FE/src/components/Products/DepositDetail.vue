@@ -18,7 +18,7 @@
         <v-table>
           <tbody>
             <tr>
-              <td>가입대상</td>
+              <td class="product-table-left">가입대상</td>
               <td>{{ product.joinMember }}</td>
             </tr>
             <tr>
@@ -58,7 +58,7 @@
       <v-table>
         <thead>
           <tr>
-            <th>가입기간</th>
+            <th class="product-table-left">가입기간</th>
             <th>금리</th>
           </tr>
         </thead>
@@ -116,4 +116,8 @@ function getContent() {
 }
 getContent()
 </script>
-<style></style>
+<style lang="scss">
+.product-table-left {
+  width: 15%;
+}
+</style>
