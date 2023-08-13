@@ -74,21 +74,13 @@ async function searchFeed(searchWord) {
 }
 
 // 피드 생성 API
-async function createFeed(feedData, challengeId) {
+async function createFeed(data, challengeId) {
   try {
-    const formData = new FormData()
-    for (const file of feedData.files) {
-      formData.append('files', file)
-    }
-    formData.append('content', feedData.content)
-    formData.append('depositAmount', feedData.depositAmount)
-    formData.append('hashtag', feedData.hashtag)
-
     const headers = {
       Authorization: `Bearer ${token}`,
       'Content-Type': 'multipart/form-data'
     }
-    const res = await api.post(`/feed/create/${challengeId}`, formData, { headers })
+    const res = await api.post(`/feed/create/${challengeId}`, data, { headers })
     return res
   } catch (err) {
     console.log(err)
@@ -154,11 +146,15 @@ async function deleteComment(commentId) {
 }
 
 // 댓글 수정 API
-async function updateComment() {
+async function updateComment(commentId, comment) {
   try {
-    const res = await api.get(`/feed/list`, {
-      usertoken: accessToken
-    })
+    // 토큰 받아오기
+    const { cookies } = useCookies()
+    const token = cookies.get('accessToken')
+    const headers = {
+      Authorization: `Bearer ${token}`
+    }
+    const res = await api.put(`/feed/comment/${commentId}`, JSON.stringify(comment), { headers })
     return res
   } catch (err) {
     console.log(err)
