@@ -5,13 +5,13 @@
       <v-col>
         <v-text-field
           class="amount-input"
-          v-model="amount"
+          v-model.number="amount"
           hide-details
           single-line
           label="금액"
-          type="number"
           min="0"
           @keypress="onKeyPress"
+          @input="onInput"
         />
       </v-col>
       <v-col v-if="productType == 'saving'" cols="1">원씩</v-col>
@@ -29,8 +29,13 @@ import { storeToRefs } from 'pinia'
 const store = useProductStore()
 const { productType, amount, period } = storeToRefs(store)
 const periods = reactive([6, 12, 24, 36])
+
+const onInput = (event) => {
+  const value = event.target.value.replace(/[^0-9]/g, '')
+  amount.value = isNaN(parseInt(value)) ? '' : parseInt(value)
+}
 const onKeyPress = (event) => {
-  if (event.key === '+' || event.key === '-') {
+  if (event.key < '0' || event.key > '9') {
     event.preventDefault()
   }
 }
