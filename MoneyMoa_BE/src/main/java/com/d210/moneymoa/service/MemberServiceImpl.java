@@ -48,9 +48,9 @@ public class MemberServiceImpl implements MemberService {
 
     //로그인시 유저이메일을 가져와서 DB에 회원정보가 있는지 확인
     public Member findMemberByEmail(String email) {
-        log.info("이메일로 멤버 찾기 시이이이작");
+
         Optional<Member> oMember = memberRepository.findByEmail(email);
-        
+
         return oMember.orElse(null);
     }
 
@@ -78,8 +78,8 @@ public class MemberServiceImpl implements MemberService {
                 .email(member.getEmail())
                 .name(member.getName())
                 .oAuthProvider(OAuthProvider.GENERAL)
-//                .password(passwordEncoder.encode(member.getPassword()))
-                .password(member.getPassword())
+                .password(passwordEncoder.encode(member.getPassword()))
+                //.password(member.getPassword())
                 .nickname(member.getNickname())
                 .role(Role.MEMBER)
                 .build();
@@ -119,8 +119,23 @@ public class MemberServiceImpl implements MemberService {
 
 
     public Member findLoginMember(String email, String password) {
-        Optional<Member> oMember = memberRepository.findByEmailAndPassword(email,password);
-        return oMember.orElse(null);
+        //Optional<Member> oMember = memberRepository.findByEmailAndPassword(email,password);
+
+        Optional<Member> oMember = memberRepository.findByEmail(email);
+
+        if (!oMember.isPresent()) {
+            return null; // 사용자가 없음
+        }
+
+        Member member = oMember.get();
+        String storedPassword = member.getPassword();
+
+        if (passwordEncoder.matches(password, storedPassword)) {
+            return member; // 로그인 성공
+        } else {
+            return null; // 비밀번호 불일치
+        }
+
     }
 
 
