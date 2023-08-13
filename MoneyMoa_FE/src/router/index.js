@@ -34,6 +34,7 @@ import { useAccountStore } from '../stores/accountStore.js'
 import OAuth from '../components/Accounts/OAuth.vue'
 // AdminView
 import AdminView from '../views/AdminView.vue'
+import { storeToRefs } from 'pinia'
 
 const router = createRouter({
   history: createWebHistory(),
@@ -291,13 +292,14 @@ router.beforeEach((to) => {
 
 // 로그인 필요한 페이지
 router.beforeEach((to, from, next) => {
-  const { cookies } = useCookies()
-  const isLogined = !!cookies.get('accessToken')
+  const account = useAccountStore()
+  // 전역에서 이동할때마다 토큰 갱신하기
+  account.getNewToken()
+  const { isLogin } = storeToRefs(account)
   const urlPath = to.path.split('/').splice(1)
-  console.log(urlPath)
   const needLogin = ['profilechange', 'checkpassword', 'challenge', 'admin']
   for (let i in urlPath) {
-    if (needLogin.includes(urlPath[i]) && !isLogined) {
+    if (needLogin.includes(urlPath[i]) && !isLogin.value) {
       return next({ name: 'loginform' })
     }
   }

@@ -2,9 +2,9 @@
   <v-container>
     <BankSelectItem />
     <ProductConditionItem />
-    <v-divider />
     <v-row>
-      결과 {{ filteredProducts.length }} 건
+      <v-progress-linear indeterminate v-if="!loaded" />
+      <span v-else> 결과 {{ filteredProducts.length }} 건 </span>
       <ProductPreviewItem
         v-for="(product, index) in filteredProducts"
         :key="index"
@@ -22,6 +22,7 @@ import { getDepositList, getSavingList, getPeriodRange } from '@/api/product'
 import BankSelectItem from './item/BankSelectItem.vue'
 import ProductPreviewItem from './item/ProductPreviewItem.vue'
 import ProductConditionItem from './item/ProductConditionItem.vue'
+import { load } from 'webfontloader'
 
 const store = useProductStore()
 const route = useRoute()
@@ -29,10 +30,12 @@ const { productType, amount, period, bankList } = storeToRefs(store)
 const state = reactive({
   products: []
 })
+const loaded = ref(false)
 
 watch(
   productType,
   (newValue) => {
+    loaded.value = false
     if (newValue === 'saving') {
       getSavingList().then((response) => {
         state.products = response.data.products.map((product) => {
@@ -43,6 +46,7 @@ watch(
             return product
           }
         })
+        loaded.value = true
       })
     } else if (newValue === 'deposit') {
       getDepositList().then((response) => {
@@ -54,6 +58,7 @@ watch(
             return product
           }
         })
+        loaded.value = true
       })
     }
   },
@@ -80,4 +85,8 @@ function checkAmount(product) {
   return amount.value <= Number(product.maxLimit)
 }
 </script>
-<style></style>
+<style scoped lang="scss">
+.v-progress-linear {
+  color: $logo-color;
+}
+</style>

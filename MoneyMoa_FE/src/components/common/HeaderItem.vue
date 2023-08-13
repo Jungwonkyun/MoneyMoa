@@ -28,6 +28,7 @@ import { computed } from 'vue'
 
 const { cookies } = useCookies()
 const account = useAccountStore()
+
 const { isLogin } = storeToRefs(account)
 
 // 관리자인지 확인하기

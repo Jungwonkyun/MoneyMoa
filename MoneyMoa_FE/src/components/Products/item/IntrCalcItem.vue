@@ -10,13 +10,14 @@
       <v-col cols="1" v-if="calcType === 'saving'">매달</v-col>
       <v-col>
         <v-text-field
-          v-model="amount"
+          class="amount-input"
+          v-model.number="amount"
           hide-details
           single-line
           label="금액"
-          type="number"
           min="0"
           @keypress="onKeyPress"
+          @input="onInput"
         />
       </v-col>
       <v-col cols="1" v-if="calcType === 'saving'">원씩</v-col>
@@ -26,8 +27,8 @@
       <v-col v-else>개월 동안 예치하면</v-col>
     </v-row>
     <v-row v-if="!isNaN(result) && result > 0">
-      <v-col cols="2">{{ result }}</v-col>
       <v-col
+        ><span>{{ result }}</span
         >원을 받을 수 있어요. (이자
         {{ result - amount * (calcType === 'saving' ? period : 1) }}원)</v-col
       >
@@ -127,8 +128,12 @@ const result = computed(() => {
     )
   }
 })
+const onInput = (event) => {
+  const value = event.target.value.replace(/[^0-9]/g, '')
+  amount.value = isNaN(parseInt(value)) ? '' : parseInt(value)
+}
 const onKeyPress = (event) => {
-  if (event.key === '+' || event.key === '-') {
+  if (event.key < '0' || event.key > '9') {
     event.preventDefault()
   }
 }

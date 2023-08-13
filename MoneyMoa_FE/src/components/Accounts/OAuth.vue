@@ -16,6 +16,7 @@ async function kakaoLogin() {
     console.log(res.data)
     if (res.data.message === 'success') {
       const token = res.data.authtokens.accessToken
+      const refreshToken = res.data.authtokens.refreshToken
       let urlData = img
       if (res.data.member.imageUrl) {
         console.log(res.data.member.imageUrl)
@@ -34,7 +35,8 @@ async function kakaoLogin() {
       }
       const data = {
         member: member,
-        token: token
+        token: token,
+        refreshToken: refreshToken
       }
       account.onLogin(data)
       router.push({ name: 'home' }).then(() => {
