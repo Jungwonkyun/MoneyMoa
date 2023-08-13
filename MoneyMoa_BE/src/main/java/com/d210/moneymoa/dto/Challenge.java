@@ -6,6 +6,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.CreationTimestamp;
 
 import javax.persistence.*;
@@ -47,6 +48,7 @@ public class Challenge {
     private LocalDate startDate; // 날짜
 
     @ApiModelProperty(hidden = true)
+    @ColumnDefault("0")
     private Integer presentAmount; // 현재 유저가 모은 금액
 
 //    @Column(nullable = false)

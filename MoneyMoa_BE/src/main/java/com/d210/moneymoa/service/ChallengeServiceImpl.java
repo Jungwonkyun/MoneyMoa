@@ -33,13 +33,15 @@ public class ChallengeServiceImpl implements ChallengeService {
         // 사용자 닉네임 조회
         String nickName = memberRepository.findById(memberId).get().getNickname();
         LocalDate startDate = inputChallenge.getStartDate()!=null?inputChallenge.getStartDate():LocalDate.now();
+        // presentAmount 값이 null일 경우 0으로 초기화하여 사용
+        Integer presentAmount = inputChallenge.getPresentAmount() != null ? inputChallenge.getPresentAmount() : 0;
         Challenge challenge = Challenge.builder()
                 .title(inputChallenge.getTitle())
                 .content(inputChallenge.getContent())
                 .period(inputChallenge.getPeriod())
                 .goalAmount(inputChallenge.getGoalAmount())
                 .startDate(startDate) // startDate 값 설정
-                .presentAmount(inputChallenge.getPresentAmount())
+                .presentAmount(presentAmount) // 0으로 초기화
                 .memberId(memberId) // memberId 설정
                 .nickname(nickName) // 사용자 닉네임 설정
                 .build();
