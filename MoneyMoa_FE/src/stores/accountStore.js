@@ -41,6 +41,8 @@ export const useAccountStore = defineStore('account', () => {
     cookies.remove('accessToken')
     cookies.remove('member')
     cookies.remove('refreshToken')
+    cookies.remove('expireTimes')
+    cookies.remove('accessTokenRef')
     isLogin.value = !!cookies.get('member')
   }
   // 토큰이 없고 리프레시 토큰이 있으면 토큰 재발급받기
@@ -58,6 +60,8 @@ export const useAccountStore = defineStore('account', () => {
           isLogin.value = !!cookies.get('accessToken')
         }
       } catch (err) {
+        // 갱신실패하면 로그아웃
+        onLogout()
         console.log(err)
       }
     }
