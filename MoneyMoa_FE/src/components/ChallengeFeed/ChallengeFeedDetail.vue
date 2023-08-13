@@ -26,30 +26,27 @@
           icon="mdi-delete"
           variant="text"
           @click.stop="deleteFeed(feedId)"
-          v-if="condition"
+          v-if="deleteCondition"
           size="large"
         ></v-btn>
-        <UpdateFeed v-if="condition" class="px-10" />
+        <UpdateFeed v-if="deleteCondition" class="px-10" />
       </v-col>
     </v-row>
     <v-divider></v-divider>
-
     <v-card-text class="my-5">
       {{ content }}
     </v-card-text>
     <v-divider></v-divider>
-    <v-card-text v-for="(com, index) in comments" :key="index">
-      {{ com.nickname }}: {{ com.content }}
-      <v-btn icon="mdi-delete" variant="text" @click="deleteComment(com.id)"></v-btn>
-      <v-btn icon="mdi-pencil" variant="text"></v-btn>
-    </v-card-text>
+    <div v-for="(comment, index) in comments" :key="index">
+      <PostComment :comment="comment" @after-delete="afterDelete" />
+    </div>
     <v-text-field
       class="px-5"
-      v-model="comment"
-      label="댓글 달기..."
+      v-model="commentContent"
+      label="댓글 작성..."
       variant="underlined"
       append-inner-icon="mdi-comment-check-outline"
-      @click:append-inner="addComment"
+      @click:append-inner="addComment()"
       @keyup.enter="addComment"
     ></v-text-field>
   </v-card>
@@ -60,6 +57,7 @@ import { useRoute, useRouter } from 'vue-router'
 import challengeFeed from '@/api/challengeFeed.js'
 import { useCookies } from 'vue3-cookies'
 import UpdateFeed from './item/UpdateFeed.vue'
+import PostComment from './item/PostComment.vue'
 
 // 쿠키 사용
 const { cookies } = useCookies()
@@ -79,11 +77,11 @@ const hashtags = ref([])
 const comments = ref([])
 const imgs = ref([])
 
-// 댓글 작성 위한 모델
-const comment = ref('')
+// 댓글 작성 모델
+const commentContent = ref('')
 
 // 피드 삭제 버튼 보여주기 위한 조건
-const condition = ref(false)
+const deleteCondition = ref(false)
 
 const deleteFeed = async () => {
   try {
@@ -96,14 +94,13 @@ const deleteFeed = async () => {
 }
 // 마운트 시에 피드 상세 조회 API 호출, memberId가 변경되면 다시 호출
 onMounted(() => {
-  const res = challengeFeed.fetchFeedDetail(feedId.value).then((response) => {
+  challengeFeed.fetchFeedDetail(feedId.value).then((response) => {
     content.value = response.data.feed.content
     challenge.value = response.data.feed.challengeId
     // 정규식을 사용하여 '#'으로 시작하는 단어를 추출하여 리스트로 만듦
     hashtags.value = response.data.feed.hashtag.match(/#[^\s#]+/g) || []
     comments.value = response.data.comments
     imgs.value = response.data.feed.fileUrls
-    console.log('comments', comments.value)
   })
 })
 
@@ -116,7 +113,7 @@ onMounted(() => {
     const intFeedId = parseInt(feedId.value)
     // feedIdList에 현재 피드 id가 있으면 condition을 true로 변경
     if (feedIdList.includes(intFeedId)) {
-      condition.value = true
+      deleteCondition.value = true
     }
   })
 })
@@ -125,7 +122,7 @@ onMounted(() => {
 const addComment = async () => {
   try {
     const commentData = {
-      content: comment.value
+      content: commentContent.value
     }
 
     // 댓글 생성
@@ -136,22 +133,15 @@ const addComment = async () => {
     comments.value = response.data.comments
 
     // 입력 필드 초기화
-    comment.value = ''
+    commentContent.value = ''
   } catch (error) {
     console.error('에러 발생:', error)
   }
 }
 
-// 댓글 삭제
-const deleteComment = async (commentId) => {
-  try {
-    await challengeFeed.deleteComment(commentId)
-    // 댓글 목록 업데이트
-    const response = await challengeFeed.fetchFeedDetail(feedId.value)
-    comments.value = response.data.comments
-  } catch (error) {
-    console.error('에러 발생:', error)
-  }
+// emit받은 댓글 삭제 이후 데이터 다시 넣기
+const afterDelete = (response) => {
+  comments.value = response
 }
 </script>
 <style>

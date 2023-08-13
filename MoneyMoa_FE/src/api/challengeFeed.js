@@ -146,11 +146,15 @@ async function deleteComment(commentId) {
 }
 
 // 댓글 수정 API
-async function updateComment() {
+async function updateComment(commentId, comment) {
   try {
-    const res = await api.get(`/feed/list`, {
-      usertoken: accessToken
-    })
+    // 토큰 받아오기
+    const { cookies } = useCookies()
+    const token = cookies.get('accessToken')
+    const headers = {
+      Authorization: `Bearer ${token}`
+    }
+    const res = await api.put(`/feed/comment/${commentId}`, JSON.stringify(comment), { headers })
     return res
   } catch (err) {
     console.log(err)
