@@ -106,20 +106,22 @@ const submitFeedData = () => {
   }
   const formData = new FormData()
   for (const file of files.value) {
-    formData.append('fileUrls', file)
+    formData.append('files', file)
   }
   formData.append('content', content.value)
   // depositAmount 값을 정수로 변환하여 변수에 할당
   const parsedDepositAmount = parseInt(depositAmount.value)
   formData.append('depositAmount', parsedDepositAmount)
   formData.append('hashtag', hashtag.value)
+  formData.append('feedLikeCount', 0)
+  formData.append('id', 0)
 
   // 폼 데이터 확인
   for (const pair of formData.entries()) {
     console.log(pair[0], pair[1], typeof pair[1])
   }
 
-  console.log(formData.getAll('depositAmount'))
+  console.log(formData.getAll('fileUrls'))
   // 피드 생성 API 호출
   const createFeed = challengeFeedApi.createFeed
   createFeed(formData, challengeId.value).then((response) => {

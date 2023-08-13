@@ -74,13 +74,13 @@ async function searchFeed(searchWord) {
 }
 
 // 피드 생성 API
-async function createFeed(formData, challengeId) {
+async function createFeed(data, challengeId) {
   try {
     const headers = {
       Authorization: `Bearer ${token}`,
       'Content-Type': 'multipart/form-data'
     }
-    const res = await api.post(`/feed/create/${challengeId}`, { formData }, { headers })
+    const res = await api.post(`/feed/create/${challengeId}`, data, { headers })
     return res
   } catch (err) {
     console.log(err)
