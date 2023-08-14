@@ -61,9 +61,15 @@ async function postSignup(member) {
 
 // 팔로잉 API
 // 유저 토큰이랑 팔로우 할 사람의 id를 보내면 됨
-async function addFollow(memberId) {
+async function addFollowing(toMemberId) {
   try {
-    const res = await api.post(`/member/follow/${memberId}`, {})
+    // 토큰 받아오기
+    const { cookies } = useCookies()
+    const token = cookies.get('accessToken')
+    const headers = {
+      Authorization: `Bearer ${token}`
+    }
+    const res = await api.post(`/follow/following`, toMemberId, { headers })
     return res
   } catch (err) {
     console.log(err)
@@ -232,7 +238,7 @@ async function postGetAccessid() {
 }
 
 export default {
-  addFollow,
+  addFollowing,
   fetchFollowerList,
   fetchFollowingList,
   fetchFeedList,

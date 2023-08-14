@@ -30,7 +30,17 @@
     </v-row>
     <v-divider></v-divider>
     <v-card-text class="my-5">
-      {{ content }}
+      <v-hover v-slot="{ isHovering, props }">
+        <h3 v-bind="props">
+          {{ nickname }}:
+          <v-expand-transition>
+            <v-card :elevation="10" v-if="isHovering" width="200" height="200"
+              ><v-btn>유저 페이지</v-btn><v-btn @click="addFollowing">팔로잉 </v-btn></v-card
+            >
+          </v-expand-transition>
+        </h3>
+        {{ content }}
+      </v-hover>
     </v-card-text>
     <v-divider></v-divider>
     <div v-for="(comment, index) in comments" :key="index">
@@ -51,6 +61,7 @@
 import { ref, onMounted } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import challengeFeed from '@/api/challengeFeed.js'
+import member from '@/api/member.js'
 import { useCookies } from 'vue3-cookies'
 import UpdateFeed from './item/UpdateFeed.vue'
 import PostComment from './item/PostComment.vue'
@@ -72,7 +83,11 @@ const challenge = ref('')
 const hashtags = ref([])
 const comments = ref([])
 const imgs = ref([])
+const nickname = ref('')
 const feedLikeCount = ref(0)
+
+// 팔로우 보낼 때 사용할 작성자 id
+const feedWriterId = ref(0)
 
 // 댓글 작성 모델
 const commentContent = ref('')
@@ -92,6 +107,7 @@ const deleteFeed = async () => {
 // 마운트 시에 피드 상세 조회 API 호출, memberId가 변경되면 다시 호출
 onMounted(() => {
   challengeFeed.fetchFeedDetail(feedId.value).then((response) => {
+    console.log(response)
     content.value = response.data.feed.content
     challenge.value = response.data.feed.challengeId
     // 정규식을 사용하여 '#'으로 시작하는 단어를 추출하여 리스트로 만듦
@@ -99,6 +115,8 @@ onMounted(() => {
     comments.value = response.data.comments
     imgs.value = response.data.feed.fileUrls
     feedLikeCount.value = response.data.feed.feedLikeCount
+    nickname.value = response.data.feed.nickname
+    feedWriterId.value = response.data.feed.memberId
   })
 })
 
@@ -148,6 +166,18 @@ const addFeedLike = async () => {
     await challengeFeed.addFeedLike(feedId.value)
   } catch (error) {
     console.error('좋아요 에러:', error)
+  }
+}
+
+// 팔로잉
+const addFollowing = async () => {
+  try {
+    console.log(feedWriterId.value)
+    await member.addFollowing(feedWriterId.value).then((response) => {
+      console.log(response)
+    })
+  } catch (error) {
+    console.error('팔로잉 에러:', error)
   }
 }
 </script>

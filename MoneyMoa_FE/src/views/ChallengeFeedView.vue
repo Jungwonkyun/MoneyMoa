@@ -4,7 +4,7 @@
       <v-col cols="11" class="ma-auto">
         <SearchBar v-if="shouldShowSearchBar" @custom-event="handleEvent" />
       </v-col>
-      <v-col cols="1" class="ma-auto no-margin-padding">
+      <v-col cols="1" class="ma-auto">
         <PostFeed />
       </v-col>
     </v-row>
