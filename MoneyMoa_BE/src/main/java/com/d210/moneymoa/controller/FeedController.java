@@ -454,7 +454,7 @@ public class FeedController {
     }
 
     @ApiOperation(value = "피드 좋아요", notes = "피드 좋아요 버튼입니다. 한번 누르면 true/feedLike 테이블에 저장. 한번 더 누르면 false/좋아요 테이블에서 삭제")
-    @PutMapping("/like/{feedId}")
+    @GetMapping("/like/{feedId}")
     public ResponseEntity<?> toggleFeedLike(@PathVariable Long feedId, @RequestHeader("Authorization") String jwt) {
         Map<String, Object> resultMap = new HashMap<>();
         HttpStatus status;
