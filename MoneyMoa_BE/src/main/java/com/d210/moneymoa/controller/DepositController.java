@@ -186,10 +186,10 @@ public class DepositController {
             jwt = jwt.replace("Bearer ", "");
             Long memberId = authTokensGenerator.extractMemberId(jwt);
 
-            depositService.deleteLikedDeposit(memberId,likeDepositId);
+            // depositService.deleteLikedDeposit(memberId,likeDepositId);
 
             status = HttpStatus.OK;
-            resultMap.put("myLikedDepositList", myLikedDepositList);
+            // resultMap.put("myLikedDepositList", myLikedDepositList);
             resultMap.put("message", "success");
         } catch (Exception e) {
             e.printStackTrace();
