@@ -20,4 +20,7 @@ public interface DepositService {
 
     void saveDepositFile(DepositFile depositFile);
 
+    List<LikedDeposit> myLikedDepositList(Long memberId);
+
+    void deleteLikedDeposit(Long memberId, Long likeDepositId);
 }

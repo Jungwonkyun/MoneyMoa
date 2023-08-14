@@ -148,6 +148,60 @@ public class DepositController {
         return new ResponseEntity<>(resultMap, status);
     }
 
+
+    @ApiOperation(value = "찜한 모든 정보 반환")
+    @GetMapping("/likelist")
+    public ResponseEntity<Map<String, Object>> saveLikedDeposit(@ApiParam(value = "Bearer ${jwt token} 형식으로 전송")
+                                                                @RequestHeader("Authorization") String jwt) {
+        Map<String, Object> resultMap = new HashMap<>();
+        HttpStatus status;
+
+        try {
+            jwt = jwt.replace("Bearer ", "");
+            Long memberId = authTokensGenerator.extractMemberId(jwt);
+
+            List<LikedDeposit> myLikedDepositList = depositService.myLikedDepositList(memberId);
+
+            status = HttpStatus.OK;
+            resultMap.put("myLikedDepositList", myLikedDepositList);
+            resultMap.put("message", "success");
+        } catch (Exception e) {
+            e.printStackTrace();
+            status = HttpStatus.BAD_REQUEST;
+            resultMap.put("message", "fail");
+        }
+        return new ResponseEntity<>(resultMap, status);
+    }
+
+
+    @ApiOperation(value = "찜한 모든 정보 반환")
+    @DeleteMapping("/delete/likedeposit")
+    public ResponseEntity<Map<String, Object>> deleteLikedDeposit(@ApiParam(value = "Bearer ${jwt token} 형식으로 전송")
+                                                                @RequestHeader("Authorization") String jwt,
+                                                                  @RequestBody Long likeDepositId) {
+        Map<String, Object> resultMap = new HashMap<>();
+        HttpStatus status;
+
+        try {
+            jwt = jwt.replace("Bearer ", "");
+            Long memberId = authTokensGenerator.extractMemberId(jwt);
+
+            depositService.deleteLikedDeposit(memberId,likeDepositId);
+
+            status = HttpStatus.OK;
+            resultMap.put("myLikedDepositList", myLikedDepositList);
+            resultMap.put("message", "success");
+        } catch (Exception e) {
+            e.printStackTrace();
+            status = HttpStatus.BAD_REQUEST;
+            resultMap.put("message", "fail");
+        }
+        return new ResponseEntity<>(resultMap, status);
+    }
+
+
+
+
     @ApiOperation(value = "예금상품에 댓글 작성")
     @PostMapping("/{productCode}/comment")
     public ResponseEntity<Map<String, Object>> createComment(@PathVariable String productCode,

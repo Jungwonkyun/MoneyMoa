@@ -115,4 +115,14 @@ public class DepositServiceImpl implements DepositService {
         depositFileRepository.save(depositFile);
     }
 
+    @Override
+    public List<LikedDeposit> myLikedDepositList(Long memberId) {
+        return likedDepositRepository.findAllByMemberId(memberId);
+    }
+
+    @Override
+    public void deleteLikedDeposit(Long memberId, Long likeDepositId) {
+        return;
+    }
+
 }
