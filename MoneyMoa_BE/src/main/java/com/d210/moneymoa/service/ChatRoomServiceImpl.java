@@ -231,6 +231,7 @@ public class ChatRoomServiceImpl implements ChatRoomService {
     }
 
 
+
     public List<ChatMessageDto> getChatMessages(String roomId){
         return chatMessageDtoRepository.findByRoomId(roomId);
     }
