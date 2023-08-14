@@ -47,13 +47,12 @@ public class FeedServiceImpl implements FeedService {
     public Feed createFeed(Long challengeId, Long memberId, Feed inputfeed) {
 
         Feed feed = Feed.builder()
+                .memberId(memberId)
                 .content(inputfeed.getContent())
                 .challengeId(challengeId)
                 .hashtag(inputfeed.getHashtag())
                 .depositAmount(inputfeed.getDepositAmount())
-                .memberId(memberId)
-                .feedLikeCount(inputfeed.getFeedLikeCount())
-                .feedLikeCount(inputfeed.getFeedLikeCount())
+                .feedLikeCount(0) // 보기 위해 코드 저장. 08130440
                 .build();
 
         String nickname = memberRepository.findById(memberId).get().getNickname();
@@ -88,27 +87,34 @@ public class FeedServiceImpl implements FeedService {
     }
 
     @Override
-    public void updateFeed(Long feedId, Feed updateFeed, Long memberId) throws IllegalAccessException {
-        Feed feed = feedRepository.findById(feedId)
-                .orElseThrow(() -> new NoSuchElementException("챌린지를 찾을 수 없습니다."));
+    public Integer updateFeed(Long feedId, Feed updateFeed, Long memberId) throws IllegalAccessException {
+        Feed originalFeed = feedRepository.findById(feedId)
+                .orElseThrow(() -> new NoSuchElementException("해당 게시물이 존재하지 않습니다."));
 
-        if (!feed.getMemberId().equals(memberId)) {
-            throw new IllegalAccessException("수정 권한이 없습니다.");
+        if (!originalFeed.getMemberId().equals(memberId)) {
+            throw new IllegalAccessException("게시물의 작성자만 수정할 수 있습니다.");
         }
 
         if (updateFeed.getContent() != null) {
-            feed.setContent(updateFeed.getContent());
+            originalFeed.setContent(updateFeed.getContent());
         }
+
         if (updateFeed.getChallengeId() != null) {
-            feed.setChallengeId(updateFeed.getChallengeId());
+            originalFeed.setChallengeId(updateFeed.getChallengeId());
         }
-        if (updateFeed.getHashtag() != null) {
-            feed.setHashtag(updateFeed.getHashtag());
+
+        if (updateFeed.getMemberId() != null) {
+            originalFeed.setMemberId(updateFeed.getMemberId());
         }
+
         if (updateFeed.getDepositAmount() != null) {
-            feed.setDepositAmount(updateFeed.getDepositAmount());
+            originalFeed.setDepositAmount(updateFeed.getDepositAmount());
         }
-        feedRepository.save(feed);
+
+        feedRepository.save(originalFeed);
+
+        // 반환 전에 원래 피드의 depositAmount를 반환합니다.
+        return originalFeed.getDepositAmount();
     }
 
     @Override
@@ -145,16 +151,32 @@ public boolean toggleLike(Long memberId, Long feedId) {
     Feed feed = feedRepository.findById(feedId).orElseThrow(() -> new NoSuchElementException("해당 피드가 존재하지 않습니다."));
     if (like.isPresent()) {
         feedLikeRepository.delete(like.get());
-        feed.decreaseFeedLikeCount();
+        decreaseFeedLikeCount(feed);
         feedRepository.save(feed);
         return false;
     } else {
         feedLikeRepository.save(new FeedLike(memberId, feedId));
-        feed.increaseFeedLikeCount();
+        increaseFeedLikeCount(feed);
         feedRepository.save(feed);
         return true;
     }
     }
+    public void increaseFeedLikeCount(Feed feed) {
+        if (feed.getFeedLikeCount() == null) {
+            feed.setFeedLikeCount(1);
+        } else {
+            feed.setFeedLikeCount(feed.getFeedLikeCount() + 1);
+        }
+    }
+
+    public void decreaseFeedLikeCount(Feed feed) {
+        if (feed.getFeedLikeCount() == null) {
+            feed.setFeedLikeCount(0);
+        } else {
+            feed.setFeedLikeCount(feed.getFeedLikeCount() - 1);
+        }
+    }
+
 }
 
 

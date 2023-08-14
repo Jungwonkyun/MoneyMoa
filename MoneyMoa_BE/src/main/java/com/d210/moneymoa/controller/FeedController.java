@@ -84,11 +84,21 @@ public class FeedController {
 
             Optional<Challenge> challengeOptional = challengeRepository.findById(challengeId);
             if (challengeOptional.isPresent()) {
+
+                // 8월 13일 02:41 코드 추가 : 챌린지의 presentAmount에 depositAmount 더하기
+                Challenge challenge = challengeOptional.get();
+                challenge.setPresentAmount(challenge.getPresentAmount() + feed.getDepositAmount());
+
+                challengeRepository.save(challenge);
+
                 // 존재하면 새 피드를 생성하고 입력받은 memberId, challengeId로 Feed 객체를 만들어 반환
                 Feed newFeed = feedService.createFeed(challengeId, memberId, feed);
 
                 // 피드가 성공적으로 생성되면 HTTP 상태를 CREATE로 변경
                 status = HttpStatus.CREATED;
+                resultMap.put("feed", newFeed);
+                resultMap.put("message", "success");
+
 
                 // 파일이 전달되었다면, 각 파일을 처리하고 피드에 추가합니다.
                 if (files != null && files.length > 0) {
@@ -265,19 +275,31 @@ public class FeedController {
 
         try {
             Long memberId = authTokensGenerator.extractMemberId(jwt.replace("Bearer ", ""));
-            feedService.updateFeed(feedId, updateFeed, memberId);
+            Feed originalFeed = feedService.getFeedById(feedId);
+            Integer originalDepositAmount = originalFeed.getDepositAmount();
+
+            Integer updatedDepositAmount = feedService.updateFeed(feedId, updateFeed, memberId);
+
+            if (updateFeed.getChallengeId() != null && updateFeed.getChallengeId().equals(originalFeed.getChallengeId())
+                    && !originalDepositAmount.equals(updatedDepositAmount)) {
+                Challenge challenge = challengeRepository.findById(updateFeed.getChallengeId())
+                        .orElseThrow(() -> new NoSuchElementException("해당 챌린지가 존재하지 않습니다."));
+                challenge.setPresentAmount(challenge.getPresentAmount() - originalDepositAmount);
+                challenge.setPresentAmount(challenge.getPresentAmount() + updatedDepositAmount);
+
+                challengeRepository.save(challenge);
+            }
+
             resultMap.put("message", "success");
             return new ResponseEntity<Map<String, Object>>(resultMap, HttpStatus.OK);
-        } catch (Exception e) {
-            // 예외 발생시 예외 및 HTTP BAD_REQUEST 출력
+        } catch (Exception e) {            // 예외 발생시 예외 및 HTTP BAD_REQUEST 출력
             e.printStackTrace();
             status = HttpStatus.BAD_REQUEST;
             //resultMap에 실패 메시지 추가
             resultMap.put("message", "fail");
-
         }
-        return new ResponseEntity<>(resultMap, status);
 
+        return new ResponseEntity<>(resultMap, status);
     }
 
     @ApiOperation(value = "피드 삭제", notes = "특정 피드를 삭제합니다.")
@@ -429,6 +451,7 @@ public class FeedController {
         return new ResponseEntity<>(feeds, HttpStatus.OK);
     }
 
+    @ApiOperation(value = "피드 좋아요", notes = "피드 좋아요 버튼입니다. 한번 누르면 true/feedLike 테이블에 저장. 한번 더 누르면 false/좋아요 테이블에서 삭제")
     @PutMapping("/like/{feedId}")
     public ResponseEntity<?> toggleFeedLike(@PathVariable Long feedId, @RequestHeader("Authorization") String jwt) {
         Map<String, Object> resultMap = new HashMap<>();
