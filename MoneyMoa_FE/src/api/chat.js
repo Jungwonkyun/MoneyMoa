@@ -132,6 +132,7 @@ export {
   createRoom,
   quitRoom,
   getDMRooms,
+  createDMRoom,
   enterDMRoom,
   getDMRoomDetail
 }

@@ -60,9 +60,12 @@
 <script setup>
 import { ref, onMounted, computed } from 'vue'
 import functions from '@/api/member.js'
+import { createDMRoom } from '@/api/chat'
 import { useRoute, useRouter } from 'vue-router'
 import img from '@/assets/img/beauty.png'
+import { useCookies } from 'vue3-cookies'
 
+const { cookies } = useCookies()
 const route = useRoute()
 const memberId = computed(() => route.params.id)
 
@@ -89,7 +92,10 @@ const nickname = ref('닉네임')
 const aboutMe = ref('안녕하세요 프론트엔드 희망하는 개발 신입입니다. 잘 부탁드립니다.')
 
 //DM버튼 누를때 로직 - 신경희
-function doDM(id) {}
+function doDM(id) {
+  if (id === cookies.get('member').id) return
+  createDMRoom(id).then((response) => {})
+}
 </script>
 <style>
 .profileImage {
