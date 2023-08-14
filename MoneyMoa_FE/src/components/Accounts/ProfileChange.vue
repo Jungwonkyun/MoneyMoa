@@ -24,7 +24,7 @@
             @change="previewChangeImg"
             label="이미지를 선택해 주세요."
             accept="image/*"
-            v-model="UpoaldImg"
+            v-model="UploadImg"
             class="my-10"
           ></v-file-input>
         </v-col>
@@ -98,9 +98,7 @@
         </v-col>
         <v-col class="text-right mb-5">
           <!-- 개발땐 홈으로 돌아가게 -->
-          <router-link :to="{ name: 'home' }"
-            ><v-btn class="Btns mr-5" color="red">취소</v-btn></router-link
-          >
+          <v-btn class="Btns mr-5" color="red" @click="cancel">취소</v-btn>
           <v-btn class="Btns" @click="onUpdate">수정</v-btn>
         </v-col>
       </v-row>
@@ -125,20 +123,20 @@ onMounted(() => {
 })
 const userImg = ref(null)
 
-const email = ref(null)
-
-const name = ref(null)
-
-const gender = ref(null)
-
-const birthday = ref(null)
+const UploadImg = ref(null)
 const introduce = ref(null)
 const nickname = ref(null)
 
-const orignPassword = ref(null)
 const changedPassword1 = ref(null)
 const changedPassword2 = ref(null)
 const visible = ref(false)
+
+function cancel() {
+  router.push({ name: 'home' }).then(() => {
+    window.scrollTo(0, 0)
+  })
+}
+
 // 현재 유저 소셜로그인 유무 변수
 const isGeneral = computed(() => {
   return !!cookies.get('member') && cookies.get('member').oauthProvider === 'GENERAL'
@@ -179,26 +177,20 @@ async function onUpdate() {
   // 지금은 그냥 홈으로
 
   try {
-    let imgName = cookies.get('member').imageUrl
     const token = cookies.get('accessToken')
-
-    if (isChanged.value) {
-      const uploadImgRes = await functions.postUploadFile(UpoaldImg.value)
-      imgName = uploadImgRes
-      console.log(imgName)
-    }
-    let password = orignPassword.value
-    if (changedPassword1.value && changedPassword2.value) {
-      password = changedPassword1.value
-    }
     const member = {
-      imageUrl: imgName,
       nickname: nickname.value,
       introduce: introduce.value,
-      password: password
+      password: `${changedPassword1.value}`
     }
+    const jsonBlob = new Blob([JSON.stringify(member)], { type: 'application/json' })
+    const imageBlob = new Blob([UploadImg.value], { type: UploadImg.value.type }) // 파일 타입에 맞게 변경
 
-    const res = await functions.putUpdatedMember(token, member)
+    const data = new FormData()
+    data.append('file', imageBlob)
+
+    data.append('MemberUpdateInfo', jsonBlob)
+    const res = await functions.postUpdatedMember(token, data)
     isPass.value = true
     console.log(res)
   } catch (err) {
@@ -207,21 +199,7 @@ async function onUpdate() {
   }
   return router.push({ name: 'home' })
 }
-// const UpoaldImg = ref(null)
-// const originImg = ref(null)
-// async function upload() {
-//   try {
-//     console.log(UpoaldImg.value)
-//     const res = await functions.postUploadFile(UpoaldImg.value)
-//     console.log(res)
-//     const imgName = res.split(' ')
-//     // 이 이름으로 멤버에 저장해야돼서
-//     originImg.value = `${imgName[3]} ${imgName[4]}`
-//     console.log(originImg.value)
-//   } catch (err) {
-//     console.log(err)
-//   }
-// }
+
 // 회원탈퇴 함수
 async function quitService() {
   const answer = window.confirm(
@@ -267,27 +245,22 @@ onBeforeRouteLeave((to, from, next) => {
 // 이미지 업로드 취소해도 빈 배열로 남아있어서
 // true로 뜨기때문에 lenght로 계산하기
 // 근데 또 다짜고짜 value[0]하면 오류나서 이렇게해줌..
-const isChanged = computed(() => {
-  if (UpoaldImg.value) {
-    return !!UpoaldImg.value[0]
-  }
-  return !!UpoaldImg.value
-})
+
 // 이미지업로드 테스트
-const UpoaldImg = ref(null)
+
 // const originImg = ref(null)
-async function upload() {
-  try {
-    console.log(UpoaldImg.value)
-    const res = await functions.postUploadFile(UpoaldImg.value)
-    console.log(res)
-    // const imgName = res.split(' ')
-    // 이 이름으로 멤버에 저장해야돼서
-    // originImg.value = `${imgName[3]} ${imgName[4]}`
-  } catch (err) {
-    console.log(err)
-  }
-}
+// async function upload() {
+//   try {
+//     console.log(UploadImg.value)
+//     const res = await functions.postUploadFile(UploadImg.value)
+//     console.log(res)
+//     // const imgName = res.split(' ')
+//     // 이 이름으로 멤버에 저장해야돼서
+//     // originImg.value = `${imgName[3]} ${imgName[4]}`
+//   } catch (err) {
+//     console.log(err)
+//   }
+// }
 const previewURL = ref(null)
 // 이건 유저가 사진 올리면 미리보기 파일이벤트임
 function previewChangeImg() {
@@ -296,7 +269,7 @@ function previewChangeImg() {
   reader.onload = (e) => {
     previewURL.value = e.target.result
   }
-  reader.readAsDataURL(UpoaldImg.value[0])
+  reader.readAsDataURL(UploadImg.value[0])
 }
 // 다운로드(url 로드) 밑에 형식으로 받아오기!
 // const UpoaldImgDown = ref(null)
@@ -316,11 +289,9 @@ async function getMember() {
     const res = await functions.getMyInfoApi(token)
     const member = res.data
     console.log(member)
-    birthday.value = member.birthday
-    introduce.value = member.introduce
-    nickname.value = member.nickname
-    userImg.value = cookies.get('member').imageUrl
-    orignPassword.value = member.password
+    introduce.value = member.sombody.introduce
+    nickname.value = member.sombody.nickname
+    userImg.value = member.sombody.userImg
 
     return res.data
   } catch (err) {

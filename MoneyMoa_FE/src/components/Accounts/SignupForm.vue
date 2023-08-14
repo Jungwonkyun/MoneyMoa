@@ -36,6 +36,9 @@
             height="40"
             >인증번호 전송</v-btn
           >
+          <v-btn @click.prevent="onAthentic" class="Athentic-Btn" elevation="3" v-if="sent"
+            >재전송</v-btn
+          >
         </v-col>
       </v-row>
       <v-row v-if="sent">
@@ -198,7 +201,10 @@ const gender = ref(null)
 
 // 인증메일 보내기 보여줄지말지 함수
 const disableBtn = ref(false)
-
+// 재전송 함수
+function onResend() {
+  disableBtn.value = false
+}
 // 이메일 인증함수
 async function onAthentic() {
   const isValid = Emailrules.every((rule) => typeof rule(Email.value) !== 'string')
@@ -247,7 +253,7 @@ const isBlank = [(value) => !!value || '필수 입력 값입니다.']
 // 이메일 유효성 검사
 const Emailrules = [
   (value) => !!value || '필수 입력 값입니다.',
-  (value) => (value || '').length <= 20 || '최대 20자까지 입력 가능합니다.',
+  (value) => (value.split('@')[0] || '').length <= 20 || '최대 20자까지 입력 가능합니다.',
   (value) => {
     const pattern =
       /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/

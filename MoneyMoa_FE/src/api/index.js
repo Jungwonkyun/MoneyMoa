@@ -1,5 +1,4 @@
 import axios from 'axios'
-
 function apiInstance(path) {
   const baseURL = path
     ? `${import.meta.env.VITE_APP_API_URL}${path}`

@@ -1,7 +1,9 @@
 import { apiInstance } from './index.js'
+import { instanceWithAuth } from './interceptorIndex.js'
 import { useCookies } from 'vue3-cookies'
 
 const api = apiInstance()
+const apiWithAuth = instanceWithAuth()
 const { cookies } = useCookies()
 
 // 내 정보 API
@@ -101,12 +103,12 @@ async function fetchFeedList(memberId) {
 }
 // 비밀번호 확인
 async function postCheckPassword(pwd) {
-  const token = cookies.get('accessToken')
-  const headers = {
-    Authorization: `Bearer ${token}`
-  }
+  // const token = cookies.get('accessToken')
+  // const headers = {
+  //   Authorization: `Bearer ${token}`
+  // }
   try {
-    const res = await api.post('/member/checkpassword', pwd, { headers })
+    const res = await apiWithAuth.post('/member/checkpassword', pwd)
     console.log(res)
     return res
   } catch (err) {
@@ -219,13 +221,17 @@ async function getImgDown(filename) {
   }
 }
 // 회원정보변경
-async function putUpdatedMember(token, member) {
+async function postUpdatedMember(token, data) {
   const Token = `Bearer ${token}`
+  for (const pair of data.entries()) {
+    console.log(pair[0], pair[1])
+  }
   const headers = {
-    Authorization: Token
+    Authorization: Token,
+    'Content-Type': 'multipart/form-data'
   }
   try {
-    const res = await api.put('/member/update', member, { headers })
+    const res = await api.post('/member/update', data, { headers })
     return res.data
   } catch (err) {
     console.log(err)
@@ -265,7 +271,7 @@ export default {
   postNaverLogin,
   postUploadFile,
   getImgDown,
-  putUpdatedMember,
+  postUpdatedMember,
   postGetAccessid,
   postCheckPassword
 }
