@@ -59,6 +59,22 @@ public class Challenge {
     @JsonIgnore
     private List<Feed> feeds;
 
+    @OneToMany(mappedBy = "challenge", cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REMOVE}, fetch = FetchType.LAZY)
+    @JsonIgnore
+    private List<ChallengeFile> challengeFiles;
+
+    // fileUrls 필드 추가
+    @Transient
+    private List<String> fileUrls;
+
+    // Getter 및 Setter
+    public List<String> getFileUrls() {
+        return fileUrls;
+    }
+
+    public void setFileUrls(List<String> fileUrls) {
+        this.fileUrls = fileUrls;
+    }
 
 
     @Builder
