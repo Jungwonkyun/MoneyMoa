@@ -11,6 +11,8 @@ const token = cookies.get('accessToken')
 // 피드 전체 목록 조회 API
 async function fetchAllFeedList() {
   try {
+    // 토큰 받아오기
+    const token = cookies.get('accessToken')
     const headers = {
       Authorization: `Bearer ${token}`
     }
@@ -24,6 +26,8 @@ async function fetchAllFeedList() {
 // 해당 유저의 피드 목록 조회 API
 async function getUserFeedList(memberId) {
   try {
+    // 토큰 받아오기
+    const token = cookies.get('accessToken')
     const headers = {
       Authorization: `Bearer ${token}`
     }
@@ -37,6 +41,8 @@ async function getUserFeedList(memberId) {
 // 피드 상세 조회 API
 async function fetchFeedDetail(feedId) {
   try {
+    // 토큰 받아오기
+    const token = cookies.get('accessToken')
     const headers = {
       Authorization: `Bearer ${token}`
     }
@@ -67,6 +73,8 @@ async function addFeedLike(feedId) {
 // 피드 검색 API
 async function searchFeed(searchWord) {
   try {
+    // 토큰 받아오기
+    const token = cookies.get('accessToken')
     const res = await api.get(`/feed/search`, {
       usertoken: accessToken,
       searchWord: searchWord
@@ -78,13 +86,15 @@ async function searchFeed(searchWord) {
 }
 
 // 피드 생성 API
-async function createFeed(data, challengeId) {
+async function createFeed(feedData, challengeId) {
   try {
+    // 토큰 받아오기
+    const token = cookies.get('accessToken')
     const headers = {
       Authorization: `Bearer ${token}`,
       'Content-Type': 'multipart/form-data'
     }
-    const res = await api.post(`/feed/create/${challengeId}`, data, { headers })
+    const res = await api.post(`/feed/create/${challengeId}`, feedData, { headers })
     return res
   } catch (err) {
     console.log(err)
@@ -94,10 +104,13 @@ async function createFeed(data, challengeId) {
 // 피드 수정 API
 async function updateFeed(feedData, feedId) {
   try {
+    // 토큰 받아오기
+    const token = cookies.get('accessToken')
     const headers = {
-      Authorization: `Bearer ${token}`
+      Authorization: `Bearer ${token}`,
+      'Content-Type': 'multipart/form-data'
     }
-    const res = await api.put(`/feed/update/${feedId}`, JSON.stringify(feedData), { headers })
+    const res = await api.post(`/feed/update/${feedId}`, feedData, { headers })
     return res
   } catch (err) {
     console.log(err)
@@ -107,6 +120,8 @@ async function updateFeed(feedData, feedId) {
 // 피드 삭제 API
 async function deleteFeed(feedId) {
   try {
+    // 토큰 받아오기
+    const token = cookies.get('accessToken')
     const headers = {
       Authorization: `Bearer ${token}`
     }

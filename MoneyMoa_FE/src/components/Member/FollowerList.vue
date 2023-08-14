@@ -2,18 +2,18 @@
   <v-container>
     <h1 align="center">팔로워</h1>
     <v-card
-      v-for="(follower, index) in followerList[0].to_member"
+      v-for="(follower, index) in followerList"
       :key="index"
       class="follower-card"
       :elevation="10"
     >
-      <router-link :to="`/member/${follower.member_id}`" class="no-link-style text-center">
+      <router-link :to="`/member/${follower.fromMemberId}`" class="no-link-style text-center">
         <v-row align="center">
           <v-col cols="4">
             <v-img :width="100" cover :src="follower.profileImage"></v-img>
           </v-col>
           <v-col cols="4">
-            <div>{{ follower.nickname }}</div>
+            <div>{{ follower.fromMemberNickname }}</div>
           </v-col>
           <v-col cols="4">
             <div>{{ follower.email }}</div>
@@ -26,41 +26,18 @@
 <script setup>
 import { ref, onMounted } from 'vue'
 import { useRoute } from 'vue-router'
-import functions from '@/api/member.js'
+import memberApi from '@/api/member.js'
 
-const dummy = [
-  {
-    message: 'success',
-    to_member: [
-      {
-        member_id: 123,
-        nickname: 'test',
-        profileImage: 'https://cdn.vuetifyjs.com/images/parallax/material.jpg',
-        email: 'test@email.com'
-      },
-      {
-        member_id: 2,
-        nickname: 'test',
-        profileImage: 'https://cdn.vuetifyjs.com/images/parallax/material.jpg',
-        email: 'test@email.com'
-      },
-      {
-        member_id: 3,
-        nickname: 'test',
-        profileImage: 'https://cdn.vuetifyjs.com/images/parallax/material.jpg',
-        email: 'test@email.com'
-      }
-    ]
-  }
-]
-
-const followerList = ref(dummy)
+const followerList = ref([])
 
 const route = useRoute()
 const memberId = ref(route.params.id)
 
-onMounted(() => {
-  const res = functions.fetchFollowerList(memberId.value)
+onMounted(async () => {
+  await memberApi.fetchFollowerList(memberId.value).then((res) => {
+    console.log(res.data['my follower list'])
+    followerList.value = res.data['my follower list']
+  })
 })
 
 // 팔로워 클릭하면 해당 유저 인포 페이지로 이동

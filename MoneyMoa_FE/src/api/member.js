@@ -5,8 +5,9 @@ const api = apiInstance()
 const { cookies } = useCookies()
 
 // 내 정보 API
-async function getMyInfoApi(token) {
+async function getMyInfoApi() {
   try {
+    const token = cookies.get('accessToken')
     const headers = {
       Authorization: `Bearer ${token}`
     }
@@ -77,9 +78,15 @@ async function addFollowing(toMemberId) {
 }
 
 // 팔로워 유저 목록 API
-async function fetchFollowerList(memberId) {
+async function fetchFollowerList() {
   try {
-    const res = await api.get(`/member/followerlist/${memberId}`, {})
+    // 토큰 받아오기
+    const { cookies } = useCookies()
+    const token = cookies.get('accessToken')
+    const headers = {
+      Authorization: `Bearer ${token}`
+    }
+    const res = await api.get(`/follow/myfollower`, { headers })
     return res
   } catch (err) {
     console.log(err)
@@ -87,9 +94,15 @@ async function fetchFollowerList(memberId) {
 }
 
 // 팔로잉 유저 목록 API
-async function fetchFollowingList(memberId) {
+async function fetchFollowingList() {
   try {
-    const res = await api.get(`/member/followinglist/${memberId}`, {})
+    // 토큰 받아오기
+    const { cookies } = useCookies()
+    const token = cookies.get('accessToken')
+    const headers = {
+      Authorization: `Bearer ${token}`
+    }
+    const res = await api.get(`/follow/myfollowing`, { headers })
     return res
   } catch (err) {
     console.log(err)

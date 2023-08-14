@@ -34,8 +34,9 @@
         <h3 v-bind="props">
           {{ nickname }}:
           <v-expand-transition>
-            <v-card :elevation="10" v-if="isHovering" width="200" height="200"
-              ><v-btn>유저 페이지</v-btn><v-btn @click="addFollowing">팔로잉 </v-btn></v-card
+            <v-card :elevation="10" v-if="isHovering"
+              ><v-btn variant="text">유저 페이지</v-btn
+              ><v-btn variant="text" @click="addFollowing">팔로잉 </v-btn></v-card
             >
           </v-expand-transition>
         </h3>
@@ -61,7 +62,7 @@
 import { ref, onMounted } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import challengeFeed from '@/api/challengeFeed.js'
-import member from '@/api/member.js'
+import memberApi from '@/api/member.js'
 import { useCookies } from 'vue3-cookies'
 import UpdateFeed from './item/UpdateFeed.vue'
 import PostComment from './item/PostComment.vue'
@@ -121,8 +122,8 @@ onMounted(() => {
 })
 
 // 마운트 시에 유저 피드 목록 조회하여 이 피드가 해당 유저 피드면 삭제 버튼 보여주기
-onMounted(() => {
-  const res = challengeFeed.getUserFeedList(memberId.value).then((response) => {
+onMounted(async () => {
+  challengeFeed.getUserFeedList(memberId.value).then((response) => {
     const data = response.data.feedList
     // data 순회하면서 id만 추출
     const feedIdList = data.map((item) => item.id)
@@ -132,7 +133,12 @@ onMounted(() => {
       deleteCondition.value = true
     }
   })
+  memberApi.fetchFollowingList().then((response) => {
+    console.log(response)
+  })
 })
+
+// 마운트하면 팔로우 여부 확인
 
 // 댓글 생성 및 댓글 목록 조회
 const addComment = async () => {

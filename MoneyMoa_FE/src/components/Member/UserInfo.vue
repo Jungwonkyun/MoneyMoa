@@ -13,13 +13,13 @@
         </v-col>
       </v-row>
       <v-card-title class="text-center ma-6">
-        {{ memberId }}
+        {{ nickname }}
       </v-card-title>
       <v-card-text class="text-center mb-6">
         {{ aboutMe }}
       </v-card-text>
       <v-row class="d-flex justify-space-evenly mt-6 mb-6">
-        <v-btn cols="6" @click="addFollow, followingDialog">팔로잉</v-btn>
+        <v-btn cols="6" v-if="isMe !== true" @click="addFollow, followingDialog">팔로잉</v-btn>
         <v-btn cols="6">DM보내기</v-btn>
       </v-row>
 
@@ -61,12 +61,19 @@
 
 <script setup>
 import { ref, onMounted, computed } from 'vue'
-import functions from '@/api/member.js'
+import memberApi from '@/api/member.js'
 import { useRoute, useRouter } from 'vue-router'
 import img from '@/assets/img/beauty.png'
 
 const route = useRoute()
 const memberId = computed(() => route.params.id)
+
+// 화면에 표시할 유저 데이터
+const nickname = ref('')
+const introduce = ref('')
+const imageUrl = ref('')
+
+const isMe = ref(false)
 
 // const props = defineProps(['memberId'])
 // 굳이 멤버 뷰에서 상속 받을 필요 없음 -> 라우터에서 id 받아서 사용
@@ -76,8 +83,16 @@ const memberId = computed(() => route.params.id)
 // 받은 데이터 파싱해서 템프릿에 바인딩해야함, 아직 api 구현 안됨
 
 // api 함수 지워서 임의로 1 박아놨어요 -종률-
-onMounted(() => {
-  const res = 1
+onMounted(async () => {
+  memberApi.getMyInfoApi().then((response) => {
+    console.log(response)
+    nickname.value = response.data.nickname
+    introduce.value = response.data.introduce
+    imageUrl.value = response.data.imageUrl
+    if (response.data.id === parseInt(memberId.value)) {
+      isMe.value = true
+    }
+  })
 })
 
 const addFollow = () => {
@@ -86,9 +101,6 @@ const addFollow = () => {
 
 // 이미지
 const image = ref('@/assets/img/얼빡이.jpg')
-
-const nickname = ref('닉네임')
-const aboutMe = ref('안녕하세요 프론트엔드 희망하는 개발 신입입니다. 잘 부탁드립니다.')
 </script>
 <style>
 .profileImage {
