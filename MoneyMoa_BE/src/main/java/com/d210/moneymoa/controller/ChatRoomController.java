@@ -11,12 +11,9 @@ import io.swagger.annotations.ApiParam;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 //import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
 
 import java.util.HashMap;
 import java.util.List;
@@ -253,11 +250,20 @@ public class ChatRoomController {
 
         try{
             Long memberId = authTokensGenerator.extractMemberId(jwt);
+
+            if(chatRoomService.alreadyCreated(memberId, sendMemberId)){
+                messege = "alreadyCreated";
+                resultMap.put("message", messege);
+                status = HttpStatus.OK;
+                return new ResponseEntity<Map<String,Object>>(resultMap,status);
+            }
+
             List<MemberChatroomSubInfo> SubList = chatRoomService.sendDirectMessage(memberId,sendMemberId);
             messege = "success";
             status = HttpStatus.OK;
             resultMap.put("message", messege);
             resultMap.put("subList",SubList);
+
         }catch (Exception e){
             messege = "fail";
             resultMap.put("message", "message");
@@ -318,6 +324,8 @@ public class ChatRoomController {
 
         return new ResponseEntity<Map<String,Object>>(resultMap,status);
     }
+
+
 
 //    @ApiOperation(value = "채팅방 생성하기", notes = "생성할 채팅방 정보 입력하고 생성")
 //    @PostMapping(path = "/room/create", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)

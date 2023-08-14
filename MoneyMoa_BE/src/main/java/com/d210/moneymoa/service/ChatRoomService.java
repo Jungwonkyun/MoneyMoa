@@ -29,9 +29,11 @@ public interface ChatRoomService {
 
     void getOutchatRoom(Long memberId, String roomId);
 
-    public List<ChatMessageDto> getChatMessages(String roomId);
+    List<ChatMessageDto> getChatMessages(String roomId);
 
     List<MemberChatroomSubInfo> sendDirectMessage(Long senderId, Long sendedId);
 
     DirectMessageRoom findDMRoomByRoomId(String roomId);
+
+    boolean alreadyCreated(Long sender, Long receiver);
 }
