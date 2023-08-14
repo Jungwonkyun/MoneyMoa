@@ -277,18 +277,20 @@ public class FeedController {
             Long memberId = authTokensGenerator.extractMemberId(jwt.replace("Bearer ", ""));
             Feed originalFeed = feedService.getFeedById(feedId);
             Integer originalDepositAmount = originalFeed.getDepositAmount();
-
             Integer updatedDepositAmount = feedService.updateFeed(feedId, updateFeed, memberId);
-
             if (updateFeed.getChallengeId() != null && updateFeed.getChallengeId().equals(originalFeed.getChallengeId())
                     && !originalDepositAmount.equals(updatedDepositAmount)) {
                 Challenge challenge = challengeRepository.findById(updateFeed.getChallengeId())
                         .orElseThrow(() -> new NoSuchElementException("해당 챌린지가 존재하지 않습니다."));
+
+
                 challenge.setPresentAmount(challenge.getPresentAmount() - originalDepositAmount);
                 challenge.setPresentAmount(challenge.getPresentAmount() + updatedDepositAmount);
 
                 challengeRepository.save(challenge);
+
             }
+
 
             resultMap.put("message", "success");
             return new ResponseEntity<Map<String, Object>>(resultMap, HttpStatus.OK);

@@ -2,10 +2,7 @@ package com.d210.moneymoa.service;
 
 import com.d210.moneymoa.domain.redis.RedisSubscriber;
 import com.d210.moneymoa.dto.*;
-import com.d210.moneymoa.repository.ChatMessageDtoRepository;
-import com.d210.moneymoa.repository.ChatRoomDtoRepository;
-import com.d210.moneymoa.repository.MemberChatroomSubInfoRepository;
-import com.d210.moneymoa.repository.MemberRepository;
+import com.d210.moneymoa.repository.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.HashOperations;
@@ -47,6 +44,9 @@ public class ChatRoomServiceImpl implements ChatRoomService {
     @Autowired
     MemberRepository memberRepository;
 
+    @Autowired
+    DirectMessageRoomRepository directMessageRoomRepository;
+
     public ChatRoomServiceImpl(RedisMessageListenerContainer redisMessageListener, RedisSubscriber redisSubscriber, RedisTemplate<String, Object> redisTemplate) {
         this.redisMessageListener = redisMessageListener;
         this.redisSubscriber = redisSubscriber;
@@ -64,6 +64,10 @@ public class ChatRoomServiceImpl implements ChatRoomService {
 
     public List<ChatRoomDto> findAllRoomFromDB() {
         return chatRoomDtoRepository.findAll();
+    }
+
+    public List<DirectMessageRoom> findAllDMFromDB(Long memberId) {
+        return directMessageRoomRepository.findAllDirectMessageRoomBySenderIdOrReceiverId(memberId, memberId);
     }
 
     public ChatRoomDto findRoomByName(String name) {
@@ -155,17 +159,18 @@ public class ChatRoomServiceImpl implements ChatRoomService {
     public List<ChatMessageDto> saveChatMessage(String roomId, ChatMessage chatMessage) {
         log.info(chatMessage.toString());
 
-        ChatMessageDto chatMessages = ChatMessageDto.builder()
-                .message(chatMessage.getMessage())
-                .roomId(chatMessage.getRoomId())
-                .sender(chatMessage.getSender())
-                .senderId(chatMessage.getMemberId())
-                .type(chatMessage.getType())
-                .build();
+        //빈 문자열 못 보내게
+        if(chatMessage.getMessage()!=null) {
+            ChatMessageDto chatMessages = ChatMessageDto.builder()
+                    .message(chatMessage.getMessage())
+                    .roomId(chatMessage.getRoomId())
+                    .sender(chatMessage.getSender())
+                    .senderId(chatMessage.getMemberId())
+                    .type(chatMessage.getType())
+                    .build();
 
-        chatMessageDtoRepository.save(chatMessages);
-
-        //return chatRoomDtoRepository.findAll();
+            chatMessageDtoRepository.save(chatMessages);
+        }
         return chatMessageDtoRepository.findByRoomId(roomId);
     }
 
@@ -176,8 +181,12 @@ public class ChatRoomServiceImpl implements ChatRoomService {
 
         DirectMessageRoom DmRoom = DirectMessageRoom.builder()
                 .sender(nickName1)
+                .senderId(senderId)
                 .receiver(nickName2)
+                .receiverId(sendedId)
                 .build();
+
+        directMessageRoomRepository.save(DmRoom);
 
         MemberChatroomSubInfo memberChatroomSubInfo1 = MemberChatroomSubInfo.builder()
                 .memberId(senderId)

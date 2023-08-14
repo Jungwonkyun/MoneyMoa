@@ -3,6 +3,7 @@ import javax.persistence.*;
 
 import com.d210.moneymoa.domain.oauth.OAuthProvider;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.google.common.io.BaseEncoding;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Builder;
 import lombok.Getter;
