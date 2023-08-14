@@ -1,7 +1,7 @@
 <template>
-  <v-container @click="setProduct(product)">
+  <v-container class="pa-2">
     <router-link :to="getProductDetailRoute(product)">
-      <v-card variant="tonal">
+      <v-card variant="flat" class="product-card product-preview">
         <v-row>
           <v-col>
             <v-card-item>
@@ -31,9 +31,6 @@ defineProps({
 })
 const store = useProductStore()
 const { productType } = storeToRefs(store)
-function setProduct(product) {
-  store.setProduct(product)
-}
 const getProductDetailRoute = (product) => {
   if (productType.value === 'deposit') {
     return {

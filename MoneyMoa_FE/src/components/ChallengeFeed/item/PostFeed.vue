@@ -44,6 +44,9 @@
                     v-model="depositAmount"
                   ></v-text-field>
                 </v-col>
+                <v-col cols="12">
+                  <v-file-input label="사진을 추가하세요" multiple v-model="files"></v-file-input>
+                </v-col>
               </v-row>
             </v-container>
           </v-card-text>
@@ -92,6 +95,7 @@ const depositAmount = ref('')
 const hashtag = ref('')
 const challengeset = ref([])
 const challengeId = ref('')
+const files = ref([])
 
 // 피드 생성하기 버튼 눌렀을 때
 const submitFeedData = () => {
@@ -100,16 +104,27 @@ const submitFeedData = () => {
       challengeId.value = set.id
     }
   }
-  const feedData = {
-    content: content.value,
-    depositAmount: parseInt(depositAmount.value),
-    hashtag: hashtag.value
+  const formData = new FormData()
+  for (const file of files.value) {
+    formData.append('files', file)
   }
-  console.log(feedData)
+  formData.append('content', content.value)
+  // depositAmount 값을 정수로 변환하여 변수에 할당
+  const parsedDepositAmount = parseInt(depositAmount.value)
+  formData.append('depositAmount', parsedDepositAmount)
+  formData.append('hashtag', hashtag.value)
+  formData.append('feedLikeCount', 0)
+  formData.append('id', 0)
 
+  // 폼 데이터 확인
+  for (const pair of formData.entries()) {
+    console.log(pair[0], pair[1], typeof pair[1])
+  }
+
+  console.log(formData.getAll('fileUrls'))
   // 피드 생성 API 호출
   const createFeed = challengeFeedApi.createFeed
-  createFeed(feedData, challengeId.value).then((response) => {
+  createFeed(formData, challengeId.value).then((response) => {
     console.log(response)
   })
 }
@@ -119,7 +134,6 @@ const submitFeedData = () => {
 onMounted(() => {
   const getChallengeList = functions.getChallengeList
   getChallengeList(memberId.value).then((response) => {
-    console.log('postfeed', response)
     for (const challengeKey in response.data.challenges) {
       const challenge = response.data.challenges[challengeKey]
       const id = challenge.id
@@ -127,7 +141,6 @@ onMounted(() => {
       challengeList.value.push(title)
       challengeset.value.push({ id, title })
     }
-    console.log(challengeset.value)
     challengeList.value = response.data.challenges
     // 챌린지 리스트 길이가 0 보다 크면 버튼 보이게 처리
     if (challengeList.value.length > 0) {

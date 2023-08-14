@@ -15,7 +15,13 @@ async function kakaoLogin() {
     const res = await functions.postKakaoLogin(route.query.code)
     console.log(res.data)
     if (res.data.message === 'success') {
+      if (res.data.member.valid === 0) {
+        alert('탈퇴한 회원입니다.')
+        router.push({ name: 'home' })
+        return
+      }
       const token = res.data.authtokens.accessToken
+      const refreshToken = res.data.authtokens.refreshToken
       let urlData = img
       if (res.data.member.imageUrl) {
         console.log(res.data.member.imageUrl)
@@ -30,11 +36,13 @@ async function kakaoLogin() {
         oauthProvider: res.data.member.oauthProvider,
         introduce: res.data.member.introduce,
         imageUrl: urlData,
-        imageName: res.data.member.imageUrl
+        imageName: res.data.member.imageUrl,
+        valid: res.data.member.valid
       }
       const data = {
         member: member,
-        token: token
+        token: token,
+        refreshToken: refreshToken
       }
       account.onLogin(data)
       router.push({ name: 'home' }).then(() => {
@@ -57,6 +65,11 @@ async function naverLogin() {
     const res = await functions.postNaverLogin(route.query.code, route.query.state)
     console.log(res.data)
     if (res.data.message === 'success') {
+      if (res.data.member.valid === 0) {
+        alert('탈퇴한 회원입니다.')
+        router.push({ name: 'home' })
+        return
+      }
       const token = res.data.authtokens.accessToken
       let urlData = img
       if (res.data.member.imageUrl) {
@@ -72,7 +85,8 @@ async function naverLogin() {
         oauthProvider: res.data.member.oauthProvider,
         introduce: res.data.member.introduce,
         imageUrl: urlData,
-        imageName: res.data.member.imageUrl
+        imageName: res.data.member.imageUrl,
+        valid: res.data.member.valid
       }
       const data = {
         member: member,

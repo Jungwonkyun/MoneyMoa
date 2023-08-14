@@ -1,5 +1,5 @@
 <template>
-  <v-container>
+  <v-container class="pa-2">
     <!-- CMA는 productCode 대신 id 쓸거임 -->
     <router-link
       :to="{
@@ -7,7 +7,7 @@
         params: { id: product.id }
       }"
     >
-      <v-card variant="tonal">
+      <v-card variant="flat" class="product-card product-preview">
         <v-row>
           <v-col>
             <v-card-item>
@@ -20,7 +20,7 @@
               </v-card-title>
             </v-card-item>
           </v-col>
-          <v-col cols="2" align-self="center"> {{ product[RBJ] }}% </v-col>
+          <v-col cols="2" align-self="center"> 수익률 {{ product[RBJ] }}% </v-col>
         </v-row>
       </v-card>
     </router-link>

@@ -58,10 +58,10 @@
         </v-col>
       </v-row>
       <v-row class="my-8">
-        <v-col class="d-flex align-center">
+        <v-col class="d-flex align-center" xs="1">
           <v-divider class="border-opacity-25"></v-divider
         ></v-col>
-        <v-col class="text-center px-0" cols="4">
+        <v-col class="text-center px-0 xs-10" cols="4">
           <span class="social-Text">소셜 회원으로 이용하기 </span>
         </v-col>
         <v-col class="d-flex align-center"
@@ -130,7 +130,8 @@ async function onLogin() {
         oauthProvider: loginResult.data.member.oauthProvider,
         introduce: loginResult.data.member.introduce,
         imageUrl: urlData,
-        imageName: loginResult.data.member.imageUrl
+        imageName: loginResult.data.member.imageUrl,
+        valid: loginResult.data.member.valid
       }
       console.log(loginResult.data)
       const token = loginResult.data['jwt token'].accessToken
@@ -141,9 +142,7 @@ async function onLogin() {
         refreshToken: refreshToken
       }
       account.onLogin(data)
-      router.push({ name: 'home' }).then(() => {
-        location.reload()
-      })
+      router.push({ name: 'home' })
     }
   } catch (err) {
     alert('로그인에 실패하였습니다. 다시 시도해 주세요.')

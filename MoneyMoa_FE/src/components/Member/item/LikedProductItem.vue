@@ -1,7 +1,7 @@
 <template>
   <v-container>
     <router-link :to="getDetailRoute(liked.productType)">
-      <v-card variant="tonal">
+      <v-card variant="flat" class="product-card product-preview">
         <v-row class="justify-center">
           <v-col>
             <v-card-item>

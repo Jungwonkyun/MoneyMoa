@@ -9,9 +9,9 @@
         <v-radio label="종금형" value="종금형"></v-radio>
       </v-col>
     </v-radio-group>
-    <v-divider />
     <v-row>
-      결과 {{ filteredProducts.length }} 건
+      <v-progress-linear indeterminate v-if="!loaded" />
+      <span v-else>결과 {{ filteredProducts.length }} 건</span>
       <CMAPreviewItem
         v-for="(product, index) in filteredProducts"
         :key="index"
@@ -33,14 +33,11 @@ const { productType, securityList, RBJ } = storeToRefs(store)
 const state = reactive({
   products: []
 })
+const loaded = ref(false)
 
 getCMAList().then((response) => {
   state.products = response.data.products
-})
-
-const products = ref([])
-getCMAList().then((response) => {
-  products.value = response.data.products
+  loaded.value = true
 })
 
 const filteredProducts = computed(() =>
@@ -51,4 +48,8 @@ const filteredProducts = computed(() =>
   )
 )
 </script>
-<style></style>
+<style scoped lang="scss">
+.v-progress-linear {
+  color: $logo-color;
+}
+</style>

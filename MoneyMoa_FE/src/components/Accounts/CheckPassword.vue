@@ -73,13 +73,14 @@ function goBack() {
 
 async function onCheckPwd() {
   try {
-    const myinfo = await functions.getMyInfoApi(cookies.get('accessToken'))
-    if (myinfo) {
-      // 여기다 비밀번호 맞는지 아닌지 로직 짜기
-      if (myinfo.data.password === password.value) {
+    // 여기다 비밀번호 확인 api 호출
+    const checkRlt = await functions.postCheckPassword(password.value)
+    console.log(checkRlt)
+    if (checkRlt) {
+      if (checkRlt.data.message === 'success') {
         account.setPwdChecked(true)
         router.push({ name: 'profilechange' })
-      } else {
+      } else if (checkRlt.data.message === 'fail') {
         alert('비밀번호가 일치하지 않습니다.')
       }
     } else {

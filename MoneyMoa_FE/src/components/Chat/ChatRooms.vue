@@ -37,31 +37,16 @@
         </v-dialog>
       </v-btn>
     </v-row>
+    <v-card v-for="(room, index) in roomList" :key="index" class="chatroom-card ma-4">
+      <v-container>
+        <v-row class="justify-space-between">
+          <v-card-title>{{ room.name }}</v-card-title>
+          <v-card-subtitle>{{ room.description }}</v-card-subtitle>
+          <v-btn @click="enter(room.roomId)">입장</v-btn>
+        </v-row>
+      </v-container>
+    </v-card>
   </v-container>
-  <v-card v-for="(room, index) in roomList" :key="index" variant="outlined">
-    <v-container>
-      <v-row>
-        <v-card-title>{{ room.name }}</v-card-title>
-        <v-btn @click="enter(room.roomId)">입장</v-btn>
-      </v-row>
-    </v-container>
-  </v-card>
-  <!-- <v-card class="overflow-y-auto" max-height="400">
-    <v-banner class="justify-center text-h5 font-weight-light" sticky> Scroll Me </v-banner>
-
-    <v-card-text>
-      <div v-for="n in 12" :key="n" class="mb-4">
-        Lorem ipsum dolor sit amet consectetur adipisicing elit. Modi commodi earum tenetur.
-        Asperiores dolorem placeat ab nobis iusto culpa, autem molestias molestiae quidem pariatur.
-        Debitis beatae expedita nam facere perspiciatis. Lorem ipsum dolor sit amet consectetur
-        adipisicing elit. Repellendus ducimus cupiditate rerum officiis consequuntur laborum
-        doloremque quaerat ipsa voluptates, nobis nam quis nulla ullam at corporis, similique
-        ratione quasi illo!
-      </div>
-    </v-card-text>
-    <v-banner class="justify-center text-h5 font-weight-light" sticky> Scroll You </v-banner>
-  </v-card>
-  <v-card variant="tonal">fixed on bottom?</v-card> -->
 </template>
 <script setup>
 import { ref } from 'vue'
@@ -112,4 +97,9 @@ function submitRoom() {
     })
 }
 </script>
-<style></style>
+<style scoped lang="scss">
+.chatroom-card {
+  background-color: $secondary-color;
+  // width: 50%;
+}
+</style>
