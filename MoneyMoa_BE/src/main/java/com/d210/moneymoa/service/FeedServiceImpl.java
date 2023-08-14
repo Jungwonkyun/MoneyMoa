@@ -17,6 +17,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 @Slf4j
@@ -84,25 +85,26 @@ public class FeedServiceImpl implements FeedService {
     // feed 상세 조회
     @Override
     public Feed getFeedDetail(Long feedId) {
-        return feedRepository.findById(feedId).orElseThrow(
+        // Feed 찾기
+        Feed feed = feedRepository.findById(feedId).orElseThrow(
                 () -> new NoSuchElementException("Feed with id " + feedId + " not found")
         );
+
+        // 좋아요를 누른 사람들의 목록 얻기
+
+        // Feed 좋아요를 누른 사람들의 목록 설정하기
+        return feed;
     }
+
 
     @Override
-    public List<Member> getLikedMembers(Long feedId) {
-        List<FeedLike> feedLikes = feedLikeRepository.findByFeedId(feedId);
-        List<Member> likedMembers = new ArrayList<>();
-
-        for (FeedLike feedLike : feedLikes) {
-            Long memberId = feedLike.getMemberId();
-            Member member = memberRepository.findById(memberId)
-                    .orElseThrow(() -> new NoSuchElementException("Member with id " + memberId + " not found"));
-            likedMembers.add(member);
-        }
-
-        return likedMembers;
+    public List<Long> getLikersMemberIds(Long feedId) {
+        List<FeedLike> likers = feedLikeRepository.findAllByFeedId(feedId);
+        return likers.stream()
+                .map(feedLike -> feedLike.getMemberId())
+                .collect(Collectors.toList());
     }
+
 
 
 

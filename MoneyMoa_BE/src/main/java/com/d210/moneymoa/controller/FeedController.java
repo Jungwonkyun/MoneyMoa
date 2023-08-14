@@ -247,7 +247,11 @@ public class FeedController {
 
             // 피드 댓글 조회
             List<FeedComment> feedComments = feedCommentService.findByFeedId(feedId);
+            // 피드 좋아요 한 사람 memberId 리스트
+            List<Long> likersMemberIds = feedService.getLikersMemberIds(feedId);
 
+            // 좋아요를 누른 사용자들의 ID를 가져와 반환하는 코드.
+            resultMap.put("likersMemberIds", likersMemberIds);
             resultMap.put("feed", feed);
             resultMap.put("comments", feedComments);
             resultMap.put("message", "success");

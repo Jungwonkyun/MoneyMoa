@@ -32,7 +32,7 @@ public interface FeedService {
 
     boolean toggleLike(Long memberId, Long feedId);
 
-    List<Member> getLikedMembers(Long feedId);
+    List<Long> getLikersMemberIds(Long feedId);
 
     Feed findById(Long feedId);    // 메서드 추가
 
