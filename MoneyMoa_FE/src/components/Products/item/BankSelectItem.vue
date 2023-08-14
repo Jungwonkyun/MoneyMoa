@@ -11,7 +11,7 @@
           :color="bank.selected ? 'primary' : undefined"
           @click="toggleSelected(bank)"
         >
-          <v-icon icon="mdi-heart"></v-icon>
+          <v-img :src="icons[bank.name]" class="fin-icon"></v-img>
           {{ bank.name }}
         </v-btn>
       </v-slide-group-item>
@@ -19,11 +19,15 @@
   </v-sheet>
 </template>
 <script setup>
+import { ref } from 'vue'
 import { useProductStore } from '@/stores/productStore'
+import { loadBankIcons } from '@/api/icons'
 import { storeToRefs } from 'pinia'
 const store = useProductStore()
 const { bankList } = storeToRefs(store)
 const { selectAllBank, cancelAllBank } = store
+const icons = ref({})
+icons.value = loadBankIcons()
 const toggleSelected = (bank) => {
   bank.selected = !bank.selected
 }
