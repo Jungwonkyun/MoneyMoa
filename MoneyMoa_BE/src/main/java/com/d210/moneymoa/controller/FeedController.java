@@ -277,7 +277,9 @@ public class FeedController {
             Long memberId = authTokensGenerator.extractMemberId(jwt.replace("Bearer ", ""));
             Feed originalFeed = feedService.getFeedById(feedId);
             Integer originalDepositAmount = originalFeed.getDepositAmount();
-            Integer updatedDepositAmount = feedService.updateFeed(feedId, updateFeed, memberId);
+            Integer updatedDepositAmount = updateFeed.getDepositAmount(); // 추가된 구문
+            Feed updatedFeed = feedService.updateFeed(feedId, updateFeed, memberId);
+
             if (updateFeed.getChallengeId() != null && updateFeed.getChallengeId().equals(originalFeed.getChallengeId())
                     && !originalDepositAmount.equals(updatedDepositAmount)) {
                 Challenge challenge = challengeRepository.findById(updateFeed.getChallengeId())

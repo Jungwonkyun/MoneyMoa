@@ -1,6 +1,7 @@
 package com.d210.moneymoa.service;
 
 import com.d210.moneymoa.dto.Feed;
+import com.d210.moneymoa.dto.Member;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -18,7 +19,7 @@ public interface FeedService {
 
     Feed getFeedDetail(Long feedId);
 
-    Integer updateFeed(Long feedId, Feed updateFeed, Long memberId) throws IllegalAccessException;
+    Feed updateFeed(Long feedId, Feed updateFeed, Long memberId) throws IllegalAccessException;
 
     void deleteFeed(Long feedId, Long memberId) throws IllegalAccessException;
 
@@ -30,8 +31,8 @@ public interface FeedService {
     Feed getFeedById(Long feedId);
 
     boolean toggleLike(Long memberId, Long feedId);
-//    void increaseFeedLikeCount(Long feedId);
-//    void decreaseFeedLikeCount(Long feedId);
+
+    List<Member> getLikedMembers(Long feedId);
 
 
 
