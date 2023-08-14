@@ -5,7 +5,8 @@
         <v-row>
           <v-col>
             <v-card-item>
-              <v-img :src="icons[product.bankName]" class="fin-icon"></v-img>
+              <!-- {{ icons[product.bankName] }} -->
+              <!-- <v-img :src="icons[product.bankName]" class="fin-icon"></v-img> -->
               <v-card-subtitle>
                 {{ product.bankName }}
               </v-card-subtitle>
@@ -33,8 +34,9 @@ defineProps({
 })
 const store = useProductStore()
 const { productType } = storeToRefs(store)
-const icons = ref({})
-icons.value = loadBankIcons()
+// const icons = ref({})
+// icons.value = loadBankIcons()
+// console.log(icons.value)
 const getProductDetailRoute = (product) => {
   if (productType.value === 'deposit') {
     return {

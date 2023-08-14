@@ -6,9 +6,17 @@ const secuIconModules = import.meta.glob('@/assets/secuIcon/svg/*.svg')
 // console.log(nhBankIcon)
 function loadBankIcons() {
   const bankIcons = {}
+
   for (const path in bankIconModules) {
-    const name = path.split('/').pop().split('.')[0]
-    bankIcons[name] = path
+    bankIconModules[path]().then((mod) => {
+      const name = path.split('/').pop().split('.')[0]
+      //   console.log(path, mod)
+      bankIcons[name] = mod
+    })
+
+    // const name = path.split('/').pop().split('.')[0]
+    // bankIcons[name] = path.replace(/^\/src/, '@')
+    // console.log(path)
   }
   return bankIcons
 }
@@ -16,7 +24,7 @@ async function loadSecuIcons() {
   const secuIcons = {}
   for (const path in secuIconModules) {
     const name = path.split('/').pop().split('.')[0]
-    secuIcons[name] = path
+    secuIcons[name] = path.replace(/^\/src/, '@')
   }
   return secuIcons
 }
