@@ -52,19 +52,19 @@ public class ChatController {
     }
 
 
-    @MessageMapping("/api/chat/dm")
-    public void directMessage(ChatMessage message) {
+    // @MessageMapping("/api/chat/dm")
+    // public void directMessage(ChatMessage message) {
 
-        if (ChatMessage.MessageType.QUIT.equals(message.getType())) {
-            message.setMessage(message.getSender() + "님이 퇴장하셨습니다.");
-        }
+    //     if (ChatMessage.MessageType.QUIT.equals(message.getType())) {
+    //         message.setMessage(message.getSender() + "님이 퇴장하셨습니다.");
+    //     }
 
-        log.info(message.getMessage());
+    //     log.info(message.getMessage());
 
-        //채팅 내역 저장
-        chatRoomService.saveChatMessage(message.getRoomId(), message);
-        // Websocket에 발행된 메시지를 redis로 발행한다(publish)
-        redisPublisher.publish(chatRoomService.getTopic(message.getRoomId()), message);
-    }
+    //     //채팅 내역 저장
+    //     chatRoomService.saveChatMessage(message.getRoomId(), message);
+    //     // Websocket에 발행된 메시지를 redis로 발행한다(publish)
+    //     redisPublisher.publish(chatRoomService.getTopic(message.getRoomId()), message);
+    // }
 
 }
