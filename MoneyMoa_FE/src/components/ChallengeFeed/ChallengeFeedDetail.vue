@@ -179,7 +179,7 @@ const addFeedLike = async () => {
 const addFollowing = async () => {
   try {
     console.log(feedWriterId.value)
-    await member.addFollowing(feedWriterId.value).then((response) => {
+    await memberApi.addFollowing(feedWriterId.value).then((response) => {
       console.log(response)
     })
   } catch (error) {

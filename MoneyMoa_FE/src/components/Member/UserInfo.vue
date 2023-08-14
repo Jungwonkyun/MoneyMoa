@@ -12,15 +12,16 @@
           ></v-img>
         </v-col>
       </v-row>
-      <v-card-title class="text-center ma-6">
-        {{ nickname }}
-      </v-card-title>
+      <v-card-title class="text-center ma-6"> 닉네임: {{ nickname }} </v-card-title>
+      <v-card-subtitle class="text-center ma-6"> 이름: {{ name }} </v-card-subtitle>
+      <v-card-subtitle class="text-center ma-6"> 이메일: {{ email }} </v-card-subtitle>
+
       <v-card-text class="text-center mb-6">
         {{ aboutMe }}
       </v-card-text>
       <v-row class="d-flex justify-space-evenly mt-6 mb-6">
         <v-btn cols="6" v-if="isMe !== true" @click="addFollow, followingDialog">팔로잉</v-btn>
-        <v-btn cols="6">DM보내기</v-btn>
+        <v-btn cols="6" @click="doDM(memberId)">DM보내기</v-btn>
       </v-row>
 
       <v-divider class="border-opacity-20"></v-divider>
@@ -76,6 +77,8 @@ const memberId = computed(() => route.params.id)
 const nickname = ref('')
 const introduce = ref('')
 const imageUrl = ref('')
+const name = ref('')
+const email = ref('')
 
 const isMe = ref(false)
 
@@ -88,12 +91,14 @@ const isMe = ref(false)
 
 // api 함수 지워서 임의로 1 박아놨어요 -종률-
 onMounted(async () => {
-  memberApi.getMyInfoApi().then((response) => {
+  memberApi.getSombodyInfoApi(memberId.value).then((response) => {
     console.log(response)
-    nickname.value = response.data.nickname
-    introduce.value = response.data.introduce
-    imageUrl.value = response.data.imageUrl
-    if (response.data.id === parseInt(memberId.value)) {
+    nickname.value = response.data.sombody.nickname
+    introduce.value = response.data.sombody.introduce
+    imageUrl.value = response.data.sombody.imageUrl
+    name.value = response.data.sombody.name
+    email.value = response.data.sombody.email
+    if (response.data.sombody.id === parseInt(memberId.value)) {
       isMe.value = true
     }
   })

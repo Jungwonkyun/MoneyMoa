@@ -17,13 +17,15 @@ async function getMyInfoApi() {
     console.log(err)
   }
 }
-// test API
-async function test(token) {
+
+// 타인 정보 API
+async function getSombodyInfoApi(memberId) {
   try {
+    const token = cookies.get('accessToken')
     const headers = {
       Authorization: `Bearer ${token}`
     }
-    const res = await api.get(`/feed/all`, { headers })
+    const res = await api.get(`/member/sombodyinfo/${memberId}`, { headers })
     return res
   } catch (err) {
     console.log(err)
@@ -275,7 +277,6 @@ export default {
   postLogin,
   getMyInfoApi,
   deletequitService,
-  test,
   postfindpassword,
   openkakaoLogin,
   postKakaoLogin,
@@ -286,5 +287,6 @@ export default {
   getImgDown,
   putUpdatedMember,
   postGetAccessid,
-  postCheckPassword
+  postCheckPassword,
+  getSombodyInfoApi
 }
