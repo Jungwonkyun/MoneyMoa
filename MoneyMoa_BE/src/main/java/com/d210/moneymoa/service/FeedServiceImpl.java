@@ -97,23 +97,23 @@ public class FeedServiceImpl implements FeedService {
     }
 
 
-    @Override
-    public List<Long> getLikersMemberIds(Long feedId) {
-        log.info("피드 상세조회");
-        log.info(feedId.toString());
-        List<FeedLike> likers = feedLikeRepository.findAllByFeedId(feedId);
-
-        if(likers==null){
-            log.info("미친 코드");
-        }
-
-        for (FeedLike feedLike: likers) {
-            log.info(feedLike.toString());
-        }
-        return likers.stream()
-                .map(feedLike -> feedLike.getMemberId())
-                .collect(Collectors.toList());
-    }
+//    @Override
+//    public List<Long> getLikersMemberIds(Long feedId) {
+//        log.info("피드 상세조회");
+//        log.info(feedId.toString());
+//        List<FeedLike> likers = feedLikeRepository.findAllByFeedId(feedId);
+//
+//        if(likers==null){
+//            log.info("미친 코드");
+//        }
+//
+//        for (FeedLike feedLike: likers) {
+//            log.info(feedLike.toString());
+//        }
+//        return likers.stream()
+//                .map(feedLike -> feedLike.getMemberId())
+//                .collect(Collectors.toList());
+//    }
 
 
 
@@ -181,36 +181,36 @@ public class FeedServiceImpl implements FeedService {
     }
 
 
-public boolean toggleLike(Long memberId, Long feedId) {
-    Optional<FeedLike> like = feedLikeRepository.findByMemberIdAndFeedId(memberId, feedId);
-    Feed feed = feedRepository.findById(feedId).orElseThrow(() -> new NoSuchElementException("해당 피드가 존재하지 않습니다."));
-    if (like.isPresent()) {
-        feedLikeRepository.delete(like.get());
-        decreaseFeedLikeCount(feed);
-        feedRepository.save(feed);
-        return false;
-    } else {
-        feedLikeRepository.save(new FeedLike(memberId, feedId));
-        increaseFeedLikeCount(feed);
-        feedRepository.save(feed);
-        return true;
-    }
-    }
-    public void increaseFeedLikeCount(Feed feed) {
-        if (feed.getFeedLikeCount() == null) {
-            feed.setFeedLikeCount(1);
-        } else {
-            feed.setFeedLikeCount(feed.getFeedLikeCount() + 1);
-        }
-    }
-
-    public void decreaseFeedLikeCount(Feed feed) {
-        if (feed.getFeedLikeCount() == null) {
-            feed.setFeedLikeCount(0);
-        } else {
-            feed.setFeedLikeCount(feed.getFeedLikeCount() - 1);
-        }
-    }
+//public boolean toggleLike(Long memberId, Long feedId) {
+//    Optional<FeedLike> like = feedLikeRepository.findByMemberIdAndFeedId(memberId, feedId);
+//    Feed feed = feedRepository.findById(feedId).orElseThrow(() -> new NoSuchElementException("해당 피드가 존재하지 않습니다."));
+//    if (like.isPresent()) {
+//        feedLikeRepository.delete(like.get());
+//        decreaseFeedLikeCount(feed);
+//        feedRepository.save(feed);
+//        return false;
+//    } else {
+//        feedLikeRepository.save(new FeedLike(memberId, feedId));
+//        increaseFeedLikeCount(feed);
+//        feedRepository.save(feed);
+//        return true;
+//      }
+//    }
+//    public void increaseFeedLikeCount(Feed feed) {
+//        if (feed.getFeedLikeCount() == null) {
+//            feed.setFeedLikeCount(1);
+//        } else {
+//            feed.setFeedLikeCount(feed.getFeedLikeCount() + 1);
+//        }
+//    }
+//
+//    public void decreaseFeedLikeCount(Feed feed) {
+//        if (feed.getFeedLikeCount() == null) {
+//            feed.setFeedLikeCount(0);
+//        } else {
+//            feed.setFeedLikeCount(feed.getFeedLikeCount() - 1);
+//        }
+//    }
 
     @Override
     public Feed findById(Long feedId) {

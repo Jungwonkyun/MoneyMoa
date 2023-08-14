@@ -95,9 +95,9 @@ public class Feed implements Serializable {
             this.feedLikeCount = feedLikeCount;
             this.nickname = nickname;
         }
-    public void setFeedLikeCount(Integer count) {
-        this.feedLikeCount = count;
-    }
+//    public void setFeedLikeCount(Integer count) {
+//        this.feedLikeCount = count;
+//    }
 
 }
 
