@@ -62,10 +62,14 @@
 <script setup>
 import { ref, onMounted, computed } from 'vue'
 import memberApi from '@/api/member.js'
+import { createDMRoom } from '@/api/chat'
 import { useRoute, useRouter } from 'vue-router'
 import img from '@/assets/img/beauty.png'
+import { useCookies } from 'vue3-cookies'
 
+const { cookies } = useCookies()
 const route = useRoute()
+const router = useRouter()
 const memberId = computed(() => route.params.id)
 
 // 화면에 표시할 유저 데이터
@@ -101,6 +105,19 @@ const addFollow = () => {
 
 // 이미지
 const image = ref('@/assets/img/얼빡이.jpg')
+
+//DM버튼 누를때 로직 - 신경희
+function doDM(id) {
+  id = Number(id)
+  console.log(cookies.get('member').id + '와 ' + id + '의 DM방')
+  if (id === cookies.get('member').id) return
+  createDMRoom(id).then((response) => {
+    const resRoom = response.data.subList[0]
+    router.push({
+      name: 'dmlist'
+    })
+  })
+}
 </script>
 <style>
 .profileImage {

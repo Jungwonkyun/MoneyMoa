@@ -118,6 +118,20 @@ async function fetchFeedList(memberId) {
     console.log(err)
   }
 }
+// 비밀번호 확인
+async function postCheckPassword(pwd) {
+  const token = cookies.get('accessToken')
+  const headers = {
+    Authorization: `Bearer ${token}`
+  }
+  try {
+    const res = await api.post('/member/checkpassword', pwd, { headers })
+    console.log(res)
+    return res
+  } catch (err) {
+    console.log(err)
+  }
+}
 // 로그인
 async function postLogin(loginInfo) {
   try {
@@ -271,5 +285,6 @@ export default {
   postUploadFile,
   getImgDown,
   putUpdatedMember,
-  postGetAccessid
+  postGetAccessid,
+  postCheckPassword
 }

@@ -4,6 +4,7 @@ import { defineStore } from 'pinia'
 export const useProductStore = defineStore('product', () => {
   const productType = ref('deposit')
   const selectedProduct = ref({})
+  //은행 18개
   const bankList = ref([
     { name: '경남은행', selected: true },
     { name: '광주은행', selected: true },
@@ -16,14 +17,16 @@ export const useProductStore = defineStore('product', () => {
     { name: '우리은행', selected: true },
     { name: '전북은행', selected: true },
     { name: '제주은행', selected: true },
-    { name: '중소기업은행', selected: true },
     { name: '카카오뱅크', selected: true, alias: '주식회사 카카오뱅크' },
     { name: '케이뱅크', selected: true, alias: '주식회사 케이뱅크' },
     { name: '토스뱅크', selected: true, alias: '토스뱅크 주식회사' },
     { name: '하나은행', selected: true },
     { name: '한국산업은행', selected: true },
+    { name: 'IBK기업은행', selected: true, alias: '중소기업은행' },
     { name: 'SC제일은행', selected: true, alias: '한국스탠다드차타드은행' }
   ])
+  //증권사 20개
+  //없는거: 다올투자증권, 케이프투자증권
   const securityList = ref([
     { name: '다올투자증권', selected: true },
     { name: '대신증권', selected: true },

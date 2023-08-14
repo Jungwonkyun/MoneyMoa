@@ -41,7 +41,29 @@ async function getRoomDetail(roomId) {
   }
 }
 
+async function getDMRoomDetail(roomId) {
+  try {
+    const response = await api.get(`room/dm/${roomId}`)
+    return response
+  } catch (error) {
+    console.log(error)
+  }
+}
+
 async function enterRoom(roomId) {
+  try {
+    const token = cookies.get('accessToken')
+    const headers = {
+      Authorization: `Bearer ${token}`
+    }
+    const response = await api.get(`room/enter/${roomId}`, { headers })
+    return response
+  } catch (error) {
+    console.log(error)
+  }
+}
+
+async function enterDMRoom(roomId) {
   try {
     const token = cookies.get('accessToken')
     const headers = {
@@ -76,6 +98,20 @@ async function createRoom(roomInfo) {
   }
 }
 
+async function createDMRoom(oppoId) {
+  //내 토큰과 상대방 id로 방 생성 요청
+  try {
+    const token = cookies.get('accessToken')
+    const headers = {
+      Authorization: `Bearer ${token}`
+    }
+    const response = await api.post('room/createdm', oppoId, { headers })
+    return response
+  } catch (error) {
+    console.log(error)
+  }
+}
+
 async function quitRoom(roomId) {
   try {
     const token = cookies.get('accessToken')
@@ -88,4 +124,15 @@ async function quitRoom(roomId) {
     console.log(error)
   }
 }
-export { getRooms, getRoomDetail, enterRoom, getRoomMembers, createRoom, quitRoom, getDMRooms }
+export {
+  getRooms,
+  getRoomDetail,
+  enterRoom,
+  getRoomMembers,
+  createRoom,
+  quitRoom,
+  getDMRooms,
+  createDMRoom,
+  enterDMRoom,
+  getDMRoomDetail
+}

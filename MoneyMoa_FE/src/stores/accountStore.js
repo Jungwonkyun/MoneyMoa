@@ -1,10 +1,11 @@
 import { defineStore } from 'pinia'
-import { ref, onMounted } from 'vue'
+import { ref, onMounted, computed } from 'vue'
 import { useCookies } from 'vue3-cookies'
 import functions from '../api/member.js'
 export const useAccountStore = defineStore('account', () => {
   const { cookies } = useCookies()
   const memberId = ref('')
+  const isAdmin = ref(cookies.get('member') && cookies.get('member').role === 'ADMIN')
 
   // 비밀번호 확인 여부 상태 변수
   const pwdChecked = ref(false)
@@ -36,6 +37,7 @@ export const useAccountStore = defineStore('account', () => {
     cookies.set('refreshToken', data.refreshToken, '7D')
     cookies.set('member', data.member, '7D')
     isLogin.value = !!cookies.get('member')
+    isAdmin.value = data.member.role === 'ADMIN'
   }
   function onLogout() {
     cookies.remove('accessToken')
@@ -44,6 +46,7 @@ export const useAccountStore = defineStore('account', () => {
     cookies.remove('expireTimes')
     cookies.remove('accessTokenRef')
     isLogin.value = !!cookies.get('member')
+    isAdmin.value = false
   }
   // 토큰이 없고 리프레시 토큰이 있으면 토큰 재발급받기
   async function getNewToken() {
@@ -77,6 +80,7 @@ export const useAccountStore = defineStore('account', () => {
     onLogin,
     isLogin,
     onLogout,
-    getNewToken
+    getNewToken,
+    isAdmin
   }
 })
