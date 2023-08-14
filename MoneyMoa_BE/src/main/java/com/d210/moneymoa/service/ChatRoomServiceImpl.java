@@ -235,6 +235,24 @@ public class ChatRoomServiceImpl implements ChatRoomService {
         return room1 != null || room2 != null;
     }
 
+    @Override
+    public ChatRoomDto createChatRoomWithFile(ChatRoomDto inputChatRoomDto, String fileName) {
+
+        ChatRoom chatRoom = ChatRoom.create(inputChatRoomDto.getName());
+
+        ChatRoomDto chatRoomDto = ChatRoomDto.builder()
+                .roomId(inputChatRoomDto.getRoomId())
+                .name(inputChatRoomDto.getName())
+                .description(inputChatRoomDto.getDescription())
+                .imgUrl(fileName)
+                .build();
+
+        chatRoomDtoRepository.save(chatRoomDto);
+
+        opsHashChatRoom.put(CHAT_ROOMS, chatRoom.getRoomId(), chatRoomDto);
+        return chatRoomDto;
+    }
+
 
     public MemberChatroomSubInfo enterDMRoom(long memberId, String roomId) {
 

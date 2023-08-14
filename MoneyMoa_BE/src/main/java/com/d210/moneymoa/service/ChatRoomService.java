@@ -36,4 +36,6 @@ public interface ChatRoomService {
     DirectMessageRoom findDMRoomByRoomId(String roomId);
 
     boolean alreadyCreated(Long sender, Long receiver);
+
+    ChatRoomDto createChatRoomWithFile(ChatRoomDto inputChatRoomDto, String fileName);
 }
