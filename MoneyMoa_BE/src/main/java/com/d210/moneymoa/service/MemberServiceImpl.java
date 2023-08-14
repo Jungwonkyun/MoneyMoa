@@ -5,10 +5,7 @@ import com.d210.moneymoa.Exception.InvalidLoginException;
 import com.d210.moneymoa.domain.oauth.AuthTokens;
 import com.d210.moneymoa.domain.oauth.AuthTokensGenerator;
 import com.d210.moneymoa.domain.oauth.OAuthProvider;
-import com.d210.moneymoa.dto.AuthToken;
-import com.d210.moneymoa.dto.Member;
-import com.d210.moneymoa.dto.RefreshToken;
-import com.d210.moneymoa.dto.Role;
+import com.d210.moneymoa.dto.*;
 import com.d210.moneymoa.repository.AuthTokensRepository;
 import com.d210.moneymoa.repository.MemberRepository;
 import com.d210.moneymoa.repository.RefreshTokenRepository;
@@ -310,17 +307,26 @@ public class MemberServiceImpl implements MemberService {
 
 
     @Transactional
-    public Member updateMember(Member updatedMember) {
-        Optional<Member> optionalMember = memberRepository.findById(updatedMember.getId());
+    public Member updateMember(MemberUpdateInfo updatedMember, Long memberId, String imgUrl) {
+
+        Optional<Member> optionalMember = memberRepository.findById(memberId);
 
         if (optionalMember.isPresent()) {
             Member existingMember = optionalMember.get();
 
             // 필요한 속성들을 수정합니다 (예: email, name, nickname 등)
-            existingMember.setEmail(updatedMember.getEmail());
-            existingMember.setName(updatedMember.getName());
             existingMember.setNickname(updatedMember.getNickname());
+            existingMember.setIntroduce(updatedMember.getIntroduce());
+            
+            //비밀번호를 바꿨으면
+            if(!updatedMember.getPassword().equals("null")) {
+                existingMember.setPassword(passwordEncoder.encode(updatedMember.getPassword()));
+            }
 
+            //바꿀 이미지가 있으면
+            if(!imgUrl.equals("null")){
+                existingMember.setImageUrl(imgUrl);
+            }
             return memberRepository.save(existingMember);
         } else {
             throw new EntityNotFoundException("Member not found");

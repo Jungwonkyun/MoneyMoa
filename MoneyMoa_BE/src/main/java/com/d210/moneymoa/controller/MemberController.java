@@ -1,13 +1,16 @@
 package com.d210.moneymoa.controller;
 
 
+import com.amazonaws.services.s3.AmazonS3;
 import com.d210.moneymoa.domain.oauth.AuthTokens;
 import com.d210.moneymoa.domain.oauth.AuthTokensGenerator;
 import com.d210.moneymoa.dto.AuthToken;
 import com.d210.moneymoa.dto.LoginInfo;
 import com.d210.moneymoa.dto.Member;
+import com.d210.moneymoa.dto.MemberUpdateInfo;
 import com.d210.moneymoa.repository.MemberRepository;
 import com.d210.moneymoa.service.MemberServiceImpl;
+import com.d210.moneymoa.service.StorageService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
@@ -17,8 +20,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
 @Slf4j
@@ -34,6 +39,10 @@ public class MemberController {
     MemberServiceImpl memberService;
     @Autowired
     AuthTokensGenerator authTokensGenerator;
+    @Autowired
+    StorageService storageService;
+    @Autowired
+    private AmazonS3 s3Client;
 
 
     @ApiOperation(value = "일반 로그인 처리" , notes = "유저 정보가 있으면 jwt 토큰이랑 유저 정보 반환 " +
@@ -274,24 +283,40 @@ public class MemberController {
 
 
     @ApiOperation(value = "멤버 정보 업데이트", notes = "멤버의 정보를 수정하고 업데이트된 멤버 정보를 반환합니다.")
-    @PutMapping("/update")
-    public ResponseEntity<Map<String, Object>> updateMember(@ApiParam(value = "수정할 멤버 정보") @RequestBody Member updatedMember,
-                                                            @ApiParam(value = "Bearer 타입의 인증토큰") @RequestHeader("Authorization") String jwt) {
+    @PostMapping("/update")
+    public ResponseEntity<Map<String, Object>> updateMember(@ApiParam(value = "수정할 멤버 정보") @RequestPart("MemberUpdateInfo") MemberUpdateInfo memberUpdate,
+                                                            @ApiParam(value = "Bearer ${jwt}") @RequestHeader("Authorization") String jwt,
+                                                            @RequestPart(value = "file", required = false) MultipartFile[] file) {
         jwt = jwt.replace("Bearer ", "");
-        Long memberId = authTokensGenerator.extractMemberId(jwt);
-        updatedMember.setId(memberId);
-
-        Member savedMember = memberService.updateMember(updatedMember);
-
         Map<String, Object> resultMap = new HashMap<>();
-        if (savedMember != null) {
-            resultMap.put("message", "success");
-            resultMap.put("member", savedMember);
-            return new ResponseEntity<>(resultMap, HttpStatus.OK);
-        } else {
-            resultMap.put("message", "fail");
-            return new ResponseEntity<>(resultMap, HttpStatus.NOT_FOUND);
+        HttpStatus status;
+
+        try{
+            Long memberId = authTokensGenerator.extractMemberId(jwt);
+            Member updatedMember = null;
+            //파일이 있으면
+            if (file != null && file.length > 0) {
+                String fileName = storageService.uploadFile(file[0]);
+                URL fileUrl = s3Client.getUrl("moneymoa-first-bucket", fileName);
+                updatedMember = memberService.updateMember(memberUpdate,memberId,fileUrl.toString());
+            }
+            else{
+                //파일이 없을 때
+                updatedMember = memberService.updateMember(memberUpdate,memberId,"null");
+            }
+
+            resultMap.put("message","success");
+            resultMap.put("updatedMember",updatedMember);
+            status = HttpStatus.OK;
+
+
+        }catch (Exception e){
+            resultMap.put("message","success");
+            status = HttpStatus.BAD_REQUEST;
+
+          e.printStackTrace();
         }
+        return new ResponseEntity<Map<String,Object>>(resultMap,status);
     }
 
 
