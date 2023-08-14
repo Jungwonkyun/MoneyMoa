@@ -34,7 +34,7 @@ public interface FeedService {
 
     List<Member> getLikedMembers(Long feedId);
 
-
+    Feed findById(Long feedId);    // 메서드 추가
 
 
 }

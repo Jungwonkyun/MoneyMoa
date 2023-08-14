@@ -6,4 +6,6 @@ import org.springframework.stereotype.Service;
 @Service
 public interface FeedFileService {
     void saveFeedFile(FeedFile feedFile);
+
+    void deleteFeedFile(FeedFile feed); // 메서드 추가
 }
