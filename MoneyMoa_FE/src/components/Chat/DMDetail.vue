@@ -111,7 +111,7 @@ function connect(room, sender) {
   ws.connect(
     {},
     function (frame) {
-      ws.subscribe(`/sub/api/chat/room/dm/${room.roomId}`, function (message) {
+      ws.subscribe(`/sub/api/chat/room/${room.roomId}`, function (message) {
         console.log('구독후 받은것: ')
         console.log(message.body)
         var recv = JSON.parse(message.body)
@@ -125,7 +125,7 @@ function connect(room, sender) {
         })
       })
       ws.send(
-        '/pub/api/chat/dm',
+        '/pub/api/chat/message',
         JSON.stringify({ type: 'ENTER', roomId: room.roomId, sender: sender, memberId: myId })
       )
     },
@@ -149,7 +149,7 @@ function sendMessage(room, sender) {
     return
   }
   ws.send(
-    '/pub/api/chat/dm',
+    '/pub/api/chat/message',
     JSON.stringify({
       type: 'TALK',
       roomId: room.roomId,
