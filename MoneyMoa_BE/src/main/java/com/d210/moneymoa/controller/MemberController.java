@@ -226,12 +226,52 @@ public class MemberController {
     @ApiOperation(value = "유저의 jwt 토큰을 파라미터로 받아서 member에 대한 객체 정보를 반환",
             notes = "DB를 직접 보지 않고 유저 ID를 통해 객체에 대한 값들을 알 수 있음")
     @GetMapping("/myinfo")
-    public ResponseEntity<Member> findByAccessToken(@ApiParam(value = "Bearer ${jwt token} 형식으로 전송")  @RequestHeader("Authorization") String jwt) {
+    public ResponseEntity<Map<String,Object>> findByAccessToken(@ApiParam(value = "Bearer ${jwt token} 형식으로 전송")  @RequestHeader("Authorization") String jwt) {
         jwt =  jwt.replace("Bearer ", "");
-        Long memberId = authTokensGenerator.extractMemberId(jwt);
-        //return ResponseEntity.ok(memberRepository.findById(memberId).orElse(null));
-        return ResponseEntity.ok(memberService.findMemberById(memberId));
+        Map<String, Object> resultMap = new HashMap<>();
+        HttpStatus status;
+
+        try{
+            Long memberId = authTokensGenerator.extractMemberId(jwt);
+            Member mem = memberService.findMemberById(memberId);
+            resultMap.put("message","success");
+            resultMap.put("sombody",mem);
+            status = HttpStatus.OK;
+
+        }catch (Exception e){
+            resultMap.put("message","fail");
+            status = HttpStatus.BAD_REQUEST;
+            e.printStackTrace();
+        }
+
+        return new ResponseEntity<Map<String,Object>>(resultMap,status);
     }
+
+
+    @ApiOperation(value = "유저의 jwt 토큰을 파라미터로 받아서 member에 대한 객체 정보를 반환",
+            notes = "DB를 직접 보지 않고 유저 ID를 통해 객체에 대한 값들을 알 수 있음")
+    @GetMapping("/sombodyinfo/{memberId}")
+    public ResponseEntity<Map<String,Object>> sombodyInfo(@ApiParam(value = "Bearer ${jwt token} 형식으로 전송")  @RequestHeader("Authorization") String jwt, @PathVariable Long memberId) {
+        jwt =  jwt.replace("Bearer ", "");
+        Map<String, Object> resultMap = new HashMap<>();
+        HttpStatus status;
+
+        try{
+            Member mem = memberService.findMemberById(memberId);
+            resultMap.put("message","success");
+            resultMap.put("sombody",mem);
+            status = HttpStatus.OK;
+
+        }catch (Exception e){
+            resultMap.put("message","fail");
+            status = HttpStatus.BAD_REQUEST;
+            e.printStackTrace();
+        }
+
+        return new ResponseEntity<Map<String,Object>>(resultMap,status);
+    }
+
+
 
     @ApiOperation(value = "멤버 정보 업데이트", notes = "멤버의 정보를 수정하고 업데이트된 멤버 정보를 반환합니다.")
     @PutMapping("/update")

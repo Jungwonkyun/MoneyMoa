@@ -139,8 +139,6 @@ public class ChatRoomServiceImpl implements ChatRoomService {
        redisMessageListener.addMessageListener(redisSubscriber, topic);
        topics.put(roomId, topic);
 
-        // ChannelTopic roomTopic = getOrCreateTopic("room:" + roomId);
-        // redisMessageListener.addMessageListener(createAdapter("onMessage"), roomTopic);
 
         //이미 구독하고 있는지 체크
         Optional<MemberChatroomSubInfo> optionalMember = memberChatroomSubInfoRepository.findByMemberIdAndRoomId(memberId,roomId);
@@ -235,16 +233,11 @@ public class ChatRoomServiceImpl implements ChatRoomService {
        redisMessageListener.addMessageListener(redisSubscriber, topic);
        topics.put(roomId, topic);
 
-        // DM 메시지용 토픽
-        // ChannelTopic dmTopic = getOrCreateTopic("dm:" + roomId);
-        // redisMessageListener.addMessageListener(createAdapter("onDirectMessage"), dmTopic);
-
         //이미 구독하고 있는지 체크
         Optional<MemberChatroomSubInfo> optionalMember = memberChatroomSubInfoRepository.findByMemberIdAndRoomId(memberId,roomId);
         return optionalMember.orElse(null);
 
     }
-
 
 
     public List<ChatMessageDto> getChatMessages(String roomId){

@@ -35,11 +35,11 @@ public class ChatController {
     @MessageMapping("/api/chat/message")
     public void message(ChatMessage message) {
 
-        if(chatRoomService.enterChatRoom(message.getMemberId(), message.getRoomId()) != null){
-            message.setType(ChatMessage.MessageType.JOIN);
-            message.setMessage(message.getSender() + "님이 입장하셨습니다.");
-            log.info("얘는 처음 들어오는 사람");
-        }
+//        if(chatRoomService.enterChatRoom(message.getMemberId(), message.getRoomId()) != null){
+//            message.setType(ChatMessage.MessageType.JOIN);
+//            message.setMessage(message.getSender() + "님이 입장하셨습니다.");
+//            log.info("얘는 처음 들어오는 사람");
+//        }
 
         if (ChatMessage.MessageType.QUIT.equals(message.getType())) {
             message.setMessage(message.getSender() + "님이 퇴장하셨습니다.");
@@ -50,21 +50,4 @@ public class ChatController {
         // Websocket에 발행된 메시지를 redis로 발행한다(publish)
         redisPublisher.publish(chatRoomService.getTopic(message.getRoomId()), message);
     }
-
-
-    // @MessageMapping("/api/chat/dm")
-    // public void directMessage(ChatMessage message) {
-
-    //     if (ChatMessage.MessageType.QUIT.equals(message.getType())) {
-    //         message.setMessage(message.getSender() + "님이 퇴장하셨습니다.");
-    //     }
-
-    //     log.info(message.getMessage());
-
-    //     //채팅 내역 저장
-    //     chatRoomService.saveChatMessage(message.getRoomId(), message);
-    //     // Websocket에 발행된 메시지를 redis로 발행한다(publish)
-    //     redisPublisher.publish(chatRoomService.getTopic(message.getRoomId()), message);
-    // }
-
 }
