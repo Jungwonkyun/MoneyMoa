@@ -5,8 +5,9 @@
         <v-row>
           <v-col>
             <v-card-item>
+              <!-- {{ icons[product.bankName] }} -->
+              <!-- <v-img :src="icons[product.bankName]" class="fin-icon"></v-img> -->
               <v-card-subtitle>
-                <v-icon icon="mdi-face" />
                 {{ product.bankName }}
               </v-card-subtitle>
               <v-card-title>
@@ -23,14 +24,19 @@
   </v-container>
 </template>
 <script setup>
+import { ref } from 'vue'
 import { useProductStore } from '@/stores/productStore'
 import { storeToRefs } from 'pinia'
 import { getIntrRange } from '@/api/product'
+import { loadBankIcons } from '@/api/icons'
 defineProps({
   product: Object
 })
 const store = useProductStore()
 const { productType } = storeToRefs(store)
+// const icons = ref({})
+// icons.value = loadBankIcons()
+// console.log(icons.value)
 const getProductDetailRoute = (product) => {
   if (productType.value === 'deposit') {
     return {
@@ -45,4 +51,4 @@ const getProductDetailRoute = (product) => {
   }
 }
 </script>
-<style></style>
+<style scoped lang="scss"></style>

@@ -68,7 +68,7 @@ watch(
       console.log(response.data)
       // DM방 정보가져옵니다
       room.value = response.data.DMRoomInfo
-      opponent.value = room.value.sender === nickName ? room.value.receiver : room.value.sneder
+      opponent.value = room.value.sender === nickName ? room.value.receiver : room.value.sender
       //기존메시지 가져오고
       messages.value = response.data.chatMessages.filter((msg) => msg.message !== null)
       //소켓연결합니다
