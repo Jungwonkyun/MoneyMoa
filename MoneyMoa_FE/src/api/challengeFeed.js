@@ -50,10 +50,14 @@ async function fetchFeedDetail(feedId) {
 // 피드 좋아요 API
 async function addFeedLike(feedId) {
   try {
+    // 토큰 받아오기
+    const { cookies } = useCookies()
+    const token = cookies.get('accessToken')
+
     const headers = {
       Authorization: `Bearer ${token}`
     }
-    const res = await api.put(`/feed/like`, { headers })
+    const res = await api.get(`/feed/like/${feedId}`, { headers })
     return res
   } catch (err) {
     console.log(err)

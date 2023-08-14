@@ -16,12 +16,8 @@
       </v-col>
 
       <v-col cols="3" class="flex">
-        <v-btn
-          @click.stop="addFeedLike(feedId)"
-          size="large"
-          icon="mdi-heart"
-          variant="text"
-        ></v-btn>
+        {{ feedLikeCount }}
+        <v-btn @click.stop="addFeedLike" size="large" icon="mdi-heart" variant="text"></v-btn>
         <v-btn
           icon="mdi-delete"
           variant="text"
@@ -76,6 +72,7 @@ const challenge = ref('')
 const hashtags = ref([])
 const comments = ref([])
 const imgs = ref([])
+const feedLikeCount = ref(0)
 
 // 댓글 작성 모델
 const commentContent = ref('')
@@ -101,6 +98,7 @@ onMounted(() => {
     hashtags.value = response.data.feed.hashtag.match(/#[^\s#]+/g) || []
     comments.value = response.data.comments
     imgs.value = response.data.feed.fileUrls
+    feedLikeCount.value = response.data.feed.feedLikeCount
   })
 })
 
@@ -142,6 +140,15 @@ const addComment = async () => {
 // emit받은 댓글 삭제 이후 데이터 다시 넣기
 const afterDelete = (response) => {
   comments.value = response
+}
+
+// 좋아요
+const addFeedLike = async () => {
+  try {
+    await challengeFeed.addFeedLike(feedId.value)
+  } catch (error) {
+    console.error('좋아요 에러:', error)
+  }
 }
 </script>
 <style>
