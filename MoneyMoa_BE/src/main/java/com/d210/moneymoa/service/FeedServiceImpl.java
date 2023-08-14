@@ -99,7 +99,14 @@ public class FeedServiceImpl implements FeedService {
 
     @Override
     public List<Long> getLikersMemberIds(Long feedId) {
+        log.info("피드 상세조회");
+        log.info(feedId.toString());
         List<FeedLike> likers = feedLikeRepository.findAllByFeedId(feedId);
+
+        if(likers==null){
+            log.info("미친 코드");
+        }
+
         for (FeedLike feedLike: likers) {
             log.info(feedLike.toString());
         }

@@ -15,8 +15,6 @@ public interface FeedLikeRepository extends JpaRepository<FeedLike, Long> {
     Optional<FeedLike> findByMemberIdAndFeedId(Long memberId,Long feedId);
 
 
-    List<FeedLike> findByFeedId(Long feedId);
-
     List<FeedLike> findAllByFeedId(Long feedId);
 
 }
