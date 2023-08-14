@@ -2,14 +2,16 @@
   <v-container>
     <v-row>
       <v-col>
-        hihi
+        대화 중인 사용자 목록
         <v-card
           v-for="(item, index) in dmRooms"
           :key="index"
           class="dm-card"
           @click="enterDM(item)"
+          variant="flat"
         >
           <v-card-title>{{ item.receiver }}</v-card-title>
+          <v-divider />
         </v-card>
       </v-col>
       <v-col>

@@ -107,6 +107,8 @@ function connect(room, sender) {
     {},
     function (frame) {
       ws.subscribe(`/sub/api/chat/room/${room.roomId}`, function (message) {
+        console.log('구독후 받은것: ')
+        console.log(message.body)
         var recv = JSON.parse(message.body)
         // recvMessage 함수를 호출하고 반환된 값을 사용하여 messages 변수를 업데이트
         messages.value.push(...recvMessage(recv))
