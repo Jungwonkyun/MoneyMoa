@@ -130,7 +130,8 @@ async function onLogin() {
         oauthProvider: loginResult.data.member.oauthProvider,
         introduce: loginResult.data.member.introduce,
         imageUrl: urlData,
-        imageName: loginResult.data.member.imageUrl
+        imageName: loginResult.data.member.imageUrl,
+        valid: loginResult.data.member.valid
       }
       console.log(loginResult.data)
       const token = loginResult.data['jwt token'].accessToken
@@ -141,9 +142,7 @@ async function onLogin() {
         refreshToken: refreshToken
       }
       account.onLogin(data)
-      router.push({ name: 'home' }).then(() => {
-        // location.reload()
-      })
+      router.push({ name: 'home' })
     }
   } catch (err) {
     alert('로그인에 실패하였습니다. 다시 시도해 주세요.')
