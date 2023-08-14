@@ -100,6 +100,9 @@ public class FeedServiceImpl implements FeedService {
     @Override
     public List<Long> getLikersMemberIds(Long feedId) {
         List<FeedLike> likers = feedLikeRepository.findAllByFeedId(feedId);
+        for (FeedLike feedLike: likers) {
+            log.info(feedLike.toString());
+        }
         return likers.stream()
                 .map(feedLike -> feedLike.getMemberId())
                 .collect(Collectors.toList());
