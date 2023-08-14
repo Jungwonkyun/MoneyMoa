@@ -55,15 +55,11 @@ public class ChatController {
     @MessageMapping("/api/chat/dm")
     public void directMessage(ChatMessage message) {
 
-        if(chatRoomService.enterDMRoom(message.getMemberId(), message.getRoomId()) != null){
-            message.setType(ChatMessage.MessageType.JOIN);
-            message.setMessage(message.getSender() + "님이 입장하셨습니다.");
-            log.info("얘는 처음 들어오는 사람");
-        }
-
         if (ChatMessage.MessageType.QUIT.equals(message.getType())) {
             message.setMessage(message.getSender() + "님이 퇴장하셨습니다.");
         }
+
+        log.info(message.getMessage());
 
         //채팅 내역 저장
         chatRoomService.saveChatMessage(message.getRoomId(), message);
