@@ -4,10 +4,20 @@
       <v-row>
         <v-col>
           <v-card-item>
-            <v-card-subtitle>
-              <v-icon icon="mdi-face" />
-              {{ product.bankName }}
-            </v-card-subtitle>
+            <v-row no-gutters>
+              <v-col cols="auto">
+                <v-img
+                  v-if="icons[product.bankName]"
+                  :src="icons[product.bankName].default"
+                  class="fin-icon"
+                ></v-img>
+              </v-col>
+              <v-col>
+                <v-card-subtitle>
+                  {{ product.bankName }}
+                </v-card-subtitle>
+              </v-col>
+            </v-row>
             <v-card-title>
               {{ product.productName }}
             </v-card-title>
@@ -84,35 +94,43 @@
   </div>
 </template>
 <script setup>
-import { ref, computed } from 'vue'
+import { ref, reactive, computed } from 'vue'
 import { useProductStore } from '@/stores/productStore'
 import { storeToRefs } from 'pinia'
 import { useRoute } from 'vue-router'
 import { getDeposit, getPeriodRange, spclConditionIntrList } from '@/api/product'
-// import { bankIcons } from '@/api/icons'
+import { loadBankIcons } from '@/api/icons'
 import IntrCalcItem from './item/IntrCalcItem.vue'
 import ProductCommentItem from './item/ProductCommentItem.vue'
 const store = useProductStore()
-const { period } = storeToRefs(store)
+const { period, bankList } = storeToRefs(store)
 const route = useRoute()
 const product = ref({})
 const spclConditionIntrs = ref([])
 const commentList = ref([])
 const loaded = ref(false)
 
-// const calcDetail = computed(() => getMatchingDetail(product.value, period.value))
+const icons = reactive({})
+loadBankIcons().then((bankIcons) => {
+  Object.assign(icons, bankIcons)
+})
+
 function getContent() {
   getDeposit(route.params.productCode).then((response) => {
-    // console.log(response.data.product)
     product.value = response.data.product
-    store.setProduct(product.value)
+
+    //은행명 스토어기준으로 변경
+    for (const bank of bankList.value) {
+      if (product.value.bankName === bank.alias) {
+        product.value.bankName = bank.name
+      }
+    }
+    // store.setProduct(product.value)
     spclConditionIntrs.value = spclConditionIntrList(product.value)
     commentList.value = response.data.comments.map((comment) => ({
       ...comment,
       modifyState: false
     }))
-    console.log('댓글?')
-    console.log(commentList.value)
     loaded.value = true
   })
 }
