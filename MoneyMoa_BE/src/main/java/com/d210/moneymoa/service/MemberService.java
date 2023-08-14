@@ -14,9 +14,9 @@ public interface MemberService {
     void quitService(Long id);
     Member findLoginMember(String email, String password);
     void mailSend(String email, String pwd);
-
     Member updateMember(Member updatedMember);
-
     Member findMemberById(Long memberId);
     AuthToken logout(AuthToken accessToken);
+
+    boolean checkPassword(String password, Long memberId);
 }

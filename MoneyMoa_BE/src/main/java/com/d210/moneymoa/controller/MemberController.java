@@ -253,5 +253,35 @@ public class MemberController {
             return new ResponseEntity<>(resultMap, HttpStatus.NOT_FOUND);
         }
     }
+
+
+    @ApiOperation(value = "비밀번호 확인로직")
+    @PostMapping ("/checkpassword")
+    public ResponseEntity<Map<String,Object>> logout (  @RequestBody String password, @RequestHeader("Authorization")String jwt){
+
+        Map<String,Object> resultMap = new HashMap<>();
+        HttpStatus status;
+        jwt = jwt.replace("Bearer ","");
+
+        try{
+            Long memberId = authTokensGenerator.extractMemberId(jwt);
+            boolean check = memberService.checkPassword(password,memberId);
+
+            if(check){
+                resultMap.put("message","success");
+                status = HttpStatus.OK;
+            }else{
+                resultMap.put("message","Not Matched Password!!");
+                status = HttpStatus.OK;
+            }
+
+        }catch (Exception e){
+            e.printStackTrace();
+            resultMap.put("message","fail");
+            status = HttpStatus.BAD_REQUEST;
+        }
+
+        return new ResponseEntity<Map<String,Object>>(resultMap,status);
+    }
 }
 

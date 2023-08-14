@@ -292,6 +292,21 @@ public class MemberServiceImpl implements MemberService {
         //        return AT.getExpiresIn();
     }
 
+    @Override
+    public boolean checkPassword(String password, Long memberId) {
+
+        Optional<Member> oMember = memberRepository.findById(memberId);
+
+        Member member = oMember.get();
+
+        String storedPassword = member.getPassword();
+
+        if (passwordEncoder.matches(password, storedPassword)) {
+            return true;
+        } else {
+            return false; // 비밀번호 불일치
+        }
+    }
 
 
     @Transactional

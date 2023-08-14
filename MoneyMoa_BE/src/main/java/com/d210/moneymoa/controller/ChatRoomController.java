@@ -301,7 +301,6 @@ public class ChatRoomController {
         String messege = "";
 
         try{
-            //ChatRoomDto chatRoomDto = chatRoomService.findRoomByRoomId(roomId);
             DirectMessageRoom DMRoom = chatRoomService.findDMRoomByRoomId(roomId);
             List<ChatMessageDto>chatmessages = chatRoomService.getChatMessages(roomId);
             messege = "success";
@@ -317,37 +316,7 @@ public class ChatRoomController {
 
         return new ResponseEntity<Map<String,Object>>(resultMap,status);
     }
-
-
 }
 
 
 
-
-
-
-//    @ApiOperation(value = "Direct방 만들고 입장", notes = "생성할 채팅방 정보 입력하고 생성")
-//    @PostMapping("/room/directmessage")
-//    @ResponseBody
-//    public ResponseEntity<Map<String, Object>> sendDirectMessage(@RequestHeader("Authorization")String jwt, @RequestBody Long sendMemberId) {
-//
-//        HashMap<String, Object>resultMap = new HashMap<>();
-//        HttpStatus status;
-//        String messege = "";
-//        jwt =  jwt.replace("Bearer ", "");
-//
-//        try{
-//            Long memberId = authTokensGenerator.extractMemberId(jwt);
-//            List<MemberChatroomSubInfo> SubList = chatRoomService.sendDirectMessage(memberId,sendMemberId);
-//            messege = "success";
-//            status = HttpStatus.OK;
-//            resultMap.put("message", messege);
-//            resultMap.put("subList",SubList);
-//        }catch (Exception e){
-//            messege = "fail";
-//            resultMap.put("message", "message");
-//            status = HttpStatus.BAD_REQUEST;
-//        }
-//
-//        return new ResponseEntity<Map<String,Object>>(resultMap,status);
-//    }
