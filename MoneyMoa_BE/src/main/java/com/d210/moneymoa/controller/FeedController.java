@@ -454,21 +454,30 @@ public class FeedController {
     }
 
     @ApiOperation(value = "피드 좋아요", notes = "피드 좋아요 버튼입니다. 한번 누르면 true/feedLike 테이블에 저장. 한번 더 누르면 false/좋아요 테이블에서 삭제")
-    @PutMapping("/like/{feedId}")
+    @GetMapping("/like/{feedId}")
     public ResponseEntity<?> toggleFeedLike(@PathVariable Long feedId, @RequestHeader("Authorization") String jwt) {
         Map<String, Object> resultMap = new HashMap<>();
         HttpStatus status;
+        log.info("좋아요");
+
         try {
             Long memberId = authTokensGenerator.extractMemberId(jwt.replace("Bearer ", ""));
+            log.info("좋아요 jwt memberId");
+
             boolean isLiked = feedService.toggleLike(memberId, feedId);
+            log.info("좋아요 jwt boolean 통과");
             Feed updateFeed = feedService.getFeedById(feedId);
+            log.info("updateFeed feedId");
             status = HttpStatus.OK;
             resultMap.put("message", "success");
             resultMap.put("feed", updateFeed);
             resultMap.put("isLiked", isLiked);
+
         } catch (Exception e) {
             e.printStackTrace();
+            log.info("좋아요 jwt httpStatus ok");
             status = HttpStatus.INTERNAL_SERVER_ERROR;
+            log.info(" httpStatus ok");
             resultMap.put("message", "fail");
             resultMap.put("message2", "로그인 토큰(JWT) 또는 FeedID에 문제가 있습니다.");
         }
