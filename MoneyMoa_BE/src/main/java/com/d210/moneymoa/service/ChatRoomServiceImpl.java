@@ -210,6 +210,26 @@ public class ChatRoomServiceImpl implements ChatRoomService {
         return subList;
     }
 
+    @Override
+    public DirectMessageRoom findDMRoomByRoomId(String roomId) {
+        Optional<DirectMessageRoom>optionalDirectMessageRoomDto = directMessageRoomRepository.findByRoomId(roomId);
+        return optionalDirectMessageRoomDto.orElse(null);
+    }
+
+    public MemberChatroomSubInfo enterDMRoom(long memberId, String roomId) {
+
+        ChannelTopic topic = topics.get(roomId);
+        if (topic == null)
+            topic = new ChannelTopic(roomId);
+        redisMessageListener.addMessageListener(redisSubscriber, topic);
+        topics.put(roomId, topic);
+
+        //이미 구독하고 있는지 체크
+        Optional<MemberChatroomSubInfo> optionalMember = memberChatroomSubInfoRepository.findByMemberIdAndRoomId(memberId,roomId);
+        return optionalMember.orElse(null);
+
+    }
+
 
     public List<ChatMessageDto> getChatMessages(String roomId){
         return chatMessageDtoRepository.findByRoomId(roomId);

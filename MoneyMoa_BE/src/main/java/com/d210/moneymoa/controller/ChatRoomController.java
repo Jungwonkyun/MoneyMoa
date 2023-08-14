@@ -238,8 +238,9 @@ public class ChatRoomController {
     }
 
 
+
     @ApiOperation(value = "Direct방 만들고 입장", notes = "생성할 채팅방 정보 입력하고 생성")
-    @PostMapping("/room/directmessage")
+    @PostMapping("/room/createdm")
     @ResponseBody
     public ResponseEntity<Map<String, Object>> sendDirectMessage(@RequestHeader("Authorization")String jwt, @RequestBody Long sendMemberId) {
 
@@ -264,4 +265,89 @@ public class ChatRoomController {
         return new ResponseEntity<Map<String,Object>>(resultMap,status);
     }
 
+
+    @ApiOperation(value = "유저가 DM방에 입장", notes = "유저가 방에 들어오면 DM방 정보를 DB에 저장한다")
+    @GetMapping("/room/enterdm/{roomId}")
+    public ResponseEntity<Map<String, Object>> EnterDM(@PathVariable String roomId, @ApiParam(value = "Bearer ${jwt token}") @RequestHeader("Authorization") String jwt) {
+
+        HashMap<String, Object>resultMap = new HashMap<>();
+        HttpStatus status;
+        String messege = "";
+        jwt =  jwt.replace("Bearer ", "");
+
+        try{
+            Long memberId = authTokensGenerator.extractMemberId(jwt);
+            MemberChatroomSubInfo memberChatroomSubInfo = chatRoomService.enterDMRoom(memberId, roomId);
+            messege = "success";
+            status = HttpStatus.OK;
+            resultMap.put("message", messege);
+            resultMap.put("subDMroom",memberChatroomSubInfo);
+        }catch (Exception e){
+            messege = "fail";
+            resultMap.put("message", "message");
+            status = HttpStatus.BAD_REQUEST;
+        }
+        return new ResponseEntity<Map<String,Object>>(resultMap,status);
+    }
+
+
+    @ApiOperation(value = "현재 채팅방 정보보기")
+    @GetMapping("/room/dm/{roomId}")
+    @ResponseBody
+    public ResponseEntity<Map<String, Object>> DMroomInfo(@PathVariable String roomId) {
+
+        HashMap<String, Object>resultMap = new HashMap<>();
+        HttpStatus status;
+        String messege = "";
+
+        try{
+            //ChatRoomDto chatRoomDto = chatRoomService.findRoomByRoomId(roomId);
+            DirectMessageRoom DMRoom = chatRoomService.findDMRoomByRoomId(roomId);
+            List<ChatMessageDto>chatmessages = chatRoomService.getChatMessages(roomId);
+            messege = "success";
+            status = HttpStatus.OK;
+            resultMap.put("message", messege);
+            resultMap.put("DMRoomInfo",DMRoom);
+            resultMap.put("chatMessages" , chatmessages);
+        }catch (Exception e){
+            messege = "fail";
+            resultMap.put("message", "message");
+            status = HttpStatus.BAD_REQUEST;
+        }
+
+        return new ResponseEntity<Map<String,Object>>(resultMap,status);
+    }
+
+
 }
+
+
+
+
+
+
+//    @ApiOperation(value = "Direct방 만들고 입장", notes = "생성할 채팅방 정보 입력하고 생성")
+//    @PostMapping("/room/directmessage")
+//    @ResponseBody
+//    public ResponseEntity<Map<String, Object>> sendDirectMessage(@RequestHeader("Authorization")String jwt, @RequestBody Long sendMemberId) {
+//
+//        HashMap<String, Object>resultMap = new HashMap<>();
+//        HttpStatus status;
+//        String messege = "";
+//        jwt =  jwt.replace("Bearer ", "");
+//
+//        try{
+//            Long memberId = authTokensGenerator.extractMemberId(jwt);
+//            List<MemberChatroomSubInfo> SubList = chatRoomService.sendDirectMessage(memberId,sendMemberId);
+//            messege = "success";
+//            status = HttpStatus.OK;
+//            resultMap.put("message", messege);
+//            resultMap.put("subList",SubList);
+//        }catch (Exception e){
+//            messege = "fail";
+//            resultMap.put("message", "message");
+//            status = HttpStatus.BAD_REQUEST;
+//        }
+//
+//        return new ResponseEntity<Map<String,Object>>(resultMap,status);
+//    }
