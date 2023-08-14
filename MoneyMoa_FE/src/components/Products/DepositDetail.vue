@@ -89,6 +89,7 @@ import { useProductStore } from '@/stores/productStore'
 import { storeToRefs } from 'pinia'
 import { useRoute } from 'vue-router'
 import { getDeposit, getPeriodRange, spclConditionIntrList } from '@/api/product'
+// import { bankIcons } from '@/api/icons'
 import IntrCalcItem from './item/IntrCalcItem.vue'
 import ProductCommentItem from './item/ProductCommentItem.vue'
 const store = useProductStore()
@@ -98,6 +99,7 @@ const product = ref({})
 const spclConditionIntrs = ref([])
 const commentList = ref([])
 const loaded = ref(false)
+
 // const calcDetail = computed(() => getMatchingDetail(product.value, period.value))
 function getContent() {
   getDeposit(route.params.productCode).then((response) => {

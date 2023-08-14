@@ -98,7 +98,7 @@ function doDM(id) {
   console.log(cookies.get('member').id + '와 ' + id + '의 DM방')
   if (id === cookies.get('member').id) return
   createDMRoom(id).then((response) => {
-    const resRoom = response.data.subList[0]
+    // const resRoom = response.data.subList[0]
     router.push({
       name: 'dmlist'
     })
