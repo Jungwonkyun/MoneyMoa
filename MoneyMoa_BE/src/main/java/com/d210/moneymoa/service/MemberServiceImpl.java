@@ -81,7 +81,7 @@ public class MemberServiceImpl implements MemberService {
                 .password(passwordEncoder.encode(member.getPassword()))
                 //.password(member.getPassword())
                 .nickname(member.getNickname())
-                .role(Role.MEMBER)
+                .role(Role.ADMIN)
                 .build();
 
         newMember.setBirthday(member.getBirthday());
