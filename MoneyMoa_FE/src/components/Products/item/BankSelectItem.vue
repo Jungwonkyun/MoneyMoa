@@ -11,7 +11,7 @@
           :color="bank.selected ? 'primary' : undefined"
           @click="toggleSelected(bank)"
         >
-          <v-img :src="icons[bank.name]" class="fin-icon"></v-img>
+          <v-img :src="icons[bank.name].default" class="fin-icon"></v-img>
           {{ bank.name }}
         </v-btn>
       </v-slide-group-item>
@@ -28,6 +28,8 @@ const { bankList } = storeToRefs(store)
 const { selectAllBank, cancelAllBank } = store
 const icons = ref({})
 icons.value = loadBankIcons()
+console.log(icons.value)
+
 const toggleSelected = (bank) => {
   bank.selected = !bank.selected
 }
