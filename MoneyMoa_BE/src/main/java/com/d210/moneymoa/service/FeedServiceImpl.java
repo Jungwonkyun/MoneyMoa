@@ -3,6 +3,7 @@ package com.d210.moneymoa.service;
 import com.d210.moneymoa.domain.oauth.AuthTokensGenerator;
 import com.d210.moneymoa.dto.Feed;
 import com.d210.moneymoa.dto.FeedLike;
+import com.d210.moneymoa.dto.Member;
 import com.d210.moneymoa.repository.ChallengeRepository;
 import com.d210.moneymoa.repository.FeedLikeRepository;
 import com.d210.moneymoa.repository.FeedRepository;
@@ -12,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Optional;
@@ -79,6 +81,7 @@ public class FeedServiceImpl implements FeedService {
         return feedRepository.findByMemberId(memberId);
     }
 
+    // feed 상세 조회
     @Override
     public Feed getFeedDetail(Long feedId) {
         return feedRepository.findById(feedId).orElseThrow(
@@ -87,7 +90,27 @@ public class FeedServiceImpl implements FeedService {
     }
 
     @Override
-    public Integer updateFeed(Long feedId, Feed updateFeed, Long memberId) throws IllegalAccessException {
+    public List<Member> getLikedMembers(Long feedId) {
+        List<FeedLike> feedLikes = feedLikeRepository.findByFeedId(feedId);
+        List<Member> likedMembers = new ArrayList<>();
+
+        for (FeedLike feedLike : feedLikes) {
+            Long memberId = feedLike.getMemberId();
+            Member member = memberRepository.findById(memberId)
+                    .orElseThrow(() -> new NoSuchElementException("Member with id " + memberId + " not found"));
+            likedMembers.add(member);
+        }
+
+        return likedMembers;
+    }
+
+
+
+
+
+
+    @Override
+    public Feed updateFeed(Long feedId, Feed updateFeed, Long memberId) throws IllegalAccessException {
         Feed originalFeed = feedRepository.findById(feedId)
                 .orElseThrow(() -> new NoSuchElementException("해당 게시물이 존재하지 않습니다."));
 
@@ -114,7 +137,7 @@ public class FeedServiceImpl implements FeedService {
         feedRepository.save(originalFeed);
 
         // 반환 전에 원래 피드의 depositAmount를 반환합니다.
-        return originalFeed.getDepositAmount();
+        return originalFeed;
     }
 
     @Override

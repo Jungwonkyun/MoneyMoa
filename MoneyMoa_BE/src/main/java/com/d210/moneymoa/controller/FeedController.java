@@ -277,7 +277,9 @@ public class FeedController {
             Long memberId = authTokensGenerator.extractMemberId(jwt.replace("Bearer ", ""));
             Feed originalFeed = feedService.getFeedById(feedId);
             Integer originalDepositAmount = originalFeed.getDepositAmount();
-            Integer updatedDepositAmount = feedService.updateFeed(feedId, updateFeed, memberId);
+            Integer updatedDepositAmount = updateFeed.getDepositAmount(); // 추가된 구문
+            Feed updatedFeed = feedService.updateFeed(feedId, updateFeed, memberId);
+
             if (updateFeed.getChallengeId() != null && updateFeed.getChallengeId().equals(originalFeed.getChallengeId())
                     && !originalDepositAmount.equals(updatedDepositAmount)) {
                 Challenge challenge = challengeRepository.findById(updateFeed.getChallengeId())
@@ -454,7 +456,7 @@ public class FeedController {
     }
 
     @ApiOperation(value = "피드 좋아요", notes = "피드 좋아요 버튼입니다. 한번 누르면 true/feedLike 테이블에 저장. 한번 더 누르면 false/좋아요 테이블에서 삭제")
-    @PutMapping("/like/{feedId}")
+    @GetMapping("/like/{feedId}")
     public ResponseEntity<?> toggleFeedLike(@PathVariable Long feedId, @RequestHeader("Authorization") String jwt) {
         Map<String, Object> resultMap = new HashMap<>();
         HttpStatus status;
