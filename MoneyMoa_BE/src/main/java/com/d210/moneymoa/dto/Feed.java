@@ -60,7 +60,8 @@ public class Feed implements Serializable {
     @JoinColumn(name = "challengeId", insertable = false, updatable = false)
     private Challenge challenge; //id
 
-    @OneToMany(mappedBy = "feed", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    //@OneToMany(mappedBy = "feed", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "feed", cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REMOVE}, fetch = FetchType.LAZY)
     @JsonIgnore
     private List<FeedFile> feedFiles;
 

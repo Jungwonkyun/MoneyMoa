@@ -265,16 +265,23 @@ public class FeedController {
     }
 
     @ApiOperation(value = "피드 수정", notes = "피드를 수정합니다.")
-    @PutMapping("/update/{feedId}")
-    public ResponseEntity<Map<String, Object>> updateFeed(@RequestHeader("Authorization") String jwt,
-                                                          @PathVariable Long feedId,
-                                                          @RequestBody Feed updateFeed) {
+    @PostMapping(path = "/update/{feedId}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<Map<String, Object>> updateFeed(
+            @RequestHeader("Authorization") String jwt,
+            @PathVariable Long feedId,
+            @RequestPart("feed") String feedString,
+            @RequestPart(value = "files", required = false) MultipartFile[] files) throws IOException {
+
         log.info("피드 수정");
         HttpStatus status;
         Map<String, Object> resultMap = new HashMap<String, Object>();
 
         try {
             Long memberId = authTokensGenerator.extractMemberId(jwt.replace("Bearer ", ""));
+
+            ObjectMapper objectMapper = new ObjectMapper();
+            Feed updateFeed = objectMapper.readValue(feedString, Feed.class);
+
             Feed originalFeed = feedService.getFeedById(feedId);
             Integer originalDepositAmount = originalFeed.getDepositAmount();
             Integer updatedDepositAmount = updateFeed.getDepositAmount(); // 추가된 구문
@@ -293,6 +300,37 @@ public class FeedController {
 
             }
 
+            // 기존 파일 제거 로직 강화
+            Feed existingFeed = feedService.findById(feedId); // 수정 전 Feed를 조회
+            log.info(existingFeed.toString());
+
+
+            List<FeedFile> existingFeedFiles = new ArrayList<>(existingFeed.getFeedFiles()); //  수정 전 Feed에 포함된 기존 파일 목록을 가져옴
+            for (FeedFile feedFile : existingFeedFiles) {
+                storageService.deleteFile(feedFile.getImgPath());
+            }
+
+            for (FeedFile feedFile : existingFeedFiles) {
+                feedFileService.deleteFeedFile(feedFile);
+            }
+
+
+            // 피드 업데이트 진행
+//            Feed updatedFeed = feedService.updateFeed(feedId, updateFeed, memberId);
+
+            if (files != null && files.length > 0) {
+                // 새로운 파일 처리 및 저장 로직
+                for (MultipartFile file : files) {
+                    String fileName = storageService.uploadFile(file);
+
+                    FeedFile newFeedFile = new FeedFile();
+                    newFeedFile.setImgPath(fileName);
+                    newFeedFile.setFeed(updatedFeed);
+
+
+                    feedFileService.saveFeedFile(newFeedFile);
+                }
+            }
 
             resultMap.put("message", "success");
             return new ResponseEntity<Map<String, Object>>(resultMap, HttpStatus.OK);

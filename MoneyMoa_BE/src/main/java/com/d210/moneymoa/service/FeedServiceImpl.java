@@ -126,8 +126,8 @@ public class FeedServiceImpl implements FeedService {
             originalFeed.setChallengeId(updateFeed.getChallengeId());
         }
 
-        if (updateFeed.getMemberId() != null) {
-            originalFeed.setMemberId(updateFeed.getMemberId());
+        if (updateFeed.getHashtag() != null) {
+            originalFeed.setHashtag(updateFeed.getHashtag());
         }
 
         if (updateFeed.getDepositAmount() != null) {
@@ -200,6 +200,11 @@ public boolean toggleLike(Long memberId, Long feedId) {
         }
     }
 
+    @Override
+    public Feed findById(Long feedId) {
+        return feedRepository.findById(feedId)
+                .orElseThrow(() -> new NoSuchElementException("해당 피드가 존재하지 않습니다."));
+    }
 }
 
 

@@ -29,4 +29,13 @@ public class FeedFile implements Serializable {
         this.imgPath = imgPath;
         this.feed = feed;
     }
+
+    @Override
+    public String toString() {
+        return "FeedFile {" +
+                "id=" + id +
+                ", imgPath='" + imgPath + '\'' +
+                ", feedId=" + (feed != null ? feed.getId() : "null") +
+                '}';
+    }
 }
