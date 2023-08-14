@@ -263,7 +263,6 @@ public class ChatRoomController {
             status = HttpStatus.OK;
             resultMap.put("message", messege);
             resultMap.put("subList",SubList);
-
         }catch (Exception e){
             messege = "fail";
             resultMap.put("message", "message");

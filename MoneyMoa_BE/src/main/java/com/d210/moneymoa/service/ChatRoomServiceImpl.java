@@ -227,19 +227,12 @@ public class ChatRoomServiceImpl implements ChatRoomService {
 
     @Override
     public boolean alreadyCreated(Long sender, Long receiver) {
-        // senderId로 방 목록을 찾고, receiverId로 방 목록을 찾습니다.
-        List<DirectMessageRoom> senderRooms = directMessageRoomRepository.findBySenderId(sender);
-        List<DirectMessageRoom> receiverRooms = directMessageRoomRepository.findByReceiverId(receiver);
+        // sender가 receiverId이고 receiver가 senderId인 경우를 체크합니다.
+        DirectMessageRoom room1 = directMessageRoomRepository.findBySenderIdAndReceiverId(receiver, sender);
+        DirectMessageRoom room2 = directMessageRoomRepository.findByReceiverIdAndSenderId(receiver, sender);
 
-        // 두 목록에서 공통된 roomId가 있는지 확인합니다.
-        for (DirectMessageRoom senderRoom : senderRooms) {
-            for (DirectMessageRoom receiverRoom : receiverRooms) {
-                if (senderRoom.getRoomId().equals(receiverRoom.getRoomId())) {
-                    return true; // 이미 존재하는 방을 찾았으므로 true를 반환합니다.
-                }
-            }
-        }
-        return false; // 공통된 방을 찾지 못했으므로 false를 반환합니다.
+        // 해당 조건을 만족하는 방이 하나라도 있으면 true를 반환합니다.
+        return room1 != null || room2 != null;
     }
 
 

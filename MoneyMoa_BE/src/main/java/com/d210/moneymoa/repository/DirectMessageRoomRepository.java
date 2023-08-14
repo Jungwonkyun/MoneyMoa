@@ -14,6 +14,7 @@ public interface DirectMessageRoomRepository extends MongoRepository<DirectMessa
 
     Optional<DirectMessageRoom> findByRoomId(String roomId);
 
-    List<DirectMessageRoom> findBySenderId(Long senderId);
-    List<DirectMessageRoom> findByReceiverId(Long receiverId);
+    DirectMessageRoom findBySenderIdAndReceiverId(Long receiver, Long sender);
+
+    DirectMessageRoom findByReceiverIdAndSenderId(Long receiver, Long sender);
 }
