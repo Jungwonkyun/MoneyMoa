@@ -12,15 +12,13 @@
           ></v-img>
         </v-col>
       </v-row>
-      <v-card-title class="text-center ma-6">
-        {{ memberId }}
-      </v-card-title>
+      <v-card-title class="text-center ma-6"> ({{ memberId }}){{ nickname }} </v-card-title>
       <v-card-text class="text-center mb-6">
         {{ aboutMe }}
       </v-card-text>
       <v-row class="d-flex justify-space-evenly mt-6 mb-6">
         <v-btn cols="6" @click="addFollow, followingDialog">팔로잉</v-btn>
-        <v-btn cols="6">DM보내기</v-btn>
+        <v-btn cols="6" @click="doDM(memberId)">DM보내기</v-btn>
       </v-row>
 
       <v-divider class="border-opacity-20"></v-divider>
@@ -62,10 +60,14 @@
 <script setup>
 import { ref, onMounted, computed } from 'vue'
 import functions from '@/api/member.js'
+import { createDMRoom } from '@/api/chat'
 import { useRoute, useRouter } from 'vue-router'
 import img from '@/assets/img/beauty.png'
+import { useCookies } from 'vue3-cookies'
 
+const { cookies } = useCookies()
 const route = useRoute()
+const router = useRouter()
 const memberId = computed(() => route.params.id)
 
 // const props = defineProps(['memberId'])
@@ -89,6 +91,19 @@ const image = ref('@/assets/img/얼빡이.jpg')
 
 const nickname = ref('닉네임')
 const aboutMe = ref('안녕하세요 프론트엔드 희망하는 개발 신입입니다. 잘 부탁드립니다.')
+
+//DM버튼 누를때 로직 - 신경희
+function doDM(id) {
+  id = Number(id)
+  console.log(cookies.get('member').id + '와 ' + id + '의 DM방')
+  if (id === cookies.get('member').id) return
+  createDMRoom(id).then((response) => {
+    const resRoom = response.data.subList[0]
+    router.push({
+      name: 'dmlist'
+    })
+  })
+}
 </script>
 <style>
 .profileImage {

@@ -221,9 +221,9 @@ function isMine(sender) {
   return sender === nickName
 }
 </script>
-<style scoped>
+<style scoped lang="scss">
 .chat-container {
-  height: 90vh;
+  height: 88vh;
 }
 .chat-card {
   height: 100%;

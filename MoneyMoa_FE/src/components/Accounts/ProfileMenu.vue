@@ -42,9 +42,7 @@ function logout() {
   if (member.oauthProvider === 'GENERAL') {
     account.onLogout()
     alert('로그아웃 되었습니다.')
-    router.push({ name: 'home' }).then(() => {
-      location.reload()
-    })
+    router.push({ name: 'home' })
   } else if (member.oauthProvider === 'KAKAO') {
     functions.openkakaoLogout()
   } else if (member.oauthProvider === 'NAVER') {

@@ -34,6 +34,7 @@ import { useAccountStore } from '../stores/accountStore.js'
 import OAuth from '../components/Accounts/OAuth.vue'
 // AdminView
 import AdminView from '../views/AdminView.vue'
+import { storeToRefs } from 'pinia'
 
 const router = createRouter({
   history: createWebHistory(),
@@ -237,15 +238,15 @@ const router = createRouter({
       path: '/chat',
       name: 'chat',
       component: () => import('../views/ChatView.vue'),
-      redirect: '/chat/list',
+      redirect: '/chat/roomlist',
       children: [
         {
-          path: 'list',
+          path: 'roomlist',
           name: 'chatrooms',
           component: () => import('../components/Chat/ChatRooms.vue')
         },
         {
-          path: '/:roomId',
+          path: 'room/:roomId',
           name: 'chatroomdetail',
           component: () => import('../components/Chat/ChatRoomDetail.vue'),
           beforeEnter: (to, from, next) => {
@@ -257,6 +258,11 @@ const router = createRouter({
               next()
             }
           }
+        },
+        {
+          path: 'dmlist',
+          name: 'dmlist',
+          component: () => import('../components/Chat/DMList.vue')
         }
       ]
     },
@@ -290,14 +296,17 @@ router.beforeEach((to) => {
 })
 
 // 로그인 필요한 페이지
-router.beforeEach((to, from, next) => {
-  const { cookies } = useCookies()
-  const isLogined = !!cookies.get('accessToken')
+router.beforeEach(async (to, from, next) => {
+  // 전역에서 이동할때마다 토큰 갱신하기
+  // 항상 토큰검사하고 나서 이동하기
+
+  const account = useAccountStore()
+  await account.getNewToken()
   const urlPath = to.path.split('/').splice(1)
-  console.log(urlPath)
   const needLogin = ['profilechange', 'checkpassword', 'challenge', 'admin']
+  const { isLogin } = storeToRefs(account)
   for (let i in urlPath) {
-    if (needLogin.includes(urlPath[i]) && !isLogined) {
+    if (needLogin.includes(urlPath[i]) && !isLogin.value) {
       return next({ name: 'loginform' })
     }
   }
