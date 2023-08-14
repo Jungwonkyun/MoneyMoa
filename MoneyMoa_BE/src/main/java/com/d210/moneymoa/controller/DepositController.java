@@ -177,7 +177,7 @@ public class DepositController {
     @ApiOperation(value = "찜한 모든 정보 반환")
     @DeleteMapping("/delete/likedeposit")
     public ResponseEntity<Map<String, Object>> deleteLikedDeposit(@ApiParam(value = "Bearer ${jwt token} 형식으로 전송")
-                                                                @RequestHeader("Authorization") String jwt,
+                                                                  @RequestHeader("Authorization") String jwt,
                                                                   @RequestBody Long likeDepositId) {
         Map<String, Object> resultMap = new HashMap<>();
         HttpStatus status;
@@ -186,10 +186,10 @@ public class DepositController {
             jwt = jwt.replace("Bearer ", "");
             Long memberId = authTokensGenerator.extractMemberId(jwt);
 
-            depositService.deleteLikedDeposit(memberId,likeDepositId);
+            // depositService.deleteLikedDeposit(memberId,likeDepositId);
 
             status = HttpStatus.OK;
-            resultMap.put("myLikedDepositList", myLikedDepositList);
+            // resultMap.put("myLikedDepositList", myLikedDepositList);
             resultMap.put("message", "success");
         } catch (Exception e) {
             e.printStackTrace();

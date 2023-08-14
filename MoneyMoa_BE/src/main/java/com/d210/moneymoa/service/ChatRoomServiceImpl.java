@@ -9,6 +9,7 @@ import org.springframework.data.redis.core.HashOperations;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.listener.ChannelTopic;
 import org.springframework.data.redis.listener.RedisMessageListenerContainer;
+import org.springframework.data.redis.listener.adapter.MessageListenerAdapter;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.PostConstruct;
@@ -120,16 +121,26 @@ public class ChatRoomServiceImpl implements ChatRoomService {
     }
 
 
+    private ChannelTopic getOrCreateTopic(String fullRoomId) {
+        return topics.computeIfAbsent(fullRoomId, ChannelTopic::new);
+    }
+
+    private MessageListenerAdapter createAdapter(String methodName) {
+        return new MessageListenerAdapter(redisSubscriber, methodName);
+    }
+
     /**
      * 채팅방 입장 : redis에 topic을 만들고 pub/sub 통신을 하기 위해 리스너를 설정한다.
      */
     public MemberChatroomSubInfo enterChatRoom(long memberId, String roomId) {
-        ChannelTopic topic = topics.get(roomId);
-        if (topic == null)
-            topic = new ChannelTopic(roomId);
-        redisMessageListener.addMessageListener(redisSubscriber, topic);
-        topics.put(roomId, topic);
+//        ChannelTopic topic = topics.get(roomId);
+//        if (topic == null)
+//            topic = new ChannelTopic(roomId);
+//        redisMessageListener.addMessageListener(redisSubscriber, topic);
+//        topics.put(roomId, topic);
 
+        ChannelTopic roomTopic = getOrCreateTopic("room:" + roomId);
+        redisMessageListener.addMessageListener(createAdapter("onMessage"), roomTopic);
 
         //이미 구독하고 있는지 체크
         Optional<MemberChatroomSubInfo> optionalMember = memberChatroomSubInfoRepository.findByMemberIdAndRoomId(memberId,roomId);
@@ -218,11 +229,15 @@ public class ChatRoomServiceImpl implements ChatRoomService {
 
     public MemberChatroomSubInfo enterDMRoom(long memberId, String roomId) {
 
-        ChannelTopic topic = topics.get(roomId);
-        if (topic == null)
-            topic = new ChannelTopic(roomId);
-        redisMessageListener.addMessageListener(redisSubscriber, topic);
-        topics.put(roomId, topic);
+//        ChannelTopic topic = topics.get(roomId);
+//        if (topic == null)
+//            topic = new ChannelTopic(roomId);
+//        redisMessageListener.addMessageListener(redisSubscriber, topic);
+//        topics.put(roomId, topic);
+
+        // DM 메시지용 토픽
+        ChannelTopic dmTopic = getOrCreateTopic("dm:" + roomId);
+        redisMessageListener.addMessageListener(createAdapter("onDirectMessage"), dmTopic);
 
         //이미 구독하고 있는지 체크
         Optional<MemberChatroomSubInfo> optionalMember = memberChatroomSubInfoRepository.findByMemberIdAndRoomId(memberId,roomId);

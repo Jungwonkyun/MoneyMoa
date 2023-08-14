@@ -11,10 +11,12 @@ import io.swagger.annotations.ApiParam;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 //import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.HashMap;
 import java.util.List;
@@ -316,6 +318,39 @@ public class ChatRoomController {
 
         return new ResponseEntity<Map<String,Object>>(resultMap,status);
     }
+
+//    @ApiOperation(value = "채팅방 생성하기", notes = "생성할 채팅방 정보 입력하고 생성")
+//    @PostMapping(path = "/room/create", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+//    @ResponseBody
+//    public ResponseEntity<Map<String, Object>> createRoom(@RequestPart ChatRoomDto inputChatRoomDto,
+//                                                          @RequestPart(value = "files", required = false) MultipartFile[] file) {
+//
+//        HashMap<String, Object>resultMap = new HashMap<>();
+//        HttpStatus status;
+//        String messege = "";
+//
+//        try{
+//            ChatRoomDto chatRoomDto = chatRoomService.createChatRoom(inputChatRoomDto);
+//
+//            if (file != null && file.length > 0) {
+//                String fileName = storageService.uploadFile(file.);
+//
+//                // feedFile 저장 로직은 여기에 구현해야 합니다.
+//                feedFileService.saveFeedFile(feedFile);
+//            }
+//
+//            messege = "success";
+//            status = HttpStatus.OK;
+//            resultMap.put("message", messege);
+//            resultMap.put("CreatedChatroom",chatRoomDto);
+//        }catch (Exception e){
+//            messege = "fail";
+//            resultMap.put("message", "message");
+//            status = HttpStatus.BAD_REQUEST;
+//        }
+//
+//        return new ResponseEntity<Map<String,Object>>(resultMap,status);
+//    }
 }
 
 
