@@ -3,9 +3,9 @@ import functions from '@/api/member.js'
 
 import { useAccountStore } from '@/stores/accountStore.js'
 import { storeToRefs } from 'pinia'
-const { cookies } = useCookies()
 
 export function setInterceptors(instance) {
+  const { cookies } = useCookies()
   instance.interceptors.request.use(
     function (config) {
       config.headers.Authorization = `Bearer ${cookies.get('accessToken')}`
@@ -24,7 +24,7 @@ export function setInterceptors(instance) {
     async function (error) {
       const { config } = error
       console.log(error)
-      if (error.response.status === 403) {
+      if (error.response.status === 403 && cookies.get('refreshToken')) {
         const account = useAccountStore()
         const { isLogin } = storeToRefs(account)
         try {
@@ -40,6 +40,7 @@ export function setInterceptors(instance) {
             isLogin.value = !!cookies.get('accessToken')
           }
           console.log(res)
+          flag = true
           originalRequest.headers.Authorization = `Bearer ${res.RefreshedAccessToken}`
           return instance(originalRequest)
         } catch (err) {

@@ -135,6 +135,7 @@ async function fetchFeedList(memberId) {
 // 비밀번호 확인
 async function postCheckPassword(pwd) {
   try {
+    console.log(pwd)
     const res = await apiWithAuth.post('/member/checkpassword', pwd)
     console.log(res)
     return res
@@ -217,36 +218,6 @@ async function deletequitService(token) {
   }
 }
 
-// 이미지 업로드 테스트
-async function postUploadFile(imgs) {
-  console.log(imgs)
-  const files = new FormData()
-  for (const img of imgs) {
-    files.append('files', img)
-  }
-  for (const pair of files.entries()) {
-    console.log(pair[0], pair[1])
-  }
-  const headers = {
-    'Content-Type': 'multipart/form-data'
-  }
-  try {
-    const res = await api.post('/file/upload', files, { headers })
-    return res.data
-  } catch (err) {
-    console.log(err)
-  }
-}
-// 이미지 다운로드 테스트
-async function getImgDown(filename) {
-  const encodedFilename = encodeURIComponent(filename)
-  try {
-    const res = await api.get(`/file/download/${encodedFilename}`)
-    return res.data
-  } catch (err) {
-    console.log(err)
-  }
-}
 // 회원정보변경
 async function postUpdatedMember(token, data) {
   const Token = `Bearer ${token}`
@@ -296,8 +267,7 @@ export default {
   openkakaoLogout,
   openNaverLogin,
   postNaverLogin,
-  postUploadFile,
-  getImgDown,
+
   postUpdatedMember,
   postGetAccessid,
   postCheckPassword,

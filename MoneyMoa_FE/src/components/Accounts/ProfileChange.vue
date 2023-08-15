@@ -28,7 +28,6 @@
             class="my-10"
           ></v-file-input>
         </v-col>
-        <v-btn @click="upload">test</v-btn>
       </v-row>
 
       <v-row>
@@ -80,6 +79,7 @@
 
           <h3 class="title-left">비밀번호 확인</h3>
           <v-text-field
+            @keyup.enter="onUpdate"
             clearable
             label="비밀번호 확인"
             variant="underlined"
@@ -126,7 +126,9 @@ const userImg = ref(null)
 const UploadImg = ref(null)
 const introduce = ref(null)
 const nickname = ref(null)
-
+const isChanged = computed(() => {
+  return !!UploadImg.value && !!UploadImg.value.length > 0
+})
 const changedPassword1 = ref(null)
 const changedPassword2 = ref(null)
 const visible = ref(false)
@@ -184,20 +186,32 @@ async function onUpdate() {
       password: `${changedPassword1.value}`
     }
     const jsonBlob = new Blob([JSON.stringify(member)], { type: 'application/json' })
-    const imageBlob = new Blob([UploadImg.value], { type: UploadImg.value.type }) // 파일 타입에 맞게 변경
 
     const data = new FormData()
-    data.append('file', imageBlob)
-
+    if (UploadImg.value && UploadImg.value.length > 0) {
+      data.append('file', UploadImg.value[0])
+    }
     data.append('MemberUpdateInfo', jsonBlob)
     const res = await functions.postUpdatedMember(token, data)
     isPass.value = true
-    console.log(res)
+    console.log(res.updatedMember)
+    const updatedMember = {
+      id: res.updatedMember.id,
+      role: res.updatedMember.role,
+      nickname: res.updatedMember.nickname,
+      oauthProvider: res.updatedMember.oauthProvider,
+      introduce: res.updatedMember.introduce,
+      imageUrl: res.updatedMember.imageUrl,
+      valid: res.updatedMember.valid
+    }
+    cookies.set('member', updatedMember)
   } catch (err) {
     console.log(err)
     return alert('수정에 실패했습니다.')
   }
-  return router.push({ name: 'home' })
+  router.push({ name: 'home' }).then(() => {
+    location.reload()
+  })
 }
 
 // 회원탈퇴 함수
@@ -264,7 +278,6 @@ onBeforeRouteLeave((to, from, next) => {
 const previewURL = ref(null)
 // 이건 유저가 사진 올리면 미리보기 파일이벤트임
 function previewChangeImg() {
-  isChanged.value = true
   const reader = new FileReader()
   reader.onload = (e) => {
     previewURL.value = e.target.result
@@ -283,20 +296,12 @@ function previewChangeImg() {
 // }
 
 // 회원정보 불러오기 함수
-async function getMember() {
-  try {
-    const token = cookies.get('accessToken')
-    const res = await functions.getMyInfoApi(token)
-    const member = res.data
-    console.log(member)
-    introduce.value = member.sombody.introduce
-    nickname.value = member.sombody.nickname
-    userImg.value = member.sombody.userImg
-
-    return res.data
-  } catch (err) {
-    console.log(err)
-  }
+function getMember() {
+  const member = cookies.get('member')
+  console.log(member)
+  introduce.value = member.introduce
+  nickname.value = member.nickname
+  userImg.value = member.imageUrl
 }
 </script>
 <style scoped lang="scss">
