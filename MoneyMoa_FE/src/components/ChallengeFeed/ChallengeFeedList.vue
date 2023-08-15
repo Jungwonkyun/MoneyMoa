@@ -12,7 +12,6 @@
       </v-col>
       <v-col>{{ feed.id }}</v-col>
       <v-col>{{ feed.content }}</v-col>
-      <v-col>{{ feed.createDateTime }}</v-col>
       <v-col>{{ feed.hashtag }}</v-col>
       <v-col>{{ feed.nickname }}</v-col>
     </v-card>
@@ -46,7 +45,7 @@ const load = async ($state) => {
     }
     const res = await api.get(`/feed/all`, { headers })
     console.log(res.data.feedList)
-    const data = res.data.feedList
+    const data = res.data.feedList.reverse()
     // 만약 데이터가 2개 이하라면
     // $state.complete()를 호출하여 더 이상 데이터를 로딩하지 않고 완료 상태로 변경
     if (data.length < 2) $state.complete()
@@ -60,6 +59,8 @@ const load = async ($state) => {
     $state.error()
   }
 }
+
+console.log(feeds.value)
 </script>
 
 <style>

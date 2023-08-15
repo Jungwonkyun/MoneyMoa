@@ -1,8 +1,8 @@
 <template>
   <v-card class="mx-auto" max-width="700" :elevation="10">
     <v-carousel hide-delimiter-background show-arrows="hover">
-      <v-carousel-item v-for="(img, index) in imgs" :key="index">
-        <v-img :src="img" height="100%" class="align-end text-white" cover>
+      <v-carousel-item v-for="(fileUrl, index) in fileUrls" :key="index">
+        <v-img :src="fileUrl" height="100%" class="align-end text-white" cover>
           <v-card-title>{{ challenge }} </v-card-title>
         </v-img>
       </v-carousel-item>
@@ -59,7 +59,7 @@
   </v-card>
 </template>
 <script setup>
-import { ref, onMounted } from 'vue'
+import { ref, onMounted, onUpdated } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import challengeFeed from '@/api/challengeFeed.js'
 import memberApi from '@/api/member.js'
@@ -67,8 +67,11 @@ import { useCookies } from 'vue3-cookies'
 import UpdateFeed from './item/UpdateFeed.vue'
 import PostComment from './item/PostComment.vue'
 
+import { apiInstance } from '@/api/index.js'
+
 // 쿠키 사용
 const { cookies } = useCookies()
+const api = apiInstance()
 
 // 멤버 정보 호출
 const memberInfo = ref(cookies.get('member'))
@@ -86,6 +89,7 @@ const comments = ref([])
 const imgs = ref([])
 const nickname = ref('')
 const feedLikeCount = ref(0)
+const fileUrls = ref([])
 
 // 팔로우 보낼 때 사용할 작성자 id
 const feedWriterId = ref(0)
@@ -105,21 +109,44 @@ const deleteFeed = async () => {
     console.error('피드 삭제 중 에러:', error)
   }
 }
+
 // 마운트 시에 피드 상세 조회 API 호출, memberId가 변경되면 다시 호출
-onMounted(() => {
-  challengeFeed.fetchFeedDetail(feedId.value).then((response) => {
-    console.log(response)
+onMounted(async () => {
+  try {
+    const response = await challengeFeed.fetchFeedDetail(feedId.value)
+    console.log(response.data.feed.fileUrls)
+    fileUrls.value = response.data.feed.fileUrls
+    console.log(fileUrls.value)
     content.value = response.data.feed.content
+    // imgs.value = response.data.feed.fileUrls
     challenge.value = response.data.feed.challengeId
     // 정규식을 사용하여 '#'으로 시작하는 단어를 추출하여 리스트로 만듦
     hashtags.value = response.data.feed.hashtag.match(/#[^\s#]+/g) || []
     comments.value = response.data.comments
-    imgs.value = response.data.feed.fileUrls
+    console.log(imgs.value)
     feedLikeCount.value = response.data.feed.feedLikeCount
     nickname.value = response.data.feed.nickname
     feedWriterId.value = response.data.feed.memberId
-  })
+  } catch (error) {
+    console.error('피드 상세 조회 중 에러:', error)
+  }
 })
+
+// onMounted(async () => {
+//   try {
+//     // 토큰 받아오기
+//     const token = cookies.get('accessToken')
+//     const headers = {
+//       Authorization: `Bearer ${token}`
+//     }
+//     const res = await api.get(`/feed/detail/${feedId.value}`, { headers })
+//     res.data.feed.fileUrls.forEach((fileUrl) => {
+//       imgs.value.push(fileUrl)
+//     })
+//   } catch (err) {
+//     console.log(err)
+//   }
+// })
 
 // 마운트 시에 유저 피드 목록 조회하여 이 피드가 해당 유저 피드면 삭제 버튼 보여주기
 onMounted(async () => {
