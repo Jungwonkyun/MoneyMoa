@@ -40,11 +40,6 @@ const router = createRouter({
   history: createWebHistory(),
   routes: [
     {
-      path: '/test',
-      name: 'test',
-      component: () => import('../components/Accounts/test.vue')
-    },
-    {
       path: '/',
       name: 'home',
       component: HomeView
