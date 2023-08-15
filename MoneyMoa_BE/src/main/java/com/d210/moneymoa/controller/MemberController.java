@@ -327,6 +327,7 @@ public class MemberController {
         Map<String,Object> resultMap = new HashMap<>();
         HttpStatus status;
         jwt = jwt.replace("Bearer ","");
+        password = password.replaceAll("\"","");
 
         try{
             Long memberId = authTokensGenerator.extractMemberId(jwt);
