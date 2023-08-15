@@ -8,21 +8,24 @@
               <v-row no-gutters>
                 <v-col cols="auto">
                   <v-img
-                    v-if="icons[liked.bankName] || icons[liked.stockName]"
-                    :src="icons[liked.bankName].default || icons[liked.stockName].default"
+                    v-if="props.type != 'cma' && icons[liked.bankName]"
+                    :src="icons[liked.bankName].default"
+                    class="fin-icon"
+                  ></v-img>
+                  <v-img
+                    v-if="props.type === 'cma' && icons[liked.stockName]"
+                    :src="icons[liked.stockName].default"
                     class="fin-icon"
                   ></v-img>
                 </v-col>
                 <v-col cols="auto">
                   <v-card-subtitle>
-                    <!-- {{ props.type === 'cma' ? liked.stockName : liked.bankName }} -->
-                    은행모름
+                    {{ props.type === 'cma' ? liked.stockName : liked.bankName }}
                   </v-card-subtitle>
                 </v-col>
               </v-row>
               <v-card-title>
-                <!-- {{ props.type === 'cma' ? liked.cmaName : liked.productName }} -->
-                상품이름모름
+                {{ props.type === 'cma' ? liked.cmaName : liked.productName }}
               </v-card-title>
             </v-card-item>
           </router-link>
