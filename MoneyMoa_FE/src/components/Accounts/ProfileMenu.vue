@@ -20,6 +20,11 @@
           <v-icon icon="mdi-logout" />
         </v-list-item-title>
       </v-list-item>
+      <v-list-item :value="3">
+        <v-list-item-title>
+          <router-link to="/test">test</router-link>
+        </v-list-item-title>
+      </v-list-item>
     </v-list>
   </v-menu>
 </template>
@@ -28,6 +33,7 @@ import { useRouter } from 'vue-router'
 import { useAccountStore } from '@/stores/accountStore.js'
 import { useCookies } from 'vue3-cookies'
 import functions from '../../api/member.js'
+
 const { cookies } = useCookies()
 const account = useAccountStore()
 const router = useRouter()

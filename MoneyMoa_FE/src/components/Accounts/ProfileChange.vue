@@ -12,7 +12,11 @@
           <h1 class="my-10">회원정보 변경</h1>
         </v-col>
       </v-row>
-
+      <v-row>
+        <v-col>
+          <test :image-src="previewURL" @on-crop="handleCrop" @on-cancel="handleCancel" />
+        </v-col>
+      </v-row>
       <v-row>
         <v-col>
           <v-avatar size="150" class="elevation-10">
@@ -112,7 +116,7 @@ import { useRouter, onBeforeRouteLeave } from 'vue-router'
 import { useAccountStore } from '@/stores/accountStore'
 import { useCookies } from 'vue3-cookies'
 import functions from '../../api/member.js'
-
+import test from './test.vue'
 const { cookies } = useCookies()
 console.log(cookies.get('member'))
 const router = useRouter()
