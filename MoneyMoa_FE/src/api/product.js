@@ -1,6 +1,9 @@
 import { apiInstance } from './index.js'
+import { instanceWithAuth } from './interceptorIndex.js'
 import { useCookies } from 'vue3-cookies'
+
 const api = apiInstance()
+const apiWithAuth = instanceWithAuth()
 const { cookies } = useCookies()
 
 async function getDepositList() {
@@ -66,7 +69,9 @@ async function likeProduct(productType, likeInfo) {
       Authorization: `Bearer ${token}`
     }
     console.log(headers)
-    const response = await api.post(`/${productType}/like`, JSON.stringify(likeInfo), { headers })
+    const response = await apiWithAuth.post(`/${productType}/like`, JSON.stringify(likeInfo), {
+      headers
+    })
     console.log('찜했다')
     return response
   } catch (error) {
@@ -92,7 +97,7 @@ async function writeComment(productType, productCode, comment) {
     const headers = {
       Authorization: `Bearer ${token}`
     }
-    const response = await api.post(
+    const response = await apiWithAuth.post(
       `/${productType}/${productCode}/comment`,
       JSON.stringify(comment),
       { headers }
@@ -109,7 +114,7 @@ async function deleteComment(productType, commentId) {
     const headers = {
       Authorization: `Bearer ${token}`
     }
-    const response = await api.delete(`/${productType}/comment/${commentId}`, { headers })
+    const response = await apiWithAuth.delete(`/${productType}/comment/${commentId}`, { headers })
     return response
   } catch (error) {
     console.log(error)
@@ -122,7 +127,7 @@ async function modifyComment(productType, commentId, newContent) {
     const headers = {
       Authorization: `Bearer ${token}`
     }
-    const response = await api.put(
+    const response = await apiWithAuth.put(
       `/${productType}/comment/${commentId}`,
       JSON.stringify(newContent),
       { headers }
