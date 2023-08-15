@@ -24,6 +24,7 @@ import org.springframework.http.MediaType;
 import java.io.IOException;
 import java.net.URL;
 import java.util.*;
+import java.util.stream.Collectors;
 
 
 @Api(value = "Feed Controller", tags = "Feed-Controller")
@@ -246,12 +247,19 @@ public class FeedController {
 
             // 피드 댓글 조회
             List<FeedComment> feedComments = feedCommentService.findByFeedId(feedId);
-            // 피드 좋아요 한 사람 memberId 리스트
-//            List<Long> likersMemberIds = feedService.getLikersMemberIds(feedId);
+            // 좋아요 정보 처리
+            List<HashMap<String, Object>> likedMembers = feed.getFeedLikes().stream()
+                    .map(feedLike -> {
+                        HashMap<String, Object> likedMember = new HashMap<>();
+                        likedMember.put("memberId", feedLike.getMemberId());
+                        likedMember.put("nickname", feedLike.getNickname());
+                        return likedMember;
+                    })
+                    .collect(Collectors.toList());
 
-            // 좋아요를 누른 사용자들의 ID를 가져와 반환하는 코드.
-//            resultMap.put("likersMemberIds", likersMemberIds);
             resultMap.put("feed", feed);
+            resultMap.put("likedMembers", likedMembers); // 추가됨
+            resultMap.put("likeCount", feed.getFeedLikes().size()); // 추가됨
             resultMap.put("comments", feedComments);
             resultMap.put("message", "success");
 
@@ -496,34 +504,32 @@ public class FeedController {
         return new ResponseEntity<>(feeds, HttpStatus.OK);
     }
 
-//    @ApiOperation(value = "피드 좋아요", notes = "피드 좋아요 버튼입니다. 한번 누르면 true/feedLike 테이블에 저장. 한번 더 누르면 false/좋아요 테이블에서 삭제")
-//    @GetMapping("/like/{feedId}")
-//    public ResponseEntity<?> toggleFeedLike(@PathVariable Long feedId, @RequestHeader("Authorization") String jwt) {
-//        Map<String, Object> resultMap = new HashMap<>();
-//        HttpStatus status;
-//        log.info("좋아요");
-//
-//        try {
-//            Long memberId = authTokensGenerator.extractMemberId(jwt.replace("Bearer ", ""));
-//            log.info("좋아요 jwt memberId");
-//
-//            boolean isLiked = feedService.toggleLike(memberId, feedId);
-//            log.info("좋아요 jwt boolean 통과");
-//            Feed updateFeed = feedService.getFeedById(feedId);
-//            log.info("updateFeed feedId");
-//            status = HttpStatus.OK;
-//            resultMap.put("message", "success");
-//            resultMap.put("feed", updateFeed);
-//            resultMap.put("isLiked", isLiked);
-//
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//            log.info("좋아요 jwt httpStatus ok");
-//            status = HttpStatus.INTERNAL_SERVER_ERROR;
-//            log.info(" httpStatus ok");
-//            resultMap.put("message", "fail");
-//            resultMap.put("message2", "로그인 토큰(JWT) 또는 FeedID에 문제가 있습니다.");
-//        }
-//        return new ResponseEntity<>(resultMap, status);
-//    }
+    // 피드 좋아요 토글
+    @ApiOperation(value = "피드 좋아요 토글")
+    @PostMapping("/togglelike/{feedId}")
+    public ResponseEntity<?> toggleLikeFeed(@PathVariable Long feedId,
+                                            @ApiParam(value = "Bearer ${jwt token} 형식으로 전송")
+                                            @RequestHeader("Authorization") String jwt) {
+
+        Map<String, Object> resultMap = new HashMap<>();
+        HttpStatus status;
+
+        try {
+            Long memberId = authTokensGenerator.extractMemberId(jwt.replace("Bearer ", ""));
+            boolean isLiked = feedService.toggleLikeFeed(feedId, memberId);
+
+            resultMap.put("message", isLiked ? "Like!" : "unLike");
+            status = HttpStatus.OK;
+        } catch (IllegalArgumentException e) {
+            // 예외 발생 시 예외를 출력
+            resultMap.put("message", "유효하지 않은 인증입니다.");
+            status = HttpStatus.UNAUTHORIZED;
+        } catch (Exception e) {
+            // 서버 오류 시 메시지 출력
+            resultMap.put("message", "서버 오류로 인해 요청 처리 실패했습니다.");
+            status = HttpStatus.INTERNAL_SERVER_ERROR;
+        }
+        return new ResponseEntity<>(resultMap, status);
+    }
+
 }

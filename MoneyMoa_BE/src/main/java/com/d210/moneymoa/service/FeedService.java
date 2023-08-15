@@ -27,14 +27,11 @@ public interface FeedService {
     List<Feed> findByContent(String content);
 
 
-// 피드 좋아요
     Feed getFeedById(Long feedId);
-//
-//    boolean toggleLike(Long memberId, Long feedId);
-//
-//    List<Long> getLikersMemberIds(Long feedId);
-//
     Feed findById(Long feedId);    // 메서드 추가
 
+// 피드 좋아요
+
+boolean toggleLikeFeed(Long feedId, Long memberId);
 
 }

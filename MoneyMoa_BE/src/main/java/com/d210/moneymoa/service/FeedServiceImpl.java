@@ -38,10 +38,6 @@ public class FeedServiceImpl implements FeedService {
     @Autowired
     FeedLikeRepository feedLikeRepository;
 
-    public FeedServiceImpl(FeedRepository feedRepository, FeedLikeRepository feedLikeRepository) {
-        this.feedRepository = feedRepository;
-        this.feedLikeRepository = feedLikeRepository;
-    }
 
 
     // 피드 생성
@@ -55,7 +51,7 @@ public class FeedServiceImpl implements FeedService {
                 .challengeId(challengeId)
                 .hashtag(inputfeed.getHashtag())
                 .depositAmount(inputfeed.getDepositAmount())
-                .feedLikeCount(0) // 보기 위해 코드 저장. 08130440
+//                .firstLikeCount(0) // 보기 위해 코드 저장. 08130440
                 .build();
 
         String nickname = memberRepository.findById(memberId).get().getNickname();
@@ -89,33 +85,8 @@ public class FeedServiceImpl implements FeedService {
         Feed feed = feedRepository.findById(feedId).orElseThrow(
                 () -> new NoSuchElementException("Feed with id " + feedId + " not found")
         );
-
-        // 좋아요를 누른 사람들의 목록 얻기
-
-        // Feed 좋아요를 누른 사람들의 목록 설정하기
         return feed;
     }
-
-
-//    @Override
-//    public List<Long> getLikersMemberIds(Long feedId) {
-//        log.info("피드 상세조회");
-//        log.info(feedId.toString());
-//        List<FeedLike> likers = feedLikeRepository.findAllByFeedId(feedId);
-//
-//        if(likers==null){
-//            log.info("미친 코드");
-//        }
-//
-//        for (FeedLike feedLike: likers) {
-//            log.info(feedLike.toString());
-//        }
-//        return likers.stream()
-//                .map(feedLike -> feedLike.getMemberId())
-//                .collect(Collectors.toList());
-//    }
-
-
 
 
 
@@ -181,42 +152,38 @@ public class FeedServiceImpl implements FeedService {
     }
 
 
-//public boolean toggleLike(Long memberId, Long feedId) {
-//    Optional<FeedLike> like = feedLikeRepository.findByMemberIdAndFeedId(memberId, feedId);
-//    Feed feed = feedRepository.findById(feedId).orElseThrow(() -> new NoSuchElementException("해당 피드가 존재하지 않습니다."));
-//    if (like.isPresent()) {
-//        feedLikeRepository.delete(like.get());
-//        decreaseFeedLikeCount(feed);
-//        feedRepository.save(feed);
-//        return false;
-//    } else {
-//        feedLikeRepository.save(new FeedLike(memberId, feedId));
-//        increaseFeedLikeCount(feed);
-//        feedRepository.save(feed);
-//        return true;
-//      }
-//    }
-//    public void increaseFeedLikeCount(Feed feed) {
-//        if (feed.getFeedLikeCount() == null) {
-//            feed.setFeedLikeCount(1);
-//        } else {
-//            feed.setFeedLikeCount(feed.getFeedLikeCount() + 1);
-//        }
-//    }
-//
-//    public void decreaseFeedLikeCount(Feed feed) {
-//        if (feed.getFeedLikeCount() == null) {
-//            feed.setFeedLikeCount(0);
-//        } else {
-//            feed.setFeedLikeCount(feed.getFeedLikeCount() - 1);
-//        }
-//    }
 
     @Override
     public Feed findById(Long feedId) {
         return feedRepository.findById(feedId)
                 .orElseThrow(() -> new NoSuchElementException("해당 피드가 존재하지 않습니다."));
     }
+
+
+    // 피드 좋아요 관련 코드들 --------------------------------------------------
+    @Transactional
+    public boolean toggleLikeFeed(Long feedId, Long memberId) {
+        Feed feed = feedRepository.findById(feedId)
+                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 피드입니다."));
+
+        Member member = memberRepository.findById(memberId)
+                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 회원입니다."));
+
+        Optional<FeedLike> feedLike = feedLikeRepository.findByFeedAndMember(feed, member);
+
+        if (feedLike.isPresent()) {
+            // 좋아요가 이미 존재한 경우 이를 제거하고, 좋아요 상태를 false로 반환
+            feedLikeRepository.delete(feedLike.get());
+            return false;
+        } else {
+            // 좋아요가 존재하지 않는 경우 생성하고, 좋아요 상태를 true로 반환
+            FeedLike newFeedLike = FeedLike.builder().feed(feed).member(member).build();
+            feedLikeRepository.save(newFeedLike);
+            return true;
+        }
+
+    }
+
 }
 
 

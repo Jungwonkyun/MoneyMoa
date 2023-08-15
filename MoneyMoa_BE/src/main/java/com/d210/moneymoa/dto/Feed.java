@@ -78,26 +78,29 @@ public class Feed implements Serializable {
         this.fileUrls = fileUrls;
     }
 
-    @ColumnDefault("0")
-    @ApiModelProperty(hidden = true)
-    private Integer feedLikeCount;
+    @OneToMany(mappedBy = "feed", fetch = FetchType.LAZY)
+    @JsonIgnore
+    private List<FeedLike> feedLikes;
+
+//    @ColumnDefault("0")
+//    @ApiModelProperty(hidden = true)
+//    private Integer firstLikeCount;
 
 
-        @Builder
+
+    @Builder
         public
-        Feed(String content, Long challengeId, String hashtag, Integer depositAmount, Integer feedLikeCount, Long memberId, String nickname)
+        Feed(String content, Long challengeId, String hashtag, Integer depositAmount, Long memberId, String nickname) //Integer firstLikeCount,
         { //
             this.content = content;
             this.challengeId = challengeId;
             this.hashtag = hashtag;
             this.depositAmount = depositAmount;
             this.memberId = memberId;
-            this.feedLikeCount = feedLikeCount;
+//            this.firstLikeCount = firstLikeCount;
             this.nickname = nickname;
         }
-//    public void setFeedLikeCount(Integer count) {
-//        this.feedLikeCount = count;
-//    }
+
 
 }
 
