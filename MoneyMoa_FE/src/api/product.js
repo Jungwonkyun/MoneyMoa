@@ -79,16 +79,33 @@ async function likeProduct(productType, likeInfo) {
   }
 }
 
-// 상품상세에서 댓글 같이 반환받음. 따라서 필요없다
-// async function getComments(productType, productCode) {
-//   //productType에 따라 다른 get url, cma는 id가 productCode 대체
-//   try {
-//     const response = await api.get(`/${productType}/comment`, productCode)
-//     return response
-//   } catch (error) {
-//     console.log(error)
-//   }
-// }
+//찜정보 get
+async function getLiked(productType) {
+  try {
+    const token = cookies.get('accessToken')
+    const headers = {
+      Authorization: `Bearer ${token}`
+    }
+    const response = await apiWithAuth.get(`/${productType}/like`, { headers })
+    return response
+  } catch (error) {
+    console.log(error)
+  }
+}
+
+//찜정보 delete
+async function deleteLike(productType, likedId) {
+  try {
+    const token = cookies.get('accessToken')
+    const headers = {
+      Authorization: `Bearer ${token}`
+    }
+    const response = await apiWithAuth.delete(`/${productType}/like/${likedId}`, { headers })
+    return response
+  } catch (error) {
+    console.log(error)
+  }
+}
 
 async function writeComment(productType, productCode, comment) {
   //productType에 따라 다른 post url
@@ -207,6 +224,8 @@ export {
   getSaving,
   getCMA,
   likeProduct,
+  getLiked,
+  deleteLike,
   writeComment,
   deleteComment,
   modifyComment,
