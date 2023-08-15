@@ -100,18 +100,14 @@ public class DepositServiceImpl implements DepositService {
     }
 
     @Override
-    public Deposit findByBankCode(String bankCode) {
-        return depositRepository.findByBankCode(bankCode).orElse(null);
-    }
-
-    @Override
     public List<LikedDeposit> myLikedDepositList(Long memberId) {
         return likedDepositRepository.findAllByMemberId(memberId);
     }
 
+    @Transactional
     @Override
     public void deleteLikedDeposit(Long memberId, Long likeDepositId) {
-        return;
+        likedDepositRepository.deleteByMemberIdAndId(memberId, likeDepositId);
     }
 
 }

@@ -9,4 +9,6 @@ import java.util.List;
 @Repository
 public interface LikedDepositRepository extends JpaRepository<LikedDeposit, Long> {
     List<LikedDeposit> findAllByMemberId(Long memberId);
+
+    void deleteByMemberIdAndId(Long memberId, Long id);
 }

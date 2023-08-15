@@ -15,8 +15,6 @@ public interface DepositService {
 
     void saveLikedDeposit(LikedDeposit likedDeposit);
 
-    Deposit findByBankCode(String bankCode);
-
     List<LikedDeposit> myLikedDepositList(Long memberId);
 
     void deleteLikedDeposit(Long memberId, Long likeDepositId);

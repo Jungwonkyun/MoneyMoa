@@ -149,7 +149,7 @@ public class DepositController {
 
 
     @ApiOperation(value = "찜한 모든 정보 반환")
-    @GetMapping("/likelist")
+    @GetMapping("/like")
     public ResponseEntity<Map<String, Object>> saveLikedDeposit(@ApiParam(value = "Bearer ${jwt token} 형식으로 전송")
                                                                 @RequestHeader("Authorization") String jwt) {
         Map<String, Object> resultMap = new HashMap<>();
@@ -162,7 +162,7 @@ public class DepositController {
             List<LikedDeposit> myLikedDepositList = depositService.myLikedDepositList(memberId);
 
             status = HttpStatus.OK;
-            resultMap.put("myLikedDepositList", myLikedDepositList);
+            resultMap.put("LikedDeposit", myLikedDepositList);
             resultMap.put("message", "success");
         } catch (Exception e) {
             e.printStackTrace();
@@ -173,11 +173,11 @@ public class DepositController {
     }
 
 
-    @ApiOperation(value = "찜한 모든 정보 반환")
-    @DeleteMapping("/delete/likedeposit")
+    @ApiOperation(value = "찜한 상품 삭제")
+    @DeleteMapping("/like/{likeDepositId}")
     public ResponseEntity<Map<String, Object>> deleteLikedDeposit(@ApiParam(value = "Bearer ${jwt token} 형식으로 전송")
                                                                   @RequestHeader("Authorization") String jwt,
-                                                                  @RequestBody Long likeDepositId) {
+                                                                  @PathVariable Long likeDepositId) {
         Map<String, Object> resultMap = new HashMap<>();
         HttpStatus status;
 
@@ -185,7 +185,7 @@ public class DepositController {
             jwt = jwt.replace("Bearer ", "");
             Long memberId = authTokensGenerator.extractMemberId(jwt);
 
-            // depositService.deleteLikedDeposit(memberId,likeDepositId);
+            depositService.deleteLikedDeposit(memberId, likeDepositId);
 
             status = HttpStatus.OK;
             // resultMap.put("myLikedDepositList", myLikedDepositList);
