@@ -37,6 +37,12 @@ public class FollowController {
 
         try{
             Long fromMemberId = authTokensGenerator.extractMemberId(jwt);
+            boolean check = followService.alreadyFollow(fromMemberId, toMemberId);
+            if(check){
+                resultMap.put("message","alreadyFollow");
+                return new ResponseEntity<Map<String,Object>>(resultMap,HttpStatus.OK);
+            }
+
             Follows follows = followService.followMember(fromMemberId,toMemberId);
             resultMap.put("message","success");
             resultMap.put("follow info", follows);

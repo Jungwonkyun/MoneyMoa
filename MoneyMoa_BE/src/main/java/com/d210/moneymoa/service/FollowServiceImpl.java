@@ -52,4 +52,10 @@ public class FollowServiceImpl implements FollowService{
     public List<Follows> myFollowerList(Long id) {
         return followReposiitory.findByToMemberId(id);
     }
+
+    @Override
+    public boolean alreadyFollow(Long fromMemberId, Long toMemberId) {
+        Optional<Follows> oFollows = followReposiitory.findByFromMemberIdAndToMemberId(fromMemberId,toMemberId);
+        return oFollows.isPresent();
+    }
 }

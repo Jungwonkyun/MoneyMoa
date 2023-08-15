@@ -12,4 +12,6 @@ public interface FollowService {
     List<Follows> myFollowingList(Long id);
 
     List<Follows> myFollowerList(Long id);
+
+    boolean alreadyFollow(Long fromMemberId, Long toMemberId);
 }
