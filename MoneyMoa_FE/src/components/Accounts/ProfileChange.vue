@@ -179,7 +179,6 @@ async function onUpdate() {
   // 지금은 그냥 홈으로
 
   try {
-    const token = cookies.get('accessToken')
     const member = {
       nickname: nickname.value,
       introduce: introduce.value,
@@ -192,7 +191,7 @@ async function onUpdate() {
       data.append('file', UploadImg.value[0])
     }
     data.append('MemberUpdateInfo', jsonBlob)
-    const res = await functions.postUpdatedMember(token, data)
+    const res = await functions.postUpdatedMember(data)
     isPass.value = true
     console.log(res.updatedMember)
     const updatedMember = {
@@ -221,8 +220,7 @@ async function quitService() {
   )
   if (answer) {
     try {
-      const token = cookies.get('accessToken')
-      const result = await functions.deletequitService(token)
+      const result = await functions.deletequitService()
       if (result.message === 'success') {
         const account = useAccountStore()
         account.onLogout()
