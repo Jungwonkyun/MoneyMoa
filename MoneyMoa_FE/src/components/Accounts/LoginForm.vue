@@ -128,7 +128,6 @@ async function onLogin() {
         oauthProvider: loginResult.data.member.oauthProvider,
         introduce: loginResult.data.member.introduce,
         imageUrl: urlData,
-        imageName: loginResult.data.member.imageUrl,
         valid: loginResult.data.member.valid
       }
       console.log(loginResult.data)

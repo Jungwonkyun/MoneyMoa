@@ -80,7 +80,7 @@ async function onCheckPwd() {
       if (checkRlt.data.message === 'success') {
         account.setPwdChecked(true)
         router.push({ name: 'profilechange' })
-      } else if (checkRlt.data.message === 'fail') {
+      } else if (checkRlt.data.message === 'Not Matched Password!!') {
         alert('비밀번호가 일치하지 않습니다.')
       }
     } else {

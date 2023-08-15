@@ -35,7 +35,7 @@ export const useAccountStore = defineStore('account', () => {
     cookies.set('expireTimes', expireTimes, expireTimes)
     cookies.set('accessTokenRef', data.token, '7D')
     cookies.set('refreshToken', data.refreshToken, '7D')
-    cookies.set('member', data.member, '7D')
+    cookies.set('member', data.member)
     isLogin.value = !!cookies.get('member')
     isAdmin.value = data.member.role === 'ADMIN'
   }
