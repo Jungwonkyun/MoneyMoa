@@ -40,6 +40,7 @@
     <v-card v-for="(room, index) in roomList" :key="index" class="chatroom-card ma-4">
       <v-container>
         <v-row class="justify-space-between">
+          <v-img :src="room.imgUrl"></v-img>
           <v-card-title>{{ room.name }}</v-card-title>
           <v-card-subtitle>{{ room.description }}</v-card-subtitle>
           <v-btn @click="enter(room.roomId)">입장</v-btn>

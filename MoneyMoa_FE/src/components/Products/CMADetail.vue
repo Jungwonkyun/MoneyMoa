@@ -4,10 +4,20 @@
       <v-row>
         <v-col>
           <v-card-item>
-            <v-card-subtitle>
-              <v-icon icon="mdi-face" />
-              {{ product.stockName }}
-            </v-card-subtitle>
+            <v-row no-gutters>
+              <v-col cols="auto">
+                <v-img
+                  v-if="icons[product.stockName]"
+                  :src="icons[product.stockName].default"
+                  class="fin-icon"
+                ></v-img>
+              </v-col>
+              <v-col>
+                <v-card-subtitle>
+                  {{ product.stockName }}
+                </v-card-subtitle>
+              </v-col>
+            </v-row>
             <v-card-title>
               {{ product.cmaName }}
             </v-card-title>
@@ -66,11 +76,12 @@
   </div>
 </template>
 <script setup>
-import { ref, computed } from 'vue'
+import { ref, reactive, computed } from 'vue'
 import { useProductStore } from '@/stores/productStore'
 import { storeToRefs } from 'pinia'
 import { useRoute } from 'vue-router'
 import { getCMA } from '@/api/product'
+import { loadSecuIcons } from '@/api/icons'
 import IntrCalcItem from './item/IntrCalcItem.vue'
 import ProductCommentItem from './item/ProductCommentItem.vue'
 const store = useProductStore()
@@ -85,6 +96,12 @@ const memo = ref({
 })
 const commentList = ref([])
 const loaded = ref(false)
+
+const icons = reactive({})
+loadSecuIcons().then((secuIcons) => {
+  Object.assign(icons, secuIcons)
+})
+
 function getContent() {
   getCMA(route.params.id).then((response) => {
     product.value = response.data.product
