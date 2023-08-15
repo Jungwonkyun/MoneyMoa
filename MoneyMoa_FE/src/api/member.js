@@ -116,7 +116,7 @@ async function fetchFollowingList() {
 async function deleteFollow(toMemberId) {
   try {
     console.log(toMemberId)
-    const res = await apiWithAuth.delete(`/follow/unfollowing`, toMemberId, { headers })
+    const res = await apiWithAuth.delete(`/follow/unfollowing/${toMemberId}`)
     return res
   } catch (err) {
     console.log(err)
