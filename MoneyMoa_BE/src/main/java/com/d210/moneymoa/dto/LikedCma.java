@@ -1,5 +1,6 @@
 package com.d210.moneymoa.dto;
 
+import com.fasterxml.jackson.annotation.JsonGetter;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.*;
@@ -40,6 +41,23 @@ public class LikedCma implements Serializable{
 
     @ApiModelProperty(example = "string")
     private String rsrvType;
+
+
+    @Transient
+    private String cmaName;
+
+    @Transient
+    private String stockName;
+
+    @JsonGetter("cmaName")
+    public String getCmaName() {
+        return this.getCma() != null ? this.getCma().getCmaName() : "";
+    }
+
+    @JsonGetter("stockName")
+    public String getStockName() {
+        return this.getCma() != null ? this.getCma().getStockName() : "";
+    }
 
     @JsonIgnore
     @ManyToOne(fetch = FetchType.LAZY)
