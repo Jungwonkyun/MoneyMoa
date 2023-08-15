@@ -15,7 +15,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
 
 import java.util.*;
 
@@ -302,39 +301,5 @@ public class DepositController {
         return new ResponseEntity<>(resultMap, status);
     }
 
-    @ApiOperation(value = "예금상품 은행이미지 업로드")
-    @PostMapping("/upload")
-    public ResponseEntity<Map<String, Object>> uploadDepositFile(@ApiParam(value = "예금 상품 은행이미지 파일")
-                                                                 @RequestParam("files") MultipartFile file,
-                                                                 @ApiParam(value = "예금 상품 은행코드")
-                                                                 @RequestParam("bankCode") String bankCode) {
-        Map<String, Object> resultMap = new HashMap<>();
-        HttpStatus status;
 
-        try {
-            String fileName = storageService.uploadFile(file);
-
-            DepositFile depositFile = new DepositFile();
-            depositFile.setImgPath(fileName);
-
-            Deposit deposit = depositService.findByBankCode(bankCode);
-            if (deposit == null) {
-                throw new IllegalArgumentException("Invalid bank code.");
-            } //Deposit에 없는 bankCode를 입력하면 예외처리
-            depositFile.setDeposit(deposit);
-
-            depositService.saveDepositFile(depositFile);
-
-            status = HttpStatus.OK;
-            resultMap.put("message", "success");
-            resultMap.put("fileName", fileName);
-            resultMap.put("depositFile", depositFile);
-        } catch (Exception e) {
-            e.printStackTrace();
-            status = HttpStatus.BAD_REQUEST;
-            resultMap.put("message", "fail");
-        }
-
-        return new ResponseEntity<>(resultMap, status);
-    }
 }

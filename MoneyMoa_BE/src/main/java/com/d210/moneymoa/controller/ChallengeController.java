@@ -24,6 +24,8 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.net.URL;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -129,6 +131,21 @@ public class ChallengeController {
 
         try {
             challenges = challengeService.getMemberChallenges(memberId);
+
+            for (Challenge challenge : challenges) {
+                List<ChallengeFile> challengeFiles = challenge.getChallengeFiles();
+                List<String> fileUrls = new ArrayList<>();
+
+                // 각 Challenge별로 저장된 이미지에 대해 파일 URL 생성
+                for (ChallengeFile challengeFile : challengeFiles) {
+                    URL fileUrl = s3Client.getUrl("moneymoa-first-bucket", challengeFile.getImgPath());
+                    fileUrls.add(fileUrl.toString());
+                }
+
+                // Challenge 객체에 fileUrls 설정
+                challenge.setFileUrls(fileUrls);
+            }
+
             resultMap.put("challenges", challenges);
             resultMap.put("message", "succsess");
             return new ResponseEntity<Map<String, Object>>(resultMap, HttpStatus.OK);
@@ -153,6 +170,20 @@ public class ChallengeController {
 
         try {
             challenge = challengeService.getChallenge(id);
+
+            // 챌린지에 연결된 파일 목록을 가져옵니다.
+            List<ChallengeFile> challengeFiles = challenge.getChallengeFiles();
+            List<String> fileUrls = new ArrayList<>();
+
+            // 각 챌린지별로 저장된 이미지에 대해 파일 URL 생성
+            for (ChallengeFile challengeFile : challengeFiles) {
+                URL fileUrl = s3Client.getUrl("your-s3-bucket-name", challengeFile.getImgPath());
+                fileUrls.add(fileUrl.toString());
+            }
+
+            // Challenge 객체에 fileUrls 설정
+            challenge.setFileUrls(fileUrls);
+
             resultMap.put("challenge", challenge);
             resultMap.put("message", "success");
             return new ResponseEntity<Map<String, Object>>(resultMap, HttpStatus.OK);
@@ -203,6 +234,17 @@ public class ChallengeController {
             jwt = jwt.replace("Bearer ", "");
 
             Long memberId = authTokensGenerator.extractMemberId(jwt.replace("Bearer ", ""));
+
+            // 해당 챌린지의 파일들을 조회
+            Challenge challenge = challengeService.getChallenge(id);
+            List<ChallengeFile> challengeFiles = challenge.getChallengeFiles();
+
+            // 파일들을 삭제
+            for (ChallengeFile challengeFile : challengeFiles) {
+                storageService.deleteFile(challengeFile.getImgPath());
+            }
+
+            // 챌린지 삭제
             challengeService.deleteChallenge(id, memberId);
             resultMap.put("message", "success");
             return new ResponseEntity<Map<String, Object>>(resultMap, HttpStatus.OK);

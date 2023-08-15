@@ -1,7 +1,6 @@
 package com.d210.moneymoa.service;
 
 import com.d210.moneymoa.dto.Deposit;
-import com.d210.moneymoa.dto.DepositFile;
 import com.d210.moneymoa.dto.LikedDeposit;
 
 import java.util.List;
@@ -17,8 +16,6 @@ public interface DepositService {
     void saveLikedDeposit(LikedDeposit likedDeposit);
 
     Deposit findByBankCode(String bankCode);
-
-    void saveDepositFile(DepositFile depositFile);
 
     List<LikedDeposit> myLikedDepositList(Long memberId);
 
