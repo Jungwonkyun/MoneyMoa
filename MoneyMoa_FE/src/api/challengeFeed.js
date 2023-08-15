@@ -1,8 +1,10 @@
 import challenge from './challenge'
 import { apiInstance } from './index'
 import { useCookies } from 'vue3-cookies'
+import { instanceWithAuth } from './interceptorIndex.js'
 
 const api = apiInstance()
+const apiWithAuth = instanceWithAuth()
 
 // 토큰 받아오기
 const { cookies } = useCookies()
@@ -31,7 +33,7 @@ async function getUserFeedList(memberId) {
     const headers = {
       Authorization: `Bearer ${token}`
     }
-    const res = await api.get(`/feed/member/${memberId}`, { headers })
+    const res = await apiWithAuth.get(`/feed/member/${memberId}`, { headers })
     return res
   } catch (err) {
     console.log(err)
@@ -120,12 +122,7 @@ async function updateFeed(feedData, feedId) {
 // 피드 삭제 API
 async function deleteFeed(feedId) {
   try {
-    // 토큰 받아오기
-    const token = cookies.get('accessToken')
-    const headers = {
-      Authorization: `Bearer ${token}`
-    }
-    const res = await api.delete(`/feed/delete/${feedId}`, { headers })
+    const res = await apiWithAuth.delete(`/feed/delete/${feedId}`)
     return res
   } catch (err) {
     console.log(err)

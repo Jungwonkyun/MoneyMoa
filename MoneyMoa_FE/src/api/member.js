@@ -13,7 +13,7 @@ async function getMyInfoApi() {
     const headers = {
       Authorization: `Bearer ${token}`
     }
-    const res = await api.get(`/member/myinfo`, { headers })
+    const res = await apiWithAuth.get(`/member/myinfo`, { headers })
     return res
   } catch (err) {
     console.log(err)
@@ -27,7 +27,7 @@ async function getSombodyInfoApi(memberId) {
     const headers = {
       Authorization: `Bearer ${token}`
     }
-    const res = await api.get(`/member/sombodyinfo/${memberId}`, { headers })
+    const res = await apiWithAuth.get(`/member/sombodyinfo/${memberId}`, { headers })
     return res
   } catch (err) {
     console.log(err)
@@ -74,7 +74,7 @@ async function addFollowing(toMemberId) {
     const headers = {
       Authorization: `Bearer ${token}`
     }
-    const res = await api.post(`/follow/following`, toMemberId, { headers })
+    const res = await apiWithAuth.post(`/follow/following`, toMemberId, { headers })
     return res
   } catch (err) {
     console.log(err)
@@ -84,29 +84,39 @@ async function addFollowing(toMemberId) {
 // 팔로워 유저 목록 API
 async function fetchFollowerList() {
   try {
-    // 토큰 받아오기
-    const { cookies } = useCookies()
-    const token = cookies.get('accessToken')
-    const headers = {
-      Authorization: `Bearer ${token}`
-    }
-    const res = await api.get(`/follow/myfollower`, { headers })
+    const res = await apiWithAuth.get(`/follow/myfollower`)
     return res
   } catch (err) {
     console.log(err)
   }
 }
 
-// 팔로잉 유저 목록 API
+// 팔로워 유저 목록 API
 async function fetchFollowingList() {
   try {
-    // 토큰 받아오기
-    const { cookies } = useCookies()
-    const token = cookies.get('accessToken')
-    const headers = {
-      Authorization: `Bearer ${token}`
-    }
-    const res = await api.get(`/follow/myfollowing`, { headers })
+    const res = await apiWithAuth.get(`/follow/myfollowing`)
+    return res
+  } catch (err) {
+    console.log(err)
+  }
+}
+
+//언팔로우 API
+// async function deleteFollow(toMemberId) {
+//   try {
+//     const res = await apiWithAuth.delete(`/follow/unfollowing`, )
+//     return res
+//   } catch (err) {
+//     console.log(err)
+//   }
+// }
+
+// 팔로잉 API
+// 유저 토큰이랑 팔로우 할 사람의 id를 보내면 됨
+async function deleteFollow(toMemberId) {
+  try {
+    console.log(toMemberId)
+    const res = await apiWithAuth.delete(`/follow/unfollowing`, toMemberId, { headers })
     return res
   } catch (err) {
     console.log(err)
@@ -124,10 +134,6 @@ async function fetchFeedList(memberId) {
 }
 // 비밀번호 확인
 async function postCheckPassword(pwd) {
-  // const token = cookies.get('accessToken')
-  // const headers = {
-  //   Authorization: `Bearer ${token}`
-  // }
   try {
     const res = await apiWithAuth.post('/member/checkpassword', pwd)
     console.log(res)
@@ -277,6 +283,7 @@ export default {
   fetchFollowerList,
   fetchFollowingList,
   fetchFeedList,
+  deleteFollow,
   postEmailauth,
   postSignup,
   naverLogin,

@@ -103,8 +103,8 @@ const deleteCondition = ref(false)
 const deleteFeed = async () => {
   try {
     await challengeFeed.deleteFeed(feedId.value)
-    // 삭제 성공 후에 다른 라우터로 이동
-    router.push('/challenge/feedlist') // 이동하려는 라우터의 경로를 지정합니다.
+    // 삭제 성공 후에 이전 화면으로 이동
+    router.go(-1)
   } catch (error) {
     console.error('피드 삭제 중 에러:', error)
   }
@@ -131,22 +131,6 @@ onMounted(async () => {
     console.error('피드 상세 조회 중 에러:', error)
   }
 })
-
-// onMounted(async () => {
-//   try {
-//     // 토큰 받아오기
-//     const token = cookies.get('accessToken')
-//     const headers = {
-//       Authorization: `Bearer ${token}`
-//     }
-//     const res = await api.get(`/feed/detail/${feedId.value}`, { headers })
-//     res.data.feed.fileUrls.forEach((fileUrl) => {
-//       imgs.value.push(fileUrl)
-//     })
-//   } catch (err) {
-//     console.log(err)
-//   }
-// })
 
 // 마운트 시에 유저 피드 목록 조회하여 이 피드가 해당 유저 피드면 삭제 버튼 보여주기
 onMounted(async () => {

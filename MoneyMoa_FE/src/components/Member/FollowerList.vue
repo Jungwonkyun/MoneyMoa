@@ -39,11 +39,6 @@ onMounted(async () => {
     followerList.value = res.data['my follower list']
   })
 })
-
-// 팔로워 클릭하면 해당 유저 인포 페이지로 이동
-const moveToUserInfo = () => {
-  router.push({ name: 'MemberView', params: { id: follower.member_id } })
-}
 </script>
 <style>
 .follower-card {
