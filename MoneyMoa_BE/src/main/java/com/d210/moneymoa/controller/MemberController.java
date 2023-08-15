@@ -330,6 +330,7 @@ public class MemberController {
 
         try{
             Long memberId = authTokensGenerator.extractMemberId(jwt);
+            
             boolean check = memberService.checkPassword(password,memberId);
 
             if(check){
