@@ -52,9 +52,9 @@ public class FollowController {
     }
 
     @ApiParam(value = "현재 유저가 특정 유저를 팔로잉취소")
-    @DeleteMapping("/unfollowing")
+    @DeleteMapping("/unfollowing/{id}")
     public ResponseEntity<Map<String, Object>> unfollowMember(@ApiParam(value = "Bearer ${jwt token} 형식으로 전송")
-                                                                  @RequestHeader ("Authorization") String jwt, @RequestBody Long toMemberId){
+                                                                  @RequestHeader ("Authorization") String jwt, @PathVariable Long id){
 
         jwt =  jwt.replace("Bearer ", "");
         Map<String,Object> resultMap = new HashMap<>();
@@ -63,7 +63,7 @@ public class FollowController {
 
         try{
             Long fromMemberId = authTokensGenerator.extractMemberId(jwt);
-            followService.unFollowMember(fromMemberId,toMemberId);
+            followService.unFollowMember(fromMemberId,id);
             resultMap.put("message","success");
             status = HttpStatus.OK;
 
@@ -129,4 +129,31 @@ public class FollowController {
         return new ResponseEntity<Map<String,Object>>(resultMap,status);
     }
 
+
+//    @ApiParam(value = "현재 유저의 팔로잉 리스트")
+//    @PostMapping("/memberfollowlist/{id}")
+//    public ResponseEntity<Map<String, Object>> memberFollowingList(@ApiParam(value = "Bearer ${jwt token} 형식으로 전송")
+//                                                               @RequestHeader ("Authorization") String jwt, @RequestBody Long id){
+//
+//        jwt =  jwt.replace("Bearer ", "");
+//        Map<String,Object> resultMap = new HashMap<>();
+//        HttpStatus status;
+//
+//
+//        try{
+//            Long id = authTokensGenerator.extractMemberId(jwt);
+//            List<Follows> myfollowing = followService.myFollowingList(id);
+//            resultMap.put("message","success");
+//            resultMap.put("my following list", myfollowing);
+//            status = HttpStatus.OK;
+//
+//        }catch (Exception e){
+//            e.printStackTrace();
+//            resultMap.put("message","fail");
+//            status = HttpStatus.BAD_REQUEST;
+//        }
+//
+//        return new ResponseEntity<Map<String,Object>>(resultMap,status);
+//    }
+//
 }

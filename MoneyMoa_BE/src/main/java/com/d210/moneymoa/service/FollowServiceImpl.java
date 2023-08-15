@@ -20,8 +20,8 @@ public class FollowServiceImpl implements FollowService{
 
     @Override
     public Follows followMember(Long fromMemberId, Long toMemberId) {
-        String fromMemberNickName  =  memberRepository.findById(fromMemberId).get().getName();
-        String toMemberNickName  =  memberRepository.findById(toMemberId).get().getName();
+        String fromMemberNickName  =  memberRepository.findById(fromMemberId).get().getNickname();
+        String toMemberNickName  =  memberRepository.findById(toMemberId).get().getNickname();
 
         Follows follows  = Follows.builder()
                 .toMemberId(toMemberId)
