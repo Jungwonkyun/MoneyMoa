@@ -1,30 +1,68 @@
 <template>
   <v-container>
-    <router-link :to="getDetailRoute(liked.productType)">
-      <v-card variant="flat" class="product-card product-preview">
-        <v-row class="justify-center">
-          <v-col>
-            <v-card-item>
-              <v-card-subtitle>
-                <v-icon icon="mdi-face" />
-                {{ liked.bankName }}
-              </v-card-subtitle>
+    <v-card variant="flat" class="product-card product-preview">
+      <v-row class="justify-space-around align-center">
+        <v-col>
+          <router-link :to="getDetailRoute(props.type)">
+            <v-card-item class="justify-start">
+              <v-row no-gutters>
+                <v-col cols="auto">
+                  <v-img
+                    v-if="icons[liked.bankName] || icons[liked.stockName]"
+                    :src="icons[liked.bankName].default || icons[liked.stockName].default"
+                    class="fin-icon"
+                  ></v-img>
+                </v-col>
+                <v-col cols="auto">
+                  <v-card-subtitle>
+                    <!-- {{ props.type === 'cma' ? liked.stockName : liked.bankName }} -->
+                    은행모름
+                  </v-card-subtitle>
+                </v-col>
+              </v-row>
               <v-card-title>
-                {{ liked.productName }}
+                <!-- {{ props.type === 'cma' ? liked.cmaName : liked.productName }} -->
+                상품이름모름
               </v-card-title>
             </v-card-item>
-          </v-col>
-          <v-col cols="2" align-self="center">{{ liked.result }}원 받아용 </v-col>
-          <v-col cols="2"><v-btn icon="mdi-trash-can-outline" variant="plain"></v-btn></v-col>
-        </v-row>
-      </v-card>
-    </router-link>
+          </router-link>
+        </v-col>
+        <v-col cols="auto">
+          <v-row v-if="liked.rsrvType == 'deposit'">
+            {{ liked.amount }}원을 {{ liked.period }}개월 동안 예치하면
+          </v-row>
+          <v-row v-else>{{ liked.period }}개월 동안 {{ liked.amount }}원씩 납입하면</v-row>
+          <v-row>
+            <span class="highlighted-value">{{ liked.result }}</span> 원 수령
+          </v-row>
+        </v-col>
+        <v-col cols="auto"
+          ><v-btn icon="mdi-trash-can-outline" variant="plain" @click="del(liked.id)"
+        /></v-col>
+      </v-row>
+    </v-card>
   </v-container>
 </template>
 <script setup>
+import { reactive } from 'vue'
+import { deleteLike } from '@/api/product'
+import { loadBankIcons, loadSecuIcons } from '@/api/icons'
+const emit = defineEmits(['like-updated'])
 const props = defineProps({
-  liked: Object
+  liked: Object,
+  type: String
 })
+const icons = reactive({})
+Promise.all([loadBankIcons(), loadSecuIcons()]).then(([bankIcons, secuIcons]) => {
+  Object.assign(icons, bankIcons, secuIcons)
+})
+
+function del(id) {
+  deleteLike(props.type, id).then((response) => {
+    emit('like-updated')
+  })
+}
+
 const getDetailRoute = (type) => {
   if (type === 'deposit') {
     return {
@@ -39,7 +77,7 @@ const getDetailRoute = (type) => {
   } else {
     return {
       name: 'cmaDetail',
-      params: { id: props.liked.id }
+      params: { id: props.liked.cmaId }
     }
   }
 }
