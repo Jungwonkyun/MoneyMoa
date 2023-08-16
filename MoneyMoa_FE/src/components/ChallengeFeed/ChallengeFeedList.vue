@@ -11,7 +11,9 @@
         </v-carousel>
       </v-col>
       <v-col>{{ feed.id }}</v-col>
-      <v-col>{{ feed.content }}</v-col>
+      <v-col>
+        <v-card-text>{{ feed.content }}</v-card-text>
+      </v-col>
       <v-col>{{ feed.hashtag }}</v-col>
       <v-col>{{ feed.nickname }}</v-col>
     </v-card>
@@ -104,7 +106,7 @@ console.log(feeds.value)
 .card-container {
   max-height: 600px; /* 화면에 보여질 최대 높이 설정 */
   overflow-y: auto; /* 스크롤을 추가해야하는 영역을 정의 */
-  width: 700px;
+  width: 1000px;
   margin: 0 auto;
 }
 </style>
