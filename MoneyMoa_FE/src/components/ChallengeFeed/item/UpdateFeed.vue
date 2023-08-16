@@ -1,5 +1,5 @@
 <template>
-  <v-row v-if="condition" class="justify-end">
+  <v-row class="justify-end">
     <v-row justify="center">
       <v-dialog v-model="dialog" persistent width="auto">
         <template v-slot:activator="{ props }">
@@ -44,6 +44,9 @@
                     v-model="depositAmount"
                   ></v-text-field>
                 </v-col>
+                <v-col cols="12">
+                  <v-file-input label="사진을 추가하세요" multiple v-model="files"></v-file-input>
+                </v-col>
               </v-row>
             </v-container>
           </v-card-text>
@@ -65,7 +68,7 @@
 </template>
 <script setup>
 import { ref, onMounted } from 'vue'
-import functions from '@/api/challenge.js'
+import challengeApi from '@/api/challenge.js'
 import challengeFeedApi from '@/api/challengeFeed.js'
 import { useCookies } from 'vue3-cookies'
 import { useRoute } from 'vue-router'
@@ -95,29 +98,32 @@ const challenge = ref('')
 const content = ref('')
 const depositAmount = ref('')
 const hashtag = ref('')
-
-const feedData = {
-  memberId: memberId.value,
-  challengeId: challenge.value,
-  content: content.value,
-  depositAmount: parseInt(depositAmount.value),
-  hashtag: hashtag.value
-}
+const files = ref([])
 
 // 피드 생성하기 버튼 눌렀을 때
 const submitFeedData = () => {
-  const feedData = {
-    memberId: memberId.value,
-    challenge: challenge.value,
+  // 피드 데이터 생성
+  const feed = {
     content: content.value,
     depositAmount: parseInt(depositAmount.value),
     hashtag: hashtag.value
   }
-  console.log(feedData)
+
+  // 폼 데이터 생성
+  const formData = new FormData()
+  for (const file of files.value) {
+    formData.append('files', file)
+    formData.append('feed', JSON.stringify(feed))
+  }
+
+  // 폼 데이터 확인
+  for (const pair of formData.entries()) {
+    console.log(pair[0], pair[1], typeof pair[1])
+  }
 
   // 피드 수정 API 호출
   const updateFeed = challengeFeedApi.updateFeed
-  updateFeed(feedData, feedId.value).then((response) => {
+  updateFeed(formData, feedId.value).then((response) => {
     console.log(response)
   })
 }
@@ -125,10 +131,11 @@ const submitFeedData = () => {
 // 마운트되면 챌린지 목록 불러옴
 // 만약 챌린지 없다면 피드 생성 버튼 안보이게 처리
 onMounted(() => {
-  const getChallengeList = functions.getChallengeList
+  const getChallengeList = challengeApi.getChallengeList
   getChallengeList(memberId.value).then((response) => {
-    challengeList.value = response.data.result.data
-    if (response.data.result.data.length > 0) {
+    console.log(response)
+    challengeList.value = response.data.challenges
+    if (response.data.challenges > 0) {
       condition.value = true
     }
   })

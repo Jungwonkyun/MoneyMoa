@@ -25,8 +25,7 @@ async function kakaoLogin() {
       let urlData = img
       if (res.data.member.imageUrl) {
         console.log(res.data.member.imageUrl)
-        const urlres = await functions.getImgDown(res.data.member.imageUrl)
-        urlData = 'data:image/jpeg;base64,' + urlres
+        urlData = res.data.member.imageUrl
       }
       // 지금은 멤버정보를 서버에서 안보내줘서 일단은 로그인 어디서 했는지만 가져오기
       const member = {
@@ -36,7 +35,6 @@ async function kakaoLogin() {
         oauthProvider: res.data.member.oauthProvider,
         introduce: res.data.member.introduce,
         imageUrl: urlData,
-        imageName: res.data.member.imageUrl,
         valid: res.data.member.valid
       }
       const data = {
@@ -74,8 +72,7 @@ async function naverLogin() {
       let urlData = img
       if (res.data.member.imageUrl) {
         console.log(res.data.member.imageUrl)
-        const urlres = await functions.getImgDown(res.data.member.imageUrl)
-        urlData = 'data:image/jpeg;base64,' + urlres
+        urlData = res.data.member.imageUrl
       }
       // 지금은 멤버정보를 서버에서 안보내줘서 일단은 로그인 어디서 했는지만 가져오기
       const member = {
@@ -85,7 +82,6 @@ async function naverLogin() {
         oauthProvider: res.data.member.oauthProvider,
         introduce: res.data.member.introduce,
         imageUrl: urlData,
-        imageName: res.data.member.imageUrl,
         valid: res.data.member.valid
       }
       const data = {

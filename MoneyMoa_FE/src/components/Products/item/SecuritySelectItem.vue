@@ -11,7 +11,11 @@
           :color="security.selected ? 'primary' : undefined"
           @click="toggleSelected(security)"
         >
-          <v-icon icon="mdi-balloon"></v-icon>
+          <v-img
+            v-if="icons[security.name]"
+            :src="icons[security.name].default"
+            class="fin-icon"
+          ></v-img>
           {{ security.name }}
         </v-btn>
       </v-slide-group-item>
@@ -19,13 +23,22 @@
   </v-sheet>
 </template>
 <script setup>
+import { reactive } from 'vue'
 import { useProductStore } from '@/stores/productStore'
+import { loadSecuIcons } from '@/api/icons'
 import { storeToRefs } from 'pinia'
 const store = useProductStore()
 const { securityList } = storeToRefs(store)
 const { selectAllBank, cancelAllBank } = store
+
+const icons = reactive({})
+loadSecuIcons().then((secuIcons) => {
+  Object.assign(icons, secuIcons)
+  // console.log(icons)
+})
+
 const toggleSelected = (security) => {
   security.selected = !security.selected
 }
 </script>
-<style></style>
+<style scoped lang="scss"></style>

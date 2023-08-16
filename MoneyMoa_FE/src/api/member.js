@@ -1,28 +1,33 @@
 import { apiInstance } from './index.js'
+import { instanceWithAuth } from './interceptorIndex.js'
 import { useCookies } from 'vue3-cookies'
 
 const api = apiInstance()
+const apiWithAuth = instanceWithAuth()
 const { cookies } = useCookies()
 
 // 내 정보 API
-async function getMyInfoApi(token) {
+async function getMyInfoApi() {
   try {
+    const token = cookies.get('accessToken')
     const headers = {
       Authorization: `Bearer ${token}`
     }
-    const res = await api.get(`/member/myinfo`, { headers })
+    const res = await apiWithAuth.get(`/member/myinfo`, { headers })
     return res
   } catch (err) {
     console.log(err)
   }
 }
-// test API
-async function test(token) {
+
+// 타인 정보 API
+async function getSombodyInfoApi(memberId) {
   try {
+    const token = cookies.get('accessToken')
     const headers = {
       Authorization: `Bearer ${token}`
     }
-    const res = await api.get(`/feed/all`, { headers })
+    const res = await apiWithAuth.get(`/member/sombodyinfo/${memberId}`, { headers })
     return res
   } catch (err) {
     console.log(err)
@@ -61,9 +66,15 @@ async function postSignup(member) {
 
 // 팔로잉 API
 // 유저 토큰이랑 팔로우 할 사람의 id를 보내면 됨
-async function addFollow(memberId) {
+async function addFollowing(toMemberId) {
   try {
-    const res = await api.post(`/member/follow/${memberId}`, {})
+    // 토큰 받아오기
+    const { cookies } = useCookies()
+    const token = cookies.get('accessToken')
+    const headers = {
+      Authorization: `Bearer ${token}`
+    }
+    const res = await apiWithAuth.post(`/follow/following`, toMemberId, { headers })
     return res
   } catch (err) {
     console.log(err)
@@ -71,19 +82,41 @@ async function addFollow(memberId) {
 }
 
 // 팔로워 유저 목록 API
-async function fetchFollowerList(memberId) {
+async function fetchFollowerList() {
   try {
-    const res = await api.get(`/member/followerlist/${memberId}`, {})
+    const res = await apiWithAuth.get(`/follow/myfollower`)
     return res
   } catch (err) {
     console.log(err)
   }
 }
 
-// 팔로잉 유저 목록 API
-async function fetchFollowingList(memberId) {
+// 팔로워 유저 목록 API
+async function fetchFollowingList() {
   try {
-    const res = await api.get(`/member/followinglist/${memberId}`, {})
+    const res = await apiWithAuth.get(`/follow/myfollowing`)
+    return res
+  } catch (err) {
+    console.log(err)
+  }
+}
+
+//언팔로우 API
+// async function deleteFollow(toMemberId) {
+//   try {
+//     const res = await apiWithAuth.delete(`/follow/unfollowing`, )
+//     return res
+//   } catch (err) {
+//     console.log(err)
+//   }
+// }
+
+// 팔로잉 API
+// 유저 토큰이랑 팔로우 할 사람의 id를 보내면 됨
+async function deleteFollow(toMemberId) {
+  try {
+    console.log(toMemberId)
+    const res = await apiWithAuth.delete(`/follow/unfollowing/${toMemberId}`)
     return res
   } catch (err) {
     console.log(err)
@@ -101,12 +134,9 @@ async function fetchFeedList(memberId) {
 }
 // 비밀번호 확인
 async function postCheckPassword(pwd) {
-  const token = cookies.get('accessToken')
-  const headers = {
-    Authorization: `Bearer ${token}`
-  }
   try {
-    const res = await api.post('/member/checkpassword', pwd, { headers })
+    console.log(pwd)
+    const res = await apiWithAuth.post('/member/checkpassword', pwd)
     console.log(res)
     return res
   } catch (err) {
@@ -176,56 +206,25 @@ async function postNaverLogin(code, state) {
 }
 
 // 유저 탈퇴
-async function deletequitService(token) {
+async function deletequitService() {
   try {
-    const headers = {
-      Authorization: `Bearer ${token}`
-    }
-    const res = await api.delete(`/member/quitService`, { headers })
+    const res = await apiWithAuth.delete(`/member/quitService`)
     return res.data
   } catch (err) {
     console.log(err)
   }
 }
 
-// 이미지 업로드 테스트
-async function postUploadFile(imgs) {
-  console.log(imgs)
-  const files = new FormData()
-  for (const img of imgs) {
-    files.append('files', img)
-  }
-  for (const pair of files.entries()) {
+// 회원정보변경
+async function postUpdatedMember(data) {
+  for (const pair of data.entries()) {
     console.log(pair[0], pair[1])
   }
   const headers = {
     'Content-Type': 'multipart/form-data'
   }
   try {
-    const res = await api.post('/file/upload', files, { headers })
-    return res.data
-  } catch (err) {
-    console.log(err)
-  }
-}
-// 이미지 다운로드 테스트
-async function getImgDown(filename) {
-  const encodedFilename = encodeURIComponent(filename)
-  try {
-    const res = await api.get(`/file/download/${encodedFilename}`)
-    return res.data
-  } catch (err) {
-    console.log(err)
-  }
-}
-// 회원정보변경
-async function putUpdatedMember(token, member) {
-  const Token = `Bearer ${token}`
-  const headers = {
-    Authorization: Token
-  }
-  try {
-    const res = await api.put('/member/update', member, { headers })
+    const res = await apiWithAuth.post('/member/update', data, { headers })
     return res.data
   } catch (err) {
     console.log(err)
@@ -246,26 +245,26 @@ async function postGetAccessid() {
 }
 
 export default {
-  addFollow,
+  addFollowing,
   fetchFollowerList,
   fetchFollowingList,
   fetchFeedList,
+  deleteFollow,
   postEmailauth,
   postSignup,
   naverLogin,
   postLogin,
   getMyInfoApi,
   deletequitService,
-  test,
   postfindpassword,
   openkakaoLogin,
   postKakaoLogin,
   openkakaoLogout,
   openNaverLogin,
   postNaverLogin,
-  postUploadFile,
-  getImgDown,
-  putUpdatedMember,
+
+  postUpdatedMember,
   postGetAccessid,
-  postCheckPassword
+  postCheckPassword,
+  getSombodyInfoApi
 }

@@ -80,14 +80,13 @@ async function onCheckPwd() {
       if (checkRlt.data.message === 'success') {
         account.setPwdChecked(true)
         router.push({ name: 'profilechange' })
-      } else if (checkRlt.data.message === 'fail') {
+      } else if (checkRlt.data.message === 'Not Matched Password!!') {
         alert('비밀번호가 일치하지 않습니다.')
       }
     } else {
       alert('세션이 만료되었습니다. 다시 로그인 해주세요.')
-      router.push({ name: 'loginform' }).then(() => {
-        location.reload()
-      })
+      console.log(checkRlt)
+      router.push({ name: 'loginform' })
     }
   } catch (err) {
     console.log(err)

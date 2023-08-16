@@ -118,9 +118,7 @@ async function onLogin() {
       // 유저 이미지가 있으면 유저이미지 불러오기
       let urlData = img
       if (loginResult.data.member.imageUrl) {
-        console.log(loginResult.data.member.imageUrl)
-        const urlres = await functions.getImgDown(loginResult.data.member.imageUrl)
-        urlData = 'data:image/jpeg;base64,' + urlres
+        urlData = loginResult.data.member.imageUrl
       }
 
       const member = {
@@ -130,7 +128,6 @@ async function onLogin() {
         oauthProvider: loginResult.data.member.oauthProvider,
         introduce: loginResult.data.member.introduce,
         imageUrl: urlData,
-        imageName: loginResult.data.member.imageUrl,
         valid: loginResult.data.member.valid
       }
       console.log(loginResult.data)

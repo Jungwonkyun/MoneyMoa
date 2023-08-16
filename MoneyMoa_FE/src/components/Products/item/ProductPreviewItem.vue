@@ -5,11 +5,20 @@
         <v-row>
           <v-col>
             <v-card-item>
-              <!-- {{ icons[product.bankName] }} -->
-              <!-- <v-img :src="icons[product.bankName]" class="fin-icon"></v-img> -->
-              <v-card-subtitle>
-                {{ product.bankName }}
-              </v-card-subtitle>
+              <v-row no-gutters>
+                <v-col cols="auto">
+                  <v-img
+                    v-if="icons[product.bankName]"
+                    :src="icons[product.bankName].default"
+                    class="fin-icon"
+                  ></v-img>
+                </v-col>
+                <v-col>
+                  <v-card-subtitle>
+                    {{ product.bankName }}
+                  </v-card-subtitle>
+                </v-col>
+              </v-row>
               <v-card-title>
                 {{ product.productName }}
               </v-card-title>
@@ -17,14 +26,16 @@
           </v-col>
           <v-col cols="2" align-self="center">기본 {{ getIntrRange(product).min }}% </v-col>
           <!-- <v-divider inset vertical /> -->
-          <v-col cols="2" align-self="center">최고 {{ getIntrRange(product).max }}% </v-col>
+          <v-col cols="2" align-self="center"
+            >최고 <span class="highlighted-value">{{ getIntrRange(product).max }}%</span>
+          </v-col>
         </v-row>
       </v-card>
     </router-link>
   </v-container>
 </template>
 <script setup>
-import { ref } from 'vue'
+import { ref, reactive } from 'vue'
 import { useProductStore } from '@/stores/productStore'
 import { storeToRefs } from 'pinia'
 import { getIntrRange } from '@/api/product'
@@ -34,9 +45,12 @@ defineProps({
 })
 const store = useProductStore()
 const { productType } = storeToRefs(store)
-// const icons = ref({})
-// icons.value = loadBankIcons()
-// console.log(icons.value)
+
+const icons = reactive({})
+loadBankIcons().then((bankIcons) => {
+  Object.assign(icons, bankIcons)
+})
+
 const getProductDetailRoute = (product) => {
   if (productType.value === 'deposit') {
     return {

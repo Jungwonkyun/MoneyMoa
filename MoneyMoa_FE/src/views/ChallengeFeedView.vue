@@ -1,14 +1,18 @@
 <template>
   <v-container>
     <v-row>
-      <v-col cols="11" class="ma-auto">
+      <v-col cols="12" class="ma-auto">
         <SearchBar v-if="shouldShowSearchBar" @custom-event="handleEvent" />
       </v-col>
-      <v-col cols="1" class="ma-auto no-margin-padding">
+      <v-col cols="12" class="ma-auto">
         <PostFeed />
       </v-col>
     </v-row>
-    <router-view :search-word="searchWord"></router-view>
+    <v-row>
+      <v-col cols="12">
+        <router-view :search-word="searchWord"></router-view>
+      </v-col>
+    </v-row>
   </v-container>
 </template>
 <script setup>

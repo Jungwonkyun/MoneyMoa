@@ -7,31 +7,30 @@
     transition="fab-transition"
   >
     <template v-slot:activator="{ props }">
-      <v-sheet class="dic-Btn rounded-circle" v-bind="props" elevation="4">
-        <v-icon icon="mdi-magnify"></v-icon>
+      <v-sheet class="dic-Btn rounded-circle d-flex align-center" v-bind="props" elevation="4">
+        <!-- <v-icon icon="mdi-magnify"></v-icon> -->
+        <v-img :src="question_moa" :height="60"></v-img>
       </v-sheet>
     </template>
     <!-- 여기서 크기조절 -->
-    <v-card width="500" max-height="500">
-      <v-list>
-        <v-list-item> </v-list-item>
+    <v-card width="500" max-height="500" class="d-flex flex-column">
+      <v-card-title>금융사전</v-card-title>
+      <v-list class="d-flex flex-column align-center">
         <!-- 금융사전 검색창입니다 -->
         <v-text-field
           clearable
-          placeholder="키워드 검색"
+          class="dictionary-search"
+          placeholder="용어 검색"
           variant="underlined"
           append-inner-icon="mdi-magnify"
           @keyup.enter="onSearch"
           v-model="searchWord"
-          style="width: 480px"
         >
           <template #append-inner-icon>
-            <v-icon @click="onSearch">mdi-magnify</v-icon>
+            <v-icon @click="onSearch" icon="mdi-magnify"></v-icon>
           </template>
         </v-text-field>
       </v-list>
-      <v-divider></v-divider>
-
       <v-list>
         <v-expansion-panels variant="accordion">
           <DictionaryItem
@@ -43,7 +42,7 @@
         </v-expansion-panels>
       </v-list>
       <v-card-actions class="text-right">
-        <v-btn variant="text" @click="menu = false" class="ml-auto"> Cancel </v-btn>
+        <v-btn variant="text" @click="menu = false" class="ml-auto"> 닫기 </v-btn>
       </v-card-actions>
     </v-card>
   </v-menu>
@@ -52,6 +51,7 @@
 <script setup>
 import { ref } from 'vue'
 import DictionaryItem from './item/DictionaryItem.vue'
+import question_moa from '@/assets/img/question_moa.png'
 
 const searchWord = ref('')
 function onSearch() {
@@ -88,10 +88,14 @@ const list = ref(listall)
 .dic-Btn {
   background-color: $primary-color;
   color: white;
-  width: 60px;
-  height: 60px;
+  width: 80px;
+  height: 80px;
   text-align: center;
   line-height: 60px;
   cursor: pointer;
+}
+.dictionary-search {
+  align-self: center;
+  width: 90%;
 }
 </style>
