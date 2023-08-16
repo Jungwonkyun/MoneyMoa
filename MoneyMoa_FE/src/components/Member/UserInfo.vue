@@ -1,5 +1,5 @@
 <template>
-  <v-container class="px-10">
+  <v-container class="px-10 animate__animated animate__fadeInLeft">
     <v-card :elevation="24" justify="center" class="rounded-xl">
       <v-row>
         <v-col cols="12">
@@ -68,7 +68,7 @@ import { useRoute, useRouter } from 'vue-router'
 import img from '../../assets/img/default_image.png'
 import { useCookies } from 'vue3-cookies'
 import axios from 'axios'
-
+import 'animate.css'
 const { cookies } = useCookies()
 const route = useRoute()
 const router = useRouter()
