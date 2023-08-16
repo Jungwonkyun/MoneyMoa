@@ -49,7 +49,8 @@ async function fetchFeedDetail(feedId) {
 // 피드 좋아요 API
 async function addFeedLike(feedId) {
   try {
-    const res = await apiWithAuth.post(`/feed/togglelike/${feedId}`)
+    const res = await apiWithAuth.post(`/feed/like/${feedId}`)
+    console.log(res)
     return res
   } catch (err) {
     console.log(err)
@@ -59,8 +60,7 @@ async function addFeedLike(feedId) {
 // 피드 검색 API
 async function searchFeed(searchWord) {
   try {
-    // 토큰 받아오기
-    const res = await api.get(`/feed/search`, searchWord)
+    const res = await api.get(`/feed/search?keyword=${searchWord}`)
     return res
   } catch (err) {
     console.log(err)

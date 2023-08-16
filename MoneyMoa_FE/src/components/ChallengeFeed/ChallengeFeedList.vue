@@ -25,14 +25,16 @@ import InfiniteLoading from 'v3-infinite-loading'
 import 'v3-infinite-loading/lib/style.css'
 import { apiInstance } from '@/api/index.js'
 import { useCookies } from 'vue3-cookies'
+import { useChallengeFeedStore } from '../../stores/challengeFeedStore'
 
+// 스토어 사용
+const challengeFeedStore = useChallengeFeedStore()
+const searchWrod = challengeFeedStore.searchWord
+console.log(searchWrod.value)
+
+// 쿠키 사용
 const { cookies } = useCookies()
-
 const api = apiInstance()
-
-const props = defineProps({
-  searchWord: null
-})
 
 let feeds = ref([])
 const load = async ($state) => {

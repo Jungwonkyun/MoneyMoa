@@ -3,7 +3,7 @@
     <v-carousel hide-delimiter-background show-arrows="hover">
       <v-carousel-item v-for="(fileUrl, index) in fileUrls" :key="index">
         <v-img :src="fileUrl" height="100%" class="align-end text-white" cover>
-          <v-card-title>{{ challenge }} </v-card-title>
+          <v-card-title>{{ challengeTitle }} </v-card-title>
         </v-img>
       </v-carousel-item>
     </v-carousel>
@@ -84,6 +84,7 @@ const feedId = ref(route.params.feedId)
 // 화면에 표시할 데이터
 const content = ref('')
 const challenge = ref('')
+const challengeTitle = ref('')
 const hashtags = ref([])
 const comments = ref([])
 const imgs = ref([])
@@ -120,10 +121,10 @@ onMounted(async () => {
     content.value = response.data.feed.content
     // imgs.value = response.data.feed.fileUrls
     challenge.value = response.data.feed.challengeId
+    challengeTitle.value = response.data.feed.challengeTitle
     // 정규식을 사용하여 '#'으로 시작하는 단어를 추출하여 리스트로 만듦
     hashtags.value = response.data.feed.hashtag.match(/#[^\s#]+/g) || []
     comments.value = response.data.comments
-    console.log(imgs.value)
     feedLikeCount.value = response.data.feed.feedLikeCount
     nickname.value = response.data.feed.nickname
     feedWriterId.value = response.data.feed.memberId
@@ -180,7 +181,7 @@ const afterDelete = (response) => {
 // 좋아요
 const addFeedLike = async () => {
   try {
-    await challengeFeed.addFeedLike(feedId.value)
+    res = await challengeFeed.addFeedLike(feedId.value)
   } catch (error) {
     console.error('좋아요 에러:', error)
   }
