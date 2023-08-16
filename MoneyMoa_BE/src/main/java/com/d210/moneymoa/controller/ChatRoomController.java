@@ -173,10 +173,15 @@ public class ChatRoomController {
     @ResponseBody
     public ResponseEntity<Map<String, Object>> searchRoom(@ApiParam(value = "검색어") @RequestBody String name) {
 
+        String name = requestBody.get("name");
+
         HashMap<String, Object>resultMap = new HashMap<>();
 
         HttpStatus status;
         String messege = "";
+        // 로그 찍기
+        logger.info("Request name: " + name);
+        logger.info("Request body: " + requestBody.toString());
 
         try{
             List<ChatRoomDto> chatRoomDto = chatRoomService.findRoomByName(name);
