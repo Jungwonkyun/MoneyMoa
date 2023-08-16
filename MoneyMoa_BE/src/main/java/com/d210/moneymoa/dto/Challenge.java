@@ -91,6 +91,4 @@ public class Challenge {
         this.goalAmount = goalAmount;
         this.presentAmount = presentAmount;
     }
-
-
 }

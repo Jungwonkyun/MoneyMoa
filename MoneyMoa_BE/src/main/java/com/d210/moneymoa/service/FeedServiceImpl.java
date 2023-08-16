@@ -55,7 +55,9 @@ public class FeedServiceImpl implements FeedService {
                 .build();
 
         String nickname = memberRepository.findById(memberId).get().getNickname();
+//        String challengeTitle = feedRepository.findById(challengeId).get().getChallengeTitle();
         feed.setNickname(nickname);
+//        feed.setChallengeTitle(challengeTitle);
 
         feedRepository.save(feed);
         return feed;
@@ -64,13 +66,16 @@ public class FeedServiceImpl implements FeedService {
 
     // 피드 전체 조회
     @Transactional(readOnly = true)
-    public List<Feed> getAllFeeds() throws InterruptedException {
-//        List<Feed> feeds = feedRepository.findAllByMemberId();
-//        List<Feed> feedResponses = new ArrayList<>();
-//        // feeds 리스트의 각 Feed 객체를 FeedCreateResponse로 변환하여 feedResponses 리스트에 저장
-//        feeds.forEach(feed -> feedResponses.add(Feed(feed)));
-//        // 변환된 피드 목록을 반환
-        return feedRepository.findAll();
+    public List<Feed> getAllFeeds() {
+        List<Feed> feedList = feedRepository.findAll();
+
+        for (Feed feed : feedList) {
+            if (feed.getChallenge() != null) {
+                feed.setChallengeTitle(feed.getChallenge().getTitle());
+            }
+        }
+
+        return feedList;
     }
 
     @Override

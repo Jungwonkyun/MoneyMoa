@@ -139,7 +139,7 @@ public class FeedController {
     @ApiOperation(value = "피드 전체 조회", notes = "피드 전체목록을 조회합니다")
     @GetMapping("/all")
     public ResponseEntity<Map<String, Object>> getAllFeeds(@RequestHeader("Authorization") String jwt) {
-        log.info("BoardList 모두 반환");
+        log.info("FeedList 모두 반환");
         HttpStatus status;
         List<Feed> feedList;
         Map<String, Object> resultMap = new HashMap<String, Object>();

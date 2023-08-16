@@ -83,12 +83,14 @@ public class Feed implements Serializable {
     private List<FeedLike> feedLikes;
 
     @Transient
+    @ApiModelProperty(hidden = true)
     private String challengeTitle;
 
 
     @Builder
-        public
-        Feed(String content, Long challengeId, String hashtag, Integer depositAmount, Long memberId, String nickname) //Integer firstLikeCount,
+        public Feed(String content, Long challengeId, String hashtag,
+                    Integer depositAmount, Long memberId, String nickname,
+                    String challengeTitle) //Integer firstLikeCount,
         { //
             this.content = content;
             this.challengeId = challengeId;
@@ -97,9 +99,8 @@ public class Feed implements Serializable {
             this.memberId = memberId;
 //            this.firstLikeCount = firstLikeCount;
             this.nickname = nickname;
+            this.challengeTitle = challengeTitle;
         }
-
-
 }
 
 
