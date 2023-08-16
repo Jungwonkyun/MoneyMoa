@@ -8,7 +8,6 @@
     >
       <v-row>
         <v-col>
-          <p>금융사전</p>
           <v-text-field
             clearable
             placeholder="키워드 검색"

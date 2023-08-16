@@ -26,7 +26,9 @@
           </v-col>
           <v-col cols="2" align-self="center">기본 {{ getIntrRange(product).min }}% </v-col>
           <!-- <v-divider inset vertical /> -->
-          <v-col cols="2" align-self="center">최고 {{ getIntrRange(product).max }}% </v-col>
+          <v-col cols="2" align-self="center"
+            >최고 <span class="highlighted-value">{{ getIntrRange(product).max }}%</span>
+          </v-col>
         </v-row>
       </v-card>
     </router-link>

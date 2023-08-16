@@ -30,7 +30,9 @@
               </v-card-title>
             </v-card-item>
           </v-col>
-          <v-col cols="2" align-self="center"> 수익률 {{ product[RBJ] }}% </v-col>
+          <v-col cols="2" align-self="center">
+            수익률 <span class="highlighted-value">{{ product[RBJ] }}%</span>
+          </v-col>
         </v-row>
       </v-card>
     </router-link>
