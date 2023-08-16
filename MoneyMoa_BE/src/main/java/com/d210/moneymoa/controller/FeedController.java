@@ -251,7 +251,7 @@ public class FeedController {
             List<HashMap<String, Object>> likedMembers = feed.getFeedLikes().stream()
                     .map(feedLike -> {
                         HashMap<String, Object> likedMember = new HashMap<>();
-                        likedMember.put("memberId", feedLike.getMemberId());
+                        likedMember.put("memberId", feedLike.getMember());
                         likedMember.put("nickname", feedLike.getNickname());
                         return likedMember;
                     })
