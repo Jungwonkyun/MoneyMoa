@@ -1,13 +1,16 @@
 package com.d210.moneymoa.controller;
 
 
+import com.amazonaws.services.s3.AmazonS3;
 import com.d210.moneymoa.domain.oauth.AuthTokens;
 import com.d210.moneymoa.domain.oauth.AuthTokensGenerator;
 import com.d210.moneymoa.dto.AuthToken;
 import com.d210.moneymoa.dto.LoginInfo;
 import com.d210.moneymoa.dto.Member;
+import com.d210.moneymoa.dto.MemberUpdateInfo;
 import com.d210.moneymoa.repository.MemberRepository;
 import com.d210.moneymoa.service.MemberServiceImpl;
+import com.d210.moneymoa.service.StorageService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
@@ -17,8 +20,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
 @Slf4j
@@ -34,6 +39,10 @@ public class MemberController {
     MemberServiceImpl memberService;
     @Autowired
     AuthTokensGenerator authTokensGenerator;
+    @Autowired
+    StorageService storageService;
+    @Autowired
+    private AmazonS3 s3Client;
 
 
     @ApiOperation(value = "일반 로그인 처리" , notes = "유저 정보가 있으면 jwt 토큰이랑 유저 정보 반환 " +
@@ -226,32 +235,120 @@ public class MemberController {
     @ApiOperation(value = "유저의 jwt 토큰을 파라미터로 받아서 member에 대한 객체 정보를 반환",
             notes = "DB를 직접 보지 않고 유저 ID를 통해 객체에 대한 값들을 알 수 있음")
     @GetMapping("/myinfo")
-    public ResponseEntity<Member> findByAccessToken(@ApiParam(value = "Bearer ${jwt token} 형식으로 전송")  @RequestHeader("Authorization") String jwt) {
+    public ResponseEntity<Map<String,Object>> findByAccessToken(@ApiParam(value = "Bearer ${jwt token} 형식으로 전송")  @RequestHeader("Authorization") String jwt) {
         jwt =  jwt.replace("Bearer ", "");
-        Long memberId = authTokensGenerator.extractMemberId(jwt);
-        //return ResponseEntity.ok(memberRepository.findById(memberId).orElse(null));
-        return ResponseEntity.ok(memberService.findMemberById(memberId));
+        Map<String, Object> resultMap = new HashMap<>();
+        HttpStatus status;
+
+        try{
+            Long memberId = authTokensGenerator.extractMemberId(jwt);
+            Member mem = memberService.findMemberById(memberId);
+            resultMap.put("message","success");
+            resultMap.put("sombody",mem);
+            status = HttpStatus.OK;
+
+        }catch (Exception e){
+            resultMap.put("message","fail");
+            status = HttpStatus.BAD_REQUEST;
+            e.printStackTrace();
+        }
+
+        return new ResponseEntity<Map<String,Object>>(resultMap,status);
     }
 
-    @ApiOperation(value = "멤버 정보 업데이트", notes = "멤버의 정보를 수정하고 업데이트된 멤버 정보를 반환합니다.")
-    @PutMapping("/update")
-    public ResponseEntity<Map<String, Object>> updateMember(@ApiParam(value = "수정할 멤버 정보") @RequestBody Member updatedMember,
-                                                            @ApiParam(value = "Bearer 타입의 인증토큰") @RequestHeader("Authorization") String jwt) {
-        jwt = jwt.replace("Bearer ", "");
-        Long memberId = authTokensGenerator.extractMemberId(jwt);
-        updatedMember.setId(memberId);
 
-        Member savedMember = memberService.updateMember(updatedMember);
-
+    @ApiOperation(value = "유저의 jwt 토큰을 파라미터로 받아서 member에 대한 객체 정보를 반환",
+            notes = "DB를 직접 보지 않고 유저 ID를 통해 객체에 대한 값들을 알 수 있음")
+    @GetMapping("/sombodyinfo/{memberId}")
+    public ResponseEntity<Map<String,Object>> sombodyInfo(@ApiParam(value = "Bearer ${jwt token} 형식으로 전송")  @RequestHeader("Authorization") String jwt, @PathVariable Long memberId) {
+        jwt =  jwt.replace("Bearer ", "");
         Map<String, Object> resultMap = new HashMap<>();
-        if (savedMember != null) {
-            resultMap.put("message", "success");
-            resultMap.put("member", savedMember);
-            return new ResponseEntity<>(resultMap, HttpStatus.OK);
-        } else {
-            resultMap.put("message", "fail");
-            return new ResponseEntity<>(resultMap, HttpStatus.NOT_FOUND);
+        HttpStatus status;
+
+        try{
+            Member mem = memberService.findMemberById(memberId);
+            resultMap.put("message","success");
+            resultMap.put("sombody",mem);
+            status = HttpStatus.OK;
+
+        }catch (Exception e){
+            resultMap.put("message","fail");
+            status = HttpStatus.BAD_REQUEST;
+            e.printStackTrace();
         }
+
+        return new ResponseEntity<Map<String,Object>>(resultMap,status);
+    }
+
+
+
+    @ApiOperation(value = "멤버 정보 업데이트", notes = "멤버의 정보를 수정하고 업데이트된 멤버 정보를 반환합니다.")
+    @PostMapping("/update")
+    public ResponseEntity<Map<String, Object>> updateMember(@ApiParam(value = "수정할 멤버 정보") @RequestPart("MemberUpdateInfo") MemberUpdateInfo memberUpdate,
+                                                            @ApiParam(value = "Bearer ${jwt}") @RequestHeader("Authorization") String jwt,
+                                                            @RequestPart(value = "file", required = false) MultipartFile[] file) {
+        jwt = jwt.replace("Bearer ", "");
+        Map<String, Object> resultMap = new HashMap<>();
+        HttpStatus status;
+
+        try{
+            Long memberId = authTokensGenerator.extractMemberId(jwt);
+            Member updatedMember = null;
+            //파일이 있으면
+            if (file != null && file.length > 0) {
+                String fileName = storageService.uploadFile(file[0]);
+                URL fileUrl = s3Client.getUrl("moneymoa-first-bucket", fileName);
+                updatedMember = memberService.updateMember(memberUpdate,memberId,fileUrl.toString());
+            }
+            else{
+                //파일이 없을 때
+                updatedMember = memberService.updateMember(memberUpdate,memberId,"null");
+            }
+
+            resultMap.put("message","success");
+            resultMap.put("updatedMember",updatedMember);
+            status = HttpStatus.OK;
+
+
+        }catch (Exception e){
+            resultMap.put("message","success");
+            status = HttpStatus.BAD_REQUEST;
+
+          e.printStackTrace();
+        }
+        return new ResponseEntity<Map<String,Object>>(resultMap,status);
+    }
+
+
+    @ApiOperation(value = "비밀번호 확인로직")
+    @PostMapping ("/checkpassword")
+    public ResponseEntity<Map<String,Object>> logout (  @RequestBody String password, @RequestHeader("Authorization")String jwt){
+
+        Map<String,Object> resultMap = new HashMap<>();
+        HttpStatus status;
+        jwt = jwt.replace("Bearer ","");
+        password = password.replaceAll("\"","");
+
+        try{
+            Long memberId = authTokensGenerator.extractMemberId(jwt);
+            
+            boolean check = memberService.checkPassword(password,memberId);
+
+            if(check){
+                resultMap.put("message","success");
+                status = HttpStatus.OK;
+            }else{
+                resultMap.put("message","Not Matched Password!!");
+                status = HttpStatus.OK;
+            }
+
+        }catch (Exception e){
+            e.printStackTrace();
+            resultMap.put("message","fail");
+            status = HttpStatus.BAD_REQUEST;
+        }
+
+        return new ResponseEntity<Map<String,Object>>(resultMap,status);
     }
 }
 

@@ -1,9 +1,7 @@
 package com.d210.moneymoa.service;
 
-import com.d210.moneymoa.dto.LikedDeposit;
 import com.d210.moneymoa.dto.LikedSaving;
 import com.d210.moneymoa.dto.Saving;
-import com.d210.moneymoa.repository.LikedDepositRepository;
 import com.d210.moneymoa.repository.LikedSavingRepository;
 import com.d210.moneymoa.repository.SavingRepository;
 import org.json.simple.JSONArray;
@@ -99,6 +97,17 @@ public class SavingServiceImpl implements SavingService {
     @Override
     public void saveLikedSaving(LikedSaving likedSaving) {
         likedSavingRepository.save(likedSaving);
+    }
+
+    @Override
+    public List<LikedSaving> myLikedSavingList(Long memberId) {
+        return likedSavingRepository.findAllByMemberId(memberId);
+    }
+
+    @Transactional
+    @Override
+    public void deleteLikedSaving(Long memberId, Long likeSavingId) {
+        likedSavingRepository.deleteByMemberIdAndId(memberId, likeSavingId);
     }
 
 }

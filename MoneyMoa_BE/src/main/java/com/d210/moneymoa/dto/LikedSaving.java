@@ -1,5 +1,6 @@
 package com.d210.moneymoa.dto;
 
+import com.fasterxml.jackson.annotation.JsonGetter;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.*;
@@ -40,6 +41,22 @@ public class LikedSaving implements Serializable{
 
     @ApiModelProperty(example = "string")
     private String rsrvType;
+
+    @Transient
+    private String productName;
+
+    @Transient
+    private String bankName;
+
+    @JsonGetter("productName")
+    public String getProductName() {
+        return this.getSaving() != null ? this.getSaving().getProductName() : "";
+    }
+
+    @JsonGetter("bankName")
+    public String getBankName() {
+        return this.getSaving() != null ? this.getSaving().getBankName() : "";
+    }
 
     @JsonIgnore
     @ManyToOne(fetch = FetchType.LAZY)

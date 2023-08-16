@@ -2,16 +2,14 @@ package com.d210.moneymoa.service;
 
 import com.d210.moneymoa.domain.redis.RedisSubscriber;
 import com.d210.moneymoa.dto.*;
-import com.d210.moneymoa.repository.ChatMessageDtoRepository;
-import com.d210.moneymoa.repository.ChatRoomDtoRepository;
-import com.d210.moneymoa.repository.MemberChatroomSubInfoRepository;
-import com.d210.moneymoa.repository.MemberRepository;
+import com.d210.moneymoa.repository.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.HashOperations;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.listener.ChannelTopic;
 import org.springframework.data.redis.listener.RedisMessageListenerContainer;
+import org.springframework.data.redis.listener.adapter.MessageListenerAdapter;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.PostConstruct;
@@ -47,6 +45,9 @@ public class ChatRoomServiceImpl implements ChatRoomService {
     @Autowired
     MemberRepository memberRepository;
 
+    @Autowired
+    DirectMessageRoomRepository directMessageRoomRepository;
+
     public ChatRoomServiceImpl(RedisMessageListenerContainer redisMessageListener, RedisSubscriber redisSubscriber, RedisTemplate<String, Object> redisTemplate) {
         this.redisMessageListener = redisMessageListener;
         this.redisSubscriber = redisSubscriber;
@@ -66,10 +67,15 @@ public class ChatRoomServiceImpl implements ChatRoomService {
         return chatRoomDtoRepository.findAll();
     }
 
-    public ChatRoomDto findRoomByName(String name) {
-        Optional<ChatRoomDto> oChatRoomDto =  chatRoomDtoRepository.findByName(name);
-        ChatRoomDto chatRoomDto = oChatRoomDto.orElse(null);
-        return chatRoomDto;
+    public List<DirectMessageRoom> findAllDMFromDB(Long memberId) {
+        return directMessageRoomRepository.findAllDirectMessageRoomBySenderIdOrReceiverId(memberId, memberId);
+    }
+
+    public List<ChatRoomDto> findRoomByName(String name) {
+        //Optional<ChatRoomDto> oChatRoomDto =  chatRoomDtoRepository.findByName(name);
+        List<ChatRoomDto>ChatRoomList =  chatRoomDtoRepository.findByNameContaining(name);
+        //ChatRoomDto chatRoomDto = oChatRoomDto.orElse(null);
+        return ChatRoomList;
     }
 
     @Override
@@ -116,15 +122,23 @@ public class ChatRoomServiceImpl implements ChatRoomService {
     }
 
 
+    private ChannelTopic getOrCreateTopic(String fullRoomId) {
+        return topics.computeIfAbsent(fullRoomId, ChannelTopic::new);
+    }
+
+    private MessageListenerAdapter createAdapter(String methodName) {
+        return new MessageListenerAdapter(redisSubscriber, methodName);
+    }
+
     /**
      * 채팅방 입장 : redis에 topic을 만들고 pub/sub 통신을 하기 위해 리스너를 설정한다.
      */
     public MemberChatroomSubInfo enterChatRoom(long memberId, String roomId) {
-        ChannelTopic topic = topics.get(roomId);
-        if (topic == null)
-            topic = new ChannelTopic(roomId);
-        redisMessageListener.addMessageListener(redisSubscriber, topic);
-        topics.put(roomId, topic);
+       ChannelTopic topic = topics.get(roomId);
+       if (topic == null)
+           topic = new ChannelTopic(roomId);
+       redisMessageListener.addMessageListener(redisSubscriber, topic);
+       topics.put(roomId, topic);
 
 
         //이미 구독하고 있는지 체크
@@ -155,17 +169,18 @@ public class ChatRoomServiceImpl implements ChatRoomService {
     public List<ChatMessageDto> saveChatMessage(String roomId, ChatMessage chatMessage) {
         log.info(chatMessage.toString());
 
-        ChatMessageDto chatMessages = ChatMessageDto.builder()
-                .message(chatMessage.getMessage())
-                .roomId(chatMessage.getRoomId())
-                .sender(chatMessage.getSender())
-                .senderId(chatMessage.getMemberId())
-                .type(chatMessage.getType())
-                .build();
+        //빈 문자열 못 보내게
+        if(chatMessage.getMessage()!=null) {
+            ChatMessageDto chatMessages = ChatMessageDto.builder()
+                    .message(chatMessage.getMessage())
+                    .roomId(chatMessage.getRoomId())
+                    .sender(chatMessage.getSender())
+                    .senderId(chatMessage.getMemberId())
+                    .type(chatMessage.getType())
+                    .build();
 
-        chatMessageDtoRepository.save(chatMessages);
-
-        //return chatRoomDtoRepository.findAll();
+            chatMessageDtoRepository.save(chatMessages);
+        }
         return chatMessageDtoRepository.findByRoomId(roomId);
     }
 
@@ -176,8 +191,12 @@ public class ChatRoomServiceImpl implements ChatRoomService {
 
         DirectMessageRoom DmRoom = DirectMessageRoom.builder()
                 .sender(nickName1)
+                .senderId(senderId)
                 .receiver(nickName2)
+                .receiverId(sendedId)
                 .build();
+
+        directMessageRoomRepository.save(DmRoom);
 
         MemberChatroomSubInfo memberChatroomSubInfo1 = MemberChatroomSubInfo.builder()
                 .memberId(senderId)
@@ -199,6 +218,55 @@ public class ChatRoomServiceImpl implements ChatRoomService {
         subList.add(memberChatroomSubInfo2);
 
         return subList;
+    }
+
+    @Override
+    public DirectMessageRoom findDMRoomByRoomId(String roomId) {
+        Optional<DirectMessageRoom>optionalDirectMessageRoomDto = directMessageRoomRepository.findByRoomId(roomId);
+        return optionalDirectMessageRoomDto.orElse(null);
+    }
+
+    @Override
+    public boolean alreadyCreated(Long sender, Long receiver) {
+        // sender가 receiverId이고 receiver가 senderId인 경우를 체크합니다.
+        DirectMessageRoom room1 = directMessageRoomRepository.findBySenderIdAndReceiverId(receiver, sender);
+        DirectMessageRoom room2 = directMessageRoomRepository.findByReceiverIdAndSenderId(receiver, sender);
+
+        // 해당 조건을 만족하는 방이 하나라도 있으면 true를 반환합니다.
+        return room1 != null || room2 != null;
+    }
+
+    @Override
+    public ChatRoomDto createChatRoomWithFile(ChatRoomDto inputChatRoomDto, String fileName) {
+
+        ChatRoom chatRoom = ChatRoom.create(inputChatRoomDto.getName());
+
+        ChatRoomDto chatRoomDto = ChatRoomDto.builder()
+                .roomId(inputChatRoomDto.getRoomId())
+                .name(inputChatRoomDto.getName())
+                .description(inputChatRoomDto.getDescription())
+                .imgUrl(fileName)
+                .build();
+
+        chatRoomDtoRepository.save(chatRoomDto);
+
+        opsHashChatRoom.put(CHAT_ROOMS, chatRoom.getRoomId(), chatRoomDto);
+        return chatRoomDto;
+    }
+
+
+    public MemberChatroomSubInfo enterDMRoom(long memberId, String roomId) {
+
+       ChannelTopic topic = topics.get(roomId);
+       if (topic == null)
+           topic = new ChannelTopic(roomId);
+       redisMessageListener.addMessageListener(redisSubscriber, topic);
+       topics.put(roomId, topic);
+
+        //이미 구독하고 있는지 체크
+        Optional<MemberChatroomSubInfo> optionalMember = memberChatroomSubInfoRepository.findByMemberIdAndRoomId(memberId,roomId);
+        return optionalMember.orElse(null);
+
     }
 
 

@@ -6,6 +6,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.CreationTimestamp;
 
 import javax.persistence.*;
@@ -47,6 +48,7 @@ public class Challenge {
     private LocalDate startDate; // 날짜
 
     @ApiModelProperty(hidden = true)
+    @ColumnDefault("0")
     private Integer presentAmount; // 현재 유저가 모은 금액
 
 //    @Column(nullable = false)
@@ -57,12 +59,29 @@ public class Challenge {
     @JsonIgnore
     private List<Feed> feeds;
 
+    @OneToMany(mappedBy = "challenge", cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REMOVE}, fetch = FetchType.LAZY)
+    @JsonIgnore
+    private List<ChallengeFile> challengeFiles;
+
+    // fileUrls 필드 추가
+    @Transient
+    private List<String> fileUrls;
+
+    // Getter 및 Setter
+    public List<String> getFileUrls() {
+        return fileUrls;
+    }
+
+    public void setFileUrls(List<String> fileUrls) {
+        this.fileUrls = fileUrls;
+    }
 
 
     @Builder
     public Challenge(String title, String content, Long memberId,
-                     String nickname, String period, LocalDate startDate, Integer goalAmount
-                  ) {                           // Integer presentAmount,
+                     String nickname, String period, LocalDate startDate, Integer goalAmount,
+                     Integer presentAmount
+                  ) {                           //
         this.title = title;
         this.content = content;
         this.memberId = memberId;
@@ -70,9 +89,6 @@ public class Challenge {
         this.period = period;
         this.startDate = startDate;
         this.goalAmount = goalAmount;
-//        this.presentAmount = presentAmount;
-
+        this.presentAmount = presentAmount;
     }
-
-
 }
