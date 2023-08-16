@@ -36,7 +36,7 @@ public class FeedLike {
     private Long feedId;
 
     @JsonIgnore
-    //@ManyToOne(cascade = {CascadeType.REMOVE}, fetch = FetchType.LAZY)
+    @ManyToOne(cascade = {CascadeType.REMOVE}, fetch = FetchType.LAZY)
     @JoinColumn(name = "feedId", insertable = false, updatable = false)
     private Feed feed;
 
