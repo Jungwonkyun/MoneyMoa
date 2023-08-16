@@ -13,38 +13,40 @@
       </v-sheet>
     </template>
     <!-- 여기서 크기조절 -->
-    <v-card width="500" max-height="500" class="d-flex flex-column">
-      <v-card-title>금융사전</v-card-title>
-      <v-list class="d-flex flex-column align-center">
-        <!-- 금융사전 검색창입니다 -->
-        <v-text-field
-          clearable
-          class="dictionary-search"
-          placeholder="용어 검색"
-          variant="underlined"
-          append-inner-icon="mdi-magnify"
-          @keyup.enter="onSearch"
-          v-model="searchWord"
-        >
-          <template #append-inner-icon>
-            <v-icon @click="onSearch" icon="mdi-magnify"></v-icon>
-          </template>
-        </v-text-field>
-      </v-list>
-      <v-list>
-        <v-expansion-panels variant="accordion">
-          <DictionaryItem
-            v-for="(item, index) in list"
-            :key="index"
-            :item="item"
-            :searchWord="searchWord"
-          />
-        </v-expansion-panels>
-      </v-list>
-      <v-card-actions class="text-right">
-        <v-btn variant="text" @click="menu = false" class="ml-auto"> 닫기 </v-btn>
-      </v-card-actions>
-    </v-card>
+    <v-sheet rounded="3">
+      <v-card width="500" max-height="500" class="d-flex flex-column">
+        <v-card-title>금융사전</v-card-title>
+        <v-list class="d-flex flex-column align-center">
+          <!-- 금융사전 검색창입니다 -->
+          <v-text-field
+            clearable
+            class="dictionary-search"
+            placeholder="용어 검색"
+            variant="underlined"
+            append-inner-icon="mdi-magnify"
+            @keyup.enter="onSearch"
+            v-model="searchWord"
+          >
+            <template #append-inner-icon>
+              <v-icon @click="onSearch" icon="mdi-magnify"></v-icon>
+            </template>
+          </v-text-field>
+        </v-list>
+        <v-list>
+          <v-expansion-panels variant="accordion">
+            <DictionaryItem
+              v-for="(item, index) in list"
+              :key="index"
+              :item="item"
+              :searchWord="searchWord"
+            />
+          </v-expansion-panels>
+        </v-list>
+        <v-card-actions class="text-right">
+          <v-btn variant="text" @click="menu = false" class="ml-auto"> 닫기 </v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-sheet>
   </v-menu>
 </template>
 
