@@ -179,7 +179,7 @@ public class ChatRoomController {
         String messege = "";
 
         try{
-            ChatRoomDto chatRoomDto = chatRoomService.findRoomByName(name);
+            List<ChatRoomDto> chatRoomDto = chatRoomService.findRoomByName(name);
             messege = "success";
             status = HttpStatus.OK;
             resultMap.put("message", messege);

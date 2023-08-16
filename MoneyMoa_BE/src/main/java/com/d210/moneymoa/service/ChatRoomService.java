@@ -23,7 +23,7 @@ public interface ChatRoomService {
     List<ChatRoomDto> findAllRoomFromDB();
     List<DirectMessageRoom> findAllDMFromDB(Long memberId);
 
-    ChatRoomDto findRoomByName(String name);
+    List<ChatRoomDto> findRoomByName(String name);
 
     List<MemberChatroomSubInfo> chatRoomMembers(String roomId);
 
