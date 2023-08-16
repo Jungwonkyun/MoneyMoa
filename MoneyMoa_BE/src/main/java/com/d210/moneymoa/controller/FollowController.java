@@ -137,7 +137,7 @@ public class FollowController {
 
 
     @ApiParam(value = "상대방 유저의 팔로잉 리스트")
-    @PostMapping("/memberfollowlist")
+    @PostMapping("/memberfollowinglist")
     public ResponseEntity<Map<String, Object>> memberFollowingList(@ApiParam(value = "Bearer ${jwt token} 형식으로 전송")
                                                                @RequestHeader ("Authorization") String jwt, @ApiParam(value = "상대방 id")@RequestBody Long id){
 
@@ -163,7 +163,7 @@ public class FollowController {
 
 
     @ApiParam(value = "상대방 유저의 팔로워 리스트")
-    @PostMapping("/memberfollowlist")
+    @PostMapping("/memberfollowerlist")
     public ResponseEntity<Map<String, Object>> memberFollowerList(@ApiParam(value = "Bearer ${jwt token} 형식으로 전송")
                                                                    @RequestHeader ("Authorization") String jwt, @ApiParam(value = "상대방 id")@RequestBody Long id){
 
