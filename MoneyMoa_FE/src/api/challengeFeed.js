@@ -28,12 +28,8 @@ async function fetchAllFeedList() {
 // 해당 유저의 피드 목록 조회 API
 async function getUserFeedList(memberId) {
   try {
-    // 토큰 받아오기
-    const token = cookies.get('accessToken')
-    const headers = {
-      Authorization: `Bearer ${token}`
-    }
-    const res = await apiWithAuth.get(`/feed/member/${memberId}`, { headers })
+    const res = await apiWithAuth.get(`/feed/member/${memberId}`)
+    console.log(res)
     return res
   } catch (err) {
     console.log(err)
@@ -43,12 +39,7 @@ async function getUserFeedList(memberId) {
 // 피드 상세 조회 API
 async function fetchFeedDetail(feedId) {
   try {
-    // 토큰 받아오기
-    const token = cookies.get('accessToken')
-    const headers = {
-      Authorization: `Bearer ${token}`
-    }
-    const res = await api.get(`/feed/detail/${feedId}`, { headers })
+    const res = await apiWithAuth.get(`/feed/detail/${feedId}`)
     return res
   } catch (err) {
     console.log(err)
@@ -58,14 +49,7 @@ async function fetchFeedDetail(feedId) {
 // 피드 좋아요 API
 async function addFeedLike(feedId) {
   try {
-    // 토큰 받아오기
-    const { cookies } = useCookies()
-    const token = cookies.get('accessToken')
-
-    const headers = {
-      Authorization: `Bearer ${token}`
-    }
-    const res = await api.get(`/feed/like/${feedId}`, { headers })
+    const res = await apiWithAuth.post(`/feed/togglelike/${feedId}`)
     return res
   } catch (err) {
     console.log(err)
@@ -76,11 +60,7 @@ async function addFeedLike(feedId) {
 async function searchFeed(searchWord) {
   try {
     // 토큰 받아오기
-    const token = cookies.get('accessToken')
-    const res = await api.get(`/feed/search`, {
-      usertoken: accessToken,
-      searchWord: searchWord
-    })
+    const res = await api.get(`/feed/search`, searchWord)
     return res
   } catch (err) {
     console.log(err)

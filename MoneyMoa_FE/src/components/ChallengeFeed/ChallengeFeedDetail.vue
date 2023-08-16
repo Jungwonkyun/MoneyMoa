@@ -114,7 +114,7 @@ const deleteFeed = async () => {
 onMounted(async () => {
   try {
     const response = await challengeFeed.fetchFeedDetail(feedId.value)
-    console.log(response.data.feed.fileUrls)
+    console.log(response)
     fileUrls.value = response.data.feed.fileUrls
     console.log(fileUrls.value)
     content.value = response.data.feed.content
