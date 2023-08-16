@@ -504,32 +504,47 @@ public class FeedController {
         return new ResponseEntity<>(feeds, HttpStatus.OK);
     }
 
-    // 피드 좋아요 토글
-    @ApiOperation(value = "피드 좋아요 토글")
-    @PostMapping("/togglelike/{feedId}")
-    public ResponseEntity<?> toggleLikeFeed(@PathVariable Long feedId,
-                                            @ApiParam(value = "Bearer ${jwt token} 형식으로 전송")
-                                            @RequestHeader("Authorization") String jwt) {
+    // 피드 좋아요
+    @ApiOperation(value = "피드 좋아요")
+    @PostMapping("/like/{feedId}")
+    public ResponseEntity<?> likeFeed(@PathVariable Long feedId,
+                                      @ApiParam(value = "Bearer ${jwt token} 형식으로 전송")
+                                      @RequestHeader("Authorization") String jwt) {
+        Long memberId = authTokensGenerator.extractMemberId(jwt.replace("Bearer ", ""));
+        boolean isSuccess = feedService.likeFeed(feedId, memberId);
 
-        Map<String, Object> resultMap = new HashMap<>();
-        HttpStatus status;
-
-        try {
-            Long memberId = authTokensGenerator.extractMemberId(jwt.replace("Bearer ", ""));
-            boolean isLiked = feedService.toggleLikeFeed(feedId, memberId);
-
-            resultMap.put("message", isLiked ? "Like!" : "unLike");
-            status = HttpStatus.OK;
-        } catch (IllegalArgumentException e) {
-            // 예외 발생 시 예외를 출력
-            resultMap.put("message", "유효하지 않은 인증입니다.");
-            status = HttpStatus.UNAUTHORIZED;
-        } catch (Exception e) {
-            // 서버 오류 시 메시지 출력
-            resultMap.put("message", "서버 오류로 인해 요청 처리 실패했습니다.");
-            status = HttpStatus.INTERNAL_SERVER_ERROR;
+        if (isSuccess) {
+            log.info("피드 ID: {}, 회원 ID: {} - 좋아요 처리 성공", feedId, memberId);
+            // 처리가 성공했을 때 피드 정보를 반환합니다
+            Optional<Feed> feed = Optional.ofNullable(feedService.getFeedById(feedId));
+            if (feed.isPresent()) {
+                return ResponseEntity.ok(feed.get());
+            } else {
+                return ResponseEntity.notFound().build();
+            }
+        } else {
+            log.warn("피드 ID: {}, 회원 ID: {} - 좋아요 처리 실패", feedId, memberId);
+            // 좋아요 처리에 실패했으면 BAD_REQUEST 상태를 반환합니다
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
         }
-        return new ResponseEntity<>(resultMap, status);
     }
+        // 코드 구현
+    // 피드 좋아요 취소
+    @ApiOperation(value = "피드 좋아요 취소")
+    @DeleteMapping("/unlike/{feedId}")
+    public ResponseEntity<?> unlikeFeed(@PathVariable Long feedId,
+                                        @ApiParam(value = "Bearer ${jwt token} 형식으로 전송")
+                                        @RequestHeader("Authorization") String jwt) {
+        // 코드 구현
+        Long memberId = authTokensGenerator.extractMemberId(jwt.replace("Bearer ", ""));
+        boolean isSuccess = feedService.unlikeFeed(feedId, memberId);
 
+        if (isSuccess) {
+            log.info("피드 ID: {}, 회원 ID: {} - 좋아요 취소 처리 성공", feedId, memberId);
+            return ResponseEntity.ok().build();
+        } else {
+            log.warn("피드 ID: {}, 회원 ID: {} - 좋아요 취소 처리 실패", feedId, memberId);
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+        }
+    }
 }

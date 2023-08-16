@@ -32,6 +32,9 @@ public interface FeedService {
 
 // 피드 좋아요
 
-boolean toggleLikeFeed(Long feedId, Long memberId);
+//boolean toggleLikeFeed(Long feedId, Long memberId);
 
+    boolean likeFeed(Long feedId, Long memberId);
+
+    boolean unlikeFeed(Long feedId, Long memberId);
 }

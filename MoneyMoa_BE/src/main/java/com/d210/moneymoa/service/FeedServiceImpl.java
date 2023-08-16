@@ -165,25 +165,39 @@ public class FeedServiceImpl implements FeedService {
 
 
     // 피드 좋아요 관련 코드들 --------------------------------------------------
-    @Transactional
-    public boolean toggleLikeFeed(Long feedId, Long memberId) {
-        Feed feed = feedRepository.findById(feedId)
-                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 피드입니다."));
+    public boolean likeFeed(Long feedId, Long memberId) {
+        // 피드Id와 memberId로 이미 Like 객체가 있는지 확인
+        Optional<FeedLike> optionalLike = feedLikeRepository.findByFeedIdAndMemberId(feedId, memberId);
 
-        Member member = memberRepository.findById(memberId)
-                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 회원입니다."));
+        if (!optionalLike.isPresent()) {
+            // Like 객체가 없을 경우, 새로 생성해서 저장
+            Optional<Feed> optionalFeed = feedRepository.findById(feedId);
+            Optional<Member> optionalMember = memberRepository.findById(memberId);
 
-        Optional<FeedLike> feedLike = feedLikeRepository.findByFeedAndMember(feed, member);
+            if (optionalFeed.isPresent() && optionalMember.isPresent()) {
+                FeedLike newLike = FeedLike.builder()
+                        .feed(optionalFeed.get())
+                        .member(optionalMember.get())
+                        .build();
+                feedLikeRepository.save(newLike);
+                return true;
+            }
+        }
 
-        if (feedLike.isPresent()) {
-            // 좋아요가 이미 존재한 경우 이를 제거하고, 좋아요 상태를 false로 반환
-            feedLikeRepository.delete(feedLike.get());
-            return false;
-        } else {
-            // 좋아요가 존재하지 않는 경우 생성하고, 좋아요 상태를 true로 반환
-            FeedLike newFeedLike = FeedLike.builder().feed(feed).member(member).build();
-            feedLikeRepository.save(newFeedLike);
+        return false;
+
+    }
+
+    public boolean unlikeFeed(Long feedId, Long memberId) {
+        // 피드Id와 memberId로 이미 Like 객체가 있는지 확인
+        Optional<FeedLike> optionalLike = feedLikeRepository.findByFeedIdAndMemberId(feedId, memberId);
+
+        if (optionalLike.isPresent()) {
+            // Like 객체가 있을 경우, 삭제
+            feedLikeRepository.delete(optionalLike.get());
             return true;
+        } else {
+            return false;
         }
 
     }
