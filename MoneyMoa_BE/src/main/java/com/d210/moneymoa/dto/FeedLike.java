@@ -13,55 +13,33 @@ import javax.persistence.*;
 @Getter
 @Entity
 @NoArgsConstructor
-//@IdClass(FeedLikeId.class) // 복합키 클래스 참조
 public class FeedLike {
-/* 복합키 참조 코드. 이제 필요 없음
-    @Id
-    @ApiModelProperty(hidden = true)
-    private Long memberId;
 
-    @JsonIgnore
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "memberId", insertable = false, updatable = false)
-    private Member member; //id
-
-    @Id
-    @Column(nullable = false)
-    @ApiModelProperty(hidden = true)
-    private Long feedId;
-
-    @Builder
-    public FeedLike(Long memberId, Long feedId) {
-        this.memberId = memberId;
-        this.feedId = feedId;
-    }
-
- */
-
-
-    // 수정 .FeedLikeId랑 합친 코드
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @ApiModelProperty(hidden = true)
-    private Long memberId;
+    private String nickname;
 
     @JsonIgnore
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "memberId", insertable=false, updatable = false)
+    @JoinColumn(name = "memberId")
     private Member member;
 
-    @Column(nullable = false)
-    @ApiModelProperty(hidden = true)
-    private Long feedId;
+    @JsonIgnore
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "feedId")
+    private Feed feed;
+
+
 
     @Builder
-    public FeedLike(Long memberId, Long feedId) {
-        this.memberId = memberId;
-        this.feedId = feedId;
+    public FeedLike(Feed feed, Member member) {
+        this.feed = feed;
+        this.member = member;
+        this.nickname = member.getNickname();
     }
-
 
 }

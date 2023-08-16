@@ -1,20 +1,31 @@
 package com.d210.moneymoa.controller;
 
+import com.amazonaws.services.s3.AmazonS3;
 import com.d210.moneymoa.domain.oauth.AuthTokensGenerator;
 import com.d210.moneymoa.dto.Challenge;
+import com.d210.moneymoa.dto.ChallengeFile;
 import com.d210.moneymoa.repository.ChallengeRepository;
 import com.d210.moneymoa.repository.FeedRepository;
 import com.d210.moneymoa.repository.MemberRepository;
+
+import com.d210.moneymoa.service.ChallengeFileService;
 import com.d210.moneymoa.service.ChallengeService;
+import com.d210.moneymoa.service.StorageService;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
+import java.net.URL;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -40,16 +51,29 @@ public class ChallengeController {
     @Autowired
     private FeedRepository feedRepository;
 
+    @Autowired
+    StorageService storageService;
+
+    @Autowired
+    private AmazonS3 s3Client;
+
+    @Autowired
+    ChallengeFileService challengeFileService;
 
     // 챌린지 생성 메서드
     // Swagger API 문서에 Endpoint 정보 추가
     @ApiOperation(value = "챌린지 생성", notes = "챌린지 작성합니다.")
     // POST 방식으로 "/create" URL에 매핑
-    @PostMapping("/create")
+    @PostMapping(path = "/create", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     // 메서드의 반환 타입은 ResponseEntity 객체이며, 요청 본문에서 Challenge 데이터를 파싱하고 인증 헤더를 사용합니다.
-    public ResponseEntity<Map<String, Object>> createChallenge(@RequestBody Challenge challenge,// JWT 토큰을 헤더에서 인증 정보로 사용
-                                                               @ApiParam(value = "Bearer ${jwt token} 형식으로 전송")
-                                                               @RequestHeader("Authorization") String jwt) {
+    public ResponseEntity<Map<String, Object>> createChallenge(
+            @RequestPart("challenge") String challengeString,
+            @RequestPart(value = "files", required = false) MultipartFile[] files,
+            @ApiParam(value = "Bearer ${jwt token} 형식으로 전송") @RequestHeader("Authorization") String jwt) throws IOException {
+
+        ObjectMapper objectMapper = new ObjectMapper();
+        Challenge challenge = objectMapper.readValue(challengeString, Challenge.class);
+
         // 결과를 반환할 Map 객체 생성
         Map<String, Object> resultMap = new HashMap<>();
         // HTTP 상태 기본값 설정
@@ -63,6 +87,20 @@ public class ChallengeController {
 
             // 새 챌린지를 생성하고 입력받은 memberId로 Challenge 객체를 만들어 반환
             Challenge newChallenge = challengeService.createChallenge(challenge, memberId);
+
+            // 파일이 전달되었다면, 각 파일을 처리하고 챌린지에 추가합니다.
+            if (files != null && files.length > 0) {
+                for (MultipartFile file : files) {
+                    String fileName = storageService.uploadFile(file);
+
+                    ChallengeFile challengeFile = new ChallengeFile();
+                    challengeFile.setImgPath(fileName);
+                    challengeFile.setChallenge(newChallenge);
+
+                    // challengeFile 저장 로직은 여기에 구현해야 합니다.
+                    challengeFileService.saveChallengeFile(challengeFile);
+                }
+            }
 
             // 챌린지가 성공적으로 생성되면 HTTP 상태를 CREATED로 변경
             status = HttpStatus.CREATED;
@@ -93,6 +131,21 @@ public class ChallengeController {
 
         try {
             challenges = challengeService.getMemberChallenges(memberId);
+
+            for (Challenge challenge : challenges) {
+                List<ChallengeFile> challengeFiles = challenge.getChallengeFiles();
+                List<String> fileUrls = new ArrayList<>();
+
+                // 각 Challenge별로 저장된 이미지에 대해 파일 URL 생성
+                for (ChallengeFile challengeFile : challengeFiles) {
+                    URL fileUrl = s3Client.getUrl("moneymoa-first-bucket", challengeFile.getImgPath());
+                    fileUrls.add(fileUrl.toString());
+                }
+
+                // Challenge 객체에 fileUrls 설정
+                challenge.setFileUrls(fileUrls);
+            }
+
             resultMap.put("challenges", challenges);
             resultMap.put("message", "succsess");
             return new ResponseEntity<Map<String, Object>>(resultMap, HttpStatus.OK);
@@ -117,6 +170,20 @@ public class ChallengeController {
 
         try {
             challenge = challengeService.getChallenge(id);
+
+            // 챌린지에 연결된 파일 목록을 가져옵니다.
+            List<ChallengeFile> challengeFiles = challenge.getChallengeFiles();
+            List<String> fileUrls = new ArrayList<>();
+
+            // 각 챌린지별로 저장된 이미지에 대해 파일 URL 생성
+            for (ChallengeFile challengeFile : challengeFiles) {
+                URL fileUrl = s3Client.getUrl("your-s3-bucket-name", challengeFile.getImgPath());
+                fileUrls.add(fileUrl.toString());
+            }
+
+            // Challenge 객체에 fileUrls 설정
+            challenge.setFileUrls(fileUrls);
+
             resultMap.put("challenge", challenge);
             resultMap.put("message", "success");
             return new ResponseEntity<Map<String, Object>>(resultMap, HttpStatus.OK);
@@ -167,6 +234,17 @@ public class ChallengeController {
             jwt = jwt.replace("Bearer ", "");
 
             Long memberId = authTokensGenerator.extractMemberId(jwt.replace("Bearer ", ""));
+
+            // 해당 챌린지의 파일들을 조회
+            Challenge challenge = challengeService.getChallenge(id);
+            List<ChallengeFile> challengeFiles = challenge.getChallengeFiles();
+
+            // 파일들을 삭제
+            for (ChallengeFile challengeFile : challengeFiles) {
+                storageService.deleteFile(challengeFile.getImgPath());
+            }
+
+            // 챌린지 삭제
             challengeService.deleteChallenge(id, memberId);
             resultMap.put("message", "success");
             return new ResponseEntity<Map<String, Object>>(resultMap, HttpStatus.OK);

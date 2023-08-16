@@ -24,6 +24,7 @@ import org.springframework.http.MediaType;
 import java.io.IOException;
 import java.net.URL;
 import java.util.*;
+import java.util.stream.Collectors;
 
 
 @Api(value = "Feed Controller", tags = "Feed-Controller")
@@ -84,11 +85,21 @@ public class FeedController {
 
             Optional<Challenge> challengeOptional = challengeRepository.findById(challengeId);
             if (challengeOptional.isPresent()) {
+
+                // 8월 13일 02:41 코드 추가 : 챌린지의 presentAmount에 depositAmount 더하기
+                Challenge challenge = challengeOptional.get();
+                challenge.setPresentAmount(challenge.getPresentAmount() + feed.getDepositAmount());
+
+                challengeRepository.save(challenge);
+
                 // 존재하면 새 피드를 생성하고 입력받은 memberId, challengeId로 Feed 객체를 만들어 반환
                 Feed newFeed = feedService.createFeed(challengeId, memberId, feed);
 
                 // 피드가 성공적으로 생성되면 HTTP 상태를 CREATE로 변경
                 status = HttpStatus.CREATED;
+                resultMap.put("feed", newFeed);
+                resultMap.put("message", "success");
+
 
                 // 파일이 전달되었다면, 각 파일을 처리하고 피드에 추가합니다.
                 if (files != null && files.length > 0) {
@@ -102,7 +113,6 @@ public class FeedController {
                         // feedFile 저장 로직은 여기에 구현해야 합니다.
                         feedFileService.saveFeedFile(feedFile);
                     }
-
 
 
                     //resultMap에 생성된 새 피드와 성공 메시지 추가
@@ -129,7 +139,7 @@ public class FeedController {
     @ApiOperation(value = "피드 전체 조회", notes = "피드 전체목록을 조회합니다")
     @GetMapping("/all")
     public ResponseEntity<Map<String, Object>> getAllFeeds(@RequestHeader("Authorization") String jwt) {
-        log.info("BoardList 모두 반환");
+        log.info("FeedList 모두 반환");
         HttpStatus status;
         List<Feed> feedList;
         Map<String, Object> resultMap = new HashMap<String, Object>();
@@ -237,8 +247,19 @@ public class FeedController {
 
             // 피드 댓글 조회
             List<FeedComment> feedComments = feedCommentService.findByFeedId(feedId);
+            // 좋아요 정보 처리
+            List<HashMap<String, Object>> likedMembers = feed.getFeedLikes().stream()
+                    .map(feedLike -> {
+                        HashMap<String, Object> likedMember = new HashMap<>();
+                        likedMember.put("memberId", feedLike.getMember());
+                        likedMember.put("nickname", feedLike.getNickname());
+                        return likedMember;
+                    })
+                    .collect(Collectors.toList());
 
             resultMap.put("feed", feed);
+            resultMap.put("likedMembers", likedMembers); // 추가됨
+            resultMap.put("likeCount", feed.getFeedLikes().size()); // 추가됨
             resultMap.put("comments", feedComments);
             resultMap.put("message", "success");
 
@@ -255,29 +276,83 @@ public class FeedController {
     }
 
     @ApiOperation(value = "피드 수정", notes = "피드를 수정합니다.")
-    @PutMapping("/update/{feedId}")
-    public ResponseEntity<Map<String, Object>> updateFeed(@RequestHeader("Authorization") String jwt,
-                                                          @PathVariable Long feedId,
-                                                          @RequestBody Feed updateFeed) {
+    @PostMapping(path = "/update/{feedId}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<Map<String, Object>> updateFeed(
+            @RequestHeader("Authorization") String jwt,
+            @PathVariable Long feedId,
+            @RequestPart("feed") String feedString,
+            @RequestPart(value = "files", required = false) MultipartFile[] files) throws IOException {
+
         log.info("피드 수정");
         HttpStatus status;
         Map<String, Object> resultMap = new HashMap<String, Object>();
 
         try {
             Long memberId = authTokensGenerator.extractMemberId(jwt.replace("Bearer ", ""));
-            feedService.updateFeed(feedId, updateFeed, memberId);
+
+            ObjectMapper objectMapper = new ObjectMapper();
+            Feed updateFeed = objectMapper.readValue(feedString, Feed.class);
+
+            Feed originalFeed = feedService.getFeedById(feedId);
+            Integer originalDepositAmount = originalFeed.getDepositAmount();
+            Integer updatedDepositAmount = updateFeed.getDepositAmount(); // 추가된 구문
+            Feed updatedFeed = feedService.updateFeed(feedId, updateFeed, memberId);
+
+            if (updateFeed.getChallengeId() != null && updateFeed.getChallengeId().equals(originalFeed.getChallengeId())
+                    && !originalDepositAmount.equals(updatedDepositAmount)) {
+                Challenge challenge = challengeRepository.findById(updateFeed.getChallengeId())
+                        .orElseThrow(() -> new NoSuchElementException("해당 챌린지가 존재하지 않습니다."));
+
+
+                challenge.setPresentAmount(challenge.getPresentAmount() - originalDepositAmount);
+                challenge.setPresentAmount(challenge.getPresentAmount() + updatedDepositAmount);
+
+                challengeRepository.save(challenge);
+
+            }
+
+            // 기존 파일 제거 로직 강화
+            Feed existingFeed = feedService.findById(feedId); // 수정 전 Feed를 조회
+            log.info(existingFeed.toString());
+
+
+            List<FeedFile> existingFeedFiles = new ArrayList<>(existingFeed.getFeedFiles()); //  수정 전 Feed에 포함된 기존 파일 목록을 가져옴
+            for (FeedFile feedFile : existingFeedFiles) {
+                storageService.deleteFile(feedFile.getImgPath());
+            }
+
+            for (FeedFile feedFile : existingFeedFiles) {
+                feedFileService.deleteFeedFile(feedFile);
+            }
+
+
+            // 피드 업데이트 진행
+//            Feed updatedFeed = feedService.updateFeed(feedId, updateFeed, memberId);
+
+            if (files != null && files.length > 0) {
+                // 새로운 파일 처리 및 저장 로직
+                for (MultipartFile file : files) {
+                    String fileName = storageService.uploadFile(file);
+
+                    FeedFile newFeedFile = new FeedFile();
+                    newFeedFile.setImgPath(fileName);
+                    newFeedFile.setFeed(updatedFeed);
+
+
+                    feedFileService.saveFeedFile(newFeedFile);
+                }
+            }
+
             resultMap.put("message", "success");
             return new ResponseEntity<Map<String, Object>>(resultMap, HttpStatus.OK);
-        } catch (Exception e) {
-            // 예외 발생시 예외 및 HTTP BAD_REQUEST 출력
+        } catch (Exception e) {            // 예외 발생시 예외 및 HTTP BAD_REQUEST 출력
             e.printStackTrace();
             status = HttpStatus.BAD_REQUEST;
             //resultMap에 실패 메시지 추가
             resultMap.put("message", "fail");
-
         }
-        return new ResponseEntity<>(resultMap, status);
 
+        return new ResponseEntity<>(resultMap, status);
     }
 
     @ApiOperation(value = "피드 삭제", notes = "특정 피드를 삭제합니다.")
@@ -429,27 +504,49 @@ public class FeedController {
         return new ResponseEntity<>(feeds, HttpStatus.OK);
     }
 
-    @PutMapping("/like/{feedId}")
-    public ResponseEntity<?> toggleFeedLike(@PathVariable Long feedId, @RequestHeader("Authorization") String jwt) {
-        Map<String, Object> resultMap = new HashMap<>();
-        HttpStatus status;
-        try {
-            Long memberId = authTokensGenerator.extractMemberId(jwt.replace("Bearer ", ""));
-            boolean isLiked = feedService.toggleLike(memberId, feedId);
-            Feed updateFeed = feedService.getFeedById(feedId);
-            status = HttpStatus.OK;
-            resultMap.put("message", "success");
-            resultMap.put("feed", updateFeed);
-            resultMap.put("isLiked", isLiked);
-        } catch (Exception e) {
-            e.printStackTrace();
-            status = HttpStatus.INTERNAL_SERVER_ERROR;
-            resultMap.put("message", "fail");
-            resultMap.put("message2", "로그인 토큰(JWT) 또는 FeedID에 문제가 있습니다.");
+    // 피드 좋아요
+    @ApiOperation(value = "피드 좋아요")
+    @PostMapping("/like/{feedId}")
+    public ResponseEntity<?> likeFeed(@PathVariable Long feedId,
+                                      @ApiParam(value = "Bearer ${jwt token} 형식으로 전송")
+                                      @RequestHeader("Authorization") String jwt) {
+        Long memberId = authTokensGenerator.extractMemberId(jwt.replace("Bearer ", ""));
+        log.info("memberId: {}", memberId);
+        boolean isSuccess = feedService.likeFeed(feedId, memberId);
+        log.info("isSuccess: {}", isSuccess);
+        if (isSuccess) {
+            log.info("피드 ID: {}, 회원 ID: {} - 좋아요 처리 성공", feedId, memberId);
+            // 처리가 성공했을 때 피드 정보를 반환합니다
+            Optional<Feed> feed = Optional.ofNullable(feedService.getFeedById(feedId));
+            if (feed.isPresent()) {
+                return ResponseEntity.ok(feed.get());
+            } else {
+                return ResponseEntity.notFound().build();
+            }
+        } else {
+            log.warn("피드 ID: {}, 회원 ID: {} - 좋아요 처리 실패", feedId, memberId);
+            // 좋아요 처리에 실패했으면 BAD_REQUEST 상태를 반환합니다
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
         }
-        return new ResponseEntity<>(resultMap, status);
     }
+    // 피드 좋아요 취소
+    @ApiOperation(value = "피드 좋아요 취소")
+    @DeleteMapping("/unlike/{feedId}")
+    public ResponseEntity<?> unlikeFeed(@PathVariable Long feedId,
+                                        @ApiParam(value = "Bearer ${jwt token} 형식으로 전송")
+                                        @RequestHeader("Authorization") String jwt) {
+        // 코드 구현
+        Long memberId = authTokensGenerator.extractMemberId(jwt.replace("Bearer ", ""));
+        log.info("memberId: {}", memberId);
+        boolean isSuccess = feedService.unlikeFeed(feedId, memberId);
+        log.info("isSuccess: {}", isSuccess);
 
+        if (isSuccess) {
+            log.info("피드 ID: {}, 회원 ID: {} - 좋아요 취소 처리 성공", feedId, memberId);
+            return ResponseEntity.ok().build();
+        } else {
+            log.warn("피드 ID: {}, 회원 ID: {} - 좋아요 취소 처리 실패", feedId, memberId);
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+        }
+    }
 }
-
-

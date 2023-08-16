@@ -184,6 +184,54 @@ public class CmaController {
         return new ResponseEntity<>(resultMap, status);
     }
 
+    @ApiOperation(value = "찜한 CMA 상품 모든 정보 반환")
+    @GetMapping("/like")
+    public ResponseEntity<Map<String, Object>> getLikedCma(@ApiParam(value = "Bearer ${jwt token} 형식으로 전송")
+                                                           @RequestHeader("Authorization") String jwt) {
+        Map<String, Object> resultMap = new HashMap<>();
+        HttpStatus status;
+
+        try {
+            jwt = jwt.replace("Bearer ", "");
+            Long memberId = authTokensGenerator.extractMemberId(jwt);
+
+            List<LikedCma> myLikedCmaList = cmaService.myLikedCmaList(memberId);
+
+            status = HttpStatus.OK;
+            resultMap.put("LikedCma", myLikedCmaList);
+            resultMap.put("message", "success");
+        } catch (Exception e) {
+            e.printStackTrace();
+            status = HttpStatus.BAD_REQUEST;
+            resultMap.put("message", "fail");
+        }
+        return new ResponseEntity<>(resultMap, status);
+    }
+
+    @ApiOperation(value = "찜한 CMA 상품 삭제")
+    @DeleteMapping("/like/{likeCmaId}")
+    public ResponseEntity<Map<String, Object>> deleteLikedCma(@ApiParam(value = "Bearer ${jwt token} 형식으로 전송")
+                                                              @RequestHeader("Authorization") String jwt,
+                                                              @PathVariable Long likeCmaId) {
+        Map<String, Object> resultMap = new HashMap<>();
+        HttpStatus status;
+
+        try {
+            jwt = jwt.replace("Bearer ", "");
+            Long memberId = authTokensGenerator.extractMemberId(jwt);
+
+            cmaService.deleteLikedCma(memberId, likeCmaId);
+
+            status = HttpStatus.OK;
+            resultMap.put("message", "success");
+        } catch (Exception e) {
+            e.printStackTrace();
+            status = HttpStatus.BAD_REQUEST;
+            resultMap.put("message", "fail");
+        }
+        return new ResponseEntity<>(resultMap, status);
+    }
+
     @ApiOperation(value = "CMA 상품 댓글 작성")
     @PostMapping("/{cmaId}/comment") // 수정된 부분
     public ResponseEntity<Map<String, Object>> createComment(@PathVariable Long cmaId, // 수정된 부분

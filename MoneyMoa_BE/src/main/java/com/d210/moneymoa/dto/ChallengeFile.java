@@ -12,7 +12,7 @@ import java.io.Serializable;
 @Setter
 @NoArgsConstructor
 @Entity
-public class FeedFile implements Serializable {
+public class ChallengeFile implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -21,21 +21,21 @@ public class FeedFile implements Serializable {
     private String imgPath;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "feedNo", referencedColumnName = "id")
-    private Feed feed;
+    @JoinColumn(name = "challengeNo", referencedColumnName = "id")
+    private Challenge challenge;
 
     @Builder
-    public FeedFile(String imgPath, Feed feed) {
+    public ChallengeFile(String imgPath, Challenge challenge) {
         this.imgPath = imgPath;
-        this.feed = feed;
+        this.challenge = challenge;
     }
 
     @Override
     public String toString() {
-        return "FeedFile {" +
+        return "ChallengeFile {" +
                 "id=" + id +
                 ", imgPath='" + imgPath + '\'' +
-                ", feedId=" + (feed != null ? feed.getId() : "null") +
+                ", challengeId=" + (challenge != null ? challenge.getId() : "null") +
                 '}';
     }
 }

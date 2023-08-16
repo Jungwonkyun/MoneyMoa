@@ -1,8 +1,5 @@
 package com.d210.moneymoa.service;
 
-
-
-import com.d210.moneymoa.dto.LikedDeposit;
 import com.d210.moneymoa.dto.LikedSaving;
 import com.d210.moneymoa.dto.Saving;
 
@@ -17,4 +14,8 @@ public interface SavingService {
     Saving getSavingProductWithInterestDetails(String productCode);
 
     void saveLikedSaving(LikedSaving likedSaving);
+
+    List<LikedSaving> myLikedSavingList(Long memberId);
+
+    void deleteLikedSaving(Long memberId, Long likeSavingId);
 }

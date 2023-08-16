@@ -7,39 +7,35 @@ import java.util.List;
 
 public interface ChatRoomService {
 
-//    public List<ChatRoom> findAllRoom();
+    ChatRoomDto findRoomByRoomId(String id);
 
-    //public ChatRoom findRoomById(String id);
 
-    public ChatRoomDto findRoomByRoomId(String id);
+    ChatRoomDto createChatRoom(ChatRoomDto chatRoom);
 
-    // public ChatRoom createChatRoom(String name);
 
-    public ChatRoomDto createChatRoom(ChatRoomDto chatRoom);
+    MemberChatroomSubInfo enterChatRoom(long memberId, String roomId);
+    MemberChatroomSubInfo enterDMRoom(long memberId, String roomId);
 
-    //public void enterChatRoom(String roomId);
+    List<ChatMessageDto> saveChatMessage(String roomId, ChatMessage chatMessage);
 
-    public MemberChatroomSubInfo enterChatRoom(long memberId, String roomId);
+     ChannelTopic getTopic(String roomId);
 
-    //public void saveChatMessage(String roomId, ChatMessage chatMessage);
-    // List<ChatRoomDto> saveChatMessage(String roomId, ChatMessage chatMessage);
+    List<ChatRoomDto> findAllRoomFromDB();
+    List<DirectMessageRoom> findAllDMFromDB(Long memberId);
 
-    public List<ChatMessageDto> saveChatMessage(String roomId, ChatMessage chatMessage);
-
-//    public void increaseUserCount(String roomId);
-
-//    public void decreaseUserCount(String roomId);
-    public ChannelTopic getTopic(String roomId);
-
-    public List<ChatRoomDto> findAllRoomFromDB();
-
-    ChatRoomDto findRoomByName(String name);
+    List<ChatRoomDto> findRoomByName(String name);
 
     List<MemberChatroomSubInfo> chatRoomMembers(String roomId);
 
     void getOutchatRoom(Long memberId, String roomId);
 
-    public List<ChatMessageDto> getChatMessages(String roomId);
+    List<ChatMessageDto> getChatMessages(String roomId);
 
     List<MemberChatroomSubInfo> sendDirectMessage(Long senderId, Long sendedId);
+
+    DirectMessageRoom findDMRoomByRoomId(String roomId);
+
+    boolean alreadyCreated(Long sender, Long receiver);
+
+    ChatRoomDto createChatRoomWithFile(ChatRoomDto inputChatRoomDto, String fileName);
 }
