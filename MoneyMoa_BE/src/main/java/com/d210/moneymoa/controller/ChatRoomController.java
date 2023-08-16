@@ -25,7 +25,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import static com.d210.moneymoa.domain.RestTemplateResponseErrorHandler.logger;
 
 @RequiredArgsConstructor
 @RestController
@@ -176,8 +175,9 @@ public class ChatRoomController {
     @PostMapping("/room/search")
     @ResponseBody
     public ResponseEntity<Map<String, Object>> searchRoom(
-            @ApiParam(value = "검색어") @RequestBody String name) {
+            @ApiParam(value = "검색어") @RequestBody Map<String, String> requestBody) {
 
+        String name = requestBody.get("name");
 
         HashMap<String, Object>resultMap = new HashMap<>();
 
@@ -191,6 +191,9 @@ public class ChatRoomController {
             messege = "success";
             status = HttpStatus.OK;
             resultMap.put("message", messege);
+
+            log.info("ChatRoomDTO: " + chatRoomDto);
+
             resultMap.put("chatroomInfo",chatRoomDto);
         }catch (Exception e){
             messege = "fail";
