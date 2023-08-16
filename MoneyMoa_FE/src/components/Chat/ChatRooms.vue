@@ -1,6 +1,6 @@
 <template>
   <v-container>
-    <v-row>
+    <v-row class="my-2">
       <h3>전체 채팅방 목록</h3>
       <v-spacer></v-spacer>
       <v-btn v-if="cookies.get('accessToken')"
