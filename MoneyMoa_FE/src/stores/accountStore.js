@@ -31,7 +31,7 @@ export const useAccountStore = defineStore('account', () => {
   // 로그인 함수
   function onLogin(data) {
     const expireTimes = getNextWeekDate()
-    cookies.set('accessToken', data.token, '30MIN')
+    cookies.set('accessToken', data.token, '10s')
     cookies.set('expireTimes', expireTimes, expireTimes)
     cookies.set('accessTokenRef', data.token, '7D')
     cookies.set('refreshToken', data.refreshToken, '7D')
@@ -52,10 +52,11 @@ export const useAccountStore = defineStore('account', () => {
   async function getNewToken() {
     if (!cookies.get('accessToken') && cookies.get('refreshToken')) {
       try {
+        console.log(cookies.get('refreshToken'))
         const res = await functions.postGetAccessid()
         console.log(res)
         if (res.message === 'success') {
-          cookies.set('accessToken', res.RefreshedAccessToken, '30MIN')
+          cookies.set('accessToken', res.RefreshedAccessToken, '10s')
           const expireTimes = cookies.get('expireTimes')
           // 리프레시 토큰 수명만큼 새로 저장
           cookies.set('accessTokenRef', res.RefreshedAccessToken, expireTimes)

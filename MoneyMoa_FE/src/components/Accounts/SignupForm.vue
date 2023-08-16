@@ -2,7 +2,7 @@
   <v-container>
     <v-sheet
       max-width="800"
-      class="mx-auto mt-8 rounded-lg px-10 py-5"
+      class="mx-auto mt-8 rounded-lg px-10 py-5 animate__animated animate__fadeInDown"
       elevation="3"
       min-height="700"
       width="100%"
@@ -34,6 +34,7 @@
             :disabled="disableBtn"
             elevation="3"
             height="40"
+            v-if="!sent"
             >인증번호 전송</v-btn
           >
           <v-btn @click.prevent="onAthentic" class="Athentic-Btn" elevation="3" v-if="sent"
@@ -181,6 +182,7 @@
 import { ref } from 'vue'
 import functions from '@/api/member.js'
 import { useRouter } from 'vue-router'
+import 'animate.css'
 const router = useRouter()
 const Email = ref(null)
 const password1 = ref(null)
@@ -360,5 +362,8 @@ h3 {
 }
 .title-left {
   text-align: left;
+}
+.animate__animated.animate__fadeInDown {
+  --animate-duration: 1.5s;
 }
 </style>

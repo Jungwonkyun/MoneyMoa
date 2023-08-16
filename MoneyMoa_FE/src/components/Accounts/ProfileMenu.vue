@@ -1,6 +1,6 @@
 <template>
   <v-btn id="menu-activator" color="primary">
-    <v-avatar class="elevation-3" size="60">
+    <v-avatar class="elevation-3 animate__animated animate__bounce" size="60">
       <v-img :src="member.imageUrl" alt="John"></v-img> </v-avatar
   ></v-btn>
   <v-menu activator="#menu-activator">
@@ -28,6 +28,7 @@ import { useRouter } from 'vue-router'
 import { useAccountStore } from '@/stores/accountStore.js'
 import { useCookies } from 'vue3-cookies'
 import functions from '../../api/member.js'
+import 'animate.css'
 const { cookies } = useCookies()
 const account = useAccountStore()
 const router = useRouter()

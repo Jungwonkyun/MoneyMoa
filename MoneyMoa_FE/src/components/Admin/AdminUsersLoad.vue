@@ -15,18 +15,20 @@
     <v-table>
       <thead>
         <tr>
-          <th class="text-left">유저 이름</th>
-          <th class="text-center">피드 조회</th>
-          <th class="text-center">챌린지 조회</th>
-          <th class="text-center">오픈 채팅 조회</th>
-          <th class="text-center">찜한 상품 조회</th>
+          <th class="text-center">유저</th>
         </tr>
       </thead>
       <tbody>
         <tr v-for="(member, idx) in members" :key="idx" height="100">
-          <td class="text-left">
-            {{ member.id + ' : ' + member.email
-            }}<v-icon
+          <td class="text-left name" @click="goProfile(member.id)">
+            <v-avatar class="elevation-3">
+              <v-img v-if="member.imageUrl" :src="member.imageUrl"></v-img>
+              <v-img v-if="!member.imageUrl" :src="img"></v-img>
+            </v-avatar>
+            {{ member.id + ' : ' + member.email }}
+          </td>
+          <td>
+            <v-icon
               @click="userDelete(member)"
               icon="mdi-delete"
               color="red"
@@ -34,10 +36,6 @@
               v-if="member.id != nowAdmin.id"
             />
           </td>
-          <td>유저 {{ member.id }} <br />피드 바로가기</td>
-          <td>유저 {{ member.id }} <br />챌린지 바로가기</td>
-          <td>유저 {{ member.id }} <br />오픈 채팅방 바로가기</td>
-          <td>유저 {{ member.id }} <br />찜 상품 바로가기</td>
         </tr>
       </tbody>
       <v-col cols="3"> </v-col>
@@ -48,8 +46,10 @@
 import functions from '@/api/admin.js'
 import { computed, onMounted, ref } from 'vue'
 import { useCookies } from 'vue3-cookies'
-
+import img from '../../assets/img/default_image.png'
+import { useRouter } from 'vue-router'
 const { cookies } = useCookies()
+const router = useRouter()
 // originMembers null값 주고(얘는 원래 전체 목록)
 const originMembers = ref(null)
 // 얘는 보여줄 목록
@@ -104,10 +104,18 @@ function onSearch() {
     members.value = originMembers.value
     return
   }
-// 이메일이 null값일때 include걸면 에러나서 먼저 존재 여부부터 체크하기
+  // 이메일이 null값일때 include걸면 에러나서 먼저 존재 여부부터 체크하기
   members.value = originMembers.value.filter(
-    (user) =>  user.id == searchWord.value ||(user.email && user.email.includes(searchWord.value))
-    )
-  }
+    (user) => user.id == searchWord.value || (user.email && user.email.includes(searchWord.value))
+  )
+}
+
+function goProfile(memberId) {
+  router.push({ name: 'member', params: { id: memberId } })
+}
 </script>
-<style></style>
+<style scoped>
+.name {
+  cursor: pointer;
+}
+</style>
