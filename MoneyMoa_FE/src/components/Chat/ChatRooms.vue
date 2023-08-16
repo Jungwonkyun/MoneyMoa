@@ -26,6 +26,14 @@
                 </v-row>
               </v-container>
             </v-card-text>
+            <v-file-input
+              multiple
+              @change="previewChangeImg"
+              label="이미지를 선택해 주세요."
+              accept="image/*"
+              v-model="UploadImg"
+              class="my-10"
+            ></v-file-input>
             <v-card-actions>
               <v-spacer></v-spacer>
               <v-btn color="blue-darken-1" variant="text" @click="dialog = false"> 닫기 </v-btn>
@@ -61,6 +69,9 @@ const dialog = ref(false)
 const roomName = ref('')
 const roomDesc = ref('')
 
+const UploadImg = ref(null)
+const previewURL = ref(null)
+
 const roomList = ref([])
 getRooms().then((response) => {
   console.log(response.data)
@@ -86,7 +97,13 @@ function submitRoom() {
     name: roomName.value,
     description: roomDesc.value
   }
-  createRoom(roomInfo)
+  const jsonBlob = new Blob([JSON.stringify(roomInfo)], { type: 'application/json' })
+  const data = new FormData()
+  if (UploadImg.value && UploadImg.value.length > 0) {
+    data.append('file', UploadImg.value[0])
+  }
+  data.append('chatRoom', jsonBlob)
+  createRoom(data)
     .then((response) => {
       getRooms().then((response) => {
         console.log(response.data)
@@ -96,6 +113,14 @@ function submitRoom() {
     .catch((error) => {
       console.log(error)
     })
+}
+
+function previewChangeImg() {
+  const reader = new FileReader()
+  reader.onload = (e) => {
+    previewURL.value = e.target.result
+  }
+  reader.readAsDataURL(UploadImg.value[0])
 }
 </script>
 <style scoped lang="scss">
