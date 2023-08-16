@@ -144,6 +144,54 @@ public class SavingController {
         return new ResponseEntity<>(resultMap, status);
     }
 
+    @ApiOperation(value = "찜한 적금 상품 모든 정보 반환")
+    @GetMapping("/like")
+    public ResponseEntity<Map<String, Object>> getLikedSaving(@ApiParam(value = "Bearer ${jwt token} 형식으로 전송")
+                                                              @RequestHeader("Authorization") String jwt) {
+        Map<String, Object> resultMap = new HashMap<>();
+        HttpStatus status;
+
+        try {
+            jwt = jwt.replace("Bearer ", "");
+            Long memberId = authTokensGenerator.extractMemberId(jwt);
+
+            List<LikedSaving> myLikedSavingList = savingService.myLikedSavingList(memberId);
+
+            status = HttpStatus.OK;
+            resultMap.put("LikedSaving", myLikedSavingList);
+            resultMap.put("message", "success");
+        } catch (Exception e) {
+            e.printStackTrace();
+            status = HttpStatus.BAD_REQUEST;
+            resultMap.put("message", "fail");
+        }
+        return new ResponseEntity<>(resultMap, status);
+    }
+
+    @ApiOperation(value = "찜한 적금 상품 삭제")
+    @DeleteMapping("/like/{likeSavingId}")
+    public ResponseEntity<Map<String, Object>> deleteLikedSaving(@ApiParam(value = "Bearer ${jwt token} 형식으로 전송")
+                                                                 @RequestHeader("Authorization") String jwt,
+                                                                 @PathVariable Long likeSavingId) {
+        Map<String, Object> resultMap = new HashMap<>();
+        HttpStatus status;
+
+        try {
+            jwt = jwt.replace("Bearer ", "");
+            Long memberId = authTokensGenerator.extractMemberId(jwt);
+
+            savingService.deleteLikedSaving(memberId, likeSavingId);
+
+            status = HttpStatus.OK;
+            resultMap.put("message", "success");
+        } catch (Exception e) {
+            e.printStackTrace();
+            status = HttpStatus.BAD_REQUEST;
+            resultMap.put("message", "fail");
+        }
+        return new ResponseEntity<>(resultMap, status);
+    }
+
     @ApiOperation(value = "적금상품에 댓글 작성")
     @PostMapping("/{productCode}/comment")
     public ResponseEntity<Map<String, Object>> createComment(@PathVariable String productCode,

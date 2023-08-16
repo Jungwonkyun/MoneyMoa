@@ -1,5 +1,8 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import { useCookies } from 'vue3-cookies'
+import { useChallengeFeedStore } from '@/stores/challengeFeedStore'
+import { useRoute, useRouter } from 'vue-router'
+
 // HomeView
 import HomeView from '../views/HomeView.vue'
 

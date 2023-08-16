@@ -3,25 +3,27 @@ package com.d210.moneymoa.controller;
 // import 생략...
 
 
+import com.amazonaws.services.s3.AmazonS3;
 import com.d210.moneymoa.domain.oauth.AuthTokensGenerator;
 import com.d210.moneymoa.dto.*;
 import com.d210.moneymoa.service.ChatRoomService;
+import com.d210.moneymoa.service.StorageService;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 //import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.net.URL;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-
-// TODO: 2023-08-04 REST Controller로 바꿔야함 
 @RequiredArgsConstructor
 @RestController
 @RequestMapping("/api/chat")
@@ -32,10 +34,11 @@ public class ChatRoomController {
     @Autowired
     AuthTokensGenerator authTokensGenerator;
 
-    // @GetMapping("/room")
-    // public String rooms(Model model) {
-    //     return "chat/room";
-    // }
+    @Autowired
+    StorageService storageService;
+
+    @Autowired
+    private AmazonS3 s3Client;
 
     //모든 채팅방 리턴
     @ApiOperation(value = "채팅방 전체보기", notes = "모든 채팅방 정보를 DB에서 가져다가 리턴")
@@ -62,33 +65,23 @@ public class ChatRoomController {
         return new ResponseEntity<Map<String,Object>>(resultMap,status);
     }
 
-//    @GetMapping("/rooms")
-//    @ResponseBody
-//    public List<ChatRoom> roomlist() {
-//        return chatRoomService.findAllRoom();
-//    }
-
-//    @PostMapping("/room")
-//    @ResponseBody
-//    public ChatRoom createRoom(@RequestParam String name) {
-//        return chatRoomService.createChatRoom(name);
-//    }
-
-    @ApiOperation(value = "채팅방 생성하기", notes = "생성할 채팅방 정보 입력하고 생성")
-    @PostMapping("/room/create")
+    @ApiOperation(value = "내가 참여한 DM방 전체보기")
+    @GetMapping("/dmlist")
     @ResponseBody
-    public ResponseEntity<Map<String, Object>> createRoom(@RequestBody ChatRoomDto inputChatRoomDto) {
+    public ResponseEntity<Map<String, Object>> DmListDB(@ApiParam(value = "Bearer ${jwt token}") @RequestHeader("Authorization") String jwt) {
 
         HashMap<String, Object>resultMap = new HashMap<>();
         HttpStatus status;
         String messege = "";
 
         try{
-            ChatRoomDto chatRoomDto = chatRoomService.createChatRoom(inputChatRoomDto);
+            jwt = jwt.replace("Bearer ", "");
+            Long memberId = authTokensGenerator.extractMemberId(jwt);
+            List<DirectMessageRoom> dmList = chatRoomService.findAllDMFromDB(memberId);
             messege = "success";
             status = HttpStatus.OK;
             resultMap.put("message", messege);
-            resultMap.put("CreatedChatroom",chatRoomDto);
+            resultMap.put("dmList", dmList);
         }catch (Exception e){
             messege = "fail";
             resultMap.put("message", "message");
@@ -97,6 +90,31 @@ public class ChatRoomController {
 
         return new ResponseEntity<Map<String,Object>>(resultMap,status);
     }
+
+
+//    @ApiOperation(value = "채팅방 생성하기", notes = "생성할 채팅방 정보 입력하고 생성")
+//    @PostMapping("/room/create")
+//    @ResponseBody
+//    public ResponseEntity<Map<String, Object>> createRoom(@RequestBody ChatRoomDto inputChatRoomDto) {
+//
+//        HashMap<String, Object>resultMap = new HashMap<>();
+//        HttpStatus status;
+//        String messege = "";
+//
+//        try{
+//            ChatRoomDto chatRoomDto = chatRoomService.createChatRoom(inputChatRoomDto);
+//            messege = "success";
+//            status = HttpStatus.OK;
+//            resultMap.put("message", messege);
+//            resultMap.put("CreatedChatroom",chatRoomDto);
+//        }catch (Exception e){
+//            messege = "fail";
+//            resultMap.put("message", "message");
+//            status = HttpStatus.BAD_REQUEST;
+//        }
+//
+//        return new ResponseEntity<Map<String,Object>>(resultMap,status);
+//    }
 
 
     @ApiOperation(value = "유저가 채팅방에 입장", notes = "유저가 방에 들어오면 방 구독 정보를 DB에 저장한다")
@@ -161,7 +179,7 @@ public class ChatRoomController {
         String messege = "";
 
         try{
-            ChatRoomDto chatRoomDto = chatRoomService.findRoomByName(name);
+            List<ChatRoomDto> chatRoomDto = chatRoomService.findRoomByName(name);
             messege = "success";
             status = HttpStatus.OK;
             resultMap.put("message", messege);
@@ -230,8 +248,9 @@ public class ChatRoomController {
     }
 
 
+
     @ApiOperation(value = "Direct방 만들고 입장", notes = "생성할 채팅방 정보 입력하고 생성")
-    @PostMapping("/room/directmessage")
+    @PostMapping("/room/createdm")
     @ResponseBody
     public ResponseEntity<Map<String, Object>> sendDirectMessage(@RequestHeader("Authorization")String jwt, @RequestBody Long sendMemberId) {
 
@@ -242,6 +261,14 @@ public class ChatRoomController {
 
         try{
             Long memberId = authTokensGenerator.extractMemberId(jwt);
+
+            if(chatRoomService.alreadyCreated(memberId, sendMemberId)){
+                messege = "alreadyCreated";
+                resultMap.put("message", messege);
+                status = HttpStatus.OK;
+                return new ResponseEntity<Map<String,Object>>(resultMap,status);
+            }
+
             List<MemberChatroomSubInfo> SubList = chatRoomService.sendDirectMessage(memberId,sendMemberId);
             messege = "success";
             status = HttpStatus.OK;
@@ -256,4 +283,94 @@ public class ChatRoomController {
         return new ResponseEntity<Map<String,Object>>(resultMap,status);
     }
 
+
+    @ApiOperation(value = "유저가 DM방에 입장", notes = "유저가 방에 들어오면 DM방 정보를 DB에 저장한다")
+    @GetMapping("/room/enterdm/{roomId}")
+    public ResponseEntity<Map<String, Object>> EnterDM(@PathVariable String roomId, @ApiParam(value = "Bearer ${jwt token}") @RequestHeader("Authorization") String jwt) {
+
+        HashMap<String, Object>resultMap = new HashMap<>();
+        HttpStatus status;
+        String messege = "";
+        jwt =  jwt.replace("Bearer ", "");
+
+        try{
+            Long memberId = authTokensGenerator.extractMemberId(jwt);
+            MemberChatroomSubInfo memberChatroomSubInfo = chatRoomService.enterDMRoom(memberId, roomId);
+            messege = "success";
+            status = HttpStatus.OK;
+            resultMap.put("message", messege);
+            resultMap.put("subDMroom",memberChatroomSubInfo);
+        }catch (Exception e){
+            messege = "fail";
+            resultMap.put("message", "message");
+            status = HttpStatus.BAD_REQUEST;
+        }
+        return new ResponseEntity<Map<String,Object>>(resultMap,status);
+    }
+
+
+    @ApiOperation(value = "현재 채팅방 정보보기")
+    @GetMapping("/room/dm/{roomId}")
+    @ResponseBody
+    public ResponseEntity<Map<String, Object>> DMroomInfo(@PathVariable String roomId) {
+
+        HashMap<String, Object>resultMap = new HashMap<>();
+        HttpStatus status;
+        String messege = "";
+
+        try{
+            DirectMessageRoom DMRoom = chatRoomService.findDMRoomByRoomId(roomId);
+            List<ChatMessageDto>chatmessages = chatRoomService.getChatMessages(roomId);
+            messege = "success";
+            status = HttpStatus.OK;
+            resultMap.put("message", messege);
+            resultMap.put("DMRoomInfo",DMRoom);
+            resultMap.put("chatMessages" , chatmessages);
+        }catch (Exception e){
+            messege = "fail";
+            resultMap.put("message", "message");
+            status = HttpStatus.BAD_REQUEST;
+        }
+
+        return new ResponseEntity<Map<String,Object>>(resultMap,status);
+    }
+
+
+    @ApiOperation(value = "채팅방 생성하기", notes = "생성할 채팅방 정보 입력하고 생성")
+    @PostMapping(path = "/room/create", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<Map<String, Object>> createRoom(@RequestPart("chatRoom") ChatRoomDto inputChatRoomDto,
+                                                          @RequestPart(value = "file", required = false) MultipartFile[] file) {
+
+        HashMap<String, Object>resultMap = new HashMap<>();
+        HttpStatus status;
+        String messege = "";
+
+        try{
+            ChatRoomDto chatRoomDto = null;
+
+            if (file != null && file.length > 0) {
+                String fileName = storageService.uploadFile(file[0]);
+                URL fileUrl = s3Client.getUrl("moneymoa-first-bucket", fileName);
+                chatRoomDto = chatRoomService.createChatRoomWithFile(inputChatRoomDto,fileUrl.toString());
+            }
+            else{
+                chatRoomDto = chatRoomService.createChatRoom(inputChatRoomDto);
+            }
+
+            messege = "success";
+            status = HttpStatus.OK;
+            resultMap.put("message", messege);
+            resultMap.put("CreatedChatroom",chatRoomDto);
+        }catch (Exception e){
+            messege = "fail";
+            resultMap.put("message", "message");
+            status = HttpStatus.BAD_REQUEST;
+        }
+
+        return new ResponseEntity<Map<String,Object>>(resultMap,status);
+    }
+
 }
+
+
+

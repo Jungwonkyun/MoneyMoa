@@ -5,7 +5,7 @@ import Stomp from 'webstomp-client'
 import SockJS from 'sockjs-client'
 
 const api = apiInstance('chat')
-const apiWithAuth = instanceWithAuth()
+const apiWithAuth = instanceWithAuth('chat')
 const { cookies } = useCookies()
 
 //index.js로 옮기고 서버주소도 env.local에서 가져와야 할 것 같은데 일단 놔둠
@@ -28,7 +28,7 @@ async function getDMRooms() {
     const headers = {
       Authorization: `Bearer ${token}`
     }
-    const response = await api.get('dmlist', { headers })
+    const response = await apiWithAuth.get('dmlist', { headers })
     return response
   } catch (error) {
     console.log(error)
@@ -59,7 +59,7 @@ async function enterRoom(roomId) {
     const headers = {
       Authorization: `Bearer ${token}`
     }
-    const response = await api.get(`room/enter/${roomId}`, { headers })
+    const response = await apiWithAuth.get(`room/enter/${roomId}`, { headers })
     return response
   } catch (error) {
     console.log(error)
@@ -72,7 +72,7 @@ async function enterDMRoom(roomId) {
     const headers = {
       Authorization: `Bearer ${token}`
     }
-    const response = await api.get(`room/enter/${roomId}`, { headers })
+    const response = await apiWithAuth.get(`room/enter/${roomId}`, { headers })
     return response
   } catch (error) {
     console.log(error)
@@ -85,7 +85,7 @@ async function getRoomMembers(roomId) {
     const headers = {
       Authorization: `Bearer ${token}`
     }
-    const response = await api.get(`room/members/${roomId}`, { headers })
+    const response = await apiWithAuth.get(`room/members/${roomId}`, { headers })
     return response
   } catch (error) {
     console.log(error)
@@ -100,7 +100,7 @@ async function createRoom(data) {
       Authorization: `Bearer ${token}`,
       'Content-Type': 'multipart/form-data'
     }
-    const response = await api.post('room/create', data, { headers })
+    const response = await apiWithAuth.post('room/create', data, { headers })
     return response
   } catch (error) {
     console.log(error)
@@ -114,7 +114,7 @@ async function createDMRoom(oppoId) {
     const headers = {
       Authorization: `Bearer ${token}`
     }
-    const response = await api.post('room/createdm', oppoId, { headers })
+    const response = await apiWithAuth.post('room/createdm', oppoId, { headers })
     return response
   } catch (error) {
     console.log(error)
@@ -127,7 +127,7 @@ async function quitRoom(roomId) {
     const headers = {
       Authorization: `Bearer ${token}`
     }
-    const response = await api.delete('room/out', roomId, { headers })
+    const response = await apiWithAuth.delete('room/out', roomId, { headers })
     return response
   } catch (error) {
     console.log(error)
