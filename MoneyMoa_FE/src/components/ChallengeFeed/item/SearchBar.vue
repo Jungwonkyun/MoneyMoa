@@ -6,7 +6,6 @@
     v-model="inputWord"
     type="text"
     @input="handleSearch"
-    @keyup.enter="emitEvent(searchWord)"
     append-inner-icon="mdi-magnify"
     @click:append-inner="searchFeed(searchWord)"
     class="v-text-field"
@@ -15,8 +14,9 @@
 </template>
 <script setup>
 import { ref } from 'vue'
-import functions from '@/api/challengeFeed.js'
-import { defineEmits } from 'vue'
+import challengeFeedApi from '@/api/challengeFeed.js'
+
+const emit = defineEmits('searchFeed')
 
 const inputWord = ref('')
 const searchWord = ref('')
@@ -48,13 +48,21 @@ const handleSearch = (e) => {
 
   // 해시태그와 일반단어 중 길이가 0이 아닌 것을 검색어로 사용한다.
   searchWord.value = hashtags.length !== 0 ? hashtags : normalWords
+
+  // 검색어를 공백으로 구분된 문자열로 변환하여 출력
+  const searchString = searchWord.value.join(' ')
+  searchWord.value = searchString
+  console.log('검색어', searchWord.value)
 }
 
-const searchFeed = functions.searchFeed
-
-const emits = defineEmits()
-const emitEvent = (searchWord) => {
-  emits('custom-event', searchWord)
+const searchFeed = (searchWord) => {
+  console.log('검색어2', searchWord)
+  const searchFunction = challengeFeedApi.searchFeed // 변수 이름 수정
+  searchFunction(searchWord).then((response) => {
+    // 변수 이름 수정
+    console.log(response.data)
+    emit('searchFeed', response.data)
+  })
 }
 </script>
 <style scoped>

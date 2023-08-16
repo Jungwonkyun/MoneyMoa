@@ -63,6 +63,8 @@
                       variant="solo-filled"
                       @change="handleFileUpload"
                       class="input-btn"
+                      v-model="files"
+                      multiple
                     ></v-file-input>
                   </v-col>
                   <v-col cols="12">
@@ -108,7 +110,7 @@
 </template>
 <script setup>
 import { ref, onMounted } from 'vue'
-import functions from '@/api/challenge.js'
+import challengeApi from '@/api/challenge.js'
 import { useCookies } from 'vue3-cookies'
 
 // 쿠키 사용
@@ -132,10 +134,10 @@ const show = ref(false)
 
 // 챌린지 삭제 API 호출
 const deleteChallenge = (challengeId) => {
-  const deleteChallenge = functions.deleteChallenge
+  const deleteChallenge = challengeApi.deleteChallenge
   deleteChallenge(challengeId).then((response) => {
     console.log(response) // 응답 확인
-    const getChallengeList = functions.getChallengeList
+    const getChallengeList = challengeApi.getChallengeList
     getChallengeList(memberId.value).then((response) => {
       console.log(response.data.challenges)
       challenges.value = response.data.challenges
@@ -148,26 +150,23 @@ const title = ref('')
 const content = ref('')
 const period = ref('')
 const goalAmount = ref('')
+const files = ref([])
 
-// 챌린지 수정 API 호출
+// 챌린지 수정하기 버튼 눌렀을 때
 const updateChallenge = (challengeId) => {
-  // 전달할 data 객체 업데이트
-  const data = {
-    title: title.value,
+  // 챌린지 데이터 생성
+  const challenge = {
     content: content.value,
     goalAmount: parseInt(goalAmount.value),
-    period: period.value
+    period: period.value,
+    title: title.value
   }
 
   // 챌린지 수정 API 호출
-  const updateChallenge = functions.updateChallenge
-  updateChallenge(challengeId, data).then((response) => {
+  // 챌린지 생성 API 호출
+  const updateChallenge = challengeApi.updateChallenge
+  updateChallenge(challengeId, challenge).then((response) => {
     console.log(response) // 응답 확인
-    const getChallengeList = functions.getChallengeList
-    getChallengeList(memberId.value).then((response) => {
-      console.log(response.data.challenges)
-      challenges.value = response.data.challenges
-    })
   })
 }
 
@@ -196,7 +195,7 @@ const handleFileUpload = (event) => {
 
 //// 마운트 시에 챌린지 리스트 API 호출, memberId가 변경되면 다시 호출
 onMounted(() => {
-  const res = functions.getChallengeList(memberId.value)
+  const res = challengeApi.getChallengeList(memberId.value)
   res.then((response) => {
     console.log(response.data.challenges)
     challenges.value = response.data.challenges
