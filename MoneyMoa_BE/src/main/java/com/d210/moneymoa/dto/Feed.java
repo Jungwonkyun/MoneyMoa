@@ -82,10 +82,8 @@ public class Feed implements Serializable {
     @JsonIgnore
     private List<FeedLike> feedLikes;
 
-//    @ColumnDefault("0")
-//    @ApiModelProperty(hidden = true)
-//    private Integer firstLikeCount;
-
+    @Transient
+    private String challengeTitle;
 
 
     @Builder

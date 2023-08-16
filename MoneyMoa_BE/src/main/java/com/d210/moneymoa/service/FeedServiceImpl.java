@@ -85,6 +85,10 @@ public class FeedServiceImpl implements FeedService {
         Feed feed = feedRepository.findById(feedId).orElseThrow(
                 () -> new NoSuchElementException("Feed with id " + feedId + " not found")
         );
+        if(feed.getChallenge() != null){
+            feed.setChallengeTitle(feed.getChallenge().getTitle());
+        }
+
         return feed;
     }
 
