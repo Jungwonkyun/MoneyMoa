@@ -175,9 +175,7 @@ public class ChatRoomController {
     @PostMapping("/room/search")
     @ResponseBody
     public ResponseEntity<Map<String, Object>> searchRoom(
-            @ApiParam(value = "검색어") @RequestBody Map<String, String> requestBody) {
-
-        String name = requestBody.get("name");
+            @ApiParam(value = "검색어") @RequestBody String name) {
 
         HashMap<String, Object>resultMap = new HashMap<>();
 
