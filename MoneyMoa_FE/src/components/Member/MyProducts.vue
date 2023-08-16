@@ -10,6 +10,7 @@
       :key="index"
       :liked="item"
       :type="type"
+      @like-updated="getContent()"
     />
   </v-container>
 </template>
