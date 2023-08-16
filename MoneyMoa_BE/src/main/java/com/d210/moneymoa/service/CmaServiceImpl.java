@@ -2,11 +2,9 @@ package com.d210.moneymoa.service;
 
 import com.d210.moneymoa.dto.Cma;
 import com.d210.moneymoa.dto.LikedCma;
-import com.d210.moneymoa.dto.LikedSaving;
 import com.d210.moneymoa.repository.CmaRepository;
 
 import com.d210.moneymoa.repository.LikedCmaRepository;
-import com.d210.moneymoa.repository.LikedSavingRepository;
 import org.openqa.selenium.*;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import org.openqa.selenium.support.ui.ExpectedConditions;
@@ -29,6 +27,9 @@ public class CmaServiceImpl implements CmaService {
 
     @Autowired
     CmaRepository cmaRepository;
+
+    @Autowired
+    private LikedCmaRepository likedCmaRepository;
 
     @Transactional
     public void saveCmaProducts() throws InterruptedException {
@@ -206,12 +207,20 @@ public class CmaServiceImpl implements CmaService {
         return map;
     }
 
-    @Autowired
-    private LikedCmaRepository likedCmaRepository;
-
     @Override
     public void saveLikedCma(LikedCma likedCma) {
         likedCmaRepository.save(likedCma);
+    }
+
+    @Override
+    public List<LikedCma> myLikedCmaList(Long memberId) {
+        return likedCmaRepository.findAllByMemberId(memberId);
+    }
+
+    @Transactional
+    @Override
+    public void deleteLikedCma(Long memberId, Long likeCmaId) {
+        likedCmaRepository.deleteByMemberIdAndId(memberId, likeCmaId);
     }
 }
 

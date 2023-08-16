@@ -57,9 +57,7 @@ public class Deposit implements Serializable {
     @JsonIgnore
     private List<DepositComment> depositComments;
 
-    @OneToMany(mappedBy = "deposit", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    @JsonIgnore
-    private List<DepositFile> depositFiles;
+
 
     @Builder
     public Deposit(String productCode, String bankCode, String bankName, String productName, String interest, String spcl, String joinMember, String etcNote, Long maxLimit) {

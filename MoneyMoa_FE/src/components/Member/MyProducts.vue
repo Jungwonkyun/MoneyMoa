@@ -5,18 +5,30 @@
       <v-tab value="saving">적금</v-tab>
       <v-tab value="cma">CMA</v-tab>
     </v-tabs>
-    <LikedProductItem
-      v-for="(item, index) in likedList[type]"
-      :key="index"
-      :liked="item"
-      :type="type"
-    />
+    <template v-if="likedList[type].length > 0">
+      <LikedProductItem
+        v-for="(item, index) in likedList[type]"
+        :key="index"
+        :liked="item"
+        :type="type"
+        @like-updated="getContent()"
+      />
+    </template>
+    <v-card v-else variant="flat" class="empty-card my-2 d-flex justify-center align-center">
+      <v-row>
+        <v-col>
+          <v-img :src="fork_moa" :height="200"></v-img>
+          <v-card-title>아직 찜한 상품이 없어요.</v-card-title>
+        </v-col>
+      </v-row></v-card
+    >
   </v-container>
 </template>
 <script setup>
 import { ref, reactive } from 'vue'
 import { getLiked } from '@/api/product'
 import LikedProductItem from './item/LikedProductItem.vue'
+import fork_moa from '@/assets/img/fork_moa.png'
 
 const type = ref('deposit')
 const likedList = reactive({

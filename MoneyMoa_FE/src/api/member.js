@@ -116,7 +116,7 @@ async function fetchFollowingList() {
 async function deleteFollow(toMemberId) {
   try {
     console.log(toMemberId)
-    const res = await apiWithAuth.delete(`/follow/unfollowing`, toMemberId, { headers })
+    const res = await apiWithAuth.delete(`/follow/unfollowing/${toMemberId}`)
     return res
   } catch (err) {
     console.log(err)
@@ -206,12 +206,9 @@ async function postNaverLogin(code, state) {
 }
 
 // 유저 탈퇴
-async function deletequitService(token) {
+async function deletequitService() {
   try {
-    const headers = {
-      Authorization: `Bearer ${token}`
-    }
-    const res = await api.delete(`/member/quitService`, { headers })
+    const res = await apiWithAuth.delete(`/member/quitService`)
     return res.data
   } catch (err) {
     console.log(err)
@@ -219,17 +216,15 @@ async function deletequitService(token) {
 }
 
 // 회원정보변경
-async function postUpdatedMember(token, data) {
-  const Token = `Bearer ${token}`
+async function postUpdatedMember(data) {
   for (const pair of data.entries()) {
     console.log(pair[0], pair[1])
   }
   const headers = {
-    Authorization: Token,
     'Content-Type': 'multipart/form-data'
   }
   try {
-    const res = await api.post('/member/update', data, { headers })
+    const res = await apiWithAuth.post('/member/update', data, { headers })
     return res.data
   } catch (err) {
     console.log(err)

@@ -6,20 +6,28 @@
     v-model="inputWord"
     type="text"
     @input="handleSearch"
-    @keyup.enter="emitEvent(searchWord)"
     append-inner-icon="mdi-magnify"
-    @click:append-inner="searchFeed(searchWord)"
+    @click:append-inner="sendToStore(searchedWord)"
+    @keyup.enter="sendToStore(searchedWord)"
     class="v-text-field"
   >
   </v-text-field>
 </template>
 <script setup>
 import { ref } from 'vue'
-import functions from '@/api/challengeFeed.js'
-import { defineEmits } from 'vue'
+import { useRoute, useRouter } from 'vue-router'
+import { useChallengeFeedStore } from '@/stores/challengeFeedStore'
+import { storeToRefs } from 'pinia'
+
+// useRouter 사용
+const router = useRouter()
+
+// 스토어 사용
+const challengeFeedStore = useChallengeFeedStore()
+const { searchWord } = storeToRefs(challengeFeedStore)
 
 const inputWord = ref('')
-const searchWord = ref('')
+const searchedWord = ref('')
 const handleSearch = (e) => {
   inputWord.value = e.target.value
 
@@ -47,14 +55,17 @@ const handleSearch = (e) => {
   }
 
   // 해시태그와 일반단어 중 길이가 0이 아닌 것을 검색어로 사용한다.
-  searchWord.value = hashtags.length !== 0 ? hashtags : normalWords
+  searchedWord.value = hashtags.length !== 0 ? hashtags : normalWords
+
+  // 검색어를 공백으로 구분된 문자열로 변환하여 출력
+  const searchString = searchedWord.value.join(' ')
+  searchedWord.value = searchString
 }
 
-const searchFeed = functions.searchFeed
-
-const emits = defineEmits()
-const emitEvent = (searchWord) => {
-  emits('custom-event', searchWord)
+const sendToStore = (searchedWord) => {
+  searchWord.value = searchedWord
+  router.push({ name: 'challengeFeedList' })
+  inputWord.value = ''
 }
 </script>
 <style scoped>

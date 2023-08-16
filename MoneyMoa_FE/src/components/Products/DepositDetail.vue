@@ -65,6 +65,10 @@
     </v-card>
     <IntrCalcItem v-if="loaded" :product="product" :spcls="spclConditionIntrs" />
     <v-container>
+      <v-row class="my-1"
+        ><v-icon icon="mdi-calendar-range" />
+        <h3>기간별 금리</h3>
+      </v-row>
       <v-table>
         <thead>
           <tr>
@@ -136,7 +140,7 @@ function getContent() {
 }
 getContent()
 </script>
-<style lang="scss">
+<style scoped lang="scss">
 .product-table-left {
   width: 15%;
 }

@@ -116,8 +116,8 @@ const submitFeedData = () => {
   const formData = new FormData()
   for (const file of files.value) {
     formData.append('files', file)
-    formData.append('feed', JSON.stringify(feed))
   }
+  formData.append('feed', JSON.stringify(feed))
   // 폼 데이터 확인
   for (const pair of formData.entries()) {
     console.log(pair[0], pair[1], typeof pair[1])

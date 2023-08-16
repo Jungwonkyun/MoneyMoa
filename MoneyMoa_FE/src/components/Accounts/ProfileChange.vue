@@ -12,12 +12,38 @@
           <h1 class="my-10">회원정보 변경</h1>
         </v-col>
       </v-row>
-
+      <v-row v-if="cropping">
+        <v-col>
+          <cropper
+            :stencil-component="CircleStencil"
+            ref="cropperRef"
+            :src="previewURL"
+            :aspectRatio="1"
+            :minWidth="100"
+            :minHeight="100"
+            @change="onCrop"
+          />
+        </v-col>
+      </v-row>
+      <v-row>
+        <v-col class="text-right">
+          <v-btn role="button" @click="cropImage" v-show="cropping" class="Btns">자르기</v-btn>
+          <v-btn
+            role="button"
+            @click="cancelImg"
+            v-show="cropping"
+            class="ms-3 Btns"
+            color="red lighten-5"
+            >취소</v-btn
+          >
+        </v-col>
+      </v-row>
+      <h3 class="my-7" v-if="cropping">미리보기</h3>
       <v-row>
         <v-col>
           <v-avatar size="150" class="elevation-10">
             <v-img :src="userImg" width="100" v-if="!isChanged"></v-img>
-            <v-img :src="previewURL" width="100" v-if="isChanged"></v-img>
+            <v-img :src="croppedImage" v-if="isChanged" class="avatar-image"></v-img>
           </v-avatar>
           <v-file-input
             multiple
@@ -112,7 +138,8 @@ import { useRouter, onBeforeRouteLeave } from 'vue-router'
 import { useAccountStore } from '@/stores/accountStore'
 import { useCookies } from 'vue3-cookies'
 import functions from '../../api/member.js'
-
+import { Cropper, CircleStencil } from 'vue-advanced-cropper'
+import 'vue-advanced-cropper/dist/style.css'
 const { cookies } = useCookies()
 console.log(cookies.get('member'))
 const router = useRouter()
@@ -127,7 +154,7 @@ const UploadImg = ref(null)
 const introduce = ref(null)
 const nickname = ref(null)
 const isChanged = computed(() => {
-  return !!UploadImg.value && !!UploadImg.value.length > 0
+  return UploadImg.value && UploadImg.value.length > 0
 })
 const changedPassword1 = ref(null)
 const changedPassword2 = ref(null)
@@ -163,6 +190,7 @@ const PassCheckWordrules = [
 ]
 // 유효성 검사후 수정 로직
 async function onUpdate() {
+  console.log(cropping.value)
   const isValid = PassWordrules.every((rule) => typeof rule(changedPassword1.value) !== 'string')
   if (!nickname.value) {
     alert('닉네임은 필수 사항입니다.')
@@ -172,6 +200,8 @@ async function onUpdate() {
   } else if (changedPassword1.value != changedPassword2.value) {
     alert('비밀번호가 일치하지 않습니다.')
     return
+  } else if (cropping.value) {
+    return alert('이미지 선택을 완료해 주세요')
   }
 
   // 비밀번호 비어있지 않으면 비밀번호도 변경
@@ -179,7 +209,6 @@ async function onUpdate() {
   // 지금은 그냥 홈으로
 
   try {
-    const token = cookies.get('accessToken')
     const member = {
       nickname: nickname.value,
       introduce: introduce.value,
@@ -189,10 +218,11 @@ async function onUpdate() {
 
     const data = new FormData()
     if (UploadImg.value && UploadImg.value.length > 0) {
-      data.append('file', UploadImg.value[0])
+      console.log(uploadedImage.value)
+      data.append('file', uploadedImage.value)
     }
     data.append('MemberUpdateInfo', jsonBlob)
-    const res = await functions.postUpdatedMember(token, data)
+    const res = await functions.postUpdatedMember(data)
     isPass.value = true
     console.log(res.updatedMember)
     const updatedMember = {
@@ -211,6 +241,7 @@ async function onUpdate() {
   }
   router.push({ name: 'home' }).then(() => {
     location.reload()
+    window.scrollTo(0, 0)
   })
 }
 
@@ -221,8 +252,7 @@ async function quitService() {
   )
   if (answer) {
     try {
-      const token = cookies.get('accessToken')
-      const result = await functions.deletequitService(token)
+      const result = await functions.deletequitService()
       if (result.message === 'success') {
         const account = useAccountStore()
         account.onLogout()
@@ -255,46 +285,6 @@ onBeforeRouteLeave((to, from, next) => {
   }
 })
 
-// 이미지 바꿨는지 안바꿨는지 알려주는 함수
-// 이미지 업로드 취소해도 빈 배열로 남아있어서
-// true로 뜨기때문에 lenght로 계산하기
-// 근데 또 다짜고짜 value[0]하면 오류나서 이렇게해줌..
-
-// 이미지업로드 테스트
-
-// const originImg = ref(null)
-// async function upload() {
-//   try {
-//     console.log(UploadImg.value)
-//     const res = await functions.postUploadFile(UploadImg.value)
-//     console.log(res)
-//     // const imgName = res.split(' ')
-//     // 이 이름으로 멤버에 저장해야돼서
-//     // originImg.value = `${imgName[3]} ${imgName[4]}`
-//   } catch (err) {
-//     console.log(err)
-//   }
-// }
-const previewURL = ref(null)
-// 이건 유저가 사진 올리면 미리보기 파일이벤트임
-function previewChangeImg() {
-  const reader = new FileReader()
-  reader.onload = (e) => {
-    previewURL.value = e.target.result
-  }
-  reader.readAsDataURL(UploadImg.value[0])
-}
-// 다운로드(url 로드) 밑에 형식으로 받아오기!
-// const UpoaldImgDown = ref(null)
-// async function download() {
-//   try {
-//     const res = await functions.getImgDown()
-//     UpoaldImgDown.value = 'data:image/jpeg;base64,' + res
-//   } catch (err) {
-//     console.log(err)
-//   }
-// }
-
 // 회원정보 불러오기 함수
 function getMember() {
   const member = cookies.get('member')
@@ -302,6 +292,39 @@ function getMember() {
   introduce.value = member.introduce
   nickname.value = member.nickname
   userImg.value = member.imageUrl
+}
+
+const cropperRef = ref(null)
+
+const cropping = ref(false)
+const previewURL = ref(null)
+const croppedImage = ref(null)
+const uploadedImage = ref(null)
+// 이건 유저가 사진 올리면 미리보기 파일이벤트임
+function previewChangeImg() {
+  const reader = new FileReader()
+  reader.onload = (e) => {
+    previewURL.value = e.target.result
+    uploadedImage.value = e.target.result
+  }
+  cropping.value = true
+  reader.readAsDataURL(UploadImg.value[0])
+}
+
+function onCrop() {
+  croppedImage.value = cropperRef.value.getResult().canvas.toDataURL()
+}
+function cropImage() {
+  cropping.value = false
+  const canvas = cropperRef.value.getResult().canvas
+  canvas.toBlob((blob) => {
+    uploadedImage.value = blob
+    console.log(uploadedImage.value)
+  })
+}
+function cancelImg() {
+  cropping.value = false
+  UploadImg.value = []
 }
 </script>
 <style scoped lang="scss">
@@ -315,5 +338,14 @@ textarea {
 }
 .title-left {
   text-align: left;
+}
+.avatar-image {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 150%;
+  height: 150%;
+  object-fit: cover;
 }
 </style>

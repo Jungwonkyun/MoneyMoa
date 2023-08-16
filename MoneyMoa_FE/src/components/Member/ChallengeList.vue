@@ -59,6 +59,8 @@
                       variant="solo-filled"
                       @change="handleFileUpload"
                       class="input-btn"
+                      v-model="files"
+                      multiple
                     ></v-file-input>
                   </v-col>
                   <v-col cols="12">
@@ -93,7 +95,7 @@
 
 <script setup>
 import { ref } from 'vue'
-import functions from '@/api/challenge.js'
+import challengeApi from '@/api/challenge.js'
 import { useCookies } from 'vue3-cookies'
 import ChallengeCard from '@/components/Member/item/ChallengeCard.vue'
 
@@ -108,21 +110,32 @@ const title = ref('')
 const content = ref('')
 const period = ref('')
 const goalAmount = ref('')
+const files = ref([])
 
-// 챌린지 생성 메서드
+// 챌린지 생성하기 버튼 눌렀을 때
 const createChallenge = () => {
-  // data 객체 업데이트
-  const data = ref({
-    title: title.value,
+  // 챌린지 데이터 생성
+  const challenge = {
     content: content.value,
     goalAmount: parseInt(goalAmount.value),
-    id: memberId.value,
-    period: period.value
-  })
+    period: period.value,
+    title: title.value
+  }
+  // 폼 데이터 생성
+  const formData = new FormData()
+  for (const file of files.value) {
+    formData.append('files', file)
+  }
+  formData.append('challenge', JSON.stringify(challenge))
+
+  // 폼 데이터 확인
+  for (const pair of formData.entries()) {
+    console.log(pair[0], pair[1], typeof pair[1])
+  }
 
   // 챌린지 생성 API 호출
-  const postChallenge = functions.postChallenge
-  postChallenge(data.value).then((response) => {
+  const postChallenge = challengeApi.postChallenge
+  postChallenge(formData).then((response) => {
     console.log(response) // 응답 확인
   })
 
