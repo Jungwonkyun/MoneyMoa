@@ -137,7 +137,7 @@ public class FollowController {
 
 
     @ApiParam(value = "상대방 유저의 팔로잉 리스트")
-    @PostMapping("/memberfollowlist/{id}")
+    @PostMapping("/memberfollowlist")
     public ResponseEntity<Map<String, Object>> memberFollowingList(@ApiParam(value = "Bearer ${jwt token} 형식으로 전송")
                                                                @RequestHeader ("Authorization") String jwt, @ApiParam(value = "상대방 id")@RequestBody Long id){
 
@@ -160,5 +160,34 @@ public class FollowController {
 
         return new ResponseEntity<Map<String,Object>>(resultMap,status);
     }
+
+
+    @ApiParam(value = "상대방 유저의 팔로워 리스트")
+    @PostMapping("/memberfollowlist")
+    public ResponseEntity<Map<String, Object>> memberFollowerList(@ApiParam(value = "Bearer ${jwt token} 형식으로 전송")
+                                                                   @RequestHeader ("Authorization") String jwt, @ApiParam(value = "상대방 id")@RequestBody Long id){
+
+        jwt =  jwt.replace("Bearer ", "");
+
+        Map<String,Object> resultMap = new HashMap<>();
+        HttpStatus status;
+
+
+        try{
+            List<Follows> myfollower = followService.myFollowerList(id);
+            resultMap.put("message","success");
+            resultMap.put("membersFollowlist", myfollower);
+            status = HttpStatus.OK;
+
+        }catch (Exception e){
+            e.printStackTrace();
+            resultMap.put("message","fail");
+            status = HttpStatus.BAD_REQUEST;
+        }
+
+        return new ResponseEntity<Map<String,Object>>(resultMap,status);
+    }
+
+
 
 }
