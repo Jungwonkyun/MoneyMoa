@@ -1,64 +1,92 @@
 <template>
-  <div>
-    <BankSelectItem v-if="productType != 'cma'" />
-    <SecuritySelectItem v-else />
-    <ProductConditionItem v-if="productType != 'cma'" />
-    here is {{ productType }} list
-    <hr />
-    <DepositPreviewItem
-      v-for="(product, index) in products_dummy"
-      :key="index"
-      :product="product"
-      :productType="productType"
-    />
-  </div>
+  <v-container>
+    <BankSelectItem />
+    <ProductConditionItem />
+    <v-row>
+      <v-progress-linear indeterminate v-if="!loaded" />
+      <span v-else> 결과 {{ filteredProducts.length }} 건 </span>
+      <ProductPreviewItem
+        v-for="(product, index) in filteredProducts"
+        :key="index"
+        :product="product"
+      />
+    </v-row>
+  </v-container>
 </template>
 <script setup>
-// import { computed } from 'vue'
-import { reactive } from 'vue'
-import { useProductStore } from '../../stores/productStore'
+import { ref, reactive, toRefs, computed, watch } from 'vue'
+import { useProductStore } from '@/stores/productStore'
 import { storeToRefs } from 'pinia'
+import { useRoute } from 'vue-router'
+import { getDepositList, getSavingList, getPeriodRange } from '@/api/product'
 import BankSelectItem from './item/BankSelectItem.vue'
-import SecuritySelectItem from './item/SecuritySelectItem.vue'
-import DepositPreviewItem from './item/DepositPreviewItem.vue'
+import ProductPreviewItem from './item/ProductPreviewItem.vue'
 import ProductConditionItem from './item/ProductConditionItem.vue'
+import { load } from 'webfontloader'
 
 const store = useProductStore()
-const { productType } = storeToRefs(store)
-const products_dummy = reactive([
-  {
-    product_code: 'sdsds22',
-    bank_code: 'D17',
-    bank_name: '신한은행',
-    product_name: 'OO예금',
-    interest: '3.51',
-    sqcl: '첫 가입',
-    join_member: '소상공인',
-    etc_note: ' ~~~ 가입시 추가 이자',
-    max_limit: '10000000',
-    img_path: 'ds222dss.jpg'
+const route = useRoute()
+const { productType, amount, period, bankList } = storeToRefs(store)
+const state = reactive({
+  products: []
+})
+const loaded = ref(false)
+
+watch(
+  productType,
+  (newValue) => {
+    loaded.value = false
+    if (newValue === 'saving') {
+      getSavingList().then((response) => {
+        state.products = response.data.products.map((product) => {
+          const bank = bankList.value.find((bank) => bank.alias === product.bankName)
+          if (bank) {
+            return { ...product, bankName: bank.name }
+          } else {
+            return product
+          }
+        })
+        loaded.value = true
+      })
+    } else if (newValue === 'deposit') {
+      getDepositList().then((response) => {
+        state.products = response.data.products.map((product) => {
+          const bank = bankList.value.find((bank) => bank.alias === product.bankName)
+          if (bank) {
+            return { ...product, bankName: bank.name }
+          } else {
+            return product
+          }
+        })
+        loaded.value = true
+      })
+    }
   },
-  {
-    product_code: 'sdsds23',
-    bank_code: 'D17',
-    bank_name: '신한은행',
-    product_name: 'XX예금',
-    interest: '3.51',
-    sqcl: '첫 가입',
-    join_member: '소상공인',
-    etc_note: ' ~~~ 가입시 추가 이자',
-    max_limit: '10000000',
-    img_path: 'ds222ds3.jpg'
-  }
-])
-// const productComponent = computed(() => {
-//   if (productType === 'deposit') {
-//     return 'DepositPreviewItem'
-//   } else if (productType === 'saving') {
-//     return 'SavingPreviewItem'
-//   } else if (productType === 'cma') {
-//     return 'CmaPreviewItem'
-//   }
-// })
+  { immediate: true }
+)
+
+const filteredProducts = computed(() =>
+  state.products.filter(
+    (product) =>
+      bankList.value.find((bank) => bank.name === product.bankName)?.selected &&
+      checkPeriod(product) &&
+      checkAmount(product)
+  )
+)
+const { products } = toRefs(state)
+function checkPeriod(product) {
+  //유저가 입력한 기간이 상품의 가입가능기간을 벗어나면 출력하지 않음
+  if (!period.value) return true
+  return getPeriodRange(product).min <= period.value && period.value <= getPeriodRange(product).max
+}
+function checkAmount(product) {
+  //유저가 입력한 금액이 상품의 예금한도를 초과하면 출력하지 않음
+  if (!amount.value || !product.maxLimit) return true
+  return amount.value <= Number(product.maxLimit)
+}
 </script>
-<style></style>
+<style scoped lang="scss">
+.v-progress-linear {
+  color: $logo-color;
+}
+</style>

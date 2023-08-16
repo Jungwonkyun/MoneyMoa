@@ -1,143 +1,50 @@
 <template>
   <v-container>
-    <v-row>
-      <v-col v-for="(feed, index) in myFeed[0].Feed" :key="index" cols="4">
-        <v-card :width="250" height="200" :elevation="10" class="m-30">
-          <v-img :src="feed.img_url"></v-img>
-        </v-card>
-      </v-col>
-    </v-row>
+    <template v-for="(feedGroup, challengeId) in groupedFeeds" :key="challengeId">
+      <v-row>
+        <v-col v-for="(feed, index) in feedGroup" :key="index" cols="4">
+          <router-link :to="`/challenge/feed/${feed.id}`">
+            <v-card width="200" height="200" :elevation="10">
+              <v-img class="align-end text-white" :src="feed.fileUrls[0]" cover>
+                <v-card-title>{{ challengeId }}</v-card-title>
+              </v-img>
+              <v-card-subtitle>좋아요: {{ feed.feedLikeCount }} </v-card-subtitle>
+            </v-card>
+          </router-link>
+        </v-col>
+      </v-row>
+    </template>
   </v-container>
 </template>
-<script setup>
-import { ref, onMounted } from 'vue'
-import { useRoute } from 'vue-router'
-import functions from '@/api/member.js'
 
-const dummy = ref([
-  {
-    message: 'success',
-    Feed: [
-      {
-        id: 1,
-        img_url: 'https://cdn.vuetifyjs.com/images/parallax/material.jpg',
-        content: '첫 입금!',
-        likes: '33',
-        current: '333',
-        created_at: '2023-07-28',
-        hashtag: [
-          {
-            feed_no: 1,
-            content: '#첫_입금'
-          }
-        ],
-        feedcomment: [
-          {
-            feed_no: 1,
-            member_id: 1,
-            content: '축하해요!',
-            created_at: '2023-07-28'
-          }
-        ]
-      },
-      {
-        id: 2,
-        img_url: 'https://cdn.vuetifyjs.com/images/parallax/material.jpg',
-        content: '두 번째 입금!',
-        likes: '33',
-        current: '333',
-        created_at: '2023-07-29',
-        hashtag: [
-          {
-            feed_no: 2,
-            content: '#2_입금'
-          }
-        ],
-        feedcomment: [
-          {
-            feed_no: 2,
-            member_id: 2,
-            content: '2222축하해요!',
-            created_at: '2023-07-29'
-          }
-        ]
-      },
-      {
-        id: 3,
-        img_url: 'https://cdn.vuetifyjs.com/images/parallax/material.jpg',
-        content: '두 번째 입금!',
-        likes: '33',
-        current: '333',
-        created_at: '2023-07-29',
-        hashtag: [
-          {
-            feed_no: 2,
-            content: '#2_입금'
-          }
-        ],
-        feedcomment: [
-          {
-            feed_no: 2,
-            member_id: 2,
-            content: '2222축하해요!',
-            created_at: '2023-07-29'
-          }
-        ]
-      },
-      {
-        id: 4,
-        img_url: 'https://cdn.vuetifyjs.com/images/parallax/material.jpg',
-        content: '두 번째 입금!',
-        likes: '33',
-        current: '333',
-        created_at: '2023-07-29',
-        hashtag: [
-          {
-            feed_no: 2,
-            content: '#2_입금'
-          }
-        ],
-        feedcomment: [
-          {
-            feed_no: 2,
-            member_id: 2,
-            content: '2222축하해요!',
-            created_at: '2023-07-29'
-          }
-        ]
-      },
-      {
-        id: 5,
-        img_url: 'https://cdn.vuetifyjs.com/images/parallax/material.jpg',
-        content: '두 번째 입금!',
-        likes: '33',
-        current: '333',
-        created_at: '2023-07-29',
-        hashtag: [
-          {
-            feed_no: 2,
-            content: '#2_입금'
-          }
-        ],
-        feedcomment: [
-          {
-            feed_no: 2,
-            member_id: 2,
-            content: '2222축하해요!',
-            created_at: '2023-07-29'
-          }
-        ]
-      }
-    ]
-  }
-])
-const myFeed = ref(dummy)
+<script setup>
+import { ref, onMounted, computed } from 'vue'
+import { useRoute } from 'vue-router'
+import challengeFeed from '@/api/challengeFeed.js'
 
 const route = useRoute()
-const memberId = ref(route.params.id)
+const memberId = computed(() => route.params.id)
 
-onMounted(() => {
-  const res = functions.fetchFeedList(memberId.value)
+const myFeed = ref([])
+
+onMounted(async () => {
+  const response = await challengeFeed.getUserFeedList(memberId.value)
+  console.log(response)
+  myFeed.value = response.data.feedList
+})
+
+// 챌린지 ID별로 그룹화된 배열을 계산된 속성으로 생성
+const groupedFeeds = computed(() => {
+  const groups = {}
+  myFeed.value.forEach((feed) => {
+    const challengeId = feed.challengeId
+    if (!groups[challengeId]) {
+      groups[challengeId] = []
+    }
+    groups[challengeId].push(feed)
+  })
+  return groups
 })
 </script>
+
 <style></style>

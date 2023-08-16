@@ -1,33 +1,44 @@
 <template>
-  <div>
-    <v-sheet class="mx-auto">
-      <v-slide-group multiple show-arrows>
-        <v-slide-group-item
-          v-for="security in securities"
-          :key="securities"
-          v-slot="{ isSelected, toggle }"
+  <v-sheet class="mx-auto">
+    <h5>증권사 선택</h5>
+    <v-btn variant="plain" @click="selectAllBank(true)"> 모두 선택 </v-btn
+    ><v-btn variant="plain" @click="cancelAllBank(true)"> 모두 선택 해제 </v-btn>
+    <v-slide-group multiple show-arrows>
+      <v-slide-group-item v-for="security in securityList" :key="securityList">
+        <v-btn
+          class="ma-2"
+          rounded
+          :color="security.selected ? 'primary' : undefined"
+          @click="toggleSelected(security)"
         >
-          <v-btn class="ma-2" rounded :color="isSelected ? 'primary' : undefined" @click="toggle">
-            <v-icon icon="mdi-heart"></v-icon>
-            {{ security }}
-          </v-btn>
-        </v-slide-group-item>
-      </v-slide-group>
-    </v-sheet>
-  </div>
+          <v-img
+            v-if="icons[security.name]"
+            :src="icons[security.name].default"
+            class="fin-icon"
+          ></v-img>
+          {{ security.name }}
+        </v-btn>
+      </v-slide-group-item>
+    </v-slide-group>
+  </v-sheet>
 </template>
 <script setup>
 import { reactive } from 'vue'
+import { useProductStore } from '@/stores/productStore'
+import { loadSecuIcons } from '@/api/icons'
+import { storeToRefs } from 'pinia'
+const store = useProductStore()
+const { securityList } = storeToRefs(store)
+const { selectAllBank, cancelAllBank } = store
 
-const securities = reactive([
-  'KB증권',
-  'SK증권',
-  'NH투자증권',
-  'IBK투자증권',
-  '삼성증권',
-  '대신증권',
-  '한화투자증권',
-  '하나증권'
-])
+const icons = reactive({})
+loadSecuIcons().then((secuIcons) => {
+  Object.assign(icons, secuIcons)
+  // console.log(icons)
+})
+
+const toggleSelected = (security) => {
+  security.selected = !security.selected
+}
 </script>
-<style></style>
+<style scoped lang="scss"></style>
