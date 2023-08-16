@@ -34,6 +34,7 @@
             :disabled="disableBtn"
             elevation="3"
             height="40"
+            v-if="!sent"
             >인증번호 전송</v-btn
           >
           <v-btn @click.prevent="onAthentic" class="Athentic-Btn" elevation="3" v-if="sent"

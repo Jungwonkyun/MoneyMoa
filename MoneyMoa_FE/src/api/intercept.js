@@ -40,7 +40,7 @@ export function setInterceptors(instance) {
             isLogin.value = !!cookies.get('accessToken')
           }
           console.log(res)
-          flag = true
+
           originalRequest.headers.Authorization = `Bearer ${res.RefreshedAccessToken}`
           return instance(originalRequest)
         } catch (err) {
