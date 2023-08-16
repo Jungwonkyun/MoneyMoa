@@ -25,13 +25,14 @@ public class FeedLike {
 
     @JsonIgnore
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "memberId", insertable=false, updatable = false)
+    @JoinColumn(name = "memberId")
     private Member member;
 
     @JsonIgnore
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "feedId", insertable=false, updatable = false)
+    @JoinColumn(name = "feedId")
     private Feed feed;
+
 
 
     @Builder
