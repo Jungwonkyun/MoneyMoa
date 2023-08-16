@@ -2,7 +2,7 @@
   <v-container>
     <v-sheet
       max-width="800"
-      class="mx-auto mt-8 rounded-lg px-10 py-5"
+      class="mx-auto mt-8 rounded-lg px-10 py-5 animate__animated animate__fadeInDown"
       elevation="3"
       min-height="700"
       width="100%"
@@ -182,6 +182,7 @@
 import { ref } from 'vue'
 import functions from '@/api/member.js'
 import { useRouter } from 'vue-router'
+import 'animate.css'
 const router = useRouter()
 const Email = ref(null)
 const password1 = ref(null)
@@ -361,5 +362,8 @@ h3 {
 }
 .title-left {
   text-align: left;
+}
+.animate__animated.animate__fadeInDown {
+  --animate-duration: 1.5s;
 }
 </style>

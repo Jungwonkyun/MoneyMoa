@@ -2,7 +2,7 @@
   <v-container>
     <v-sheet
       max-width="700"
-      class="mx-auto mt-8 rounded-lg px-10 py-5"
+      class="mx-auto mt-8 rounded-lg px-10 py-5 animate__animated animate__fadeIn"
       elevation="3"
       min-height="450"
       width="100%"
@@ -140,6 +140,7 @@ import { useCookies } from 'vue3-cookies'
 import functions from '../../api/member.js'
 import { Cropper, CircleStencil } from 'vue-advanced-cropper'
 import 'vue-advanced-cropper/dist/style.css'
+import 'animate.css'
 const { cookies } = useCookies()
 console.log(cookies.get('member'))
 const router = useRouter()

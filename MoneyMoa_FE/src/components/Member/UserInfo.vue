@@ -1,5 +1,5 @@
 <template>
-  <v-container class="px-10">
+  <v-container class="px-10 animate__animated animate__fadeInLeft">
     <v-card :elevation="24" justify="center" class="rounded-xl">
       <v-row>
         <v-col cols="12">
@@ -65,10 +65,10 @@ import { ref, computed, watch, onUpdated, onMounted } from 'vue'
 import memberApi from '@/api/member.js'
 import { createDMRoom } from '@/api/chat'
 import { useRoute, useRouter } from 'vue-router'
-import img from '@/assets/img/beauty.png'
+import img from '../../assets/img/default_image.png'
 import { useCookies } from 'vue3-cookies'
 import axios from 'axios'
-
+import 'animate.css'
 const { cookies } = useCookies()
 const route = useRoute()
 const router = useRouter()
@@ -101,6 +101,10 @@ watch(memberId.value, async (newMemberId) => {
   name.value = sombody.name
   email.value = sombody.email
 
+  // 이미지 없으면 기본사진으로 대체 -  권종률
+  if (!imageUrl.value) {
+    imageUrl.value = img
+  }
   if (loginMemberId === parseInt(newMemberId)) {
     isMe.value = true
   } else {
@@ -118,6 +122,10 @@ onMounted(async () => {
   name.value = sombody.name
   email.value = sombody.email
 
+  // 이미지 없으면 기본사진으로 대체 -  권종률
+  if (!imageUrl.value) {
+    imageUrl.value = img
+  }
   // 만약 불러온 유저 정보의 id가 로그인한 맴버 아이디와 일치한다면
   if (loginMemberId === parseInt(memberId.value)) {
     isMe.value = true
