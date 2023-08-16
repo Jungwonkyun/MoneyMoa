@@ -187,6 +187,7 @@ public class ChatRoomController {
             messege = "success";
             status = HttpStatus.OK;
             resultMap.put("message", messege);
+            log.info("ChatRoomDTO: " + chatRoomDto);
             resultMap.put("chatroomInfo",chatRoomDto);
         }catch (Exception e){
             messege = "fail";
