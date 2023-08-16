@@ -71,10 +71,11 @@ public class ChatRoomServiceImpl implements ChatRoomService {
         return directMessageRoomRepository.findAllDirectMessageRoomBySenderIdOrReceiverId(memberId, memberId);
     }
 
-    public ChatRoomDto findRoomByName(String name) {
-        Optional<ChatRoomDto> oChatRoomDto =  chatRoomDtoRepository.findByName(name);
-        ChatRoomDto chatRoomDto = oChatRoomDto.orElse(null);
-        return chatRoomDto;
+    public List<ChatRoomDto> findRoomByName(String name) {
+        //Optional<ChatRoomDto> oChatRoomDto =  chatRoomDtoRepository.findByName(name);
+        List<ChatRoomDto>ChatRoomList =  chatRoomDtoRepository.findByNameContaining(name);
+        //ChatRoomDto chatRoomDto = oChatRoomDto.orElse(null);
+        return ChatRoomList;
     }
 
     @Override
