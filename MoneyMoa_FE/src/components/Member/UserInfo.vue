@@ -7,7 +7,7 @@
             width="250px"
             height="250px"
             class="profileImage rounded-circle mx-auto"
-            :src="img"
+            :src="imageUrl"
             cover
           ></v-img>
         </v-col>

@@ -5,10 +5,7 @@ import com.d210.moneymoa.Exception.InvalidLoginException;
 import com.d210.moneymoa.domain.oauth.AuthTokens;
 import com.d210.moneymoa.domain.oauth.AuthTokensGenerator;
 import com.d210.moneymoa.domain.oauth.OAuthProvider;
-import com.d210.moneymoa.dto.AuthToken;
-import com.d210.moneymoa.dto.Member;
-import com.d210.moneymoa.dto.RefreshToken;
-import com.d210.moneymoa.dto.Role;
+import com.d210.moneymoa.dto.*;
 import com.d210.moneymoa.repository.AuthTokensRepository;
 import com.d210.moneymoa.repository.MemberRepository;
 import com.d210.moneymoa.repository.RefreshTokenRepository;
@@ -48,9 +45,9 @@ public class MemberServiceImpl implements MemberService {
 
     //로그인시 유저이메일을 가져와서 DB에 회원정보가 있는지 확인
     public Member findMemberByEmail(String email) {
-        log.info("이메일로 멤버 찾기 시이이이작");
+
         Optional<Member> oMember = memberRepository.findByEmail(email);
-        
+
         return oMember.orElse(null);
     }
 
@@ -78,8 +75,8 @@ public class MemberServiceImpl implements MemberService {
                 .email(member.getEmail())
                 .name(member.getName())
                 .oAuthProvider(OAuthProvider.GENERAL)
-//                .password(passwordEncoder.encode(member.getPassword()))
-                .password(member.getPassword())
+                .password(passwordEncoder.encode(member.getPassword()))
+                //.password(member.getPassword())
                 .nickname(member.getNickname())
                 .role(Role.MEMBER)
                 .build();
@@ -119,8 +116,23 @@ public class MemberServiceImpl implements MemberService {
 
 
     public Member findLoginMember(String email, String password) {
-        Optional<Member> oMember = memberRepository.findByEmailAndPassword(email,password);
-        return oMember.orElse(null);
+        //Optional<Member> oMember = memberRepository.findByEmailAndPassword(email,password);
+
+        Optional<Member> oMember = memberRepository.findByEmail(email);
+
+        if (!oMember.isPresent()) {
+            return null; // 사용자가 없음
+        }
+
+        Member member = oMember.get();
+        String storedPassword = member.getPassword();
+
+        if (passwordEncoder.matches(password, storedPassword)) {
+            return member; // 로그인 성공
+        } else {
+            return null; // 비밀번호 불일치
+        }
+
     }
 
 
@@ -277,20 +289,44 @@ public class MemberServiceImpl implements MemberService {
         //        return AT.getExpiresIn();
     }
 
+    @Override
+    public boolean checkPassword(String password, Long memberId) {
+
+        Optional<Member> oMember = memberRepository.findById(memberId);
+
+        Member member = oMember.get();
+
+        String storedPassword = member.getPassword();
+
+        if (passwordEncoder.matches(password, storedPassword)) {
+            return true;
+        } else {
+            return false; // 비밀번호 불일치
+        }
+    }
 
 
     @Transactional
-    public Member updateMember(Member updatedMember) {
-        Optional<Member> optionalMember = memberRepository.findById(updatedMember.getId());
+    public Member updateMember(MemberUpdateInfo updatedMember, Long memberId, String imgUrl) {
+
+        Optional<Member> optionalMember = memberRepository.findById(memberId);
 
         if (optionalMember.isPresent()) {
             Member existingMember = optionalMember.get();
 
             // 필요한 속성들을 수정합니다 (예: email, name, nickname 등)
-            existingMember.setEmail(updatedMember.getEmail());
-            existingMember.setName(updatedMember.getName());
             existingMember.setNickname(updatedMember.getNickname());
+            existingMember.setIntroduce(updatedMember.getIntroduce());
+            
+            //비밀번호를 바꿨으면
+            if(!updatedMember.getPassword().equals("null")) {
+                existingMember.setPassword(passwordEncoder.encode(updatedMember.getPassword()));
+            }
 
+            //바꿀 이미지가 있으면
+            if(!imgUrl.equals("null")){
+                existingMember.setImageUrl(imgUrl);
+            }
             return memberRepository.save(existingMember);
         } else {
             throw new EntityNotFoundException("Member not found");

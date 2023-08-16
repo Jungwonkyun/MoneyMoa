@@ -1,12 +1,16 @@
 <template>
   <v-container>
+    <v-row class="my-1"
+      ><v-icon icon="mdi-calculator" />
+      <h3>이자계산기</h3>
+    </v-row>
     <v-row v-if="productType === 'cma'">
       <v-radio-group inline v-model="cmaType">
         <v-radio label="예금 방식으로 계산" value="deposit"></v-radio>
         <v-radio label="적금 방식으로 계산" value="saving"></v-radio>
       </v-radio-group>
     </v-row>
-    <v-row>
+    <v-row class="d-flex justify-center">
       <v-col cols="1" v-if="calcType === 'saving'">매달</v-col>
       <v-col>
         <v-text-field
@@ -162,7 +166,7 @@ function like() {
   })
 }
 function goLiked() {
-  likeSnackbar = false
+  likeSnackbar.value = false
   // router.push가 안돼서 그냥 스낵바 닫기로 수정합니다
   // console.log('찜목록 이동')
   // router.push({

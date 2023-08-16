@@ -31,36 +31,37 @@ public class Feed implements Serializable {
     private Integer depositAmount; // 납입 금액
 
 
-//    @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss'Z'", timezone = "UTC")
+    //    @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss'Z'", timezone = "UTC")
     @CreationTimestamp
     @ApiModelProperty(hidden = true)
     private LocalDateTime createDateTime; // 날짜
 
-//    @Column(nullable = false)
+    //    @Column(nullable = false)
     @ApiModelProperty(hidden = true)
     private Long memberId;
 
     @JsonIgnore
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "memberId", insertable=false, updatable = false)
+    @JoinColumn(name = "memberId", insertable = false, updatable = false)
     private Member member; //id
 
 
-//    @Column(nullable = false)
+    //    @Column(nullable = false)
     @ApiModelProperty(hidden = true)
     private String nickname;
 
-//    name = "challengeId",
+    //    name = "challengeId",
 //    @Column(nullable = false)
     @ApiModelProperty(hidden = true)
     private Long challengeId; // 챌린지 종류
 
     @JsonIgnore
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "challengeId", insertable=false, updatable = false)
+    @JoinColumn(name = "challengeId", insertable = false, updatable = false)
     private Challenge challenge; //id
 
-    @OneToMany(mappedBy = "feed", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    //@OneToMany(mappedBy = "feed", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "feed", cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REMOVE}, fetch = FetchType.LAZY)
     @JsonIgnore
     private List<FeedFile> feedFiles;
 
@@ -77,27 +78,29 @@ public class Feed implements Serializable {
         this.fileUrls = fileUrls;
     }
 
-    @ColumnDefault("0")
-    private Integer feedLikeCount;
+    @OneToMany(mappedBy = "feed", fetch = FetchType.LAZY)
+    @JsonIgnore
+    private List<FeedLike> feedLikes;
 
-    // 좋아요 수 증가 메서드
-    public void increaseFeedLikeCount() {
-        this.feedLikeCount += 1;
-    }
+    @Transient
+    @ApiModelProperty(hidden = true)
+    private String challengeTitle;
 
-    // 좋아요 수 감소 메서드
-    public void decreaseFeedLikeCount() {
-        this.feedLikeCount -= 1;
-    }
 
     @Builder
-    public Feed(String content, Long challengeId, String hashtag, Integer depositAmount,Integer feedLikeCount, Long memberId, String nickname) { //
-        this.content = content;
-        this.challengeId = challengeId;
-        this.hashtag = hashtag;
-        this.depositAmount = depositAmount;
-        this.memberId = memberId;
-        this.feedLikeCount = feedLikeCount;
-        this.nickname = nickname;
-    }
+        public Feed(String content, Long challengeId, String hashtag,
+                    Integer depositAmount, Long memberId, String nickname,
+                    String challengeTitle) //Integer firstLikeCount,
+        { //
+            this.content = content;
+            this.challengeId = challengeId;
+            this.hashtag = hashtag;
+            this.depositAmount = depositAmount;
+            this.memberId = memberId;
+//            this.firstLikeCount = firstLikeCount;
+            this.nickname = nickname;
+            this.challengeTitle = challengeTitle;
+        }
 }
+
+
