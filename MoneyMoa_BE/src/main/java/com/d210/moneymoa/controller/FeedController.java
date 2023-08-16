@@ -511,8 +511,9 @@ public class FeedController {
                                       @ApiParam(value = "Bearer ${jwt token} 형식으로 전송")
                                       @RequestHeader("Authorization") String jwt) {
         Long memberId = authTokensGenerator.extractMemberId(jwt.replace("Bearer ", ""));
+        log.info("memberId: {}", memberId);
         boolean isSuccess = feedService.likeFeed(feedId, memberId);
-
+        log.info("isSuccess: {}", isSuccess);
         if (isSuccess) {
             log.info("피드 ID: {}, 회원 ID: {} - 좋아요 처리 성공", feedId, memberId);
             // 처리가 성공했을 때 피드 정보를 반환합니다
@@ -528,7 +529,6 @@ public class FeedController {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
         }
     }
-        // 코드 구현
     // 피드 좋아요 취소
     @ApiOperation(value = "피드 좋아요 취소")
     @DeleteMapping("/unlike/{feedId}")
@@ -537,7 +537,9 @@ public class FeedController {
                                         @RequestHeader("Authorization") String jwt) {
         // 코드 구현
         Long memberId = authTokensGenerator.extractMemberId(jwt.replace("Bearer ", ""));
+        log.info("memberId: {}", memberId);
         boolean isSuccess = feedService.unlikeFeed(feedId, memberId);
+        log.info("isSuccess: {}", isSuccess);
 
         if (isSuccess) {
             log.info("피드 ID: {}, 회원 ID: {} - 좋아요 취소 처리 성공", feedId, memberId);

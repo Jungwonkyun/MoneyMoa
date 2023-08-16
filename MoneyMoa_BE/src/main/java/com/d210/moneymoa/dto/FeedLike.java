@@ -21,19 +21,12 @@ public class FeedLike {
     private Long id;
 
     @ApiModelProperty(hidden = true)
-    private Long memberId;
-
-    @ApiModelProperty(hidden = true)
     private String nickname;
 
     @JsonIgnore
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "memberId", insertable=false, updatable = false)
     private Member member;
-
-    @Column(nullable = false)
-    @ApiModelProperty(hidden = true)
-    private Long feedId;
 
     @JsonIgnore
     @ManyToOne(fetch = FetchType.LAZY)
@@ -44,11 +37,8 @@ public class FeedLike {
     @Builder
     public FeedLike(Feed feed, Member member) {
         this.feed = feed;
-        this.feedId = feed.getId();
         this.member = member;
-        this.memberId = member.getId();
         this.nickname = member.getNickname();
     }
-
 
 }
