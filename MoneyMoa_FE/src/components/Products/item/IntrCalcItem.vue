@@ -28,7 +28,7 @@
     </v-row>
     <v-row v-if="!isNaN(result) && result > 0">
       <v-col
-        ><span>{{ result }}</span
+        ><span class="highlighted-value">{{ result }}</span
         >원을 받을 수 있어요. (이자
         {{ result - amount * (calcType === 'saving' ? period : 1) }}원)</v-col
       >
@@ -37,7 +37,7 @@
       <v-snackbar v-model="likeSnackbar" timeout="2500" color="white">
         상품을 찜 목록에 담았어요.
         <template v-slot:actions>
-          <v-btn color="blue" variant="text" @click="likeSnackbar = false"> 바로가기 </v-btn>
+          <v-btn color="blue" variant="text" @click="likeSnackbar = false" icon="mdi-close"></v-btn>
         </template>
       </v-snackbar>
     </v-row>
@@ -48,6 +48,7 @@
 import { ref, reactive, computed } from 'vue'
 import { useProductStore } from '@/stores/productStore'
 import { likeProduct } from '@/api/product'
+import { useRouter } from 'vue-router'
 import { storeToRefs } from 'pinia'
 import { useCookies } from 'vue3-cookies'
 import {
@@ -66,6 +67,7 @@ const store = useProductStore()
 const { productType, amount, period, selectedProduct } = storeToRefs(store)
 const { cookies } = useCookies()
 const periods = reactive([6, 12, 24, 36])
+const router = useRouter()
 
 const calcType = computed(() => {
   if (productType.value === 'cma') {
@@ -158,6 +160,14 @@ function like() {
   likeProduct(productType.value, likeInfo).then((response) => {
     likeSnackbar.value = true
   })
+}
+function goLiked() {
+  likeSnackbar = false
+  // router.push가 안돼서 그냥 스낵바 닫기로 수정합니다
+  // console.log('찜목록 이동')
+  // router.push({
+  //   name: 'myproducts'
+  // })
 }
 </script>
 <style scoped>
