@@ -78,7 +78,7 @@ public class Feed implements Serializable {
         this.fileUrls = fileUrls;
     }
 
-    @OneToMany(mappedBy = "feed", fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "feed", cascade = CascadeType.ALL,  fetch = FetchType.LAZY)
     @JsonIgnore
     private List<FeedLike> feedLikes;
 
