@@ -1,10 +1,10 @@
 <template>
   <v-container>
-    <v-row>
-      <v-col cols="6">
+    <v-row justify="space-around">
+      <v-col cols="4">
         <UserInfo />
       </v-col>
-      <v-col cols="6">
+      <v-col cols="8">
         <router-view />
       </v-col>
     </v-row>
@@ -13,15 +13,6 @@
 
 <script setup>
 import UserInfo from '@/components/Member/UserInfo.vue'
-// import { computed } from 'vue'
-// import { useRoute } from 'vue-router'
-
-// const route = useRoute()
-// const memberId = computed(() => route.params.id)
-
-// ref(route.params.id)
-
-// console.log('멤버뷰' + memberId.value)
 </script>
 
 <style></style>

@@ -19,4 +19,13 @@ export default defineConfig({
       }
     }
   }
+  // server: {
+  //   port: 5173,
+  //   open: true,
+  //   // 웹소켓용 url 지정
+  //   hmr: {
+  //     clientPort: 443,
+  //     protocol: 'wss'
+  //   }
+  // }
 })
