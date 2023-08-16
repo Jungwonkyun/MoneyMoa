@@ -19,8 +19,8 @@
             ref="cropperRef"
             :src="previewURL"
             :aspectRatio="1"
-            :minWidth="300"
-            :minHeight="300"
+            :minWidth="100"
+            :minHeight="100"
             @change="onCrop"
           />
         </v-col>
