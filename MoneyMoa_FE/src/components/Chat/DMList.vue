@@ -1,26 +1,36 @@
 <template>
   <v-container class="dm-container">
-    <h3>개인 메시지</h3>
     <v-row class="fill-height">
-      <v-col cols="6">
-        <v-card
-          v-for="(item, index) in dmRooms"
-          :key="index"
-          class="dm-card"
-          @click="enterDM(item)"
-          variant="flat"
-        >
-          <v-card-title>{{ roomOppo(item) }}</v-card-title>
-          <v-divider />
-        </v-card>
+      <v-col cols="5">
+        <v-row class="ma-1">
+          <h3>개인 메시지</h3>
+        </v-row>
+        <v-row>
+          <v-card
+            v-for="(item, index) in dmRooms"
+            :key="index"
+            class="dm-card"
+            @click="enterDM(item)"
+            variant="flat"
+          >
+            <v-card-title>{{ roomOppo(item) }}</v-card-title>
+            <v-divider />
+          </v-card>
+        </v-row>
       </v-col>
-      <v-col cols="6">
+      <v-col cols="7">
         <v-card
           v-if="!roomEmpty"
-          variant="tonal"
+          variant="flat"
           class="empty-card d-flex justify-center align-center"
-          >click list to start DM</v-card
         >
+          <v-row>
+            <v-col>
+              <v-img :src="writing_moa" :height="200"></v-img>
+              <v-card-title>상대방 닉네임을 클릭하면 대화가 시작됩니다.</v-card-title>
+            </v-col>
+          </v-row>
+        </v-card>
         <DMDetail v-else :roomId="selectedRoom.roomId" />
       </v-col>
     </v-row>
@@ -32,6 +42,7 @@ import { useRouter } from 'vue-router'
 import { getDMRooms, enterDMRoom } from '@/api/chat'
 import { useCookies } from 'vue3-cookies'
 import DMDetail from './DMDetail.vue'
+import writing_moa from '@/assets/img/writing_moa.png'
 
 const { cookies } = useCookies()
 const router = useRouter()
@@ -66,5 +77,9 @@ function roomOppo(room) {
 }
 .empty-card {
   height: 80vh;
+  background-color: $secondary-color;
+}
+.dm-card {
+  width: 100%;
 }
 </style>

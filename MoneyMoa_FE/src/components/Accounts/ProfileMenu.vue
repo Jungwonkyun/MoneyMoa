@@ -1,6 +1,7 @@
 <template>
   <v-btn id="menu-activator" color="primary">
-    <v-avatar> <v-img :src="member.imageUrl" alt="John"></v-img> </v-avatar
+    <v-avatar class="elevation-3" size="60">
+      <v-img :src="member.imageUrl" alt="John"></v-img> </v-avatar
   ></v-btn>
   <v-menu activator="#menu-activator">
     <v-list>
@@ -31,6 +32,7 @@ const { cookies } = useCookies()
 const account = useAccountStore()
 const router = useRouter()
 const member = cookies.get('member')
+
 console.log(member)
 function onMypage() {
   console.log(member.id)

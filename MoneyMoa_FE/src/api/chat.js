@@ -1,8 +1,11 @@
 import { apiInstance } from './index.js'
+import { instanceWithAuth } from './interceptorIndex.js'
 import { useCookies } from 'vue3-cookies'
 import Stomp from 'webstomp-client'
 import SockJS from 'sockjs-client'
+
 const api = apiInstance('chat')
+const apiWithAuth = instanceWithAuth()
 const { cookies } = useCookies()
 
 //index.js로 옮기고 서버주소도 env.local에서 가져와야 할 것 같은데 일단 놔둠
@@ -89,9 +92,15 @@ async function getRoomMembers(roomId) {
   }
 }
 
-async function createRoom(roomInfo) {
+//일반 오픈채팅방 생성
+async function createRoom(data) {
   try {
-    const response = await api.post('room/create', JSON.stringify(roomInfo))
+    const token = cookies.get('accessToken')
+    const headers = {
+      Authorization: `Bearer ${token}`,
+      'Content-Type': 'multipart/form-data'
+    }
+    const response = await api.post('room/create', data, { headers })
     return response
   } catch (error) {
     console.log(error)
