@@ -47,10 +47,15 @@
     </v-row>
     <v-card v-for="(room, index) in roomList" :key="index" class="chatroom-card ma-4">
       <v-container>
-        <v-row class="justify-space-between">
-          <v-img :src="room.imgUrl"></v-img>
-          <v-card-title>{{ room.name }}</v-card-title>
-          <v-card-subtitle>{{ room.description }}</v-card-subtitle>
+        <v-row class="align-end">
+          <v-col cols="3">
+            <v-img v-if="!room.imgUrl" :height="200" aspect-ratio="4/3" :src="landing"></v-img>
+            <v-img v-else :src="room.imgUrl" :height="200" aspect-ratio="4/3"></v-img>
+          </v-col>
+          <v-col align-self="start">
+            <v-card-title>{{ room.name }}</v-card-title>
+            <v-card-subtitle>{{ room.description }}</v-card-subtitle>
+          </v-col>
           <v-btn @click="enter(room.roomId)">입장</v-btn>
         </v-row>
       </v-container>
@@ -62,6 +67,7 @@ import { ref } from 'vue'
 import { useRouter } from 'vue-router'
 import { getRooms, enterRoom, createRoom } from '@/api/chat'
 import { useCookies } from 'vue3-cookies'
+import landing from '@/assets/img/micheile-henderson-f030K9IzpcM-unsplash.jpg'
 
 const { cookies } = useCookies()
 const router = useRouter()
@@ -121,6 +127,13 @@ function previewChangeImg() {
     previewURL.value = e.target.result
   }
   reader.readAsDataURL(UploadImg.value[0])
+}
+
+// const defaultImage = (e) => {
+//   e.target.src = landing
+// }
+function defaultImage(e) {
+  e.target.src = landing
 }
 </script>
 <style scoped lang="scss">
