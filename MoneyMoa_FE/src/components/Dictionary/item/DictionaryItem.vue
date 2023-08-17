@@ -1,10 +1,10 @@
 <template>
   <v-expansion-panel>
     <v-expansion-panel-title
-      ><span v-html="highlightMatchedText(item.word)"></span>
+      ><span v-html="highlightMatchedText(item.term)"></span>
     </v-expansion-panel-title>
     <v-expansion-panel-text>
-      <span v-html="highlightMatchedText(item.description)"></span>
+      <span v-html="highlightMatchedText(item.definition)"></span>
     </v-expansion-panel-text>
   </v-expansion-panel>
 </template>

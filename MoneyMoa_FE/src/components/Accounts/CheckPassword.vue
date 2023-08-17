@@ -2,7 +2,7 @@
   <v-container>
     <v-sheet
       max-width="600"
-      class="mx-auto mt-8 rounded-lg px-10 py-5"
+      class="mx-auto mt-8 rounded-lg px-10 py-5 animate__animated animate__fadeInLeft"
       elevation="3"
       min-height="450"
       width="100%"
@@ -54,7 +54,7 @@ import { useAccountStore } from '@/stores/accountStore'
 import { useRouter } from 'vue-router'
 import functions from '../../api/member'
 import { useCookies } from 'vue3-cookies'
-
+import 'animate.css'
 const account = useAccountStore()
 const { cookies } = useCookies()
 // 라우터 푸쉬를 위한 라우터 인풋

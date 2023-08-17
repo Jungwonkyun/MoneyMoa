@@ -55,3 +55,12 @@ a {
 .highlighted-value {
   font-weight: bold;
 }
+.shadow-text {
+  text-shadow: 2px 2px 6px $grey-dark;
+}
+.fin-btn {
+  background-color: $secondary-color;
+}
+.moa-btn {
+  background-color: #ceebf5;
+}

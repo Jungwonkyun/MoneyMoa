@@ -61,6 +61,7 @@ import {
   getMatchingDetail,
   spclConditionIntrList
 } from '@/api/product'
+import { useAccountStore } from '../../../stores/accountStore'
 const props = defineProps({
   product: Object,
   spcls: Array,
@@ -68,7 +69,11 @@ const props = defineProps({
 })
 const cmaType = ref('deposit')
 const store = useProductStore()
+const accStore = useAccountStore()
+
 const { productType, amount, period, selectedProduct } = storeToRefs(store)
+const { isLogin } = storeToRefs(accStore)
+
 const { cookies } = useCookies()
 const periods = reactive([6, 12, 24, 36])
 const router = useRouter()
@@ -109,7 +114,7 @@ const spSum = computed(() => {
 })
 //최종 계산에 적용되는 이율(maxRate를 넘지 않게)
 const calcIntr = computed(() => {
-  if (productType.value === 'cma') {
+  if (productType.value === 'cma' || !calcDetail) {
     return props.retRate
   }
   let finIntr = Math.min(
@@ -145,7 +150,7 @@ const onKeyPress = (event) => {
 }
 const likeSnackbar = ref(false)
 function like() {
-  if (!cookies.get('accessToken')) {
+  if (!isLogin) {
     alert('찜하기는 회원만 이용할 수 있습니다.')
     return
   }

@@ -2,7 +2,7 @@
   <v-container>
     <v-sheet
       max-width="600"
-      class="mx-auto mt-8 rounded-lg px-10 py-5"
+      class="mx-auto mt-8 rounded-lg px-10 py-5 animate__animated animate__fadeInUp"
       elevation="3"
       min-height="700"
       width="100%"
@@ -88,7 +88,7 @@ import { ref } from 'vue'
 import { useAccountStore } from '@/stores/accountStore.js'
 import { useRouter, useRoute } from 'vue-router'
 import img from '../../assets/img/default_image.png'
-
+import 'animate.css'
 const account = useAccountStore()
 const router = useRouter()
 const route = useRoute()

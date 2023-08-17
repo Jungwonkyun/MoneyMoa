@@ -3,7 +3,9 @@
     <v-carousel hide-delimiter-background show-arrows="hover">
       <v-carousel-item v-for="(fileUrl, index) in fileUrls" :key="index">
         <v-img :src="fileUrl" height="100%" class="align-end text-white" cover>
-          <v-card-title>{{ challengeTitle }} </v-card-title>
+          <v-card-title
+            ><span class="shadow-text">{{ challengeTitle }}</span>
+          </v-card-title>
         </v-img>
       </v-carousel-item>
     </v-carousel>

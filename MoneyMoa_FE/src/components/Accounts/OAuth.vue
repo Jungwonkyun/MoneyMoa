@@ -22,6 +22,7 @@ async function kakaoLogin() {
       }
       const token = res.data.authtokens.accessToken
       const refreshToken = res.data.authtokens.refreshToken
+      console.log(refreshToken)
       let urlData = img
       if (res.data.member.imageUrl) {
         console.log(res.data.member.imageUrl)
@@ -69,6 +70,8 @@ async function naverLogin() {
         return
       }
       const token = res.data.authtokens.accessToken
+      const refreshToken = res.data.authtokens.refreshToken
+      console.log(refreshToken)
       let urlData = img
       if (res.data.member.imageUrl) {
         console.log(res.data.member.imageUrl)
@@ -86,7 +89,8 @@ async function naverLogin() {
       }
       const data = {
         member: member,
-        token: token
+        token: token,
+        refreshToken: refreshToken
       }
       account.onLogin(data)
       router.push({ name: 'home' }).then(() => {

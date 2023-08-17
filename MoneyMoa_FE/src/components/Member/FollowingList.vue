@@ -26,22 +26,22 @@
   </v-container>
 </template>
 <script setup>
-import { ref, onMounted, watch, computed } from 'vue'
+import { ref, onMounted, watch } from 'vue'
 import { useRoute } from 'vue-router'
 import memberApi from '@/api/member.js'
 
 // 라우터로 타고 들어온 멤버 아이디
 const route = useRoute()
-const memberId = computed(() => route.params.id)
+const memberId = ref(route.params.id)
 
 const followingList = ref([])
 
 // 라우터 ID의 변경을 감지하여 정보를 업데이트하는 로직 추가
 watch(memberId, async (newMemberId) => {
   try {
-    const res = await memberApi.fetchFollowingList(newMemberId)
-    console.log(res)
-    followingList.value = res.data['my following list']
+    const res = await memberApi.fetchSpecificFollowingList(newMemberId)
+    console.log(res.data.membersFollowlist)
+    followingList.value = res.data.membersFollowlist
   } catch (error) {
     console.error('팔로잉 목록을 불러오는 중 에러가 발생했습니다:', error)
   }
@@ -50,9 +50,10 @@ watch(memberId, async (newMemberId) => {
 // 화면에 표시할 유저 데이터
 onMounted(async () => {
   try {
-    const res = await memberApi.fetchFollowingList()
-    console.log(res)
-    followingList.value = res.data['my following list']
+    console.log(memberId.value)
+    const res = await memberApi.fetchSpecificFollowingList(memberId.value)
+    console.log(res.data.membersFollowlist)
+    followingList.value = res.data.membersFollowlist
   } catch (error) {
     console.error('팔로잉 목록을 불러오는 중 에러가 발생했습니다:', error)
   }
@@ -69,7 +70,7 @@ const deleteFollow = async (toMemberId) => {
   }
 }
 </script>
-<style>
+<style scoped>
 .follower-card {
   margin: 20px;
 }

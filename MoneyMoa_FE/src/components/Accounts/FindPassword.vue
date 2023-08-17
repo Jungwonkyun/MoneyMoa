@@ -2,7 +2,7 @@
   <v-container>
     <v-sheet
       max-width="800"
-      class="mx-auto mt-8 rounded-lg px-10 py-5"
+      class="mx-auto mt-8 rounded-lg px-10 py-5 animate__animated animate__fadeIn"
       min-height="400"
       width="100%"
       elevation="3"
@@ -86,5 +86,8 @@ const Emailrules = [
   color: white;
   background-color: $primary-color;
   border-radius: 20px;
+}
+.animate__animated.animate__fadeIn {
+  --animate-duration: 2s;
 }
 </style>

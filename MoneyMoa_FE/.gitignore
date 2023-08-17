@@ -13,6 +13,8 @@ dist
 dist-ssr
 coverage
 
+.env
+.env.local
 
 /cypress/videos/
 /cypress/screenshots/

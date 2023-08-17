@@ -1,21 +1,28 @@
 <template>
   <v-row class="card-container" justify="center">
-    <v-card class="result ma-2" v-for="feed in feeds" :key="feed.id" text-center>
-      <v-col>
-        <v-carousel hide-delimiter-background show-arrows="hover">
-          <v-carousel-item v-for="(fileUrl, index) in feed.fileUrls" :key="index">
-            <router-link :to="'/challenge/feed/' + feed.id">
-              <v-img :src="fileUrl" height="100%"></v-img>
-            </router-link>
-          </v-carousel-item>
-        </v-carousel>
-      </v-col>
-      <v-col>{{ feed.id }}</v-col>
-      <v-col>
-        <v-card-text>{{ feed.content }}</v-card-text>
-      </v-col>
-      <v-col>{{ feed.hashtag }}</v-col>
-      <v-col>{{ feed.nickname }}</v-col>
+    <v-card
+      class="result ma-2 d-flex align-center"
+      v-for="feed in feeds"
+      :key="feed.id"
+      text-center
+    >
+      <v-row class="my-auto">
+        <v-col cols="6" class="justify-center">
+          <v-carousel hide-delimiter-background show-arrows="hover">
+            <v-carousel-item v-for="(fileUrl, index) in feed.fileUrls" :key="index">
+              <router-link :to="'/challenge/feed/' + feed.id">
+                <v-img :src="fileUrl" height="100%"></v-img>
+              </router-link>
+            </v-carousel-item>
+          </v-carousel>
+        </v-col>
+        <v-col cols="6">
+          <v-card-title>{{ feed.challengeTitle }}</v-card-title>
+          <v-card-title>{{ feed.nickname }}:</v-card-title>
+          <v-card-text>{{ feed.content }}</v-card-text>
+          <v-card-text>{{ feed.hashtag }}</v-card-text>
+        </v-col>
+      </v-row>
     </v-card>
     <InfiniteLoading @infinite="load" />
   </v-row>
@@ -98,13 +105,13 @@ console.log(feeds.value)
   gap: 5px;
   font-weight: 300;
   width: 100%;
-  height: 100%;
+  height: 600px;
   text-align: center;
   background: #f4f4f4;
 }
 
 .card-container {
-  max-height: 600px; /* 화면에 보여질 최대 높이 설정 */
+  max-height: 700px; /* 화면에 보여질 최대 높이 설정 */
   overflow-y: auto; /* 스크롤을 추가해야하는 영역을 정의 */
   width: 1000px;
   margin: 0 auto;
