@@ -86,6 +86,17 @@ public class Feed implements Serializable {
     @ApiModelProperty(hidden = true)
     private String challengeTitle;
 
+    //전체 조회의 좋아요 수
+    @Transient
+    private int likesCount;
+
+    public int getLikesCount() {
+        return this.likesCount;
+    }
+
+    public void setLikesCount(int likesCount) {
+        this.likesCount = likesCount;
+    }
 
     @Builder
         public Feed(String content, Long challengeId, String hashtag,

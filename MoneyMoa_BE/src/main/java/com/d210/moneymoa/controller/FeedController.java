@@ -157,9 +157,8 @@ public class FeedController {
                 // Feed 객체에 fileUrls 설정
                 feed.setFileUrls(fileUrls);
 
-
-
-                resultMap.put("likeCount", feed.getFeedLikes().size()); // 추가됨
+                // 각 피드의 좋아요 수를 resultMap에 추가
+                feed.setLikesCount(feed.getFeedLikes().size()); // 위치 및 변수명 변경
                 // 수정된 feed 객체를 modifiedFeedList에 추가
                 modifiedFeedList.add(feed);
             }
