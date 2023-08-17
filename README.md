@@ -25,10 +25,10 @@
         <h5>이상혁</h5>
       </td>
       <td align="center">
-        <h5>공익규</h5>
+        <h5>권종률</h5>
       </td>
       <td align="center">
-        <h5>권종률</h5>
+        <h5>공익규</h5>
       </td>
     </tr>
     <tr>
@@ -59,7 +59,7 @@
         BE Jira 관리<br>피드 구현<br>서비스 기획
       </td>
       <td align="center">
-        TypeScript<br>UI/UX<br>SockJS
+        계정관리&금융사전 구현<br>FE Jira 관리<br>UX/UI
       </td>
       <td align="center">
         유저정보&챌린지 구현<br>기획 문서<br>UX/UI
