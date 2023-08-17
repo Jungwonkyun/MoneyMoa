@@ -10,8 +10,8 @@
           </v-row>
           <v-row>
             <v-card-text>{{ room.description }}</v-card-text>
-            <v-divider></v-divider>
           </v-row>
+          <v-divider></v-divider>
           <v-card-actions>
             <v-row>
               <v-btn variant="text"> 참여자 목록 </v-btn>
@@ -23,9 +23,11 @@
             </v-row>
           </v-card-actions>
           <v-expand-transition>
-            <v-list lines="one" v-show="show">
+            <v-list lines="one" v-show="show" density="compact">
               <v-list-item v-for="(mem, index) in roomMembers" :key="index">
-                {{ mem.memberNickname }}
+                <router-link :to="{ name: 'member', params: { id: mem.memberId } }">
+                  {{ mem.memberNickname }}
+                </router-link>
               </v-list-item>
             </v-list>
           </v-expand-transition>
