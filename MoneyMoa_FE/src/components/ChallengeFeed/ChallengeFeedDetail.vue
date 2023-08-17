@@ -50,7 +50,7 @@
               <v-btn variant="text" @click="toUserPage(feed.memberId)">유저페이지</v-btn>
             </v-list-item>
             <v-list-item>
-              <v-btn variant="text" @click="addFollowing">팔로우</v-btn>
+              <v-btn variant="text" @click="addFollowing(feed.memberId)">팔로우</v-btn>
             </v-list-item>
           </v-list>
         </v-menu>
@@ -73,7 +73,7 @@
   </v-card>
 </template>
 <script setup>
-import { ref, onMounted, watchEffect, toRefs } from 'vue'
+import { ref, onMounted } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import challengeFeed from '@/api/challengeFeed.js'
 import memberApi from '@/api/member.js'
@@ -110,14 +110,14 @@ const hashtags = ref([])
 // 좋아요 수
 const likeCount = ref(0)
 
-// 팔로우 보낼 때 사용할 작성자 id
-const feedWriterId = ref(0)
-
 // 댓글 작성 모델
 const commentContent = ref('')
 
 // 피드 삭제 버튼 보여주기 위한 조건
 const deleteCondition = ref(false)
+
+// 좋아요 누른 사람들
+const likedMembers = ref([])
 
 const deleteFeed = async () => {
   try {
@@ -143,8 +143,8 @@ onMounted(async () => {
     challengeFeed.fetchFeedDetail(feedId.value).then((response) => {
       console.log(response)
       const feedData = response.data.feed
+      likedMembers.value = response.data.likedMembers
       getProfileImg(response.data.feed.memberId).then((response) => {
-        console.log(response.data.sombody.imageUrl)
         feedData.imgUrl = response.data.sombody.imageUrl
       })
       console.log(feedData)
@@ -218,20 +218,42 @@ const afterDelete = (response) => {
 // 좋아요
 const addFeedLike = async () => {
   try {
-    await challengeFeed.addFeedLike(feedId.value).then((response) => {
-      console.log(response)
-      likeCount.value++
-    })
+    if (
+      // 좋아요를 누른 사람들 중에 내가 없으면 좋아요 추가
+      !likedMembers.value.some((member) => member.id === memberId.value)
+    ) {
+      await challengeFeed.addFeedLike(memberId.value).then((response) => {
+        console.log(response)
+        likeCount.value++
+      })
+    } else {
+      await challengeFeed.deleteFeedLike(memberId.value).then((response) => {
+        console.log(response)
+        likeCount.value--
+      })
+    }
   } catch (error) {
     console.error('좋아요 에러:', error)
   }
 }
 
-// 팔로잉
-const addFollowing = async () => {
+// 좋아요 취소
+const deleteFeedLike = async () => {
   try {
-    console.log(feedWriterId.value)
-    await memberApi.addFollowing(feedWriterId.value).then((response) => {
+    await challengeFeed.deleteFeedLike(feedId.value).then((response) => {
+      console.log(response)
+      likeCount.value--
+    })
+  } catch (error) {
+    console.error('좋아요 취소 에러:', error)
+  }
+}
+
+// 팔로잉
+const addFollowing = async (memberId) => {
+  try {
+    console.log(memberId)
+    await memberApi.addFollowing(memberId).then((response) => {
       console.log(response)
     })
   } catch (error) {
