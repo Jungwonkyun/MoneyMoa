@@ -183,6 +183,9 @@ public class ChatRoomController {
         String messege = "";
         // 로그 찍기
         log.info("Request name: " + name);
+        name = name.replaceAll("\"","");
+        log.info("Request name: " + name);
+
 
         try{
             List<ChatRoomDto> chatRoomDto = chatRoomService.findRoomByName(name);
