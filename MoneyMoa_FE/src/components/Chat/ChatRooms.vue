@@ -65,7 +65,7 @@
       <v-container>
         <v-row class="align-end">
           <v-col cols="3">
-            <v-img v-if="!room.imgUrl" :height="200" aspect-ratio="4/3" :src="landing"></v-img>
+            <v-img v-if="!room.imgUrl" :height="200" aspect-ratio="4/3" :src="pencil_moa"></v-img>
             <v-img v-else :src="room.imgUrl" :height="200" aspect-ratio="4/3"></v-img>
           </v-col>
           <v-col align-self="start">
@@ -83,7 +83,7 @@ import { ref } from 'vue'
 import { useRouter } from 'vue-router'
 import { getRooms, enterRoom, createRoom, searchRoom } from '@/api/chat'
 import { useCookies } from 'vue3-cookies'
-import landing from '@/assets/img/micheile-henderson-f030K9IzpcM-unsplash.jpg'
+import pencil_moa from '@/assets/img/pencil_moa.png'
 
 const { cookies } = useCookies()
 const router = useRouter()
