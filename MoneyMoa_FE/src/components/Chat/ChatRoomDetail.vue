@@ -56,7 +56,7 @@
         </template>
       </v-toolbar>
       <v-card-text class="chatmessage-area overflow-auto">
-        <template v-for="(msg, index) in messages">
+        <template v-for="(msg, index) in messages" :key="index">
           <!-- <v-avatar><v-img :src=""></v-img></v-avatar> -->
           <span v-if="!isMine(msg.sender)" class="highlighted-value">
             {{ msg.sender }}
@@ -200,8 +200,11 @@ function connect(room, sender) {
     function (frame) {
       ws.subscribe(`/sub/api/chat/room/${room.roomId}`, function (message) {
         var recv = JSON.parse(message.body)
+        console.log(recv)
         // recvMessage 함수를 호출하고 반환된 값을 사용하여 messages 변수를 업데이트
-        messages.value.push(...recvMessage(recv))
+        if (recv.message) {
+          messages.value.push(...recvMessage(recv))
+        }
         // messages 갱신되면 스크롤 최하단으로 이동
         nextTick(() => {
           const chatArea = document.querySelector('.chatmessage-area')
