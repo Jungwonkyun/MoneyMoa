@@ -179,4 +179,7 @@ function isMine(sender) {
   max-width: 70%;
   /* height: auto !important; */
 }
+.v-toolbar {
+  background-color: $secondary-color;
+}
 </style>
