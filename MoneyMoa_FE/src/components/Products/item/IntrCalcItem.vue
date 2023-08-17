@@ -114,7 +114,7 @@ const spSum = computed(() => {
 })
 //최종 계산에 적용되는 이율(maxRate를 넘지 않게)
 const calcIntr = computed(() => {
-  if (productType.value === 'cma') {
+  if (productType.value === 'cma' || !calcDetail) {
     return props.retRate
   }
   let finIntr = Math.min(
