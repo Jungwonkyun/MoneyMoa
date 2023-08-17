@@ -79,7 +79,7 @@
 <br>
 
 # 📦 서비스 구조도
-![architecture.png](/image/achitecture.png) 
+![architecture.png](/image/architecture.png) 
 
 <br>
 <br>
