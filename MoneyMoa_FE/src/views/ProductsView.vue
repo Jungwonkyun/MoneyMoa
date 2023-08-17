@@ -1,11 +1,17 @@
 <template>
   <v-container>
-    <v-tabs v-model="productType" color="blue-accent-4" align-tabs="center" :disabled="false">
-      <router-link :to="{ name: 'depositList' }"><v-tab value="deposit">예금</v-tab></router-link>
-      <router-link :to="{ name: 'savingList' }"><v-tab value="saving">적금</v-tab></router-link>
-      <router-link :to="{ name: 'cmaList' }"><v-tab value="cma">CMA</v-tab></router-link>
-    </v-tabs>
-    <router-view />
+    <v-row class="d-flex justify-center">
+      <v-col cols="lg-10 xl-8">
+        <v-tabs v-model="productType" color="blue-accent-4" align-tabs="center" :disabled="false">
+          <router-link :to="{ name: 'depositList' }"
+            ><v-tab value="deposit">예금</v-tab></router-link
+          >
+          <router-link :to="{ name: 'savingList' }"><v-tab value="saving">적금</v-tab></router-link>
+          <router-link :to="{ name: 'cmaList' }"><v-tab value="cma">CMA</v-tab></router-link>
+        </v-tabs>
+        <router-view />
+      </v-col>
+    </v-row>
     <v-sheet class="fixed">
       <DictionarySide />
     </v-sheet>
