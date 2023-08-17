@@ -79,13 +79,13 @@
 <br>
 
 # 📦 서비스 구조도
-![architecture.png](..%2F..%2F..%2F..%2F..%2F..%2F..%2F..%2F..%2FDownloads%2Farchitecture.png)
+![architecture.png](/image/achitecture.png) 
 
 <br>
 <br>
 
 # 🌊 erd
-![moneymoa_erd](..%2F..%2F..%2F..%2F..%2F..%2F..%2F..%2F..%2FDownloads%2FUntitled%20%282%29.png)
+![moneymoa_erd](/image/erd.png) 
 
 
 <br>
