@@ -1,6 +1,6 @@
 <template>
   <v-expansion-panel>
-    <v-expansion-panel-title
+    <v-expansion-panel-title class="title"
       ><span v-html="highlightMatchedText(item.term)"></span>
     </v-expansion-panel-title>
     <v-expansion-panel-text>
@@ -34,4 +34,8 @@ onMounted(() => {
 })
 </script>
 
-<style></style>
+<style scoped>
+.title {
+  background: #e1f1ff;
+}
+</style>
