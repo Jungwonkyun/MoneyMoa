@@ -275,4 +275,7 @@ function isMine(sender) {
   text-shadow: 3px 3px 4px $grey-dark;
   font-size: 20px;
 }
+.v-toolbar {
+  background-color: $secondary-color;
+}
 </style>

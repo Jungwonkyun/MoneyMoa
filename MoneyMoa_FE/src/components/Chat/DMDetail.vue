@@ -116,7 +116,9 @@ function connect(room, sender) {
         console.log(message.body)
         var recv = JSON.parse(message.body)
         // recvMessage 함수를 호출하고 반환된 값을 사용하여 messages 변수를 업데이트
-        messages.value.push(...recvMessage(recv))
+        if (recv.message) {
+          messages.value.push(...recvMessage(recv))
+        }
         // messages 갱신되면 스크롤 최하단으로 이동
         nextTick(() => {
           const chatArea = document.querySelector('.chatmessage-area')
@@ -176,5 +178,8 @@ function isMine(sender) {
 .chatmessage-chip {
   max-width: 70%;
   /* height: auto !important; */
+}
+.v-toolbar {
+  background-color: $secondary-color;
 }
 </style>
