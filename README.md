@@ -164,6 +164,24 @@
 <br>
 <br>
 
+
+# Jira 번다운 차트 
+
+![image.png](image/image.png)
+
+
+<br>
+<br>
+
+
+# Figma 기획
+
+![image.png](image/figma.png)
+
+
+<br>
+<br>
+
 # 📁 폴더 구조
 ### Backend
 ```
