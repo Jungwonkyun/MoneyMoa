@@ -18,8 +18,8 @@
         </v-col>
         <v-col cols="6">
           <v-card-title>{{ feed.challengeTitle }}</v-card-title>
-          <v-card-title class="d-flex align-center"
-            ><v-img :src="imageUrl" class="profile-img"></v-img> {{ feed.nickname }}:
+          <v-card-title class="d-flex align-center">
+            <!-- <v-img :src=""></v-img> {{ feed.nickname }}: -->
           </v-card-title>
           <v-card-text>{{ feed.content }}</v-card-text>
           <v-card-text>{{ feed.hashtag }}</v-card-text>
@@ -37,10 +37,14 @@ import 'v3-infinite-loading/lib/style.css'
 import { useChallengeFeedStore } from '../../stores/challengeFeedStore'
 import { storeToRefs } from 'pinia'
 import challengeFeedApi from '@/api/challengeFeed.js'
-import { useCookies } from 'vue3-cookies'
+import memberApi from '@/api/member.js'
+import default_image from '../../assets/img/default_image.png'
 
-// 쿠키 사용
-const { cookies } = useCookies()
+// 기본이미지
+const defaultImage = default_image
+
+// getsombodyinfoapi를 통해 프로필 이미지 가져오기
+const getProfileImg = memberApi.getSombodyInfoApi
 
 // 스토어 사용
 const challengeFeedStore = useChallengeFeedStore()
@@ -54,9 +58,16 @@ const load = async ($state) => {
   try {
     // 만약 searchWord가 존재한다면 검색어를 통해 피드를 불러온다.
     if (searchWord.value) {
-      challengeFeedApi.searchFeed(searchWord.value).then((response) => {
-        console.log(response.data)
-        const data = response.data.reverse()
+      await challengeFeedApi.searchFeed(searchWord.value).then((response) => {
+        const feedList = response.data
+        feedList.forEach((feed) => {
+          getProfileImg(feed.memberId).then((response) => {
+            console.log(response.data.sombody.imageUrl)
+            feed[imgUrl] = response.data.sombody.imageUrl
+          })
+        })
+        console.log(feedList)
+        const data = feedList.reverse()
         // 만약 데이터가 2개 이하라면
         // $state.complete()를 호출하여 더 이상 데이터를 로딩하지 않고 완료 상태로 변경
         if (data.length < 2) $state.complete()
@@ -70,8 +81,14 @@ const load = async ($state) => {
     } else {
       // searchWord가 존재하지 않는다면 모든 피드를 불러온다.
       challengeFeedApi.fetchAllFeedList().then((response) => {
-        console.log(response.data.feedList)
-        const data = response.data.feedList.reverse()
+        const feedList = response.data.feedList
+        feedList.forEach((feed) => {
+          console.log(feed)
+          getProfileImg(feed.memberId).then((response) => {
+            feed[imgUrl] = response.data.sombody.imageUrl
+          })
+        })
+        const data = feedList.reverse()
         // 만약 데이터가 2개 이하라면
         // $state.complete()를 호출하여 더 이상 데이터를 로딩하지 않고 완료 상태로 변경
         if (data.length < 2) $state.complete()
@@ -87,6 +104,7 @@ const load = async ($state) => {
     $state.error()
   }
 }
+
 // `searchWord` 변경 시 `load` 함수 호출
 watchEffect(() => {
   console.log('searchWord', searchWord.value)
@@ -102,12 +120,6 @@ watchEffect(() => {
 onMounted(() => {
   searchWord.value = ''
 })
-
-// 쿠키에 저장된 정보 중 member 정보만 가져오기
-const memberData = cookies.get('member')
-console.log(memberData)
-// 쿠키에 저장된 정보 중 member 정보 중 imageUrl만 가져오기
-const imageUrl = ref(memberData.imageUrl)
 </script>
 
 <style>
