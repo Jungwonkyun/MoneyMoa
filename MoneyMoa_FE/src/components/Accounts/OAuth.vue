@@ -89,7 +89,8 @@ async function naverLogin() {
       }
       const data = {
         member: member,
-        token: token
+        token: token,
+        refreshToken: refreshToken
       }
       account.onLogin(data)
       router.push({ name: 'home' }).then(() => {

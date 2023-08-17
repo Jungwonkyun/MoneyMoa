@@ -2,7 +2,7 @@
   <v-container>
     <v-sheet
       max-width="1200"
-      class="mx-auto mt-8 rounded-lg px-10 py-5 animate__animated animate__backInLeft"
+      class="mx-auto mt-8 rounded-lg px-10 py-5 animate__animated animate__fadeInLeft"
       min-height="450"
       width="100%"
       elevation="3"

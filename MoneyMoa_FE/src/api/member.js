@@ -233,7 +233,7 @@ async function postUpdatedMember(data) {
 // 리프레시 토큰 이용한 토큰 재발급
 async function postGetAccessid() {
   const data = {
-    accessToken: cookies.get('accessTokenRef'),
+    accessToken: cookies.get('accessToken'),
     refreshToken: cookies.get('refreshToken')
   }
   try {

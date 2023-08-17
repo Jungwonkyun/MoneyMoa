@@ -1,8 +1,8 @@
 <template>
-  <v-container class="px-10 animate__animated animate__fadeInLeft">
-    <v-card :elevation="24" justify="center" class="rounded-xl">
+  <v-container class="animate__animated animate__fadeInLeft">
+    <v-card max-width="350" :elevation="5" class="rounded-xl">
       <v-row>
-        <v-col cols="12">
+        <v-col>
           <v-img
             width="250px"
             height="250px"
@@ -69,6 +69,7 @@ import img from '../../assets/img/default_image.png'
 import { useCookies } from 'vue3-cookies'
 import axios from 'axios'
 import 'animate.css'
+import { VSheet } from 'vuetify/lib/components/index.mjs'
 const { cookies } = useCookies()
 const route = useRoute()
 const router = useRouter()

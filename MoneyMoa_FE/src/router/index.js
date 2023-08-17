@@ -304,7 +304,7 @@ router.beforeEach(async (to, from, next) => {
   // 항상 토큰검사하고 나서 이동하기
 
   const account = useAccountStore()
-  await account.getNewToken()
+
   const urlPath = to.path.split('/').splice(1)
   const needLogin = ['profilechange', 'checkpassword', 'challenge', 'admin']
   const { isLogin } = storeToRefs(account)

@@ -1,10 +1,10 @@
 <template>
   <v-container>
-    <v-row justify="space-around">
-      <v-col cols="4">
+    <v-row>
+      <v-col>
         <UserInfo />
       </v-col>
-      <v-col cols="8">
+      <v-col>
         <router-view />
       </v-col>
     </v-row>

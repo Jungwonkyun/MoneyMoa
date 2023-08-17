@@ -40,7 +40,7 @@ onMounted(async () => {
   })
 })
 </script>
-<style>
+<style scoped>
 .follower-card {
   margin: 20px;
 }
