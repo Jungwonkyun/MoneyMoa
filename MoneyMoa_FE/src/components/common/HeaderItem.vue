@@ -46,7 +46,7 @@ const { isLogin, isAdmin } = storeToRefs(account)
 // const { isAdmin } = storeToRefs(account)
 // 관리자인지 확인하기
 </script>
-<style scoped lang="scss">
+<style lang="scss">
 .v-toolbar__content {
   justify-content: space-around;
 }
@@ -59,7 +59,7 @@ const { isLogin, isAdmin } = storeToRefs(account)
 .no-wrap {
   white-space: nowrap;
 }
-.v-btn i {
-  color: $logo-color;
-}
+// .v-btn i {
+//   color: $logo-color;
+// }
 </style>
