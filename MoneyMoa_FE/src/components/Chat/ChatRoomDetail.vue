@@ -26,6 +26,7 @@
             <v-list lines="one" v-show="show" density="compact">
               <v-list-item v-for="(mem, index) in roomMembers" :key="index">
                 <router-link :to="{ name: 'member', params: { id: mem.memberId } }">
+                  <v-avatar><v-img :src="mem.imgUrl"></v-img></v-avatar>
                   {{ mem.memberNickname }}
                 </router-link>
               </v-list-item>
@@ -56,13 +57,14 @@
       </v-toolbar>
       <v-card-text class="chatmessage-area overflow-auto">
         <template v-for="(msg, index) in messages">
+          <!-- <v-avatar><v-img :src=""></v-img></v-avatar> -->
+          <span v-if="!isMine(msg.sender)" class="highlighted-value">
+            {{ msg.sender }}
+          </span>
           <v-sheet
             :class="{ 'd-flex flex-row-reverse': isMine(msg.sender) }"
             class="pa-1 align-end"
           >
-            <h4 v-if="!isMine(msg.sender)">
-              {{ msg.sender }}
-            </h4>
             <v-chip
               class="chatmessage-chip white-space-normal"
               :color="isMine(msg.sender) ? 'primary' : ''"
@@ -91,11 +93,13 @@
 <script setup>
 import { ref, watch, nextTick } from 'vue'
 import { getRoomDetail, getRoomMembers, quitRoom } from '@/api/chat'
+import memberApi from '@/api/member'
 import { useRoute, useRouter } from 'vue-router'
 import Stomp from 'webstomp-client'
 import SockJS from 'sockjs-client'
 import dayjs from 'dayjs'
 import { useCookies } from 'vue3-cookies'
+import default_image from '@/assets/img/default_image.png'
 
 const { cookies } = useCookies()
 
@@ -103,7 +107,7 @@ var sock = new SockJS('https://i9d210.p.ssafy.io/api/ws-stomp')
 var ws = Stomp.over(sock)
 var reconnect = 0
 console.log(cookies.get('member').nickname + ' 등장')
-console.log(cookies.get('member'))
+// console.log(cookies.get('member'))
 console.log(cookies.get('accessToken'))
 
 const route = useRoute()
@@ -121,12 +125,20 @@ const show = ref(false)
 getRoomDetail(route.params.roomId).then((response) => {
   //방정보 가져오고
   room.value = response.data.chatroomInfo
-  // console.log(room.value)
+  console.log(room.value)
   //기존메시지 가져오고
   messages.value = response.data.chatMessages.filter((msg) => msg.message !== null)
-  //참여자 가져오고
+  //참여자랑 그 이미지url 가져오고
   getRoomMembers(room.value.roomId).then((response) => {
-    roomMembers.value = response.data.MemberwhoSubThisChatroom
+    const promises = response.data.MemberwhoSubThisChatroom.map((mem) =>
+      memberApi.getSombodyInfoApi(mem.memberId).then((response) => ({
+        ...mem,
+        imgUrl: response.data.sombody.imageUrl ? response.data.sombody.imageUrl : default_image
+      }))
+    )
+    Promise.all(promises).then((members) => {
+      roomMembers.value = members
+    })
   })
   //소켓연결합니다
   connect(room.value, nickName)
@@ -253,8 +265,8 @@ function isMine(sender) {
   max-width: 70%;
   /* height: auto !important; */
 }
-.room-info-card {
-}
+// .room-info-card {
+// }
 .room-title {
   color: white;
   text-shadow: 3px 3px 4px $grey-dark;

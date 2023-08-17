@@ -1,10 +1,10 @@
 <template>
   <v-container>
     <v-row>
-      <v-col>
+      <v-col col="4">
         <UserInfo />
       </v-col>
-      <v-col>
+      <v-col cols="8">
         <router-view />
       </v-col>
     </v-row>

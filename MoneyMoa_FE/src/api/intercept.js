@@ -35,7 +35,7 @@ export function setInterceptors(instance) {
             cookies.set('accessToken', res.RefreshedAccessToken)
             // 리프레시 토큰 수명만큼 새로 저장
             // isLogin값도 갱신해주자
-            isLogin.value = !!cookies.get('accessToken')
+            isLogin.value = true
           }
           console.log(res)
 
