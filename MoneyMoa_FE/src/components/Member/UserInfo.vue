@@ -73,8 +73,8 @@ const route = useRoute()
 const router = useRouter()
 
 // 라우터로 타고 들어온 멤버 아이디
-const memberId = computed(() => route.params.id)
-
+const memberId = ref(route.params.id)
+console.log(memberId.value)
 // 현재 로그인한 멤버 아이디
 const memberData = cookies.get('member')
 const loginMemberId = memberData.id
@@ -90,7 +90,7 @@ const email = ref('')
 const isMe = ref(false)
 
 // 라우터 ID의 변경을 감지하여 정보를 업데이트하는 로직 추가
-watch(memberId, async (newMemberId) => {
+watch(memberId.value, async (newMemberId) => {
   const response = await memberApi.getSombodyInfoApi(newMemberId)
   console.log(response)
   const sombody = response.data.sombody
@@ -112,7 +112,7 @@ watch(memberId, async (newMemberId) => {
 })
 
 onMounted(async () => {
-  const response = await memberApi.getSombodyInfoApi(memberId)
+  const response = await memberApi.getSombodyInfoApi(memberId.value)
   console.log(response)
   const sombody = response.data.sombody
   if (!sombody) {
