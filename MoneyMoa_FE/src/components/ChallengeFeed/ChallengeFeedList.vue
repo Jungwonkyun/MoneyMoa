@@ -116,20 +116,4 @@ console.log(feeds.value)
   width: 1000px;
   margin: 0 auto;
 }
-
-/* 전체 스크롤바에 스타일 적용 */
-::-webkit-scrollbar {
-  width: 10px; /* 스크롤바의 너비 */
-}
-
-/* 스크롤바의 스크롤 가능한 영역에 스타일 적용 */
-::-webkit-scrollbar-thumb {
-  background-color: $primary-color; /* 스크롤바 색상 */
-  border-radius: 5px; /* 스크롤바의 모서리 둥글기 */
-}
-
-/* 스크롤바의 트랙(배경)에 스타일 적용 */
-::-webkit-scrollbar-track {
-  background-color: #d0eaff; /* 스크롤바 배경색 */
-}
 </style>
