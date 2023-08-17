@@ -1,8 +1,8 @@
 <template>
   <v-container>
     <v-sheet
-      max-width="1200"
-      class="mx-auto mt-8 rounded-lg px-10 py-5 animate__animated animate__fadeInLeft"
+      max-width="1000"
+      class="mx-auto mt-8 rounded-lg px-10 py-5 sheet animate__animated animate__fadeInLeft"
       min-height="450"
       width="100%"
       elevation="3"
@@ -74,11 +74,14 @@ function onSearch() {
   )
 }
 </script>
-<style scoped lang="scss">
+<style scoped>
 .fixed {
   position: fixed;
   bottom: 100px;
   right: 10%;
   border-radius: 100px;
+}
+.sheet {
+  background: #bbdcf9;
 }
 </style>

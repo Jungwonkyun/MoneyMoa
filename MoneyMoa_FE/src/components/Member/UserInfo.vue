@@ -1,6 +1,6 @@
 <template>
   <v-container class="animate__animated animate__fadeInLeft">
-    <v-card max-width="350" :elevation="5" class="rounded-xl marginZero">
+    <v-card max-width="350" :elevation="5" class="rounded-xl">
       <v-row>
         <v-col>
           <v-img
@@ -185,8 +185,5 @@ function doDM(id) {
 }
 .circle {
   border-radius: 50%;
-}
-.marginZero {
-  margin-right: 0;
 }
 </style>

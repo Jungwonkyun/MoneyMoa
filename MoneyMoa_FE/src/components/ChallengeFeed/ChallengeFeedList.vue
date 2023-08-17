@@ -142,7 +142,7 @@ onMounted(() => {
 })
 </script>
 
-<style>
+<style scoped lang="scss">
 .result {
   gap: 5px;
   font-weight: 300;
