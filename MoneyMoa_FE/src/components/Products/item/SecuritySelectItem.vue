@@ -6,9 +6,9 @@
     <v-slide-group multiple show-arrows>
       <v-slide-group-item v-for="security in securityList" :key="securityList">
         <v-btn
-          class="ma-2 fin-btn"
+          class="ma-2"
           rounded
-          :color="security.selected ? 'primary' : undefined"
+          :class="{ 'chip-selected': security.selected }"
           @click="toggleSelected(security)"
         >
           <v-img

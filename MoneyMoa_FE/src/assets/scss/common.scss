@@ -78,5 +78,6 @@ a {
   background-color: #e5e5e5; /* 스크롤바 배경색 */
 }
 .moa-btn {
-  background-color: #ceebf5;
+  // background-color: $logo-color;
+  color: $logo-color;
 }
