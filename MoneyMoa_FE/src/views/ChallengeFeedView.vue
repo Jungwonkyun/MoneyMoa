@@ -2,7 +2,7 @@
   <v-container>
     <v-row>
       <v-col cols="12" class="ma-auto">
-        <SearchBar v-if="shouldShowSearchBar" @custom-event="handleEvent" />
+        <SearchBar v-if="shouldShowSearchBar" />
       </v-col>
       <v-col cols="12" class="ma-auto">
         <PostFeed />
@@ -10,7 +10,7 @@
     </v-row>
     <v-row>
       <v-col cols="12">
-        <router-view :search-word="searchWord"></router-view>
+        <router-view></router-view>
       </v-col>
     </v-row>
   </v-container>
@@ -19,14 +19,6 @@
 import { ref, computed } from 'vue'
 import SearchBar from '@/components/ChallengeFeed/item/SearchBar.vue'
 import PostFeed from '@/components/ChallengeFeed/item/PostFeed.vue'
-
-const searchWord = ref(null)
-
-const handleEvent = (word) => {
-  console.log(typeof word)
-  // console.log(word)
-  searchWord.value = word
-}
 
 // 특정 라우터 뷰에서만 SearchBar를 보여줄지 여부를 계산하는 computed 속성
 const shouldShowSearchBar = computed(() => {

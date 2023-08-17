@@ -52,7 +52,7 @@ const roomEmpty = ref(false)
 const myNickName = cookies.get('member').nickname
 
 getDMRooms().then((response) => {
-  dmRooms.value = response.data.dmList
+  dmRooms.value = response.data.dmList.reverse()
 })
 
 function enterDM(room) {

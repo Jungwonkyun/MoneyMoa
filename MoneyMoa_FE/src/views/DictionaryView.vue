@@ -33,9 +33,9 @@
         </v-col>
       </v-row>
     </v-sheet>
-    <v-sheet class="fixed">
+    <!-- <v-sheet class="fixed">
       <DictionarySide />
-    </v-sheet>
+    </v-sheet> -->
   </v-container>
 </template>
 

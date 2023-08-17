@@ -33,7 +33,7 @@
     <v-row v-if="!isNaN(result) && result > 0">
       <v-col
         ><span class="highlighted-value">{{ result }}</span
-        >원을 받을 수 있어요. (이자
+        >원을 받을 수 있어요. (세전이자
         {{ result - amount * (calcType === 'saving' ? period : 1) }}원)</v-col
       >
       <!-- 계산기록찜버튼(todo: 찜목록으로 바로가기 링크) -->

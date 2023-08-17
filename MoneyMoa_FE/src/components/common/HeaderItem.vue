@@ -59,4 +59,7 @@ const { isLogin, isAdmin } = storeToRefs(account)
 .no-wrap {
   white-space: nowrap;
 }
+// .v-btn i {
+//   color: $logo-color;
+// }
 </style>

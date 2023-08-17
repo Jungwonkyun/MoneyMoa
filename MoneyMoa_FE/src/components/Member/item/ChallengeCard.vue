@@ -107,16 +107,24 @@
   </v-carousel-item>
 </template>
 <script setup>
-import { ref, onMounted } from 'vue'
+import { ref, onMounted, watch } from 'vue'
 import challengeApi from '@/api/challenge.js'
 import { useCookies } from 'vue3-cookies'
+import { useRoute, useRouter } from 'vue-router'
+
+// 라우터 사용
+const route = useRoute()
+const router = useRouter()
 
 // 쿠키 사용
 const { cookies } = useCookies()
 
+// 라우터로 타고 들어온 멤버 아이디
+const memberId = ref(route.params.id)
+
 // 멤버 정보 호출
 const memberInfo = ref(cookies.get('member'))
-const memberId = ref(memberInfo.value.id)
+const loginMemberId = ref(memberInfo.value.id)
 
 // 챌린지 목록을 담을 배열
 const challenges = ref([])
@@ -136,7 +144,7 @@ const deleteChallenge = (challengeId) => {
   deleteChallenge(challengeId).then((response) => {
     console.log(response) // 응답 확인
     const getChallengeList = challengeApi.getChallengeList
-    getChallengeList(memberId.value).then((response) => {
+    getChallengeList(loginMemberId.value).then((response) => {
       console.log(response.data.challenges)
       challenges.value = response.data.challenges
     })
@@ -190,6 +198,12 @@ const handleFileUpload = (event) => {
     reader.readAsDataURL(file)
   }
 }
+
+watch(memberId, async (newMemberId) => {
+  const response = await challengeApi.getChallengeList(newMemberId)
+  console.log(response)
+  challenges.value = response.data.challenges
+})
 
 //// 마운트 시에 챌린지 리스트 API 호출, memberId가 변경되면 다시 호출
 onMounted(() => {
