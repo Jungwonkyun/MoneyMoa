@@ -5,6 +5,7 @@ import com.d210.moneymoa.repository.WikiRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -16,6 +17,15 @@ public class WikiServiceImpl implements WikiService {
     @Override
     public Wiki createWiki(Wiki wiki) {
         return wikiRepository.save(wiki);
+    }
+
+    @Override
+    public List<Wiki> createWikiList(List<Wiki> wikiList) {
+        List<Wiki> createdWikiList = new ArrayList<>();
+        for (Wiki wiki : wikiList) {
+            createdWikiList.add(createWiki(wiki));
+        }
+        return createdWikiList;
     }
 
     @Override

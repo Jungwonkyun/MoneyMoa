@@ -17,8 +17,9 @@ public class WikiController {
     private WikiService wikiService;
 
     @PostMapping("/create")
-    public ResponseEntity<Wiki> createWiki(@RequestBody Wiki wiki) {
-        return new ResponseEntity<>(wikiService.createWiki(wiki), HttpStatus.CREATED);
+    public ResponseEntity<List<Wiki>> createWiki(
+            @RequestBody List<Wiki> wikiList) {
+        return new ResponseEntity<>(wikiService.createWikiList(wikiList), HttpStatus.CREATED);
     }
 
     @GetMapping("/{id}")
