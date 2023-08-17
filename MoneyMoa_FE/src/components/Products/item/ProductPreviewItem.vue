@@ -1,7 +1,7 @@
 <template>
   <v-container class="pa-2">
     <router-link :to="getProductDetailRoute(product)">
-      <v-card variant="flat" class="product-card product-preview">
+      <v-card variant="flat" class="product-preview">
         <v-row>
           <v-col>
             <v-card-item>
@@ -32,6 +32,7 @@
         </v-row>
       </v-card>
     </router-link>
+    <v-divider :thickness="2" />
   </v-container>
 </template>
 <script setup>
@@ -40,7 +41,7 @@ import { useProductStore } from '@/stores/productStore'
 import { storeToRefs } from 'pinia'
 import { getIntrRange } from '@/api/product'
 import { loadBankIcons } from '@/api/icons'
-defineProps({
+const props = defineProps({
   product: Object
 })
 const store = useProductStore()
@@ -51,7 +52,7 @@ loadBankIcons().then((bankIcons) => {
   Object.assign(icons, bankIcons)
 })
 
-const getProductDetailRoute = (product) => {
+function getProductDetailRoute(product) {
   if (productType.value === 'deposit') {
     return {
       name: 'depositDetail',
@@ -63,6 +64,25 @@ const getProductDetailRoute = (product) => {
       params: { productCode: product.productCode }
     }
   }
+  return { name: 'chat' }
 }
+
+// const getProductDetailRoute = (product) => {
+//   if (productType.value === 'deposit') {
+//     return {
+//       name: 'depositDetail',
+//       params: { productCode: product.productCode }
+//     }
+//   } else if (productType.value === 'saving') {
+//     return {
+//       name: 'savingDetail',
+//       params: { productCode: product.productCode }
+//     }
+//   }
+// }
 </script>
-<style scoped lang="scss"></style>
+<style scoped lang="scss">
+.v-divider {
+  color: darkblue;
+}
+</style>

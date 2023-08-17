@@ -12,11 +12,7 @@
     <v-row>
       <v-progress-linear indeterminate v-if="!loaded" />
       <span v-else>결과 {{ filteredProducts.length }} 건</span>
-      <CMAPreviewItem
-        v-for="(product, index) in filteredProducts"
-        :key="index"
-        :product="product"
-      />
+      <CMAPreviewItem v-for="(product, index) in filteredProducts" :key="index" :cma="product" />
     </v-row>
   </v-container>
 </template>

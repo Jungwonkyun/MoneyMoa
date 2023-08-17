@@ -6,9 +6,9 @@
     <v-slide-group multiple show-arrows>
       <v-slide-group-item v-for="bank in bankList" :key="bankList">
         <v-btn
-          class="ma-2 fin-btn"
+          class="ma-2"
           rounded
-          :color="bank.selected ? 'primary' : undefined"
+          :class="{ 'chip-selected': bank.selected }"
           @click="toggleSelected(bank)"
         >
           <v-img v-if="icons[bank.name]" :src="icons[bank.name].default" class="fin-icon"></v-img>
@@ -40,4 +40,10 @@ const toggleSelected = (bank) => {
   bank.selected = !bank.selected
 }
 </script>
-<style scoped lang="scss"></style>
+<style scoped lang="scss">
+.chip-selected {
+  background-color: $secondary-color;
+  // outline: #0008ff solid;
+  color: black;
+}
+</style>
