@@ -112,9 +112,7 @@
 - Spring Security
 - redis 
 - Mongo DB
-
 - Java 11
-- AWS EC2
 - mariaDB
 - WebSocket
 
@@ -132,7 +130,7 @@
 
 ### 🖱️CI/CD
 
-- aws ec2
+- AWS EC2
 - docker
 - nginx
 - jenkins
