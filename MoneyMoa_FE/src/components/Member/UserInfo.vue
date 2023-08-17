@@ -117,6 +117,9 @@ onMounted(async () => {
   const response = await memberApi.getSombodyInfoApi(memberId.value)
   console.log(response)
   const sombody = response.data.sombody
+  if (!sombody) {
+    router.push({ name: 'NotFound' })
+  }
   nickname.value = sombody.nickname
   introduce.value = sombody.introduce
   imageUrl.value = sombody.imageUrl

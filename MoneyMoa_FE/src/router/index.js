@@ -2,6 +2,7 @@ import { createRouter, createWebHistory } from 'vue-router'
 import { useCookies } from 'vue3-cookies'
 import { useChallengeFeedStore } from '@/stores/challengeFeedStore'
 import { useRoute, useRouter } from 'vue-router'
+import NotFound from './NotFound.vue'
 
 // HomeView
 import HomeView from '../views/HomeView.vue'
@@ -46,6 +47,16 @@ const router = createRouter({
       path: '/',
       name: 'home',
       component: HomeView
+    },
+    {
+      path: '/:NotFound(.*)',
+      name: 'NotFound',
+      component: NotFound
+    },
+    {
+      path: '/404NotFound',
+      name: 'NotFound',
+      component: NotFound
     },
     {
       path: '/products',
@@ -153,6 +164,7 @@ const router = createRouter({
         }
       ]
     },
+
     // 사전 라우터
     {
       path: '/dictionary',
