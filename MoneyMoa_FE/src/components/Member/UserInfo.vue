@@ -1,8 +1,8 @@
 <template>
-  <v-container class="px-10">
-    <v-card :elevation="24" justify="center" class="rounded-xl">
+  <v-container class="animate__animated animate__fadeInLeft">
+    <v-card max-width="350" :elevation="5" class="rounded-xl marginZero">
       <v-row>
-        <v-col cols="12">
+        <v-col>
           <v-img
             width="250px"
             height="250px"
@@ -19,9 +19,25 @@
       <v-card-text class="text-center mb-6">
         {{ introduce }}
       </v-card-text>
-      <v-row class="d-flex justify-space-evenly mt-6 mb-6">
-        <v-btn cols="6" v-if="isMe !== true" @click="addFollow, followingDialog">팔로잉</v-btn>
+      <v-row v-if="isMe !== true" class="d-flex justify-space-evenly mt-6 mb-6">
+        <v-btn cols="6" @click="addFollow, followingDialog">팔로잉</v-btn>
         <v-btn cols="6" @click="doDM(memberId)">DM보내기</v-btn>
+      </v-row>
+      <v-row v-else class="ma-2">
+        <v-col class="text-center">
+          <v-btn>
+            <router-link :to="`/member/${memberId}/myproducts`" class="no-link-style text-center"
+              >찜한 상품 목록
+            </router-link>
+          </v-btn>
+        </v-col>
+        <v-col class="text-center">
+          <v-btn>
+            <router-link :to="`/member/${memberId}/myproducts`" class="no-link-style text-center">
+              정보 수정
+            </router-link>
+          </v-btn>
+        </v-col>
       </v-row>
 
       <v-divider class="border-opacity-20"></v-divider>
@@ -38,24 +54,6 @@
         <v-card-title>팔로잉</v-card-title>
       </router-link>
       <v-divider class="border-opacity-20"></v-divider>
-      <v-row class="ma-2">
-        <v-col class="text-center">
-          <v-btn>
-            <router-link :to="`/member/${memberId}/myproducts`" class="no-link-style text-center"
-              >찜한 상품 목록
-            </router-link>
-          </v-btn>
-        </v-col>
-      </v-row>
-      <v-row class="ma-2">
-        <v-col class="text-center">
-          <v-btn>
-            <router-link :to="`/member/${memberId}/myproducts`" class="no-link-style text-center">
-              정보 수정
-            </router-link>
-          </v-btn>
-        </v-col>
-      </v-row>
     </v-card>
   </v-container>
 </template>
@@ -65,10 +63,11 @@ import { ref, computed, watch, onUpdated, onMounted } from 'vue'
 import memberApi from '@/api/member.js'
 import { createDMRoom } from '@/api/chat'
 import { useRoute, useRouter } from 'vue-router'
-import img from '@/assets/img/beauty.png'
+import img from '../../assets/img/default_image.png'
 import { useCookies } from 'vue3-cookies'
 import axios from 'axios'
-
+import 'animate.css'
+import { VSheet } from 'vuetify/lib/components/index.mjs'
 const { cookies } = useCookies()
 const route = useRoute()
 const router = useRouter()
@@ -91,7 +90,7 @@ const email = ref('')
 const isMe = ref(false)
 
 // 라우터 ID의 변경을 감지하여 정보를 업데이트하는 로직 추가
-watch(memberId, async (newMemberId) => {
+watch(memberId.value, async (newMemberId) => {
   const response = await memberApi.getSombodyInfoApi(newMemberId)
   console.log(response)
   const sombody = response.data.sombody
@@ -101,6 +100,10 @@ watch(memberId, async (newMemberId) => {
   name.value = sombody.name
   email.value = sombody.email
 
+  // 이미지 없으면 기본사진으로 대체 -  권종률
+  if (!imageUrl.value) {
+    imageUrl.value = img
+  }
   if (loginMemberId === parseInt(newMemberId)) {
     isMe.value = true
   } else {
@@ -112,12 +115,19 @@ onMounted(async () => {
   const response = await memberApi.getSombodyInfoApi(memberId.value)
   console.log(response)
   const sombody = response.data.sombody
+  if (!sombody) {
+    router.push({ name: 'NotFound' })
+  }
   nickname.value = sombody.nickname
   introduce.value = sombody.introduce
   imageUrl.value = sombody.imageUrl
   name.value = sombody.name
   email.value = sombody.email
 
+  // 이미지 없으면 기본사진으로 대체 -  권종률
+  if (!imageUrl.value) {
+    imageUrl.value = img
+  }
   // 만약 불러온 유저 정보의 id가 로그인한 맴버 아이디와 일치한다면
   if (loginMemberId === parseInt(memberId.value)) {
     isMe.value = true
@@ -152,5 +162,8 @@ function doDM(id) {
 }
 .circle {
   border-radius: 50%;
+}
+.marginZero {
+  margin-right: 0;
 }
 </style>

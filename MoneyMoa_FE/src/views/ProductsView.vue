@@ -24,8 +24,8 @@ const { productType } = storeToRefs(store)
 <style scoped lang="scss">
 .fixed {
   position: fixed;
-  bottom: 100px;
-  right: 10%;
+  bottom: 5vh;
+  right: 5vw;
   border-radius: 100px;
 }
 </style>

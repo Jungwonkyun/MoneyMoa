@@ -11,6 +11,7 @@ import com.d210.moneymoa.service.StorageService;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -24,9 +25,11 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+
 @RequiredArgsConstructor
 @RestController
 @RequestMapping("/api/chat")
+@Slf4j
 public class ChatRoomController {
 
     private final ChatRoomService chatRoomService;
@@ -171,18 +174,27 @@ public class ChatRoomController {
     @ApiOperation(value = "검색하고 싶은 방 이름으로 채팅방 찾기")
     @PostMapping("/room/search")
     @ResponseBody
-    public ResponseEntity<Map<String, Object>> searchRoom(@ApiParam(value = "검색어") @RequestBody String name) {
+    public ResponseEntity<Map<String, Object>> searchRoom(
+            @ApiParam(value = "검색어") @RequestBody String name) {
 
         HashMap<String, Object>resultMap = new HashMap<>();
 
         HttpStatus status;
         String messege = "";
+        // 로그 찍기
+        log.info("Request name: " + name);
+        name = name.replaceAll("\"","");
+        log.info("Request name: " + name);
+
 
         try{
             List<ChatRoomDto> chatRoomDto = chatRoomService.findRoomByName(name);
             messege = "success";
             status = HttpStatus.OK;
             resultMap.put("message", messege);
+
+            log.info("ChatRoomDTO: " + chatRoomDto);
+
             resultMap.put("chatroomInfo",chatRoomDto);
         }catch (Exception e){
             messege = "fail";

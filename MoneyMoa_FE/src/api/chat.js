@@ -133,6 +133,17 @@ async function quitRoom(roomId) {
     console.log(error)
   }
 }
+
+async function searchRoom(keyword) {
+  try {
+    console.log(keyword + '를 검색해요')
+    const response = await api.post('room/search', keyword)
+    return response
+  } catch (error) {
+    console.log(error)
+  }
+}
+
 export {
   getRooms,
   getRoomDetail,
@@ -143,5 +154,6 @@ export {
   getDMRooms,
   createDMRoom,
   enterDMRoom,
-  getDMRoomDetail
+  getDMRoomDetail,
+  searchRoom
 }

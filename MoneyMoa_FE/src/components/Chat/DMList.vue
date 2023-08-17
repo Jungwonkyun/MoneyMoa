@@ -78,6 +78,7 @@ function roomOppo(room) {
 .empty-card {
   height: 80vh;
   background-color: $secondary-color;
+  background-color: #cedfff;
 }
 .dm-card {
   width: 100%;

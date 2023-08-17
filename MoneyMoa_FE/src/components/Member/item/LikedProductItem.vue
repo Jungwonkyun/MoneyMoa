@@ -35,8 +35,8 @@
             {{ liked.amount }}원을 {{ liked.period }}개월 동안 예치하면
           </v-row>
           <v-row v-else>{{ liked.period }}개월 동안 {{ liked.amount }}원씩 납입하면</v-row>
-          <v-row>
-            <span class="highlighted-value">{{ liked.result }}</span> 원 수령
+          <v-row class="d-flex justify-end">
+            <span class="highlighted-value">{{ liked.result }}</span> 원
           </v-row>
         </v-col>
         <v-col cols="auto"

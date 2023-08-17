@@ -2,6 +2,7 @@ import { createRouter, createWebHistory } from 'vue-router'
 import { useCookies } from 'vue3-cookies'
 import { useChallengeFeedStore } from '@/stores/challengeFeedStore'
 import { useRoute, useRouter } from 'vue-router'
+import NotFound from './NotFound.vue'
 
 // HomeView
 import HomeView from '../views/HomeView.vue'
@@ -46,6 +47,16 @@ const router = createRouter({
       path: '/',
       name: 'home',
       component: HomeView
+    },
+    {
+      path: '/:NotFound(.*)',
+      name: 'NotFound',
+      component: NotFound
+    },
+    {
+      path: '/404NotFound',
+      name: 'NotFound',
+      component: NotFound
     },
     {
       path: '/products',
@@ -153,6 +164,7 @@ const router = createRouter({
         }
       ]
     },
+
     // 사전 라우터
     {
       path: '/dictionary',
@@ -293,6 +305,7 @@ const router = createRouter({
 router.beforeEach((to) => {
   const store = useProductStore()
   const productTypeValue = to.path.split('/')[2]
+  if (to.path.split('/')[1] !== 'products') return
   if (['deposit', 'saving', 'cma'].includes(productTypeValue)) {
     store.productType = productTypeValue
   }
@@ -300,11 +313,8 @@ router.beforeEach((to) => {
 
 // 로그인 필요한 페이지
 router.beforeEach(async (to, from, next) => {
-  // 전역에서 이동할때마다 토큰 갱신하기
-  // 항상 토큰검사하고 나서 이동하기
-
   const account = useAccountStore()
-  await account.getNewToken()
+
   const urlPath = to.path.split('/').splice(1)
   const needLogin = ['profilechange', 'checkpassword', 'challenge', 'admin']
   const { isLogin } = storeToRefs(account)

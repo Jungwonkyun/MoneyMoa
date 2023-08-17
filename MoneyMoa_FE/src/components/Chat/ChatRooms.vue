@@ -1,10 +1,11 @@
 <template>
   <v-container>
-    <v-row class="my-2">
-      <h3>전체 채팅방 목록</h3>
+    <v-row class="my-2 align-center">
+      <h3>채팅방 목록</h3>
+      <v-btn @click="allRoom" rounded class="moa-btn mx-2" variant="text">전체보기</v-btn>
       <v-spacer></v-spacer>
-      <v-btn v-if="cookies.get('accessToken')"
-        >채팅방 만들기
+      <v-btn v-if="cookies.get('accessToken')" rounded class="mx-2" variant="text">
+        <v-icon icon="mdi-chat-plus"></v-icon>
         <v-dialog v-model="dialog" activator="parent" persistent width="auto">
           <v-card>
             <v-card-title class="text-center mt-4"> 채팅방 생성 </v-card-title>
@@ -45,6 +46,21 @@
         </v-dialog>
       </v-btn>
     </v-row>
+    <v-row>
+      <v-text-field
+        clearable
+        class="chatroom-search"
+        placeholder="방 제목으로 검색"
+        variant="underlined"
+        append-inner-icon="mdi-magnify"
+        @keyup.enter="onSearch"
+        v-model="keyword"
+      >
+        <template #append-inner-icon>
+          <v-icon @click="onSearch" icon="mdi-magnify" />
+        </template>
+      </v-text-field>
+    </v-row>
     <v-card v-for="(room, index) in roomList" :key="index" class="chatroom-card ma-4">
       <v-container>
         <v-row class="align-end">
@@ -65,7 +81,7 @@
 <script setup>
 import { ref } from 'vue'
 import { useRouter } from 'vue-router'
-import { getRooms, enterRoom, createRoom } from '@/api/chat'
+import { getRooms, enterRoom, createRoom, searchRoom } from '@/api/chat'
 import { useCookies } from 'vue3-cookies'
 import landing from '@/assets/img/micheile-henderson-f030K9IzpcM-unsplash.jpg'
 
@@ -74,15 +90,21 @@ const router = useRouter()
 const dialog = ref(false)
 const roomName = ref('')
 const roomDesc = ref('')
+const keyword = ref('')
 
 const UploadImg = ref(null)
 const previewURL = ref(null)
 
 const roomList = ref([])
-getRooms().then((response) => {
-  console.log(response.data)
-  roomList.value = response.data.roomList
-})
+
+function allRoom() {
+  getRooms().then((response) => {
+    console.log(response.data)
+    roomList.value = response.data.roomList
+  })
+}
+allRoom()
+
 function enter(roomId) {
   enterRoom(roomId)
     .then((response) => {
@@ -129,11 +151,18 @@ function previewChangeImg() {
   reader.readAsDataURL(UploadImg.value[0])
 }
 
-// const defaultImage = (e) => {
-//   e.target.src = landing
-// }
 function defaultImage(e) {
   e.target.src = landing
+}
+
+function onSearch() {
+  if (!keyword.value) return
+  console.log('검색어는 ')
+  console.log(keyword.value)
+  searchRoom(keyword.value).then((response) => {
+    console.log(response.data)
+    roomList.value = response.data.chatroomInfo
+  })
 }
 </script>
 <style scoped lang="scss">
