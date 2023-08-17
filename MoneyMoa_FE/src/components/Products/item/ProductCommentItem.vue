@@ -1,6 +1,6 @@
 <template>
   <v-container>
-    <v-row>
+    <v-row class="align-center my-2">
       <v-textarea
         v-model="commentContent"
         variant="outlined"
@@ -8,16 +8,17 @@
         rows="2"
         no-resize
         @keyup.enter="write($event)"
+        hide-details
       ></v-textarea>
-      <v-btn @click="write">댓글 작성</v-btn>
+      <v-btn @click="write" class="ml-4">댓글 작성</v-btn>
     </v-row>
     <!-- 댓글목록 -->
     <v-sheet v-if="commentList.length">
       <template v-for="(item, index) in commentList" :key="index">
         <v-card variant="flat">
           <v-row>
-            <v-col cols="2">
-              <v-card-title>{{ item.nickname }}</v-card-title>
+            <v-col cols="3">
+              <v-card-title class="comment-nickname">{{ item.nickname }}</v-card-title>
               <v-card-subtitle>{{ formatDate(item.createdAt) }}</v-card-subtitle>
             </v-col>
             <v-col cols="7">
@@ -31,7 +32,7 @@
                 class="modiarea"
               ></v-textarea>
             </v-col>
-            <v-col cols="3" v-if="checkId(item.memberId)">
+            <v-col cols="2" class="pa-1" v-if="checkId(item.memberId)">
               <v-btn variant="text" @click="modifyCmt(item)">수정</v-btn>
               <v-btn variant="text" @click="deleteCmt(item.id)">삭제</v-btn>
             </v-col>
@@ -40,7 +41,7 @@
         </v-card>
       </template>
     </v-sheet>
-    <v-sheet v-else> 댓글이 없습니다. </v-sheet>
+    <v-sheet v-else class="d-flex justify-center my-2"> 댓글이 없습니다. </v-sheet>
   </v-container>
 </template>
 <script setup>
@@ -112,5 +113,9 @@ function checkId(cmtWriterId) {
 <style>
 .modiarea {
   width: 100%;
+}
+.comment-nickname {
+  font-size: 16px;
+  font-weight: bold;
 }
 </style>
