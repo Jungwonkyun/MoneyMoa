@@ -61,21 +61,16 @@
         </template>
       </v-text-field>
     </v-row>
-    <v-card v-for="(room, index) in roomList" :key="index" class="chatroom-card ma-4">
-      <v-container>
-        <v-row class="align-end">
-          <v-col cols="3">
-            <v-img v-if="!room.imgUrl" :height="200" aspect-ratio="4/3" :src="pencil_moa"></v-img>
-            <v-img v-else :src="room.imgUrl" :height="200" aspect-ratio="4/3"></v-img>
-          </v-col>
-          <v-col align-self="start">
-            <v-card-title>{{ room.name }}</v-card-title>
-            <v-card-subtitle>{{ room.description }}</v-card-subtitle>
-          </v-col>
-          <v-btn @click="enter(room.roomId)">입장</v-btn>
-        </v-row>
-      </v-container>
-    </v-card>
+    <v-row no-gutters class="d-flex flex-row">
+      <v-col v-for="(room, index) in roomList" :key="index" cols="lg-3 md-4">
+        <v-card class="chatroom-card ma-4" @click="enter(room.roomId)">
+          <v-img v-if="!room.imgUrl" :height="200" aspect-ratio="4/3" :src="pencil_moa"></v-img>
+          <v-img v-else :src="room.imgUrl" :height="200" aspect-ratio="4/3"></v-img>
+          <v-card-title>{{ room.name }}</v-card-title>
+          <v-card-subtitle class="mb-2">{{ room.description }}</v-card-subtitle>
+        </v-card>
+      </v-col>
+    </v-row>
   </v-container>
 </template>
 <script setup>
