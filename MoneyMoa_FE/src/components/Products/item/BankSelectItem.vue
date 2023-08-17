@@ -40,10 +40,10 @@ const toggleSelected = (bank) => {
   bank.selected = !bank.selected
 }
 </script>
-<style scoped lang="scss">
+<style lang="scss">
 .chip-selected {
-  background-color: $secondary-color;
+  background-color: $logo-color;
   // outline: #0008ff solid;
-  color: black;
+  color: white;
 }
 </style>
