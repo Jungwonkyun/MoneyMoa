@@ -6,7 +6,7 @@
     <v-slide-group multiple show-arrows>
       <v-slide-group-item v-for="bank in bankList" :key="bankList">
         <v-btn
-          class="ma-2"
+          class="ma-2 fin-btn"
           rounded
           :color="bank.selected ? 'primary' : undefined"
           @click="toggleSelected(bank)"

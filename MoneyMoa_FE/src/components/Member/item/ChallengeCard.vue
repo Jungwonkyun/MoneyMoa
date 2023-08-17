@@ -1,8 +1,10 @@
 <template>
   <v-carousel-item class="mx-auto" v-for="(challenge, index) in challenges" :key="index">
     <v-card>
-      <v-img :src="challenge.fileUrls[0]" class="align-end text-white" cover max-height="500">
-        <v-card-title> {{ challenge.title }} </v-card-title>
+      <v-img :src="challenge.fileUrls[0]" class="align-end text-white" cover>
+        <v-card-title>
+          <span class="shadow-text">{{ challenge.title }} </span></v-card-title
+        >
       </v-img>
 
       <v-card-actions>
