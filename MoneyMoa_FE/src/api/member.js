@@ -81,7 +81,7 @@ async function addFollowing(toMemberId) {
   }
 }
 
-// 팔로워 유저 목록 API
+// 내 팔로워 유저 목록 API
 async function fetchFollowerList() {
   try {
     const res = await apiWithAuth.get(`/follow/myfollower`)
@@ -91,7 +91,7 @@ async function fetchFollowerList() {
   }
 }
 
-// 팔로워 유저 목록 API
+// 내 팔로워 유저 목록 API
 async function fetchFollowingList() {
   try {
     const res = await apiWithAuth.get(`/follow/myfollowing`)
@@ -101,18 +101,27 @@ async function fetchFollowingList() {
   }
 }
 
-//언팔로우 API
-// async function deleteFollow(toMemberId) {
-//   try {
-//     const res = await apiWithAuth.delete(`/follow/unfollowing`, )
-//     return res
-//   } catch (err) {
-//     console.log(err)
-//   }
-// }
+// 특정 유저의 팔로잉 목록 API
+async function fetchSpecificFollowingList(memberId) {
+  try {
+    const res = await apiWithAuth.post(`/follow/memberfollowinglist/`, memberId)
+    return res
+  } catch (err) {
+    console.log(err)
+  }
+}
 
-// 팔로잉 API
-// 유저 토큰이랑 팔로우 할 사람의 id를 보내면 됨
+// 특정 유저의 팔로워 목록 API
+async function fetchSpecificFollowerList(memberId) {
+  try {
+    const res = await apiWithAuth.post(`/follow/memberfollowerlist/`, memberId)
+    return res
+  } catch (err) {
+    console.log(err)
+  }
+}
+
+//언팔로우 API
 async function deleteFollow(toMemberId) {
   try {
     console.log(toMemberId)
@@ -248,6 +257,8 @@ export default {
   addFollowing,
   fetchFollowerList,
   fetchFollowingList,
+  fetchSpecificFollowingList,
+  fetchSpecificFollowerList,
   fetchFeedList,
   deleteFollow,
   postEmailauth,
@@ -262,7 +273,6 @@ export default {
   openkakaoLogout,
   openNaverLogin,
   postNaverLogin,
-
   postUpdatedMember,
   postGetAccessid,
   postCheckPassword,
