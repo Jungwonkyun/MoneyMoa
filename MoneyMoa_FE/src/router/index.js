@@ -312,9 +312,6 @@ router.beforeEach((to) => {
 
 // 로그인 필요한 페이지
 router.beforeEach(async (to, from, next) => {
-  // 전역에서 이동할때마다 토큰 갱신하기
-  // 항상 토큰검사하고 나서 이동하기
-
   const account = useAccountStore()
 
   const urlPath = to.path.split('/').splice(1)

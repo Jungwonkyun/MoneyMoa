@@ -247,6 +247,7 @@ async function postGetAccessid() {
   }
   try {
     const res = await api.post('/auth/getaccessid', data)
+    console.log(res.data)
     return res.data
   } catch (err) {
     console.log(err)
