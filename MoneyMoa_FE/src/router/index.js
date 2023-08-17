@@ -305,6 +305,7 @@ const router = createRouter({
 router.beforeEach((to) => {
   const store = useProductStore()
   const productTypeValue = to.path.split('/')[2]
+  if (to.path.split('/')[1] !== 'products') return
   if (['deposit', 'saving', 'cma'].includes(productTypeValue)) {
     store.productType = productTypeValue
   }
