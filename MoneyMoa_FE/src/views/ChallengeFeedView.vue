@@ -1,10 +1,10 @@
 <template>
   <v-container>
     <v-row>
-      <v-col cols="12" class="ma-auto">
+      <v-col cols="12" class="fiexd ma-auto">
         <SearchBar v-if="shouldShowSearchBar" />
       </v-col>
-      <v-col cols="12" class="ma-auto">
+      <v-col cols="12" class="fiexd ma-auto">
         <PostFeed />
       </v-col>
     </v-row>

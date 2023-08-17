@@ -3,7 +3,7 @@
     <v-row justify="center">
       <v-dialog v-model="dialog" persistent width="auto">
         <template v-slot:activator="{ props }">
-          <v-btn icon="mdi-pencil" variant="text" v-bind="props"> </v-btn>
+          <v-btn variant="text" v-bind="props"> 게시글 작성하기 </v-btn>
         </template>
         <v-card>
           <v-card-title class="text-center mt-4">
@@ -31,7 +31,7 @@
                 </v-col>
                 <v-col cols="12">
                   <v-text-field
-                    label="해시태그를 추가하세요"
+                    label="#으로 시작하는 해시태그를 추가하세요. 해시태그는 공백으로 구분하세요. ex) #저축 #저축왕"
                     required
                     variant="solo-filled"
                     v-model="hashtag"

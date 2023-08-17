@@ -2,7 +2,7 @@
   <v-card
     v-for="(feed, index) in feeds"
     :key="index"
-    class="mx-auto my-12"
+    class="mx-auto mb-10"
     max-width="700"
     :elevation="3"
   >

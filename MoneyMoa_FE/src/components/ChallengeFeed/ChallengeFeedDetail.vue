@@ -1,6 +1,6 @@
 <template>
   <v-card class="mx-auto" max-width="700" :elevation="10">
-    <v-carousel hide-delimiters show-arrows="hover">
+    <v-carousel hide-delimiters show-arrows="hover" v-model="selectedSlide">
       <v-carousel-item
         v-for="(fileUrl, index) in feed.fileUrls"
         :key="index"
@@ -8,8 +8,8 @@
         cover
         :value="index"
       >
-        <v-card-title
-          ><span class="shadow-text text-white">{{ feed.challengeTitle }}</span>
+        <v-card-title>
+          <span class="shadow-text text-white">{{ feed.challengeTitle }}</span>
         </v-card-title>
       </v-carousel-item>
     </v-carousel>
@@ -17,7 +17,7 @@
     <v-row align="center" class="mt-1">
       <v-col cols="9" class="d-flex flex-row justify-start">
         <v-card-subtitle v-for="(hashtag, index) in hashtags" :key="index">
-          <v-chip @click.stop="searchFeed(해시태그1)">{{ hashtag }}</v-chip>
+          <v-chip @click.stop="searchFeed(hashtag)">{{ hashtag }}</v-chip>
         </v-card-subtitle>
       </v-col>
 
@@ -74,6 +74,7 @@
     ></v-text-field>
   </v-card>
 </template>
+
 <script setup>
 import { ref, onMounted } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
@@ -85,49 +86,31 @@ import PostComment from './item/PostComment.vue'
 
 import { apiInstance } from '@/api/index.js'
 
-// 쿠키 사용
 const { cookies } = useCookies()
 const api = apiInstance()
 
-// 멤버 정보 호출
 const memberInfo = ref(cookies.get('member'))
 const memberId = ref(memberInfo.value.id)
 
-// getsombodyinfoapi를 통해 프로필 이미지 가져오기
 const getProfileImg = memberApi.getSombodyInfoApi
 
 const route = useRoute()
 const router = useRouter()
 const feedId = ref(route.params.feedId)
 
-// 댓글 데이터 담을 변수
 const comments = ref([])
-
-// 피드 데이터 담을 변수
 const feed = ref({})
-
-// 해시태그 담을 변수
 const hashtags = ref([])
-
-// 좋아요 수
 const likeCount = ref(0)
-
-// 댓글 작성 모델
 const commentContent = ref('')
-
-// 피드 삭제 버튼 보여주기 위한 조건
 const deleteCondition = ref(false)
-
-// 좋아요 누른 사람들
-const likedMembers = ref([])
-
-// 팔로잉 여부
+const likedList = ref([])
 const isFollowing = ref(false)
+const selectedSlide = ref(0)
 
 const deleteFeed = async () => {
   try {
     await challengeFeed.deleteFeed(feedId.value)
-    // 삭제 성공 후에 이전 화면으로 이동
     router.push('/challenge/feedList').then(() => {
       location.reload()
     })
@@ -136,26 +119,22 @@ const deleteFeed = async () => {
   }
 }
 
-// 마운트 시에 피드 상세 조회 API 호출, memberId가 변경되면 다시 호출
 onMounted(async () => {
   try {
     challengeFeed.fetchFeedDetail(feedId.value).then((response) => {
-      console.log(response)
       const feedData = response.data.feed
-      likedMembers.value = response.data.likedMembers
+      for (const likedMember of response.data.likedMembers) {
+        likedList.value.push(likedMember.memberId)
+      }
       getProfileImg(response.data.feed.memberId).then((response) => {
         feedData.imgUrl = response.data.sombody.imageUrl
       })
       feed.value = feedData
-      // 정규식을 사용하여 '#'으로 시작하는 단어를 추출하여 리스트로 만듦
       hashtags.value = response.data.feed.hashtag.match(/#[^\s#]+/g) || []
       likeCount.value = response.data.likeCount
 
-      // 피드 작성자가 내 팔로잉 목록에 있으면 팔로우 버튼 숨기기
       memberApi.fetchFollowingList().then((response) => {
-        console.log(response)
         const followingList = response.data['my following list']
-        // 만약 팔로잉 리스트에 피드 작성자가 있으면 팔로우 버튼 숨기기
         for (const following of followingList) {
           if (following.toMemberId === feedData.memberId) {
             isFollowing.value = true
@@ -164,7 +143,6 @@ onMounted(async () => {
         }
       })
 
-      // 댓글 프로필 이미지 가져오기
       const promises = response.data.comments.map((comment) =>
         getProfileImg(comment.memberId).then((response) => ({
           ...comment,
@@ -172,73 +150,52 @@ onMounted(async () => {
         }))
       )
       Promise.all(promises).then((res) => {
-        console.log(res)
         comments.value = res
       })
     })
+    selectedSlide.value = 0
   } catch (error) {
     console.error('피드 상세 조회 중 에러:', error)
   }
 })
 
-console.log(feed)
-
-// 마운트 시에 유저 피드 목록 조회하여 이 피드가 해당 유저 피드면 삭제 버튼 보여주기
 onMounted(async () => {
   challengeFeed.getUserFeedList(memberId.value).then((response) => {
     const data = response.data.feedList
-    // data 순회하면서 id만 추출
     const feedIdList = data.map((item) => item.id)
     const intFeedId = parseInt(feedId.value)
-    // feedIdList에 현재 피드 id가 있으면 condition을 true로 변경
     if (feedIdList.includes(intFeedId)) {
       deleteCondition.value = true
     }
   })
 })
 
-// 마운트하면 팔로우 여부 확인
-
-// 댓글 생성 및 댓글 목록 조회
 const addComment = async () => {
   try {
     const commentData = {
       content: commentContent.value
     }
-
-    // 댓글 생성
     await challengeFeed.postComment(feedId.value, commentData)
-
-    // 댓글 목록 업데이트
     const response = await challengeFeed.fetchFeedDetail(feedId.value)
     comments.value = response.data.comments
-
-    // 입력 필드 초기화
     commentContent.value = ''
   } catch (error) {
     console.error('에러 발생:', error)
   }
 }
 
-// emit받은 댓글 삭제 이후 데이터 다시 넣기
 const afterDelete = (response) => {
   comments.value = response
 }
 
-// 좋아요
 const addFeedLike = async () => {
   try {
-    if (
-      // 좋아요를 누른 사람들 중에 내가 없으면 좋아요 추가
-      !likedMembers.value.some((member) => member.id === memberId.value)
-    ) {
+    if (!likedList.value.includes(parseInt(memberId.value))) {
       await challengeFeed.addFeedLike(memberId.value).then((response) => {
-        console.log(response)
         likeCount.value++
       })
     } else {
       await challengeFeed.deleteFeedLike(memberId.value).then((response) => {
-        console.log(response)
         likeCount.value--
       })
     }
@@ -247,11 +204,9 @@ const addFeedLike = async () => {
   }
 }
 
-// 좋아요 취소
 const deleteFeedLike = async () => {
   try {
     await challengeFeed.deleteFeedLike(feedId.value).then((response) => {
-      console.log(response)
       likeCount.value--
     })
   } catch (error) {
@@ -259,10 +214,8 @@ const deleteFeedLike = async () => {
   }
 }
 
-// 팔로잉
 const addFollowing = async (memberId) => {
   try {
-    console.log(memberId)
     await memberApi.addFollowing(memberId).then((response) => {
       console.log(response)
     })
@@ -271,7 +224,6 @@ const addFollowing = async (memberId) => {
   }
 }
 
-// 유저 페이지로 이동
 const toUserPage = (memberId) => {
   console.log(memberId)
   router.push(`/member/${memberId}`)
