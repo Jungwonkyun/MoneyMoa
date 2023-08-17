@@ -1,5 +1,8 @@
-import { ref } from 'vue'
+import { ref, watch } from 'vue'
 import { defineStore } from 'pinia'
+import { useRouter } from 'vue-router'
+
+const router = useRouter()
 
 export const useProductStore = defineStore('product', () => {
   const productType = ref('deposit')

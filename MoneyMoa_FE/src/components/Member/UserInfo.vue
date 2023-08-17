@@ -19,9 +19,25 @@
       <v-card-text class="text-center mb-6">
         {{ introduce }}
       </v-card-text>
-      <v-row class="d-flex justify-space-evenly mt-6 mb-6">
-        <v-btn cols="6" v-if="isMe !== true" @click="addFollow, followingDialog">팔로잉</v-btn>
+      <v-row v-if="isMe !== true" class="d-flex justify-space-evenly mt-6 mb-6">
+        <v-btn cols="6" @click="addFollow, followingDialog">팔로잉</v-btn>
         <v-btn cols="6" @click="doDM(memberId)">DM보내기</v-btn>
+      </v-row>
+      <v-row v-else class="ma-2">
+        <v-col class="text-center">
+          <v-btn>
+            <router-link :to="`/member/${memberId}/myproducts`" class="no-link-style text-center"
+              >찜한 상품 목록
+            </router-link>
+          </v-btn>
+        </v-col>
+        <v-col class="text-center">
+          <v-btn>
+            <router-link :to="`/member/${memberId}/myproducts`" class="no-link-style text-center">
+              정보 수정
+            </router-link>
+          </v-btn>
+        </v-col>
       </v-row>
 
       <v-divider class="border-opacity-20"></v-divider>
@@ -38,24 +54,6 @@
         <v-card-title>팔로잉</v-card-title>
       </router-link>
       <v-divider class="border-opacity-20"></v-divider>
-      <v-row class="ma-2">
-        <v-col class="text-center">
-          <v-btn>
-            <router-link :to="`/member/${memberId}/myproducts`" class="no-link-style text-center"
-              >찜한 상품 목록
-            </router-link>
-          </v-btn>
-        </v-col>
-      </v-row>
-      <v-row class="ma-2">
-        <v-col class="text-center">
-          <v-btn>
-            <router-link :to="`/member/${memberId}/myproducts`" class="no-link-style text-center">
-              정보 수정
-            </router-link>
-          </v-btn>
-        </v-col>
-      </v-row>
     </v-card>
   </v-container>
 </template>
