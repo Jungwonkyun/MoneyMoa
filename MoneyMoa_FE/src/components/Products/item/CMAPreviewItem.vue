@@ -4,38 +4,39 @@
     <router-link
       :to="{
         name: 'cmaDetail',
-        params: { id: product.id }
+        params: { id: cma.id }
       }"
     >
-      <v-card variant="flat" class="product-card product-preview">
+      <v-card variant="flat" class="product-preview">
         <v-row>
           <v-col>
             <v-card-item>
               <v-row no-gutters>
                 <v-col cols="auto">
                   <v-img
-                    v-if="icons[product.stockName]"
-                    :src="icons[product.stockName].default"
+                    v-if="icons[cma.stockName]"
+                    :src="icons[cma.stockName].default"
                     class="fin-icon"
                   ></v-img>
                 </v-col>
                 <v-col>
                   <v-card-subtitle>
-                    {{ product.stockName }}
+                    {{ cma.stockName }}
                   </v-card-subtitle>
                 </v-col>
               </v-row>
               <v-card-title>
-                {{ product.cmaName }}
+                {{ cma.cmaName }}
               </v-card-title>
             </v-card-item>
           </v-col>
           <v-col cols="2" align-self="center">
-            수익률 <span class="highlighted-value">{{ product[RBJ] }}%</span>
+            수익률 <span class="highlighted-value">{{ cma[RBJ] }}%</span>
           </v-col>
         </v-row>
       </v-card>
     </router-link>
+    <v-divider :thickness="2" />
   </v-container>
 </template>
 <script setup>
@@ -45,8 +46,9 @@ import { storeToRefs } from 'pinia'
 import { loadSecuIcons } from '@/api/icons'
 const store = useProductStore()
 const { RBJ } = storeToRefs(store)
-defineProps({
-  product: Object
+const props = defineProps({
+  product: Object,
+  cma: Object
 })
 
 const icons = reactive({})
@@ -55,4 +57,8 @@ loadSecuIcons().then((secuIcons) => {
   // console.log(icons)
 })
 </script>
-<style></style>
+<style scoped lang="scss">
+.v-divider {
+  color: darkblue;
+}
+</style>

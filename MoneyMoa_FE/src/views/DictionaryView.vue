@@ -1,8 +1,8 @@
 <template>
   <v-container>
     <v-sheet
-      max-width="1200"
-      class="mx-auto mt-8 rounded-lg px-10 py-5 animate__animated animate__fadeInLeft"
+      max-width="1000"
+      class="mx-auto mt-8 rounded-lg px-10 py-5 sheet animate__animated animate__fadeInLeft"
       min-height="450"
       width="100%"
       elevation="3"
@@ -33,50 +33,55 @@
         </v-col>
       </v-row>
     </v-sheet>
-    <v-sheet class="fixed">
+    <!-- <v-sheet class="fixed">
       <DictionarySide />
-    </v-sheet>
+    </v-sheet> -->
   </v-container>
 </template>
 
 <script setup>
 import DictionaryItem from '../components/Dictionary/item/DictionaryItem.vue'
 import DictionarySide from '../components/Dictionary/DictionarySide.vue'
-import { ref } from 'vue'
+import { ref, onMounted } from 'vue'
 import 'animate.css'
-const Item1 = {
-  word: 'item1',
-  description:
-    '오케이 ㅋ adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.'
+import functions from '../api/dictionary.js'
+
+const list = ref(null)
+let listall = null
+async function getDict() {
+  try {
+    const res = await functions.getDictionary()
+    listall = res.data
+    list.value = res.data
+  } catch (error) {
+    alert(error)
+    console.error(error)
+  }
 }
-const Item2 = {
-  word: 'item2',
-  description:
-    'Lorem ipsum dolor sit amet, consectetur  elit, sed do eiusmod tempor incididunt ut labore et dolore  aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.'
-}
-const Item3 = {
-  word: 'item3',
-  description:
-    'Lorem ipsum dolor sit, consectetur  elit, sed do eiusmod tempor  ut labore et dolore magna aliqua. Ut  ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.'
-}
+onMounted(() => {
+  getDict()
+})
+
 const searchWord = ref('')
-const list = ref([Item1, Item2, Item3])
-const listall = [Item1, Item2, Item3]
+
 function onSearch() {
-  if (!searchWord) {
+  if (!searchWord.value) {
     list.value = listall
     return
   }
   list.value = listall.filter(
-    (item) => item.word.includes(searchWord.value) || item.description.includes(searchWord.value)
+    (item) => item.term.includes(searchWord.value) || item.definition.includes(searchWord.value)
   )
 }
 </script>
-<style scoped lang="scss">
+<style scoped>
 .fixed {
   position: fixed;
   bottom: 100px;
   right: 10%;
   border-radius: 100px;
+}
+.sheet {
+  background: #bbdcf9;
 }
 </style>

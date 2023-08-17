@@ -1,11 +1,11 @@
 <template>
   <v-container>
-    <v-row class="my-2">
+    <v-row class="my-2 align-center">
       <h3>채팅방 목록</h3>
+      <v-btn @click="allRoom" rounded class="moa-btn mx-2" variant="text">전체보기</v-btn>
       <v-spacer></v-spacer>
-      <v-btn @click="allRoom">전체 채팅방 보기</v-btn>
-      <v-btn v-if="cookies.get('accessToken')"
-        >채팅방 만들기
+      <v-btn v-if="cookies.get('accessToken')" rounded class="mx-2" variant="text">
+        <v-icon icon="mdi-chat-plus"></v-icon>
         <v-dialog v-model="dialog" activator="parent" persistent width="auto">
           <v-card>
             <v-card-title class="text-center mt-4"> 채팅방 생성 </v-card-title>
@@ -61,21 +61,16 @@
         </template>
       </v-text-field>
     </v-row>
-    <v-card v-for="(room, index) in roomList" :key="index" class="chatroom-card ma-4">
-      <v-container>
-        <v-row class="align-end">
-          <v-col cols="3">
-            <v-img v-if="!room.imgUrl" :height="200" aspect-ratio="4/3" :src="landing"></v-img>
-            <v-img v-else :src="room.imgUrl" :height="200" aspect-ratio="4/3"></v-img>
-          </v-col>
-          <v-col align-self="start">
-            <v-card-title>{{ room.name }}</v-card-title>
-            <v-card-subtitle>{{ room.description }}</v-card-subtitle>
-          </v-col>
-          <v-btn @click="enter(room.roomId)">입장</v-btn>
-        </v-row>
-      </v-container>
-    </v-card>
+    <v-row no-gutters class="d-flex flex-row">
+      <v-col v-for="(room, index) in roomList" :key="index" cols="lg-3 md-4">
+        <v-card class="chatroom-card ma-4" @click="enter(room.roomId)">
+          <v-img v-if="!room.imgUrl" :height="200" aspect-ratio="4/3" :src="pencil_moa"></v-img>
+          <v-img v-else :src="room.imgUrl" :height="200" aspect-ratio="4/3"></v-img>
+          <v-card-title>{{ room.name }}</v-card-title>
+          <v-card-subtitle class="mb-2">{{ room.description }}</v-card-subtitle>
+        </v-card>
+      </v-col>
+    </v-row>
   </v-container>
 </template>
 <script setup>
@@ -83,7 +78,7 @@ import { ref } from 'vue'
 import { useRouter } from 'vue-router'
 import { getRooms, enterRoom, createRoom, searchRoom } from '@/api/chat'
 import { useCookies } from 'vue3-cookies'
-import landing from '@/assets/img/micheile-henderson-f030K9IzpcM-unsplash.jpg'
+import pencil_moa from '@/assets/img/pencil_moa.png'
 
 const { cookies } = useCookies()
 const router = useRouter()
@@ -100,7 +95,8 @@ const roomList = ref([])
 function allRoom() {
   getRooms().then((response) => {
     console.log(response.data)
-    roomList.value = response.data.roomList
+    roomList.value = response.data.roomList.reverse()
+    keyword.value = ''
   })
 }
 allRoom()
@@ -135,7 +131,7 @@ function submitRoom() {
     .then((response) => {
       getRooms().then((response) => {
         console.log(response.data)
-        roomList.value = response.data.roomList
+        roomList.value = response.data.roomList.reverse()
       })
     })
     .catch((error) => {

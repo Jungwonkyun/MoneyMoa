@@ -130,7 +130,6 @@ public class FeedController {
             status = HttpStatus.BAD_REQUEST;
             // resultMap에 실패 메시지를 추가
             resultMap.put("message", "fail");
-
         }
         // 최종 결과와 설정된 HTTP 상태를 반환하는 ResponseEntity 객체를 반환
         return new ResponseEntity<>(resultMap, status);
@@ -143,12 +142,9 @@ public class FeedController {
         HttpStatus status;
         List<Feed> feedList;
         Map<String, Object> resultMap = new HashMap<String, Object>();
-
         try {
             feedList = feedService.getAllFeeds();
-
             List<Feed> modifiedFeedList = new ArrayList<>();
-
             for (Feed feed : feedList) {
                 List<FeedFile> feedFiles = feed.getFeedFiles();
                 List<String> fileUrls = new ArrayList<>();
@@ -158,10 +154,11 @@ public class FeedController {
                     URL fileUrl = s3Client.getUrl("moneymoa-first-bucket", feedFile.getImgPath());
                     fileUrls.add(fileUrl.toString());
                 }
-
                 // Feed 객체에 fileUrls 설정
                 feed.setFileUrls(fileUrls);
 
+                // 각 피드의 좋아요 수를 resultMap에 추가
+                feed.setLikesCount(feed.getFeedLikes().size()); // 위치 및 변수명 변경
                 // 수정된 feed 객체를 modifiedFeedList에 추가
                 modifiedFeedList.add(feed);
             }
@@ -188,11 +185,8 @@ public class FeedController {
         HttpStatus status;
         List<Feed> feedList;
         Map<String, Object> resultMap = new HashMap<String, Object>();
-
         try {
             feedList = feedService.getMemberFeeds(memberId);
-
-
             for (Feed feed : feedList) {
                 List<FeedFile> feedFiles = feed.getFeedFiles();
                 List<String> fileUrls = new ArrayList<>();
@@ -251,7 +245,7 @@ public class FeedController {
             List<HashMap<String, Object>> likedMembers = feed.getFeedLikes().stream()
                     .map(feedLike -> {
                         HashMap<String, Object> likedMember = new HashMap<>();
-                        likedMember.put("memberId", feedLike.getMember());
+                        likedMember.put("memberId", feedLike.getMemberId());
                         likedMember.put("nickname", feedLike.getNickname());
                         return likedMember;
                     })

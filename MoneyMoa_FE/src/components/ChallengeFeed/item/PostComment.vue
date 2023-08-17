@@ -1,8 +1,15 @@
 <template>
   <v-card-text>
-    {{ comment.nickname }}: {{ comment.content }}
-    <v-btn icon="mdi-delete" variant="text" @click="deleteComment(comment.id)"></v-btn>
-    <v-btn icon="mdi-pencil" variant="text" @click="updateCondition = !updateCondition"></v-btn>
+    <v-row>
+      <v-col cols="8" class="profile-container">
+        <img :src="comment.imgUrl" class="profile-img" />
+        <span class="comment"> {{ comment.nickname }}: {{ comment.content }} </span>
+      </v-col>
+      <v-col cols="4" class="d-flex justify-end">
+        <v-btn icon="mdi-delete" variant="text" @click="deleteComment(comment.id)"></v-btn>
+        <v-btn icon="mdi-pencil" variant="text" @click="updateCondition = !updateCondition"></v-btn>
+      </v-col>
+    </v-row>
     <v-text-field
       v-if="updateCondition"
       class="px-5"
@@ -80,4 +87,21 @@ const updateComment = async (commentId) => {
   }
 }
 </script>
-<style></style>
+<style>
+.profile-img {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  margin-right: 10px;
+}
+
+.profile-container {
+  display: flex; /* 수평 정렬을 위해 flex 컨테이너로 설정 */
+  align-items: center; /* 요소들을 수직 가운데 정렬 */
+}
+
+.comment {
+  font-size: 15px;
+  font-weight: 400;
+}
+</style>
