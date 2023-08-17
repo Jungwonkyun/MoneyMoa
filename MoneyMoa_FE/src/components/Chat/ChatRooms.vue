@@ -100,7 +100,8 @@ const roomList = ref([])
 function allRoom() {
   getRooms().then((response) => {
     console.log(response.data)
-    roomList.value = response.data.roomList
+    roomList.value = response.data.roomList.reverse()
+    keyword.value = ''
   })
 }
 allRoom()
@@ -135,7 +136,7 @@ function submitRoom() {
     .then((response) => {
       getRooms().then((response) => {
         console.log(response.data)
-        roomList.value = response.data.roomList
+        roomList.value = response.data.roomList.reverse()
       })
     })
     .catch((error) => {
