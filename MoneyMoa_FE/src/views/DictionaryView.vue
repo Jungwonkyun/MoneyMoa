@@ -1,10 +1,11 @@
 <template>
   <v-container>
     <v-sheet
-      max-width="900"
-      class="mx-auto mt-8 rounded-lg px-10 py-5"
+      max-width="1200"
+      class="mx-auto mt-8 rounded-lg px-10 py-5 animate__animated animate__fadeInLeft"
       min-height="450"
       width="100%"
+      elevation="3"
     >
       <v-row>
         <v-col>
@@ -42,7 +43,7 @@
 import DictionaryItem from '../components/Dictionary/item/DictionaryItem.vue'
 import DictionarySide from '../components/Dictionary/DictionarySide.vue'
 import { ref } from 'vue'
-
+import 'animate.css'
 const Item1 = {
   word: 'item1',
   description:

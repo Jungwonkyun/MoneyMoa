@@ -32,19 +32,18 @@ export function setInterceptors(instance) {
 
           const res = await functions.postGetAccessid()
           if (res.message === 'success') {
-            cookies.set('accessToken', res.RefreshedAccessToken, '30MIN')
-            const expireTimes = cookies.get('expireTimes')
+            cookies.set('accessToken', res.RefreshedAccessToken)
             // 리프레시 토큰 수명만큼 새로 저장
-            cookies.set('accessTokenRef', res.RefreshedAccessToken, expireTimes)
             // isLogin값도 갱신해주자
             isLogin.value = !!cookies.get('accessToken')
           }
           console.log(res)
-          flag = true
+
           originalRequest.headers.Authorization = `Bearer ${res.RefreshedAccessToken}`
           return instance(originalRequest)
         } catch (err) {
           alert('다시 로그인 해주세요.')
+          account.onLogout()
           throw err
         }
       }
