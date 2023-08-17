@@ -82,12 +82,6 @@ const load = async ($state) => {
       // searchWord가 존재하지 않는다면 모든 피드를 불러온다.
       challengeFeedApi.fetchAllFeedList().then((response) => {
         const feedList = response.data.feedList
-        feedList.forEach((feed) => {
-          console.log(feed)
-          getProfileImg(feed.memberId).then((response) => {
-            feed[imgUrl] = response.data.sombody.imageUrl
-          })
-        })
         const data = feedList.reverse()
         // 만약 데이터가 2개 이하라면
         // $state.complete()를 호출하여 더 이상 데이터를 로딩하지 않고 완료 상태로 변경
