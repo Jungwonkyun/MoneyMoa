@@ -1,21 +1,35 @@
 <template>
   <v-container class="chat-container align-start justify-center">
-    <v-dialog v-model="dialog" width="auto">
-      <v-card>
-        <v-card-title class="text-h6">{{ room.name }} 정보</v-card-title>
-        <v-card-text>{{ room.description }}</v-card-text>
-        <v-table>
-          <thead>
-            <tr>
-              참여자 목록
-            </tr>
-          </thead>
-          <tbody>
-            <tr v-for="(member, index) in roomMembers" :key="index">
-              <td>{{ member.memberNickname }}</td>
-            </tr>
-          </tbody>
-        </v-table>
+    <v-dialog v-model="dialog" width="480">
+      <v-card class="room-info-card">
+        <v-container>
+          <v-row :class="{ 'room-title': room.imgUrl }">
+            <v-img :src="room.imgUrl" class="align-end">
+              <v-card-title class="text-h4">{{ room.name }} 정보</v-card-title>
+            </v-img>
+          </v-row>
+          <v-row>
+            <v-card-text>{{ room.description }}</v-card-text>
+            <v-divider></v-divider>
+          </v-row>
+          <v-card-actions>
+            <v-row>
+              <v-btn variant="text"> 참여자 목록 </v-btn>
+              <v-spacer></v-spacer>
+              <v-btn
+                :icon="show ? 'mdi-chevron-up' : 'mdi-chevron-down'"
+                @click="show = !show"
+              ></v-btn>
+            </v-row>
+          </v-card-actions>
+          <v-expand-transition>
+            <v-list lines="one" v-show="show">
+              <v-list-item v-for="(mem, index) in roomMembers" :key="index">
+                {{ mem.memberNickname }}
+              </v-list-item>
+            </v-list>
+          </v-expand-transition>
+        </v-container>
       </v-card>
     </v-dialog>
     <v-card variant="outlined" class="chat-card">
@@ -99,6 +113,7 @@ const nickName = cookies.get('member').nickname
 const myId = cookies.get('member').id
 const dialog = ref(false)
 const roomMembers = ref([])
+const show = ref(false)
 
 //room이 가진 것? roomId, name(방제), chatMsg배열
 getRoomDetail(route.params.roomId).then((response) => {
@@ -235,5 +250,12 @@ function isMine(sender) {
 .chatmessage-chip {
   max-width: 70%;
   /* height: auto !important; */
+}
+.room-info-card {
+}
+.room-title {
+  color: white;
+  text-shadow: 3px 3px 4px $grey-dark;
+  font-size: 20px;
 }
 </style>
