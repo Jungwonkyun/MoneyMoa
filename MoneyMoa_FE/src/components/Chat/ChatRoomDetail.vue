@@ -253,8 +253,8 @@ function isMine(sender) {
   max-width: 70%;
   /* height: auto !important; */
 }
-.room-info-card {
-}
+// .room-info-card {
+// }
 .room-title {
   color: white;
   text-shadow: 3px 3px 4px $grey-dark;
