@@ -19,12 +19,15 @@
 
       <v-card-subtitle>
         <span class="me-1">{{ feed.hashtag }}</span>
-
-        <v-icon color="error" icon="mdi-fire-circle" size="small"></v-icon>
       </v-card-subtitle>
     </v-card-item>
 
     <v-card-text>
+      <div class="profile-container">
+        <img :src="feed.imgUrl" class="profile-img" /><span class="profile-nickname">{{
+          feed.nickname
+        }}</span>
+      </div>
       <div class="my-4 text-subtitle-1">{{ feed.content }}</div>
     </v-card-text>
 
@@ -161,5 +164,16 @@ onMounted(() => {
   width: 30px;
   height: 30px;
   border-radius: 50%;
+  margin-right: 10px;
+}
+
+.profile-container {
+  display: flex; /* 수평 정렬을 위해 flex 컨테이너로 설정 */
+  align-items: center; /* 요소들을 수직 가운데 정렬 */
+}
+
+.profile-nickname {
+  font-size: 17px;
+  font-weight: 500;
 }
 </style>

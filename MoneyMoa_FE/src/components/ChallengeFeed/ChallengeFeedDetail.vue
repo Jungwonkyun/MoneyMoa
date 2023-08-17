@@ -1,12 +1,16 @@
 <template>
   <v-card class="mx-auto" max-width="700" :elevation="10">
-    <v-carousel hide-delimiter-background show-arrows="hover">
-      <v-carousel-item v-for="(fileUrl, index) in fileUrls" :key="index">
-        <v-img :src="fileUrl" height="100%" class="align-end text-white" cover>
-          <v-card-title
-            ><span class="shadow-text">{{ challengeTitle }}</span>
-          </v-card-title>
-        </v-img>
+    <v-carousel hide-delimiters show-arrows="hover">
+      <v-carousel-item
+        v-for="(fileUrl, index) in feed.fileUrls"
+        :key="index"
+        :src="fileUrl"
+        cover
+        :value="index"
+      >
+        <v-card-title
+          ><span class="shadow-text text-white">{{ feed.challengeTitle }}</span>
+        </v-card-title>
       </v-carousel-item>
     </v-carousel>
 
@@ -17,7 +21,7 @@
         </v-card-subtitle>
       </v-col>
 
-      <v-col cols="3" class="flex">
+      <v-col cols="3" class="flex px-0 ma-0">
         <v-btn @click.stop="addFeedLike" size="large" icon="mdi-heart" variant="text"></v-btn>
         {{ likeCount }}
 
@@ -32,19 +36,26 @@
       </v-col>
     </v-row>
     <v-divider></v-divider>
-    <v-card-text class="my-5">
-      <v-hover v-slot="{ isHovering, props }">
-        <h3 v-bind="props">
-          {{ nickname }}:
-          <v-expand-transition>
-            <v-card :elevation="10" v-if="isHovering"
-              ><v-btn variant="text">유저 페이지</v-btn
-              ><v-btn variant="text" @click="addFollowing">팔로잉 </v-btn></v-card
-            >
-          </v-expand-transition>
-        </h3>
-      </v-hover>
-      {{ content }}
+    <v-card-text>
+      <div class="profile-container">
+        <v-menu open-on-hover>
+          <template v-slot:activator="{ props }">
+            <img :src="feed.imgUrl" class="profile-img" />
+            <v-btn variant="text" class="profile-nickname" v-bind="props">
+              {{ feed.nickname }}
+            </v-btn>
+          </template>
+          <v-list>
+            <v-list-item>
+              <v-btn variant="text" @click="toUserPage(feed.memberId)">유저페이지</v-btn>
+            </v-list-item>
+            <v-list-item>
+              <v-btn variant="text" @click="addFollowing">팔로우</v-btn>
+            </v-list-item>
+          </v-list>
+        </v-menu>
+      </div>
+      <div class="my-4 text-subtitle-1">{{ feed.content }}</div>
     </v-card-text>
     <v-divider></v-divider>
     <div v-for="(comment, index) in comments" :key="index">
@@ -62,7 +73,7 @@
   </v-card>
 </template>
 <script setup>
-import { ref, onMounted, onUpdated } from 'vue'
+import { ref, onMounted, watchEffect, toRefs } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import challengeFeed from '@/api/challengeFeed.js'
 import memberApi from '@/api/member.js'
@@ -80,19 +91,24 @@ const api = apiInstance()
 const memberInfo = ref(cookies.get('member'))
 const memberId = ref(memberInfo.value.id)
 
+// getsombodyinfoapi를 통해 프로필 이미지 가져오기
+const getProfileImg = memberApi.getSombodyInfoApi
+
 const route = useRoute()
 const router = useRouter()
 const feedId = ref(route.params.feedId)
 
-// 화면에 표시할 데이터
-const content = ref('')
-const challenge = ref('')
-const challengeTitle = ref('')
-const hashtags = ref([])
+// 댓글 데이터 담을 변수
 const comments = ref([])
-const nickname = ref('')
+
+// 피드 데이터 담을 변수
+const feed = ref({})
+
+// 해시태그 담을 변수
+const hashtags = ref([])
+
+// 좋아요 수
 const likeCount = ref(0)
-const fileUrls = ref([])
 
 // 팔로우 보낼 때 사용할 작성자 id
 const feedWriterId = ref(0)
@@ -107,55 +123,52 @@ const deleteFeed = async () => {
   try {
     await challengeFeed.deleteFeed(feedId.value)
     // 삭제 성공 후에 이전 화면으로 이동
-    router.go(-1)
+    router.push('/challenge/feedList').then(() => {
+      location.reload()
+    })
   } catch (error) {
     console.error('피드 삭제 중 에러:', error)
   }
 }
 
+// feed관찰하다가 변경 사항
+// feed.value = response.data.feed
+// // 정규식을 사용하여 '#'으로 시작하는 단어를 추출하여 리스트로 만듦
+// hashtags.value = response.data.feed.hashtag.match(/#[^\s#]+/g) || []
+// likeCount.value = response.data.likeCount
+
 // 마운트 시에 피드 상세 조회 API 호출, memberId가 변경되면 다시 호출
 onMounted(async () => {
   try {
-    // const response = await challengeFeed.fetchFeedDetail(feedId.value)
-    // console.log(response)
-    // fileUrls.value = response.data.feed.fileUrls
-    // console.log(fileUrls.value)
-    // content.value = response.data.feed.content
-    // // imgs.value = response.data.feed.fileUrls
-    // challenge.value = response.data.feed.challengeId
-    // challengeTitle.value = response.data.feed.challengeTitle
-    // // 정규식을 사용하여 '#'으로 시작하는 단어를 추출하여 리스트로 만듦
-    // hashtags.value = response.data.feed.hashtag.match(/#[^\s#]+/g) || []
-    // comments.value = response.data.comments
-    // likeCount.value = response.data.likeCount
-    // nickname.value = response.data.feed.nickname
-    // feedWriterId.value = response.data.feed.memberId
-
     challengeFeed.fetchFeedDetail(feedId.value).then((response) => {
-      const promises = [
-        () => {
-          fileUrls.value = response.data.feed.fileUrls
-          content.value = response.data.feed.content
-          challenge.value = response.data.feed.challengeId
-          challengeTitle.value = response.data.feed.challengeTitle
-          // 정규식을 사용하여 '#'으로 시작하는 단어를 추출하여 리스트로 만듦
-          hashtags.value = response.data.feed.hashtag.match(/#[^\s#]+/g) || []
-          comments.value = response.data.comments
-          likeCount.value = response.data.likeCount
-          nickname.value = response.data.feed.nickname
-          feedWriterId.value = response.data.feed.memberId
-        }
-      ]
-
-      Promise.all(promises.map((fn) => fn())).then((res) => {
+      console.log(response)
+      const feedData = response.data.feed
+      getProfileImg(response.data.feed.memberId).then((response) => {
+        console.log(response.data.sombody.imageUrl)
+        feedData.imgUrl = response.data.sombody.imageUrl
+      })
+      console.log(feedData)
+      feed.value = feedData
+      // 정규식을 사용하여 '#'으로 시작하는 단어를 추출하여 리스트로 만듦
+      hashtags.value = response.data.feed.hashtag.match(/#[^\s#]+/g) || []
+      likeCount.value = response.data.likeCount
+      const promises = response.data.comments.map((comment) =>
+        getProfileImg(comment.memberId).then((response) => ({
+          ...comment,
+          imgUrl: response.data.sombody.imageUrl
+        }))
+      )
+      Promise.all(promises).then((res) => {
         console.log(res)
-        // 이후 작업을 수행할 수 있습니다.
+        comments.value = res
       })
     })
   } catch (error) {
     console.error('피드 상세 조회 중 에러:', error)
   }
 })
+
+console.log(feed)
 
 // 마운트 시에 유저 피드 목록 조회하여 이 피드가 해당 유저 피드면 삭제 버튼 보여주기
 onMounted(async () => {
@@ -207,6 +220,7 @@ const addFeedLike = async () => {
   try {
     await challengeFeed.addFeedLike(feedId.value).then((response) => {
       console.log(response)
+      likeCount.value++
     })
   } catch (error) {
     console.error('좋아요 에러:', error)
@@ -224,6 +238,12 @@ const addFollowing = async () => {
     console.error('팔로잉 에러:', error)
   }
 }
+
+// 유저 페이지로 이동
+const toUserPage = (memberId) => {
+  console.log(memberId)
+  router.push(`/member/${memberId}`)
+}
 </script>
 <style>
 .flex {
@@ -232,5 +252,21 @@ const addFollowing = async () => {
   justify-content: space-around;
   align-items: center;
   margin: auto;
+}
+.profile-img {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  margin-right: 10px;
+}
+
+.profile-container {
+  display: flex; /* 수평 정렬을 위해 flex 컨테이너로 설정 */
+  align-items: center; /* 요소들을 수직 가운데 정렬 */
+}
+
+.profile-nickname {
+  font-size: 17px;
+  font-weight: 500;
 }
 </style>
