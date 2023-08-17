@@ -50,7 +50,9 @@
               <v-btn variant="text" @click="toUserPage(feed.memberId)">유저페이지</v-btn>
             </v-list-item>
             <v-list-item>
-              <v-btn variant="text" @click="addFollowing(feed.memberId)">팔로우</v-btn>
+              <v-btn v-if="!isFollowing" variant="text" @click="addFollowing(feed.memberId)"
+                >팔로우</v-btn
+              >
             </v-list-item>
           </v-list>
         </v-menu>
@@ -119,6 +121,9 @@ const deleteCondition = ref(false)
 // 좋아요 누른 사람들
 const likedMembers = ref([])
 
+// 팔로잉 여부
+const isFollowing = ref(false)
+
 const deleteFeed = async () => {
   try {
     await challengeFeed.deleteFeed(feedId.value)
@@ -131,12 +136,6 @@ const deleteFeed = async () => {
   }
 }
 
-// feed관찰하다가 변경 사항
-// feed.value = response.data.feed
-// // 정규식을 사용하여 '#'으로 시작하는 단어를 추출하여 리스트로 만듦
-// hashtags.value = response.data.feed.hashtag.match(/#[^\s#]+/g) || []
-// likeCount.value = response.data.likeCount
-
 // 마운트 시에 피드 상세 조회 API 호출, memberId가 변경되면 다시 호출
 onMounted(async () => {
   try {
@@ -147,11 +146,25 @@ onMounted(async () => {
       getProfileImg(response.data.feed.memberId).then((response) => {
         feedData.imgUrl = response.data.sombody.imageUrl
       })
-      console.log(feedData)
       feed.value = feedData
       // 정규식을 사용하여 '#'으로 시작하는 단어를 추출하여 리스트로 만듦
       hashtags.value = response.data.feed.hashtag.match(/#[^\s#]+/g) || []
       likeCount.value = response.data.likeCount
+
+      // 피드 작성자가 내 팔로잉 목록에 있으면 팔로우 버튼 숨기기
+      memberApi.fetchFollowingList().then((response) => {
+        console.log(response)
+        const followingList = response.data['my following list']
+        // 만약 팔로잉 리스트에 피드 작성자가 있으면 팔로우 버튼 숨기기
+        for (const following of followingList) {
+          if (following.toMemberId === feedData.memberId) {
+            isFollowing.value = true
+            break
+          }
+        }
+      })
+
+      // 댓글 프로필 이미지 가져오기
       const promises = response.data.comments.map((comment) =>
         getProfileImg(comment.memberId).then((response) => ({
           ...comment,
@@ -181,9 +194,6 @@ onMounted(async () => {
     if (feedIdList.includes(intFeedId)) {
       deleteCondition.value = true
     }
-  })
-  memberApi.fetchFollowingList().then((response) => {
-    console.log(response)
   })
 })
 

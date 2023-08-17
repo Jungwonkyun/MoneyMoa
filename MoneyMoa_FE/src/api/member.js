@@ -91,7 +91,7 @@ async function fetchFollowerList() {
   }
 }
 
-// 내 팔로워 유저 목록 API
+// 내 팔로잉 유저 목록 API
 async function fetchFollowingList() {
   try {
     const res = await apiWithAuth.get(`/follow/myfollowing`)
