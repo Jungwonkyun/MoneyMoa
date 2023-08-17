@@ -72,25 +72,24 @@ const load = async ($state) => {
   try {
     // 만약 searchWord가 존재한다면 검색어를 통해 피드를 불러온다.
     if (searchWord.value) {
-      await challengeFeedApi.searchFeed(searchWord.value).then((response) => {
-        const feedList = response.data
-        feedList.forEach((feed) => {
-          getProfileImg(feed.memberId).then((response) => {
-            console.log(response.data.sombody.imageUrl)
-            feed[imgUrl] = response.data.sombody.imageUrl
-          })
-        })
-        console.log(feedList)
-        const data = feedList.reverse()
-        // 만약 데이터가 2개 이하라면
-        // $state.complete()를 호출하여 더 이상 데이터를 로딩하지 않고 완료 상태로 변경
-        if (data.length < 2) $state.complete()
-        else {
+      challengeFeedApi.searchFeed(searchWord.value).then((response) => {
+        const promises = response.data.map((feed) =>
+          getProfileImg(feed.memberId).then((response) => ({
+            ...feed,
+            imgUrl: response.data.sombody.imageUrl ? response.data.sombody.imageUrl : defaultImage
+          }))
+        )
+        Promise.all(promises).then((res) => {
+          console.log(res)
+          const data = res.reverse()
+          // 만약 데이터가 2개 이하라면
+          // $state.complete()를 호출하여 더 이상 데이터를 로딩하지 않고 완료 상태로 변경
+
           // feeds.value에 모든 data 배열의 모든 요소를 병합
           feeds.value.push(...data)
           // $state.loaded()를 호출하여 더 많은 데이터를 요청할 수 있도록 로딩 상태를 유지
-          $state.loaded()
-        }
+          $state.complete()
+        })
       })
     } else {
       // searchWord가 존재하지 않는다면 모든 피드를 불러온다.
