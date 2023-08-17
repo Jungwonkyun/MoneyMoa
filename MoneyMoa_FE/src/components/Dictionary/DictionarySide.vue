@@ -13,10 +13,10 @@
       </v-sheet>
     </template>
     <!-- 여기서 크기조절 -->
-    <v-sheet rounded="3">
-      <v-card width="500" max-height="500" class="d-flex flex-column">
+    <v-sheet class="dicSide">
+      <v-card width="500" max-height="500" class="d-flex flex-column dicSide">
         <v-card-title>금융사전</v-card-title>
-        <v-sheet class="d-flex flex-column align-center">
+        <v-sheet class="d-flex flex-column align-center dicSide">
           <!-- 금융사전 검색창입니다 -->
           <v-text-field
             clearable
@@ -32,7 +32,7 @@
             </template>
           </v-text-field>
         </v-sheet>
-        <v-list>
+        <v-list class="dicSide">
           <v-expansion-panels variant="accordion">
             <DictionaryItem
               v-for="(item, index) in list"
@@ -96,5 +96,8 @@ onMounted(() => {
 .dictionary-search {
   align-self: center;
   width: 90%;
+}
+.dicSide {
+  background: #e1f1ff;
 }
 </style>

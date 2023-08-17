@@ -1,7 +1,7 @@
 <template>
   <v-container>
     <v-sheet
-      max-width="1200"
+      max-width="1000"
       class="mx-auto mt-8 rounded-lg px-10 py-5 sheet animate__animated animate__fadeInLeft"
       min-height="450"
       width="100%"
@@ -82,6 +82,6 @@ function onSearch() {
   border-radius: 100px;
 }
 .sheet {
-  background: #e1f1ff;
+  background: #bbdcf9;
 }
 </style>
