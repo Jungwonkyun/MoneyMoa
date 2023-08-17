@@ -18,8 +18,9 @@
       </v-col>
 
       <v-col cols="3" class="flex">
-        {{ feedLikeCount }}
         <v-btn @click.stop="addFeedLike" size="large" icon="mdi-heart" variant="text"></v-btn>
+        {{ likeCount }}
+
         <v-btn
           icon="mdi-delete"
           variant="text"
@@ -42,8 +43,8 @@
             >
           </v-expand-transition>
         </h3>
-        {{ content }}
       </v-hover>
+      {{ content }}
     </v-card-text>
     <v-divider></v-divider>
     <div v-for="(comment, index) in comments" :key="index">
@@ -89,9 +90,8 @@ const challenge = ref('')
 const challengeTitle = ref('')
 const hashtags = ref([])
 const comments = ref([])
-const imgs = ref([])
 const nickname = ref('')
-const feedLikeCount = ref(0)
+const likeCount = ref(0)
 const fileUrls = ref([])
 
 // 팔로우 보낼 때 사용할 작성자 id
@@ -116,20 +116,42 @@ const deleteFeed = async () => {
 // 마운트 시에 피드 상세 조회 API 호출, memberId가 변경되면 다시 호출
 onMounted(async () => {
   try {
-    const response = await challengeFeed.fetchFeedDetail(feedId.value)
-    console.log(response)
-    fileUrls.value = response.data.feed.fileUrls
-    console.log(fileUrls.value)
-    content.value = response.data.feed.content
-    // imgs.value = response.data.feed.fileUrls
-    challenge.value = response.data.feed.challengeId
-    challengeTitle.value = response.data.feed.challengeTitle
-    // 정규식을 사용하여 '#'으로 시작하는 단어를 추출하여 리스트로 만듦
-    hashtags.value = response.data.feed.hashtag.match(/#[^\s#]+/g) || []
-    comments.value = response.data.comments
-    feedLikeCount.value = response.data.feed.feedLikeCount
-    nickname.value = response.data.feed.nickname
-    feedWriterId.value = response.data.feed.memberId
+    // const response = await challengeFeed.fetchFeedDetail(feedId.value)
+    // console.log(response)
+    // fileUrls.value = response.data.feed.fileUrls
+    // console.log(fileUrls.value)
+    // content.value = response.data.feed.content
+    // // imgs.value = response.data.feed.fileUrls
+    // challenge.value = response.data.feed.challengeId
+    // challengeTitle.value = response.data.feed.challengeTitle
+    // // 정규식을 사용하여 '#'으로 시작하는 단어를 추출하여 리스트로 만듦
+    // hashtags.value = response.data.feed.hashtag.match(/#[^\s#]+/g) || []
+    // comments.value = response.data.comments
+    // likeCount.value = response.data.likeCount
+    // nickname.value = response.data.feed.nickname
+    // feedWriterId.value = response.data.feed.memberId
+
+    challengeFeed.fetchFeedDetail(feedId.value).then((response) => {
+      const promises = [
+        () => {
+          fileUrls.value = response.data.feed.fileUrls
+          content.value = response.data.feed.content
+          challenge.value = response.data.feed.challengeId
+          challengeTitle.value = response.data.feed.challengeTitle
+          // 정규식을 사용하여 '#'으로 시작하는 단어를 추출하여 리스트로 만듦
+          hashtags.value = response.data.feed.hashtag.match(/#[^\s#]+/g) || []
+          comments.value = response.data.comments
+          likeCount.value = response.data.likeCount
+          nickname.value = response.data.feed.nickname
+          feedWriterId.value = response.data.feed.memberId
+        }
+      ]
+
+      Promise.all(promises.map((fn) => fn())).then((res) => {
+        console.log(res)
+        // 이후 작업을 수행할 수 있습니다.
+      })
+    })
   } catch (error) {
     console.error('피드 상세 조회 중 에러:', error)
   }
@@ -183,7 +205,9 @@ const afterDelete = (response) => {
 // 좋아요
 const addFeedLike = async () => {
   try {
-    res = await challengeFeed.addFeedLike(feedId.value)
+    await challengeFeed.addFeedLike(feedId.value).then((response) => {
+      console.log(response)
+    })
   } catch (error) {
     console.error('좋아요 에러:', error)
   }

@@ -71,6 +71,10 @@ import { ref, onMounted } from 'vue'
 import functions from '@/api/challenge.js'
 import challengeFeedApi from '@/api/challengeFeed.js'
 import { useCookies } from 'vue3-cookies'
+import { useRouter } from 'vue-router'
+
+// useRouter 사용
+const router = useRouter()
 
 // 쿠키 사용
 const { cookies } = useCookies()
@@ -98,7 +102,7 @@ const challengeId = ref('')
 const files = ref([])
 
 // 피드 생성하기 버튼 눌렀을 때
-const submitFeedData = () => {
+const submitFeedData = async () => {
   for (const set of challengeset.value) {
     if (set.title === challenge.value) {
       challengeId.value = set.id
@@ -125,8 +129,11 @@ const submitFeedData = () => {
 
   // 피드 생성 API 호출
   const createFeed = challengeFeedApi.createFeed
-  createFeed(formData, challengeId.value).then((response) => {
+  await createFeed(formData, challengeId.value).then((response) => {
     console.log(response)
+  })
+  router.push('/challenge/feedList').then(() => {
+    location.reload()
   })
 }
 

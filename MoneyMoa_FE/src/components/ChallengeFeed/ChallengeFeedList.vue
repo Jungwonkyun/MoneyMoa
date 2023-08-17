@@ -1,33 +1,40 @@
 <template>
-  <v-row class="card-container" justify="center">
-    <v-card
-      class="result ma-2 d-flex align-center"
-      v-for="feed in feeds"
-      :key="feed.id"
-      text-center
-    >
-      <v-row class="my-auto">
-        <v-col cols="6" class="justify-center">
-          <v-carousel hide-delimiter-background show-arrows="hover">
-            <v-carousel-item v-for="(fileUrl, index) in feed.fileUrls" :key="index">
-              <router-link :to="'/challenge/feed/' + feed.id">
-                <v-img :src="fileUrl" height="100%"></v-img>
-              </router-link>
-            </v-carousel-item>
-          </v-carousel>
-        </v-col>
-        <v-col cols="6">
-          <v-card-title>{{ feed.challengeTitle }}</v-card-title>
-          <v-card-title class="d-flex align-center">
-            <!-- <v-img :src=""></v-img> {{ feed.nickname }}: -->
-          </v-card-title>
-          <v-card-text>{{ feed.content }}</v-card-text>
-          <v-card-text>{{ feed.hashtag }}</v-card-text>
-        </v-col>
-      </v-row>
-    </v-card>
-    <InfiniteLoading @infinite="load" />
-  </v-row>
+  <v-card
+    v-for="(feed, index) in feeds"
+    :key="index"
+    class="mx-auto my-12"
+    max-width="700"
+    :elevation="3"
+  >
+    <v-carousel hide-delimiters show-arrows="hover">
+      <v-carousel-item
+        v-for="(file, i) in feed.fileUrls"
+        :key="i"
+        :src="file"
+        cover
+      ></v-carousel-item>
+    </v-carousel>
+    <v-card-item>
+      <v-card-title class="font-weight-bold my-2">{{ feed.challengeTitle }}</v-card-title>
+
+      <v-card-subtitle>
+        <span class="me-1">{{ feed.hashtag }}</span>
+
+        <v-icon color="error" icon="mdi-fire-circle" size="small"></v-icon>
+      </v-card-subtitle>
+    </v-card-item>
+
+    <v-card-text>
+      <div class="my-4 text-subtitle-1">{{ feed.content }}</div>
+    </v-card-text>
+
+    <v-divider class="mx-4 mb-1"></v-divider>
+
+    <router-link :to="'/challenge/feed/' + feed.id">
+      <v-btn variant="text">댓글 확인하기</v-btn>
+    </router-link>
+  </v-card>
+  <InfiniteLoading @infinite="load" />
 </template>
 
 <script setup>
@@ -39,6 +46,10 @@ import { storeToRefs } from 'pinia'
 import challengeFeedApi from '@/api/challengeFeed.js'
 import memberApi from '@/api/member.js'
 import default_image from '../../assets/img/default_image.png'
+import { useRouter } from 'vue-router'
+
+// useRouter 사용
+const router = useRouter()
 
 // 기본이미지
 const defaultImage = default_image
@@ -81,22 +92,35 @@ const load = async ($state) => {
     } else {
       // searchWord가 존재하지 않는다면 모든 피드를 불러온다.
       challengeFeedApi.fetchAllFeedList().then((response) => {
-        const feedList = response.data.feedList
-        const data = feedList.reverse()
-        // 만약 데이터가 2개 이하라면
-        // $state.complete()를 호출하여 더 이상 데이터를 로딩하지 않고 완료 상태로 변경
-        if (data.length < 2) $state.complete()
-        else {
-          // feeds.value에 모든 data 배열의 모든 요소를 병합
-          feeds.value.push(...data)
-          // $state.loaded()를 호출하여 더 많은 데이터를 요청할 수 있도록 로딩 상태를 유지
-          $state.loaded()
-        }
+        const promises = response.data.feedList.map((feed) =>
+          getProfileImg(feed.memberId).then((response) => ({
+            ...feed,
+            imgUrl: response.data.sombody.imageUrl ? response.data.sombody.imageUrl : defaultImage
+          }))
+        )
+        Promise.all(promises).then((res) => {
+          console.log(res)
+          const data = res.reverse()
+          // 만약 데이터가 2개 이하라면
+          // $state.complete()를 호출하여 더 이상 데이터를 로딩하지 않고 완료 상태로 변경
+          if (data.length < 2) $state.complete()
+          else {
+            // feeds.value에 모든 data 배열의 모든 요소를 병합
+            feeds.value.push(...data)
+            // $state.loaded()를 호출하여 더 많은 데이터를 요청할 수 있도록 로딩 상태를 유지
+            $state.loaded()
+          }
+        })
       })
     }
   } catch (error) {
     $state.error()
   }
+}
+
+// 클릭하면 디테일 페이지로 이동
+const goToDetail = (feedId) => {
+  router.push(`/challenge/feedDetail/' + ${feedId}`)
 }
 
 // `searchWord` 변경 시 `load` 함수 호출
@@ -137,6 +161,5 @@ onMounted(() => {
   width: 30px;
   height: 30px;
   border-radius: 50%;
-  margin: 0 0;
 }
 </style>
