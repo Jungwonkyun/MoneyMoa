@@ -92,7 +92,7 @@ const email = ref('')
 const isMe = ref(false)
 
 // 라우터 ID의 변경을 감지하여 정보를 업데이트하는 로직 추가
-watch(memberId.value, async (newMemberId) => {
+watch(memberId, async (newMemberId) => {
   const response = await memberApi.getSombodyInfoApi(newMemberId)
   console.log(response)
   const sombody = response.data.sombody
@@ -114,7 +114,7 @@ watch(memberId.value, async (newMemberId) => {
 })
 
 onMounted(async () => {
-  const response = await memberApi.getSombodyInfoApi(memberId.value)
+  const response = await memberApi.getSombodyInfoApi(memberId)
   console.log(response)
   const sombody = response.data.sombody
   nickname.value = sombody.nickname
@@ -128,7 +128,7 @@ onMounted(async () => {
     imageUrl.value = img
   }
   // 만약 불러온 유저 정보의 id가 로그인한 맴버 아이디와 일치한다면
-  if (loginMemberId === parseInt(memberId.value)) {
+  if (loginMemberId === parseInt(memberId)) {
     isMe.value = true
   }
 })

@@ -18,7 +18,9 @@
         </v-col>
         <v-col cols="6">
           <v-card-title>{{ feed.challengeTitle }}</v-card-title>
-          <v-card-title>{{ feed.nickname }}:</v-card-title>
+          <v-card-title class="d-flex align-center"
+            ><v-img :src="imageUrl" class="profile-img"></v-img> {{ feed.nickname }}:
+          </v-card-title>
           <v-card-text>{{ feed.content }}</v-card-text>
           <v-card-text>{{ feed.hashtag }}</v-card-text>
         </v-col>
@@ -35,6 +37,10 @@ import 'v3-infinite-loading/lib/style.css'
 import { useChallengeFeedStore } from '../../stores/challengeFeedStore'
 import { storeToRefs } from 'pinia'
 import challengeFeedApi from '@/api/challengeFeed.js'
+import { useCookies } from 'vue3-cookies'
+
+// 쿠키 사용
+const { cookies } = useCookies()
 
 // 스토어 사용
 const challengeFeedStore = useChallengeFeedStore()
@@ -97,7 +103,11 @@ onMounted(() => {
   searchWord.value = ''
 })
 
-console.log(feeds.value)
+// 쿠키에 저장된 정보 중 member 정보만 가져오기
+const memberData = cookies.get('member')
+console.log(memberData)
+// 쿠키에 저장된 정보 중 member 정보 중 imageUrl만 가져오기
+const imageUrl = ref(memberData.imageUrl)
 </script>
 
 <style>
@@ -115,5 +125,12 @@ console.log(feeds.value)
   overflow-y: auto; /* 스크롤을 추가해야하는 영역을 정의 */
   width: 1000px;
   margin: 0 auto;
+}
+
+.profile-img {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  margin: 0 0;
 }
 </style>
