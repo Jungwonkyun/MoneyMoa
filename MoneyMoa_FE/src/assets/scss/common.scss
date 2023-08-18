@@ -1,0 +1,83 @@
+// 예시
+// .container {
+//     width: 100%;
+//     .nested-test1 { // nested 사용
+//       font-size: $font-size-root; // 변수 사용
+//       .nested-test2 { // nested 사용
+//         font-size: $font-size-root; // 변수 사용
+//       }
+//     }
+//   }
+
+// .row {
+//     color: $color-main; // 변수 사용
+// }
+@font-face {
+  font-family: 'NanumGothic';
+  src: url('../fonts/NanumGothic-Bold.ttf') format('truetype');
+}
+
+@font-face {
+  font-family: 'Handjet';
+  src: url('../fonts/Handjet-Regular.ttf') format('truetype');
+}
+
+a {
+  text-decoration: none;
+  color: inherit;
+}
+#header {
+  background-color: #ffffff;
+  height: 80px;
+  display: flex;
+  justify-content: center;
+  z-index: 100;
+  .v-btn__content {
+    color: $menu-color;
+    font-size: 20px;
+    font-family: 'NanumGothic';
+  }
+  .header-title {
+    color: $logo-color;
+    font-size: 30px;
+    font-weight: bold;
+    font-family: 'NanumGothic';
+  }
+}
+.product-card {
+  border-radius: 20px;
+  background-color: $secondary-color;
+  color: #000000;
+}
+.fin-icon {
+  width: 24px;
+  margin-right: 5px;
+}
+.highlighted-value {
+  font-weight: bold;
+}
+.shadow-text {
+  text-shadow: 2px 2px 6px $grey-dark;
+}
+.fin-btn {
+  background-color: $secondary-color;
+}
+/* 전체 스크롤바에 스타일 적용 */
+::-webkit-scrollbar {
+  width: 10px; /* 스크롤바의 너비 */
+}
+
+/* 스크롤바의 스크롤 가능한 영역에 스타일 적용 */
+::-webkit-scrollbar-thumb {
+  background-color: #b6b6b6; /* 스크롤바 색상 */
+  border-radius: 5px; /* 스크롤바의 모서리 둥글기 */
+}
+
+/* 스크롤바의 트랙(배경)에 스타일 적용 */
+::-webkit-scrollbar-track {
+  background-color: #e5e5e5; /* 스크롤바 배경색 */
+}
+.moa-btn {
+  // background-color: $logo-color;
+  color: $logo-color;
+}

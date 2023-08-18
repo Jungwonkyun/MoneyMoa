@@ -1,8 +1,6 @@
 
-# 🔥 프로젝트 개요
-
-프로젝트 기간: 2023.07.04 ~ 2023.08.18 <br> 
-
+# 🔥 프로젝트 진행 기간
+2023.07.04 ~ 2023.08.18  
 어려운 예적금 재테크 쉽게하자 <br>
 금융 SNS, 예,적금 계산기 MoneyMoa
 
@@ -25,10 +23,10 @@
         <h5>이상혁</h5>
       </td>
       <td align="center">
-        <h5>권종률</h5>
+        <h5>공익규</h5>
       </td>
       <td align="center">
-        <h5>공익규</h5>
+        <h5>권종률</h5>
       </td>
     </tr>
     <tr>
@@ -59,7 +57,7 @@
         BE Jira 관리<br>피드 구현<br>서비스 기획
       </td>
       <td align="center">
-        계정관리&금융사전 구현<br>FE Jira 관리<br>UX/UI
+        TypeScript<br>UI/UX<br>SockJS
       </td>
       <td align="center">
         유저정보&챌린지 구현<br>기획 문서<br>UX/UI
@@ -81,13 +79,13 @@
 <br>
 
 # 📦 서비스 구조도
-![architecture.png](/image/architecture.png) 
+![architecture.png](..%2F..%2F..%2F..%2F..%2F..%2F..%2F..%2F..%2FDownloads%2Farchitecture.png)
 
 <br>
 <br>
 
 # 🌊 erd
-![moneymoa_erd](/image/erd.png) 
+![moneymoa_erd](..%2F..%2F..%2F..%2F..%2F..%2F..%2F..%2F..%2FDownloads%2FUntitled%20%282%29.png)
 
 
 <br>
@@ -112,7 +110,9 @@
 - Spring Security
 - redis 
 - Mongo DB
+
 - Java 11
+- AWS EC2
 - mariaDB
 - WebSocket
 
@@ -130,7 +130,7 @@
 
 ### 🖱️CI/CD
 
-- AWS EC2
+- aws ec2
 - docker
 - nginx
 - jenkins
@@ -159,41 +159,6 @@
 ### 메인페이지
 
 
-### 로그인 & 회원가입
-
-
-### 상품정보 
-
-
-
-### 오픈채팅
-
-
-
-### 챌린지 피드
-
-
-
-### 금융 위키 
-
-
-
-<br>
-<br>
-
-
-# Jira 번다운 차트 
-
-![image.png](image/image.png)
-
-
-<br>
-<br>
-
-
-# Figma 기획
-
-![image.png](image/figma.png)
 
 
 <br>
