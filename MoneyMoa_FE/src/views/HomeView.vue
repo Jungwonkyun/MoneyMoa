@@ -14,17 +14,6 @@
           <v-img v-if="i === 1" :src="slide" height="720" class="caro1"></v-img>
           <v-img v-if="i === 2" :src="slide" height="720" class="caro2"></v-img>
           <v-img v-if="i === 3" :src="slide" height="720" class="caro3"></v-img>
-          <v-img v-if="i === 4" :src="slide" height="720" cover class="text-white"
-            ><v-container class="fill-height">
-              <v-row>
-                <v-spacer></v-spacer>
-                <v-col align="right" class="splash">
-                  <h1>돈 모으고 싶을 때,</h1>
-                  <h1>머니모아</h1>
-                </v-col>
-              </v-row>
-            </v-container></v-img
-          >
         </div>
       </v-carousel-item>
     </v-carousel>
@@ -39,7 +28,7 @@ import challenge from '@/assets/img/02_carousel_challenge.gif'
 import dictionary from '@/assets/img/03_carousel_dictionary.gif'
 import landing from '@/assets/img/micheile-henderson-f030K9IzpcM-unsplash.jpg'
 import 'animate.css'
-const slides = [MomenyMoa_main, rollmoney, challenge, dictionary, landing]
+const slides = [MomenyMoa_main, rollmoney, challenge, dictionary]
 
 // const moamoa = './src/assets/img/money_moa_moa.gif'
 </script>
