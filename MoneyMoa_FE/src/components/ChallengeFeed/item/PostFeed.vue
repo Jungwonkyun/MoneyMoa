@@ -1,9 +1,10 @@
 <template>
-  <v-row v-if="condition" class="justify-end">
+  <v-row class="justify-end">
     <v-row justify="center">
       <v-dialog v-model="dialog" persistent width="auto">
         <template v-slot:activator="{ props }">
-          <v-btn icon="mdi-pencil" variant="text" v-bind="props"> </v-btn>
+          <v-btn v-if="condition" variant="text" v-bind="props"> 피드 작성하기 </v-btn>
+          <v-btn variant="text" @click="moveToMyPage">챌린지 생성하기</v-btn>
         </template>
         <v-card>
           <v-card-title class="text-center mt-4">
@@ -31,7 +32,7 @@
                 </v-col>
                 <v-col cols="12">
                   <v-text-field
-                    label="해시태그를 추가하세요"
+                    label="#으로 시작하는 해시태그를 추가하세요. 해시태그는 공백으로 구분하세요. ex) #저축 #저축왕"
                     required
                     variant="solo-filled"
                     v-model="hashtag"
@@ -71,6 +72,10 @@ import { ref, onMounted } from 'vue'
 import functions from '@/api/challenge.js'
 import challengeFeedApi from '@/api/challengeFeed.js'
 import { useCookies } from 'vue3-cookies'
+import { useRouter } from 'vue-router'
+
+// useRouter 사용
+const router = useRouter()
 
 // 쿠키 사용
 const { cookies } = useCookies()
@@ -98,7 +103,7 @@ const challengeId = ref('')
 const files = ref([])
 
 // 피드 생성하기 버튼 눌렀을 때
-const submitFeedData = () => {
+const submitFeedData = async () => {
   for (const set of challengeset.value) {
     if (set.title === challenge.value) {
       challengeId.value = set.id
@@ -125,9 +130,17 @@ const submitFeedData = () => {
 
   // 피드 생성 API 호출
   const createFeed = challengeFeedApi.createFeed
-  createFeed(formData, challengeId.value).then((response) => {
+  await createFeed(formData, challengeId.value).then((response) => {
     console.log(response)
   })
+  router.push('/challenge/feedList').then(() => {
+    location.reload()
+  })
+}
+
+// 누르면 챌린지 생성하기로 이동
+const moveToMyPage = () => {
+  router.push(`/member/${memberId}`)
 }
 
 // 마운트되면 챌린지 목록 불러옴
@@ -143,9 +156,13 @@ onMounted(() => {
       challengeset.value.push({ id, title })
     }
     challengeList.value = response.data.challenges
+    console.log(challengeList.value)
     // 챌린지 리스트 길이가 0 보다 크면 버튼 보이게 처리
     if (challengeList.value.length > 0) {
       condition.value = true
+    }
+    if (challengeList.value.length === 0) {
+      alert('챌린지를 먼저 생성해주세요!')
     }
   })
 })

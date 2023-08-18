@@ -57,6 +57,17 @@ async function addFeedLike(feedId) {
   }
 }
 
+// 피드 좋아요 취소 API
+async function deleteFeedLike(feedId) {
+  try {
+    const res = await apiWithAuth.delete(`/feed/unlike/${feedId}`)
+    console.log(res)
+    return res
+  } catch (err) {
+    console.log(err)
+  }
+}
+
 // 피드 검색 API
 async function searchFeed(searchWord) {
   try {
@@ -161,6 +172,7 @@ export default {
   fetchAllFeedList,
   fetchFeedDetail,
   addFeedLike,
+  deleteFeedLike,
   searchFeed,
   createFeed,
   updateFeed,
