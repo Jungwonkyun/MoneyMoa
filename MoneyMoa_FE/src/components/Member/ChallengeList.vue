@@ -50,7 +50,7 @@
                   <v-col cols="12">
                     <v-text-field
                       v-model="period"
-                      label="기간을 입력하세요"
+                      label="개월 단위로 기간을 입력하세요. ex) 3, 6, 12"
                       variant="solo-filled"
                       @keypress="onKeyPress"
                       @input="onInput2"
@@ -156,7 +156,7 @@ const closeCreate = () => {
 }
 
 // 챌린지 생성하기 버튼 눌렀을 때
-const createChallenge = () => {
+const createChallenge = async () => {
   if (!title.value || !content.value || !period.value || !goalAmount.value) {
     isblank.value = true
     setTimeout(() => {
@@ -197,13 +197,16 @@ const createChallenge = () => {
 
   // 챌린지 생성 API 호출
   const postChallenge = challengeApi.postChallenge
-  postChallenge(formData).then((response) => {
+  await postChallenge(formData).then((response) => {
     console.log(response) // 응답 확인
   })
 
   // 챌린지 생성 후 필요한 초기화 작업 등 수행 가능
   // 예: 입력 필드 초기화, 이미지 미리보기 초기화 등
   dialog.value = false
+
+  // 새로고침하기
+  location.reload()
 }
 
 // 챌린지 생성 다이얼로그(모달)를 위한 변수 초기값은 false
