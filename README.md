@@ -157,64 +157,98 @@
 
 ### 로그인 & 회원가입
 
-![로그인.png](image\로그인.png)
+![로그인.png](image/로그인.png)
+
+<br><br>
 
 ![회원가입.png](image/회원가입.png)
+<br><br>
+
 
 ### 메인페이지
 
 ![메인페이지.png](image/메인페이지.png)
+<br><br>
+
 
 ### 상품정보
 
 ![예금.png](image/예금.png)
 
-- 예금 상품 목록
+<br><br>
+
+
+#### 예금 상품 목록
 
 ![적금 예금, 이율비교.png](image/적금%20예금,%20이율비교.png)
 
-- 상품 상세 (우대 이율 옵션 토글)
+<br><br>
+
+
+#### 상품 상세 (우대 이율 옵션 토글)
 
 ![CMA.png](image/CMA.png)
 
-- CMA 상품 목록
+<br><br>
+
+
+#### CMA 상품 목록
+
 
 ![CMA 상세페이지.png](image/CMA%20상세페이지.png)
+<br><br>
+
 
 - CMA 상세 조회
 
+<br><br>
+
+
 ### 오픈채팅
+
 
 ![오픈채팅.png](image/오픈채팅.png)
 
+<br><br>
+
 ![오픈채팅 상세.png](image/오픈채팅%20상세.png)
+
+<br><br>
+
 
 ### 챌린지 피드
 
 ![피드.png](image/피드.png)
 
+<br><br>
+
+
 ![피드 상세.png](image/피드%20상세.png)
+<br><br>
+
 
 ### 금융 위키
 
 ![금융 위키 상세.png](image/금융%20위키%20상세.png)
 
-<br>
-<br>
+<br><br>
+
 
 # Jira 번다운 차트
 
 ![image.png](image/image.png)
 
-<br>
-<br>
+<br><br>
+
+
 
 # Figma 기획
 
 ![image.png](image/figma.png)
 
-<br>
-<br>
+<br><br>
+
+
 
 # 📁 폴더 구조
 
