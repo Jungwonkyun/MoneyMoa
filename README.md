@@ -249,6 +249,10 @@
 <br><br>
 
 
+# GIT 관리 
+![image](https://github.com/Jungwonkyun/MoneyMoa/assets/43608973/5f98ab21-dbf2-46dd-a6db-1db2ae4e6b7a)
+
+<br><br>
 
 # 📁 폴더 구조
 
